@@ -20,7 +20,17 @@ set(XML_PARSER_SOURCE ./xml_parser/tinyxmlparser.cpp ./xml_parser/tinyxmlerror.c
 # Only add cpp files, no h files!
 # Only add files with functionality here, no test files!
 # Make sure the "main" function is in "main_release"!
-set(RELEASE_SOURCE_FILES ./src/main.cpp)
+set(RELEASE_SOURCE_FILES ./src/main.cpp
+        src/Room.cpp
+        src/Room.h
+        src/Meeting.cpp
+        src/Meeting.h
+        src/Participation.cpp
+        src/Participation.h
+        src/Date.cpp
+        src/Date.h
+        src/App.cpp
+        src/App.h)
 
 # Set source files for DEBUG target
 # Only add cpp files, no h files!
