@@ -12,7 +12,7 @@ set(CMAKE_EXE_LINKER_FLAGS -pthread)
 include_directories(./gtest/include ./xml_parser/include)
 
 # Set Library dir
-link_directories(gtest/include/gtest/lib)
+link_directories(gtest/lib)
 
 set(XML_PARSER_SOURCE ./xml_parser/tinyxmlparser.cpp ./xml_parser/tinyxmlerror.cpp ./xml_parser/tinyxml.cpp ./xml_parser/tinystr.cpp)
 
@@ -34,4 +34,4 @@ add_executable(release_target ${RELEASE_SOURCE_FILES} ${XML_PARSER_SOURCE})
 add_executable(debug_target ${DEBUG_SOURCE_FILES} ${XML_PARSER_SOURCE})
 
 # Link library
-#target_link_libraries(debug_target gtest)
+target_link_libraries(debug_target gtest)
