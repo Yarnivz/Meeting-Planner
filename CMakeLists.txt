@@ -12,7 +12,7 @@ set(CMAKE_EXE_LINKER_FLAGS -pthread)
 include_directories(./gtest/include)
 
 # Set Library dir
-link_directories(./gtest/lib)
+link_directories(gtest/include/gtest/lib)
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
