@@ -9,6 +9,8 @@
 class Participation {
 public:
     Participation(const std::string &user, const std::string &meeting);
+    std::string getUser();
+    std::string getMeetingId();
     ~Participation();
 private:
     std::string user;
