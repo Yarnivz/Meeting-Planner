@@ -8,10 +8,11 @@
 
 class Participation {
 public:
-    Participation(std::string user, std::string meeting);
+    Participation(const std::string &user, const std::string &meeting);
     ~Participation();
 private:
-    std::string user, meeting;
+    std::string user;
+    std::string meeting;
 };
 
 

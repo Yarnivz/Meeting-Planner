@@ -9,10 +9,12 @@
 
 class Room {
 public:
-    Room(std::string name, std::string id, unsigned int capacity);
+    Room(const std::string &name, const std::string &id, unsigned int capacity);
+    const std::string& getId();
     ~Room();
 private:
-    std::string name, id;
+    std::string name;
+    std::string id;
     unsigned int capacity;
 };
 

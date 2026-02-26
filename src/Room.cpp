@@ -4,6 +4,8 @@
 
 #include "Room.h"
 
-Room::Room(std::string name, std::string id, unsigned int capacity): name(name), id(id), capacity(capacity) {}
+Room::Room(const std::string &name, const std::string &id, unsigned int capacity): name(name), id(id), capacity(capacity) {}
+
+const std::string& Room::getId() { return id; }
 
 Room::~Room() {}
