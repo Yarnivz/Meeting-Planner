@@ -6,6 +6,7 @@
 #define MEETING_PLANNER_APP_H
 #include <string>
 #include <unordered_map>
+#include <iostream>
 #include "Room.h"
 #include "Meeting.h"
 #include "Participation.h"
@@ -15,12 +16,16 @@ public:
     App();
     void parseFile(std::string filename);
     void writeToStream(std::ostream stream);
+
     void addRoom(Room* room);
-    Room* getRoom(std::string id);
+    Room* getRoom(const std::string& id);
+
     void addMeeting(Meeting* meeting);
-    Meeting* getMeeting(std::string id);
+    Meeting* getMeeting(const std::string& id);
+
     void addParticipation(Participation* participation);
-    Participation* getParticipation(std::string id);
+    Participation* getParticipation(const std::string& id);
+
     void processMeetings();
     ~App();
 private:

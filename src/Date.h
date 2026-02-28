@@ -8,10 +8,13 @@
 
 class Date {
 public:
+    Date();
     Date(int year, int month, int day);
     ~Date();
 private:
-    int year, month, day;
+    int year;
+    int month;
+    int day;
 };
 
 
