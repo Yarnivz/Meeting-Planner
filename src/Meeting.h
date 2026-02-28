@@ -9,11 +9,14 @@
 
 class Meeting {
 public:
-    Meeting(std::string label, std::string id, std::string room, Date date);
+    Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date);
+    const std::string& getId();
     void process();
     ~Meeting();
 private:
-    std::string label, id, room;
+    std::string label;
+    std::string id;
+    std::string room;
     Date date;
 };
 
