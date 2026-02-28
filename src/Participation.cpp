@@ -4,7 +4,7 @@
 
 #include "Participation.h"
 
-Participation::Participation(const std::string &user, const std::string &meeting) {
+Participation::Participation(const std::string &user, const std::string &meeting) : user(user), meeting(meeting) {
 
 }
 
