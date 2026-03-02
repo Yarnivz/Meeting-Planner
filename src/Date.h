@@ -4,17 +4,22 @@
 
 #ifndef MEETING_PLANNER_DATE_H
 #define MEETING_PLANNER_DATE_H
-
+#include <iostream>
+#include <chrono>
 
 class Date {
 public:
     Date();
     Date(int year, int month, int day);
+    int getYear();
+    int getMonth();
+    int getDay();
+    std::string toString() const;
     ~Date();
 private:
-    int year;
-    int month;
-    int day;
+    std::chrono::year year{};
+    std::chrono::month month{};
+    std::chrono::day day{};
 };
 
 
