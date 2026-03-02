@@ -11,6 +11,7 @@ class Meeting {
 public:
     Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date);
     const std::string& getId();
+    const std::string& toString();
     void process();
     ~Meeting();
 private:

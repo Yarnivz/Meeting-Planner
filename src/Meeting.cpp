@@ -4,13 +4,14 @@
 
 #include "Meeting.h"
 
-Meeting::Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date) {
+Meeting::Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date = Date()):
+label(label), id(id), room(room), date(date) {
 }
 
 const std::string& Meeting::getId() { return id; }
 
-void Meeting::process() {
-}
+const std::string & Meeting::toString() { return label; }
 
-Meeting::~Meeting() {
-}
+void Meeting::process() {}
+
+Meeting::~Meeting() = default;

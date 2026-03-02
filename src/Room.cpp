@@ -3,9 +3,15 @@
 //
 
 #include "Room.h"
+#include "../DesignByContract.h"
 
-Room::Room(const std::string &name, const std::string &id, unsigned int capacity): name(name), id(id), capacity(capacity) {}
+Room::Room(const std::string &name, const std::string &id, unsigned capacity):
+name(name), id(id), capacity(capacity) {
+    REQUIRE(capacity > 0, "Capacity must be strict greater than 0");
+}
 
 const std::string& Room::getId() { return id; }
 
-Room::~Room() {}
+const std::string & Room::toString() { return name; }
+
+Room::~Room() = default;

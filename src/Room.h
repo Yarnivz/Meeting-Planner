@@ -9,13 +9,14 @@
 
 class Room {
 public:
-    Room(const std::string &name, const std::string &id, unsigned int capacity);
+    Room(const std::string &name, const std::string &id, unsigned capacity);
     const std::string& getId();
+    const std::string& toString();
     ~Room();
 private:
     std::string name;
     std::string id;
-    unsigned int capacity;
+    unsigned capacity;
 };
 
 
