@@ -12,6 +12,11 @@ name(name), id(id), capacity(capacity) {
 
 const std::string& Room::getId() { return id; }
 
-const std::string & Room::toString() { return name; }
+const std::string& Room::toString() { return name; }
+
+std::ostream & operator<<(std::ostream& os, Room &room) {
+    os << room.toString();
+    return os;
+}
 
 Room::~Room() = default;

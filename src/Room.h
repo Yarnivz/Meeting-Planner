@@ -12,6 +12,7 @@ public:
     Room(const std::string &name, const std::string &id, unsigned capacity);
     const std::string& getId();
     const std::string& toString();
+    friend std::ostream& operator <<(std::ostream& os, Room& room);
     ~Room();
 private:
     std::string name;

@@ -4,14 +4,21 @@
 
 #include "Meeting.h"
 
-Meeting::Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date = Date()):
+Meeting::Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date):
 label(label), id(id), room(room), date(date) {
 }
 
 const std::string& Meeting::getId() { return id; }
 
-const std::string & Meeting::toString() { return label; }
+const std::string& Meeting::toString() { return label; }
+
+std::ostream & operator<<(std::ostream &os, Meeting &meeting) {
+    os << meeting.toString();
+    return os;
+}
 
 void Meeting::process() {}
 
 Meeting::~Meeting() = default;
+
+
