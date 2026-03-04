@@ -3,7 +3,7 @@
 //
 
 #include "Room.h"
-#include "../DesignByContract.h"
+#include "DesignByContract.h"
 
 Room::Room(const std::string &name, const std::string &id, unsigned capacity):
 name(name), id(id), capacity(capacity) {
