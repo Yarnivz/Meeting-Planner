@@ -14,7 +14,33 @@ include_directories(./gtest/include ./xml_parser/include)
 # Set Library dir
 link_directories(gtest/lib)
 
+# Add xml parser to the project
 set(XML_PARSER_SOURCE ./xml_parser/tinyxmlparser.cpp ./xml_parser/tinyxmlerror.cpp ./xml_parser/tinyxml.cpp ./xml_parser/tinystr.cpp)
+
+#Add doxygen to project
+#For windows: it checks the bin folder for the doxygen executable and uses that
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/bin/doxygen.exe")
+    set(DOXYGEN_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/bin/doxygen.exe")
+endif()
+
+#For linux: it checks whether the system has the doxygen package installed
+find_package(Doxygen REQUIRED)
+
+if (DOXYGEN_FOUND)
+    # set doxygen configuration
+    set(DOXYGEN_PROJECT_NAME "Meeting-Planner")
+    set(DOXYGEN_PROJECT_BRIEF "Auto-generated documentation")
+    set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/docs")
+    # add doxygen docs every time the project is build
+    doxygen_add_docs(
+            generate_docs
+            ${CMAKE_CURRENT_SOURCE_DIR}/src  # Folder containing the code to document
+            COMMENT "Auto-generating Doxygen documentation..."
+    )
+else ()
+    # if doxygen is not found we give the user a warning
+    message(WARNING "Doxygen not found. Documentation will not be generated.")
+endif ()
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
