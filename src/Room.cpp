@@ -3,11 +3,16 @@
 //
 
 #include "Room.h"
+
+#include <stdexcept>
+
 #include "DesignByContract.h"
 
 Room::Room(const std::string &name, const std::string &id, unsigned capacity):
 name(name), id(id), capacity(capacity) {
-    REQUIRE(capacity > 0, "Capacity must be strict greater than 0");
+    if (capacity > 0) {
+        throw std::invalid_argument("Capacity must be strict greater than 0");
+    }
 }
 
 const std::string& Room::getId() { return id; }
