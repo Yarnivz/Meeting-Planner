@@ -49,15 +49,12 @@ void App::parseFile(const std::string& filename)
                                 } catch (const std::exception& e)
                                 {
                                     std::cerr << e.what() << " (could not convert room capacity from string to int defaulting to 303)" << std::endl;
-                                    capacity = 303;
                                 }
                             }
                         }
                     }
                     try
                     {
-                        //capacity = 1;
-                        //why does it tell me capacity is 0 EVEN WHEN I LITERALLY PUT IT TO 1 HERE
                         rooms[identifier] = new Room(name, identifier, capacity);
                     } catch (std::exception& e)
                     {
@@ -87,7 +84,6 @@ void App::parseFile(const std::string& filename)
                                 dateString = std::string(currentElement->FirstChild()->Value());
                             }
                         }
-
                     }
                     try
                     {

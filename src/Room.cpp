@@ -10,7 +10,7 @@
 
 Room::Room(const std::string &name, const std::string &id, unsigned capacity):
 name(name), id(id), capacity(capacity) {
-    if (capacity > 0) {
+    if (capacity <= 0) {
         throw std::invalid_argument("Capacity must be strict greater than 0");
     }
 }
