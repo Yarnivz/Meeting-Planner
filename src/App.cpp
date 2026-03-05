@@ -8,15 +8,22 @@
 App::App() : rooms(), meetings(), participation_lists() {
     init_check_this_ptr = this;
 }
+#include "DesignByContract.h"
 
 bool App::isProperlyInitialized() const {
     return init_check_this_ptr == this;
 }
 
-
+/**
+ * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
+ * @param filename
+ */
 void App::parseFile(const std::string& filename)
 {
     TiXmlDocument doc;
+    REQUIRE(!filename.empty(), "The provided file cannot be empty");
+    REQUIRE(!doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
+
     if(!doc.LoadFile(filename.c_str())) {
         std::cerr << doc.ErrorDesc() << std::endl;
     }
@@ -138,7 +145,13 @@ void App::parseFile(const std::string& filename)
                         std::cerr << e.what() << " (could not assign a value to a specific participation/add it to the map of participations)" << std::endl;
                     }
                 }
+
             }
+
+            ENSURE(!rooms.empty(), "Rooms cannot be empty.");
+            ENSURE(!meetings.empty(), "Meeting cannot be empty.");
+            ENSURE(!participation_lists.empty(), "Participations cannot be empty.");
+
         } catch (std::exception& e)
         {
             std::cerr << e.what() << " (something unaccounted for went wrong while parsing the xml file)" << std::endl;
@@ -150,13 +163,7 @@ void App::writeToStream(std::ostream stream) {
 }
 
 
-void App::processMeetings()
-{
-    std::cout << "test" << std::endl;
-    for (auto it = meetings.begin(); it != meetings.end(); ++it)
-    {
-        std::cout << it->second->getId() << std::endl;
-    }
+void App::processMeetings() {
 }
 
 
@@ -167,7 +174,7 @@ void App::addRoom(Room *room) {
 }
 
 Room* App::getRoom(const std::string& id) {
-    const std::unordered_map<std::string, Room*>::iterator it = rooms.find(id);
+    auto it = rooms.find(id);
 
     if (it == rooms.end()) return nullptr;
 
