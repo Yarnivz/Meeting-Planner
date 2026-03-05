@@ -7,6 +7,11 @@
 
 App::App() : rooms(), meetings(), participations(){}
 
+
+/**
+ * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
+ * @param filename
+ */
 void App::parseFile(const std::string& filename)
 {
     TiXmlDocument doc;
@@ -45,7 +50,6 @@ void App::parseFile(const std::string& filename)
                                 try
                                 {
                                     capacity = std::stoi(tempElementValue);
-                                    std::cerr << "with " << std::stoi(tempElementValue) << " " << std::endl;
                                 } catch (const std::exception& e)
                                 {
                                     std::cerr << e.what() << " (could not convert room capacity from string to int defaulting to 303)" << std::endl;
