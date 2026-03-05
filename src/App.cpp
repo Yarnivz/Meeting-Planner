@@ -8,10 +8,6 @@
 App::App() : rooms(), meetings(), participations(){}
 
 
-/**
- * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
- * @param filename
- */
 void App::parseFile(const std::string& filename)
 {
     TiXmlDocument doc;
@@ -33,23 +29,22 @@ void App::parseFile(const std::string& filename)
                 {
                     std::string name, identifier;
                     unsigned int capacity = 0;
-
                     for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
                     {
                         if (currentElement->FirstChild() != NULL)
                         {
-                            std::string tempElementValue = currentElement->FirstChild()->Value();
+                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
                             if (std::string(currentElement->Value()) == "NAME")
                             {
-                                name = tempElementValue;
+                                name = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "IDENTIFIER")
                             {
-                                identifier = tempElementValue;
+                                identifier = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "CAPACITY")
                             {
                                 try
                                 {
-                                    capacity = std::stoi(tempElementValue);
+                                    capacity = std::stoi(tempElementChildValue);
                                 } catch (const std::exception& e)
                                 {
                                     std::cerr << e.what() << " (could not convert room capacity from string to int defaulting to 303)" << std::endl;
@@ -73,13 +68,13 @@ void App::parseFile(const std::string& filename)
                     {
                         if (currentElement->FirstChild() != NULL)
                         {
-                            std::string tempElementValue = currentElement->FirstChild()->Value();
+                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
                             if (std::string(currentElement->Value()) == "LABEL")
                             {
-                                label = tempElementValue;
+                                label = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "IDENTIFIER")
                             {
-                                identifier = tempElementValue;
+                                identifier = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "ROOM")
                             {
                                 room = std::string(currentElement->FirstChild()->Value());
@@ -118,13 +113,13 @@ void App::parseFile(const std::string& filename)
                     {
                         if (currentElement->FirstChild() != NULL)
                         {
-                            std::string tempElementValue = currentElement->FirstChild()->Value();
+                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
                             if (std::string(currentElement->Value()) == "MEETING")
                             {
-                                meeting = tempElementValue;
+                                meeting = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "USER")
                             {
-                                user = tempElementValue;
+                                user = tempElementChildValue;
                             }
                         }
                     }

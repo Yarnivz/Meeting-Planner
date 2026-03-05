@@ -14,6 +14,10 @@
 class App {
 public:
     App();
+    /**
+    * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
+    * @param filename
+    */
     void parseFile(const std::string& filename);
     void writeToStream(std::ostream stream);
 
