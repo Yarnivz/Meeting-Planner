@@ -37,4 +37,9 @@ std::string Date::toString() const {
     return std::format("{:%Y-%m-%d}", date);
 }
 
+std::ostream & operator<<(std::ostream &os, Date &date) {
+    os << date.toString();
+    return os;
+}
+
 Date::~Date() = default;

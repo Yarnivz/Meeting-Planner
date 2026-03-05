@@ -15,6 +15,7 @@ public:
     int getMonth();
     int getDay();
     std::string toString() const;
+    friend std::ostream& operator<<(std::ostream &os, Date& date);
     ~Date();
 private:
     std::chrono::year year{};
