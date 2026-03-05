@@ -131,7 +131,8 @@ void App::parseFile(const std::string& filename)
                     }
                     try
                     {
-                        participations[user] = new Participation(user, meeting);
+                        Participation* participation = new Participation(user, meeting);
+                        participation_lists[meeting].push_back(participation);
                     } catch (std::exception& e)
                     {
                         std::cerr << e.what() << " (could not assign a value to a specific participation/add it to the map of participations)" << std::endl;

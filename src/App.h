@@ -22,7 +22,6 @@ public:
 
     bool isProperlyInitialized() const;
 
-    void parseFile(std::string filename);
     /**
     * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
     * @param filename
