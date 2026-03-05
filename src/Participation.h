@@ -9,12 +9,16 @@
 class Participation {
 public:
     Participation(const std::string &user, const std::string &meeting);
+    bool isProperlyInitialized() const;
+
     std::string getUser();
     std::string getMeetingId();
     ~Participation();
 private:
     std::string user;
     std::string meeting;
+
+    void* init_check_this_ptr = nullptr;
 };
 
 
