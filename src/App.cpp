@@ -56,6 +56,8 @@ void App::parseFile(const std::string& filename)
                     }
                     try
                     {
+                        //capacity = 1;
+                        //why does it tell me capacity is 0 EVEN WHEN I LITERALLY PUT IT TO 1 HERE
                         rooms[identifier] = new Room(name, identifier, capacity);
                     } catch (std::exception& e)
                     {
