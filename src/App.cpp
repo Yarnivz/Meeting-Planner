@@ -5,6 +5,8 @@
 #include "App.h"
 #include <tinyxml.h>
 
+#include "DesignByContract.h"
+
 App::App() : rooms(), meetings(), participations(){}
 
 
@@ -15,6 +17,9 @@ App::App() : rooms(), meetings(), participations(){}
 void App::parseFile(const std::string& filename)
 {
     TiXmlDocument doc;
+    REQUIRE(!filename.empty(), "The provided file cannot be empty");
+    REQUIRE(!doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
+
     if(!doc.LoadFile(filename.c_str())) {
         std::cerr << doc.ErrorDesc() << std::endl;
     }
@@ -136,7 +141,13 @@ void App::parseFile(const std::string& filename)
                         std::cerr << e.what() << " (could not assign a value to a specific participation/add it to the map of participations)" << std::endl;
                     }
                 }
+
             }
+
+            ENSURE(!rooms.empty(), "Rooms cannot be empty.");
+            ENSURE(!meetings.empty(), "Meeting cannot be empty.");
+            ENSURE(!participations.empty(), "Participations cannot be empty.");
+
         } catch (std::exception& e)
         {
             std::cerr << e.what() << " (something unaccounted for went wrong while parsing the xml file)" << std::endl;
