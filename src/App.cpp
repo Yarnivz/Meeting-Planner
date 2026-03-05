@@ -77,10 +77,10 @@ const std::list<Participation *> *App::getParticipationList(const std::string &u
 
 
 App::~App() {
-    for (auto& r : rooms) delete r.second;
-    for (auto& m : meetings) delete m.second;
-    for (const auto& pl : participation_lists) {
-        for (const auto& p : pl.second ) {
+    for (std::pair<const std::string, Room*>& r : rooms) delete r.second;
+    for (std::pair<const std::string, Meeting*>& m : meetings) delete m.second;
+    for (const std::pair<const std::string, std::list<Participation*>>& pl : participation_lists) {
+        for (const Participation* p : pl.second ) {
             delete p;
         }
     }
