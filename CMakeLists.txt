@@ -42,32 +42,24 @@ else ()
     message(WARNING "Doxygen not found. Documentation will not be generated.")
 endif ()
 
+set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp)
+
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
 # Only add files with functionality here, no test files!
 # Make sure the "main" function is in "main_release"!
-set(RELEASE_SOURCE_FILES ./src/main.cpp
-        src/Room.cpp
-        src/Room.h
-        src/Meeting.cpp
-        src/Meeting.h
-        src/Participation.cpp
-        src/Participation.h
-        src/Date.cpp
-        src/Date.h
-        src/App.cpp
-        src/App.h)
+set(RELEASE_SOURCE_FILES ./src/main.cpp)
 
 # Set source files for DEBUG target
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
-set(DEBUG_SOURCE_FILES ./src/tests.cpp)
+set(DEBUG_SOURCE_FILES src/tests.cpp)
 
 # Create RELEASE target
-add_executable(release_target ${RELEASE_SOURCE_FILES} ${XML_PARSER_SOURCE})
+add_executable(release_target ${RELEASE_SOURCE_FILES} ${COMMON_SOURCE_FILES} ${XML_PARSER_SOURCE})
 
 # Create DEBUG target
-add_executable(debug_target ${DEBUG_SOURCE_FILES} ${XML_PARSER_SOURCE})
+add_executable(debug_target ${DEBUG_SOURCE_FILES} ${COMMON_SOURCE_FILES} ${XML_PARSER_SOURCE})
 
 # Link library
 target_link_libraries(debug_target gtest)
