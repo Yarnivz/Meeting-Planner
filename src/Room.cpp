@@ -10,6 +10,10 @@
 
 Room::Room(const std::string &name, const std::string &id, unsigned capacity):
 name(name), id(id), capacity(capacity) {
+
+    REQUIRE(!name.empty(), "name must not be empty");
+    REQUIRE(!id.empty(), "id must not be empty");
+    REQUIRE(capacity > 0, "capacity must be greater than 0");
     if (capacity == 0) {
         throw std::invalid_argument("Capacity must be strict greater than 0");
     }
@@ -22,12 +26,23 @@ bool Room::isProperlyInitialized() const {
 }
 
 
-const std::string& Room::getId() { return id; }
+const std::string& Room::getId()
+{
+    REQUIRE(!id.empty(), "id must not be empty");
+    return id;
 
-const std::string& Room::toString() { return name; }
+}
+
+const std::string& Room::toString()
+{
+    REQUIRE(!name.empty(), "name must not be empty");
+    return name;
+}
 
 std::ostream & operator<<(std::ostream& os, Room &room) {
+    REQUIRE(room.isProperlyInitialized(), "room must be initialized");
     os << room.toString();
+    ENSURE(os, "ostream variable is not usable");
     return os;
 }
 
