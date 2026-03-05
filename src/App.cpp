@@ -4,7 +4,7 @@
 
 #include "App.h"
 
-App::App() : rooms(), meetings(), participations(){}
+App::App() : rooms(), meetings(), participation_lists(){}
 
 void App::parseFile(std::string filename) {
 }
@@ -24,7 +24,7 @@ void App::addRoom(Room *room) {
 }
 
 Room* App::getRoom(const std::string& id) {
-    auto it = rooms.find(id);
+    const std::unordered_map<std::string, Room*>::iterator it = rooms.find(id);
 
     if (it == rooms.end()) return nullptr;
 
@@ -38,7 +38,7 @@ void App::addMeeting(Meeting *meeting) {
 }
 
 Meeting* App::getMeeting(const std::string& id) {
-    auto it = meetings.find(id);
+    const std::unordered_map<std::string, Meeting*>::iterator it = meetings.find(id);
 
     if (it == meetings.end()) return nullptr;
 
@@ -48,15 +48,24 @@ Meeting* App::getMeeting(const std::string& id) {
 void App::addParticipation(Participation *participation) {
     if (!participation) return;
 
-    //! participations.insert({std::string(), participation});
+    const std::string u = participation->getUser();
+
+    const std::unordered_map<std::string, std::list<Participation*>>::iterator it = participation_lists.find(u);
+
+    if (it == participation_lists.end()) {
+        participation_lists.insert({participation->getUser(), {participation}});
+        return;
+    }
+
+    it->second.push_back(participation);
 }
 
-Participation* App::getParticipation(const std::string& id) {
-    auto it = participations.find(id);
+const std::list<Participation *> *App::getParticipationList(const std::string &username) {
+    const std::unordered_map<std::string, std::list<Participation*>>::iterator it = participation_lists.find(username);
 
-    if (it == participations.end()) return nullptr;
+    if (it == participation_lists.end()) return nullptr;
 
-    return it->second;
+    return &it->second;
 }
 
 
@@ -64,5 +73,9 @@ Participation* App::getParticipation(const std::string& id) {
 App::~App() {
     for (auto& r : rooms) delete r.second;
     for (auto& m : meetings) delete m.second;
-    for (auto& p : participations) delete p.second;
+    for (const auto& pl : participation_lists) {
+        for (const auto& p : pl.second ) {
+            delete p;
+        }
+    }
 }

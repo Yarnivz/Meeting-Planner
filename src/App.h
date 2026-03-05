@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <list>
+
 #include "Room.h"
 #include "Meeting.h"
 #include "Participation.h"
@@ -24,14 +26,15 @@ public:
     Meeting* getMeeting(const std::string& id);
 
     void addParticipation(Participation* participation);
-    Participation* getParticipation(const std::string& id);
+
+    const std::list<Participation *> *getParticipationList(const std::string &id);
 
     void processMeetings();
     ~App();
 private:
     std::unordered_map<std::string, Room*> rooms;
     std::unordered_map<std::string, Meeting*> meetings;
-    std::unordered_map<std::string, Participation*> participations;
+    std::unordered_map<std::string, std::list<Participation*>> participation_lists;
 };
 
 
