@@ -1,3 +1,4 @@
+/*
 //============================================================================
 // Name        : DesignByContract.h
 // Author      : Serge Demeyer, modified by Kasper Engelen
@@ -13,6 +14,7 @@
 
 // #define ENSURE(assertion, what) \
 // 	if (!(assertion)) __assert (what, __FILE__, __LINE__)
+*/
 
 
 #include <stdio.h>

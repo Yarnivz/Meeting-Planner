@@ -9,8 +9,10 @@
 
 class Meeting {
 public:
-    Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date);
+    Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date = Date());
     const std::string& getId();
+    const std::string& toString();
+    friend std::ostream& operator<<(std::ostream &os, Meeting& meeting);
     void process();
     ~Meeting();
 private:

@@ -14,7 +14,7 @@
 class App {
 public:
     App();
-    void parseFile(std::string filename);
+    void parseFile(const std::string& filename);
     void writeToStream(std::ostream stream);
 
     void addRoom(Room* room);
