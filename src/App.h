@@ -20,6 +20,8 @@ public:
      */
     App();
 
+    bool isProperlyInitialized() const;
+
     void parseFile(std::string filename);
     void writeToStream(std::ostream stream);
 
@@ -80,11 +82,14 @@ public:
 
     void processMeetings();
     ~App();
+
+
 private:
     std::unordered_map<std::string, Room*> rooms;
     std::unordered_map<std::string, Meeting*> meetings;
     std::unordered_map<std::string, std::list<Participation*>> participation_lists;
 
+    void* init_check_this_ptr = nullptr;
 };
 
 

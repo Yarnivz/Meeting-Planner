@@ -13,7 +13,14 @@ name(name), id(id), capacity(capacity) {
     if (capacity == 0) {
         throw std::invalid_argument("Capacity must be strict greater than 0");
     }
+
+    init_check_this_ptr = this;
 }
+
+bool Room::isProperlyInitialized() const {
+    return init_check_this_ptr == this;
+}
+
 
 const std::string& Room::getId() { return id; }
 

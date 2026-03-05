@@ -16,6 +16,8 @@ public:
      */
     Date();
 
+    bool isProperlyInitialized() const;
+
     /**
      * Creates the date class.
      * The date class has a year, month and day attribute.
@@ -67,6 +69,8 @@ private:
     std::chrono::year year{};
     std::chrono::month month{};
     std::chrono::day day{};
+
+    void* init_test_this_ptr;
 };
 
 

@@ -14,6 +14,8 @@ Date::Date() {
     year = current_date.year();
     month = current_date.month();
     day = current_date.day();
+
+    init_test_this_ptr = this;
 }
 
 Date::Date(int year, int month, int day) {
@@ -25,7 +27,14 @@ Date::Date(int year, int month, int day) {
     } else {
         throw std::invalid_argument("Invalid date provided. Please check if this date really exists!");
     }
+
+    init_test_this_ptr = this;
 }
+
+bool Date::isProperlyInitialized() const {
+    return init_test_this_ptr == this;
+}
+
 
 int Date::getYear() { return static_cast<int>(year); }
 

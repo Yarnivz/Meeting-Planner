@@ -4,7 +4,13 @@
 
 #include "App.h"
 
-App::App() : rooms(), meetings(), participation_lists(){}
+App::App() : rooms(), meetings(), participation_lists() {
+    init_check_this_ptr = this;
+}
+
+bool App::isProperlyInitialized() const {
+    return init_check_this_ptr == this;
+}
 
 void App::parseFile(std::string filename) {
 }
@@ -79,3 +85,5 @@ App::~App() {
         }
     }
 }
+
+
