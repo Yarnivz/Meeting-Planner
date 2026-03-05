@@ -7,12 +7,15 @@
 #include <chrono>
 #include <stdexcept>
 
+
 Date::Date() {
     const std::chrono::time_point now = std::chrono::system_clock::now();
     const std::chrono::year_month_day current_date = std::chrono::floor<std::chrono::days>(now);
     year = current_date.year();
     month = current_date.month();
     day = current_date.day();
+
+    init_test_this_ptr = this;
 }
 
 Date::Date(int year, int month, int day) {
@@ -24,7 +27,14 @@ Date::Date(int year, int month, int day) {
     } else {
         throw std::invalid_argument("Invalid date provided. Please check if this date really exists!");
     }
+
+    init_test_this_ptr = this;
 }
+
+bool Date::isProperlyInitialized() const {
+    return init_test_this_ptr == this;
+}
+
 
 int Date::getYear() { return static_cast<int>(year); }
 
@@ -35,6 +45,11 @@ int Date::getDay() { return static_cast<unsigned>(day); }
 std::string Date::toString() const {
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
     return std::format("{:%Y-%m-%d}", date);
+}
+
+std::ostream & operator<<(std::ostream &os, Date &date) {
+    os << date.toString();
+    return os;
 }
 
 Date::~Date() = default;

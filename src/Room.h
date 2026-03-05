@@ -10,6 +10,8 @@
 class Room {
 public:
     Room(const std::string &name, const std::string &id, unsigned capacity);
+    bool isProperlyInitialized() const;
+
     const std::string& getId();
     const std::string& toString();
     friend std::ostream& operator <<(std::ostream& os, Room& room);
@@ -18,6 +20,8 @@ private:
     std::string name;
     std::string id;
     unsigned capacity;
+
+    void* init_check_this_ptr;
 };
 
 
