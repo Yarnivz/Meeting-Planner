@@ -29,6 +29,7 @@ Date::Date(int year, int month, int day) {
 
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
 
+    REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!");
     if (date.ok()) {
         this->year = std::chrono::year(year);
         this->month = std::chrono::month(month);
