@@ -4,9 +4,14 @@
 
 #include "Participation.h"
 
+#include "DesignByContract.h"
+
 Participation::Participation(const std::string &user, const std::string &meeting)
 : user(user), meeting(meeting)
 {
+    REQUIRE(!user.empty(), "'user' cannot be empty.");
+    REQUIRE(!meeting.empty(), "'meeting' cannot be empty.");
+
     init_check_this_ptr = this;
 }
 
@@ -15,8 +20,14 @@ bool Participation::isProperlyInitialized() const {
 }
 
 
-std::string Participation::getUser() { return user; }
+std::string Participation::getUser() {
+    REQUIRE(isProperlyInitialized(), "User must be properly initialized.");
+    return user;
+}
 
-std::string Participation::getMeetingId() { return meeting; }
+std::string Participation::getMeetingId() {
+    REQUIRE(isProperlyInitialized(), "User must be properly initialized.");
+    return meeting;
+}
 
 Participation::~Participation() = default;

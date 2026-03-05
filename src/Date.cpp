@@ -7,6 +7,8 @@
 #include <chrono>
 #include <stdexcept>
 
+#include "DesignByContract.h"
+
 
 Date::Date() {
     const std::chrono::time_point now = std::chrono::system_clock::now();
@@ -16,10 +18,18 @@ Date::Date() {
     day = current_date.day();
 
     init_test_this_ptr = this;
+
+    ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
 }
 
 Date::Date(int year, int month, int day) {
+    REQUIRE(year > 0, "Year can not be negative!");
+    REQUIRE(month > 0, "Month can not be negative!");
+    REQUIRE(day > 0, "Day can not be negative!");
+
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
+
+    REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!");
     if (date.ok()) {
         this->year = std::chrono::year(year);
         this->month = std::chrono::month(month);
@@ -29,6 +39,8 @@ Date::Date(int year, int month, int day) {
     }
 
     init_test_this_ptr = this;
+
+    ENSURE(date.ok(), "Date creation failed. Date validity check did not pass.");
 }
 
 bool Date::isProperlyInitialized() const {
@@ -36,15 +48,28 @@ bool Date::isProperlyInitialized() const {
 }
 
 
-int Date::getYear() { return static_cast<int>(year); }
+int Date::getYear() {
+    ENSURE(isProperlyInitialized(), "Failed to get Year. Date must be properly initialized with the constructor!");
 
-int Date::getMonth() { return static_cast<unsigned>(month); }
+    return static_cast<int>(year);
+}
 
-int Date::getDay() { return static_cast<unsigned>(day); }
+int Date::getMonth() {
+    ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!");
+
+    return static_cast<unsigned>(month);
+}
+
+int Date::getDay() {
+    ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!");
+    return static_cast<unsigned>(day);
+}
 
 std::string Date::toString() const {
+    ENSURE(isProperlyInitialized(), "Failed to convert date to string. Date must be properly initialized with the constructor!");
+
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
-    return std::format("{:%Y-%m-%d}", date);
+    return std::format("{:%d/%m/%Y}", date);
 }
 
 std::ostream & operator<<(std::ostream &os, Date &date) {
