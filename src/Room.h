@@ -5,7 +5,7 @@
 #ifndef MEETING_PLANNER_ROOM_H
 #define MEETING_PLANNER_ROOM_H
 #include <string>
-
+#include <iostream>
 
 class Room {
 public:
