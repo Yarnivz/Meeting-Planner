@@ -28,8 +28,10 @@ void App::processMeetings() {
 
 
 void App::addRoom(Room *room) {
-    REQUIRE(room != nullptr, "The provided room cannot be a nullptr. Room needs to have a value.");
-    REQUIRE(room->isProperlyInitialized(), "There needs to be a properly initialized room object to be inserted into the App");
+    REQUIRE(room, "The provided room cannot be null.");
+    REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
+
 
     rooms.insert({room->getId(), room});          // Add room
     meetings_by_room.insert({room->getId(), {}}); // Add empty meetings map
@@ -37,10 +39,12 @@ void App::addRoom(Room *room) {
     ENSURE(getRoom(room->getId()) == room, "The room was not added to the App");
 }
 
-Room* App::getRoom(const std::string& id) {
-    const Rooms::iterator it = rooms.find(id);
+Room* App::getRoom(const std::string& roomId) {
+    const Rooms::iterator it = rooms.find(roomId);
 
     if (it == rooms.end()) return nullptr;
+
+    ENSURE(it->second->getId() == roomId, "Something went wrong. The room which was found did not have the right id.");
     return it->second;
 }
 
@@ -52,6 +56,7 @@ Room* App::getRoom(const std::string& id) {
 void App::addMeeting(Meeting *meeting) {
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    REQUIRE(!all_meetings.contains(meeting->getId()), "Meetings Id needs to be unique!");
 
     Room* rm = getRoom(meeting->getRoomId());
 
@@ -69,9 +74,13 @@ void App::addMeeting(Meeting *meeting) {
     Meetings *mt_list = _getMutMeetingsByRoom(meeting->getRoomId());
     ENSURE(mt_list, "Something went wrong, the meeting list was not found.");
 
-    mt_list->insert({meeting->getId(), meeting});
 
-    ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "The meeting was not added to the App");
+    all_meetings.insert({meeting->getId(), meeting}); // Insert into flat map by meetingId
+    mt_list->insert({meeting->getId(), meeting});     // Also into nested map by roomId => meetingId
+
+
+    ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "Something went wrong, The meeting was not added to the App");
+    ENSURE(getMeeting(meeting->getId()) == meeting, "Something went wrong, the meeting was not added to the App");
 }
 
 
@@ -83,21 +92,21 @@ Meeting * App::getMeetingInRoom(const std::string &meetingId, const std::string 
     const Meetings::iterator ms_it = ms->find(meetingId);
 
     if (ms_it == ms->end()) return nullptr;
+
+    ENSURE(ms_it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return ms_it->second;
 }
 
 
 Meeting* App::getMeeting(const std::string& meetingId) {
 
-    for (MeetingsByRoomMap::iterator it = meetings_by_room.begin(); it != meetings_by_room.end(); ++it) {
-        Meetings::iterator ms_it = it->second.find(meetingId);
+    const Meetings::iterator it = all_meetings.find(meetingId);
 
-        if (ms_it != it->second.end()) return ms_it->second;
-    }
+    if (it == all_meetings.end()) return nullptr;
 
-    return nullptr;
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
+    return it->second;
 }
-
 
 
 
@@ -114,14 +123,16 @@ void App::addParticipation(Participation *participation) {
     const Meeting* mt = getMeeting(participation->getMeetingId());
     REQUIRE(mt, "The requested meeting does not exist.");
 
-
-    const Room* mt_room = getRoom(mt->getRoomId());
-    ENSURE(mt_room, "Something went wrong. Found meeting in App but it did not have an assigned room.");
-
-
-    //REQUIRE(!isRoomOccupied(mt_room->getId(), mt->getDate()), "This rooms is already occupied.");
     REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "This user already participates in another meeting.");
 
+
+    const Room* rm = getRoom(mt->getRoomId());
+
+
+
+    all_participations.push_back(participation); //Add it to a flat list of all participations
+
+    //Also insert into map by userId
     Participations* prts =  _getMutParticipationsByUser(participation->getUser());
     if (prts) {
         prts->push_back(participation);
@@ -129,7 +140,9 @@ void App::addParticipation(Participation *participation) {
         participations_by_user.insert({participation->getUser(), {participation}});
     }
 
-    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "The participation was not added to the App");
+
+    ENSURE(all_participations.back() == participation, "Something went wrong. The participation was not added to the App.");
+    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "Something went wrong. The participation was not added to the App.");
 }
 
 
@@ -144,7 +157,20 @@ const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
 
 const Participations* App::getParticipationsByUser(const std::string &userId) {
     return _getMutParticipationsByUser(userId);
+}
 
+
+
+const Meetings & App::getAllMeetings() const {
+    return all_meetings;
+}
+
+const Participations & App::getAllParticipations() const {
+    return all_participations;
+}
+
+const Rooms & App::getAllRooms() const {
+    return rooms;
 }
 
 
@@ -191,13 +217,14 @@ bool App::isUserOccupied(const std::string &userId, const Date &date) {
 
 App::~App() {
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
-    for (const std::pair<const std::string, Meetings>& ls : meetings_by_room) {
-        for (const std::pair<const std::string, Meeting*>& m : ls.second) delete m.second;
-    }
-    for (const std::pair<const std::string, Participations>& ls : participations_by_user) {
-        for (const Participation* p : ls.second) delete p;
-    }
+    for (const std::pair<const std::string, Meeting*>& m : all_meetings) delete m.second;
+    for (Participation* p : all_participations) delete p;
 }
+
+
+
+
+
 
 Meetings * App::_getMutMeetingsByRoom(const std::string &roomId) {
     const MeetingsByRoomMap::iterator it = meetings_by_room.find(roomId);

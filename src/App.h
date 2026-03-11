@@ -45,10 +45,10 @@ public:
     /**
      * @brief Retrieve a registered room based on its id.
      *
-     * @param id id of the room to retrieve
+     * @param roomId id of the room to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
      */
-    Room* getRoom(const std::string& id);
+    Room* getRoom(const std::string& roomId);
 
     /**
      * @brief Register and plan a meeting.
@@ -91,7 +91,12 @@ public:
      */
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
     const Meetings *getMeetingsByRoom(const std::string &roomId);
-    const Participations* getParticipationsByUser(const std::string &userId);
+    const Participations *getParticipationsByUser(const std::string &userId);
+
+    const Meetings& getAllMeetings() const;
+    const Participations &getAllParticipations() const;
+
+    const Rooms &getAllRooms() const;
 
 
     bool isRoomOccupied(const std::string& roomId, const Date& date);
@@ -107,7 +112,10 @@ private:
 
 
     Rooms rooms;
+    Meetings all_meetings;
     MeetingsByRoomMap meetings_by_room;
+
+    Participations all_participations;
     ParticipationsByUserMap participations_by_user;
 
     void* init_check_this_ptr = nullptr;
