@@ -85,14 +85,15 @@ public:
     /**
      * @brief Retrieve a list of all participations concerning the given user.
      *
-     * @param user user for which to return all participations
+     * @param userId user for which to return all participations
      * @return a const pointer to the requested list, if it exists;\n
      *         nullptr otherwise (if the user has no registered participations)
      */
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
-    const Meetings *getMeetingsByRoom(const std::string &roomId);
     const Participations* getParticipationsByUser(const std::string &userId);
 
+    const Meetings *getMeetingsByRoom(const std::string &roomId);
+    
 
     bool isRoomOccupied(const std::string& roomId, const Date& date);
     bool isUserOccupied(const std::string& userId, const Date& date);

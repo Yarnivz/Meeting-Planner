@@ -133,22 +133,14 @@ void App::addParticipation(Participation *participation) {
 }
 
 
-
-
-
-
-
-const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
-    return _getMutMeetingsByRoom(roomId);
-}
-
 const Participations* App::getParticipationsByUser(const std::string &userId) {
     return _getMutParticipationsByUser(userId);
 
 }
 
-
-
+const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
+    return _getMutMeetingsByRoom(roomId);
+}
 
 
 
