@@ -72,13 +72,41 @@ std::string Date::toString() const {
     return std::format("{:%d/%m/%Y}", date);
 }
 
-std::ostream & operator<<(std::ostream &os, Date &date) {
+std::ostream& operator<<(std::ostream &os, Date &date) {
     os << date.toString();
     return os;
 }
 
 bool Date::operator==(const Date &other) const {
     return (other.day == day && other.month == month && other.year == year);
+}
+
+bool Date::operator<(const Date &other) const {
+    if (year == other.year) {
+        if (month == other.month) {
+            return day < other.day;
+        }
+        return month < other.month;
+    }
+    return year < other.year;
+}
+
+bool Date::operator>(const Date &other) const {
+    if (year == other.year) {
+        if (month == other.month) {
+            return day > other.day;
+        }
+        return month > other.month;
+    }
+    return year > other.year;
+}
+
+bool Date::operator<=(const Date &other) const {
+    return this == &other || this < &other;
+}
+
+bool Date::operator>=(const Date &other) const {
+    return this == &other || this > &other;
 }
 
 Date::~Date() = default;

@@ -36,16 +36,16 @@ public:
      * @brief Register a room.
      *
      * Registers a new 'Room' object.
-     * The App class expects ownership of the Room* passed in.
+     * The App class expects ownership of the Room pointer passed in.
      *
-     * @param room room to register
+     * @param room to register
      */
     void addRoom(Room* room);
 
     /**
      * @brief Retrieve a registered room based on its id.
      *
-     * @param roomId id of the room to retrieve
+     * @param roomId of the room to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
      */
     Room* getRoom(const std::string& roomId);
@@ -56,7 +56,7 @@ public:
      * Register and plan a new meeting.
      * The App expects ownership of the Meeting* passed in.
      *
-     * @param meeting meeting to plan and register
+     * @param meeting to plan and register
      */
     void addMeeting(Meeting* meeting);
 
@@ -77,7 +77,7 @@ public:
      * Register a new participation.
      * The App expects ownership of the Participation* passed in.
      *
-     * @param participation participation to register
+     * @param participation to register
      */
     void addParticipation(Participation* participation);
 
@@ -85,7 +85,7 @@ public:
     /**
      * @brief Retrieve a list of all participations concerning the given user.
      *
-     * @param user user for which to return all participations
+     * @param userId user for which to return all participations
      * @return a const pointer to the requested list, if it exists;\n
      *         nullptr otherwise (if the user has no registered participations)
      */
