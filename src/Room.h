@@ -9,14 +9,50 @@
 
 class Room {
 public:
+    /**
+     * @brief Creates the Room class.
+     * This is the place where a meeting can take place.
+     * A room can only be initialized using the name, id and capacity parameters as these are required.
+     *
+     * @param name the name of this room
+     * @param id the identifier of this room
+     * @param capacity the amount of people that fit in this room
+     */
     Room(const std::string &name, const std::string &id, unsigned capacity);
+
     bool isProperlyInitialized() const;
 
+    /**
+     * @brief Id getter.
+     *
+     * @return the identifier of the room
+     */
     const std::string& getId() const;
+
+    /**
+     * @brief Converts the room class to a readable string format.
+     *
+     * @return the room in string format
+     */
     const std::string& toString() const;
+
+    /**
+     * @brief Capacity getter.
+     * @return the maximum capacity of this room
+     */
     unsigned getCapacity() const;
 
+    /**
+     * @brief Standard stream operator using the toString function to append the room to the stream.
+     * @param os stream to write on
+     * @param room to write on the stream
+     * @return the stream
+     */
     friend std::ostream& operator <<(std::ostream& os, Room& room);
+
+    /**
+    * @brief Default destructor
+    */
     ~Room();
 private:
     std::string name;
