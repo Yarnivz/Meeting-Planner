@@ -108,6 +108,7 @@ private:
 
 
     Rooms rooms;
+    Meetings meetings;
     MeetingsByRoomMap meetings_by_room;
     ParticipationsByUserMap participations_by_user;
 

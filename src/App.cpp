@@ -17,6 +17,10 @@ void App::parseFile(std::string filename) {
 }
 
 void App::writeToStream(std::ostream stream) {
+    std::list<Meeting*> past;
+    std::list<Meeting*> future;
+    std::list<Meeting*> conflicts;
+    
 }
 
 void App::processMeetings() {
@@ -70,6 +74,7 @@ void App::addMeeting(Meeting *meeting) {
     ENSURE(mt_list, "Something went wrong, the meeting list was not found.");
 
     mt_list->insert({meeting->getId(), meeting});
+    meetings.insert({meeting->getId(), meeting});
 
     ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "The meeting was not added to the App");
 }
