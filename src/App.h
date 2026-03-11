@@ -30,7 +30,7 @@ public:
     bool isProperlyInitialized() const;
 
     void parseFile(std::string filename);
-    void writeToStream(std::ostream stream);
+    void writeToStream(std::ostream& onStream);
 
     /**
      * @brief Register a room.

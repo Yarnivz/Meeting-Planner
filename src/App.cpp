@@ -16,11 +16,52 @@ bool App::isProperlyInitialized() const {
 void App::parseFile(std::string filename) {
 }
 
-void App::writeToStream(std::ostream stream) {
+void App::writeToStream(std::ostream& onStream) {
+
+    std::list<Meeting*> today;
     std::list<Meeting*> past;
     std::list<Meeting*> future;
-    std::list<Meeting*> conflicts;
-    
+    Date currentDate;
+    for (const std::pair<std::string, Meeting*> item : meetings) {
+        Meeting* meeting = item.second;
+        Date meetingDate = meeting->getDate();
+        if (meetingDate < currentDate) past.push_back(meeting);
+        else if (meetingDate > currentDate) future.push_back(meeting);
+        else today.push_back(meeting);
+    }
+
+    //Write all today's meetings
+    if (!today.empty()) onStream << std::endl << "Today's meetings:" << std::endl;
+    for (const Meeting* meeting : today) {
+        onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
+        onStream << "  " << *meeting << std::endl;
+        onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+    }
+
+    //Write all past meetings
+    if (!past.empty()) onStream << std::endl << "Past meetings:" << std::endl;
+    for (const Meeting* meeting : past) {
+        onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
+        onStream << "  " << *meeting << std::endl;
+        onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+    }
+
+    //Write all future meetings
+    if (!future.empty()) onStream << std::endl << "Future meetings:" << std::endl;
+    for (const Meeting* meeting : future) {
+        onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
+        onStream << "  " << *meeting << std::endl;
+        onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+    }
+
+    //Write all rooms
+    if (!rooms.empty()) onStream << std::endl << "Rooms:" << std::endl;
+    for (const std::pair<std::string, Room*> item : rooms) {
+        const Room* room = item.second;
+        onStream << "- " << *room << std::endl;
+        onStream << "  Capacity: " << room->getCapacity() << " people";
+    }
+
 }
 
 void App::processMeetings() {
