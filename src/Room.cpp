@@ -44,7 +44,7 @@ unsigned Room::getCapacity() const {
 }
 
 
-std::ostream & operator<<(std::ostream& os, Room &room) {
+std::ostream & operator<<(std::ostream& os, const Room &room) {
     REQUIRE(room.isProperlyInitialized(), "room must be initialized");
     os << room.toString();
     ENSURE(os, "ostream variable is not usable");

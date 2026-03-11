@@ -48,15 +48,15 @@ public:
      *
      * @return the meeting in string format
      */
-    const std::string& toString();
+    const std::string& toString() const;
 
     /**
      * @brief Standard stream operator using the toString function to append the meeting to the stream.
      * @param os stream to write on
-     * @param meeting to write on the stream
+     * @param meeting object to write on the stream
      * @return the stream
      */
-    friend std::ostream& operator<<(std::ostream &os, Meeting& meeting);
+    friend std::ostream& operator<<(std::ostream &os, const Meeting& meeting);
     void process();
     ~Meeting();
 private:

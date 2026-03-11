@@ -59,7 +59,7 @@ public:
      * @param date to write on the stream
      * @return the stream
      */
-    friend std::ostream& operator<<(std::ostream &os, Date& date);
+    friend std::ostream& operator<<(std::ostream &os, const Date& date);
 
     /**
      * @brief Compares 2 dates with each other.

@@ -37,12 +37,12 @@ const Date & Meeting::getDate() const {
 }
 
 
-const std::string& Meeting::toString() {
+const std::string& Meeting::toString() const {
     REQUIRE(isProperlyInitialized(), "Failed to convert to string. Meeting has to be properly initialized with the constructor.");
     return label;
 }
 
-std::ostream & operator<<(std::ostream &os, Meeting &meeting) {
+std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {
     os << meeting.toString();
     return os;
 }
