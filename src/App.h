@@ -103,6 +103,10 @@ public:
 
 
 private:
+
+    void writeMeeting(std::ostream& onStream, const Meeting* meeting);
+    void writeRoom(std::ostream& onStream, const Room* room);
+
     Meetings *_getMutMeetingsByRoom(const std::string &roomId);
     Participations *_getMutParticipationsByUser(const std::string &userId);
 

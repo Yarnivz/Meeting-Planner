@@ -33,33 +33,27 @@ void App::writeToStream(std::ostream& onStream) {
     //Write all today's meetings
     if (!today.empty()) onStream << std::endl << "Today's meetings:" << std::endl;
     for (const Meeting* meeting : today) {
-        onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
-        onStream << "  " << *meeting << std::endl;
-        onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+        writeMeeting(onStream, meeting);
     }
 
     //Write all past meetings
     if (!past.empty()) onStream << std::endl << "Past meetings:" << std::endl;
     for (const Meeting* meeting : past) {
-        onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
-        onStream << "  " << *meeting << std::endl;
-        onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+        writeMeeting(onStream, meeting);
     }
 
     //Write all future meetings
     if (!future.empty()) onStream << std::endl << "Future meetings:" << std::endl;
     for (const Meeting* meeting : future) {
-        onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
-        onStream << "  " << *meeting << std::endl;
-        onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+        writeMeeting(onStream, meeting);
+
     }
 
     //Write all rooms
     if (!rooms.empty()) onStream << std::endl << "Rooms:" << std::endl;
     for (const std::pair<std::string, Room*> item : rooms) {
         const Room* room = item.second;
-        onStream << "- " << *room << std::endl;
-        onStream << "  Capacity: " << room->getCapacity() << " people";
+        writeRoom(onStream, room);
     }
 
 }
@@ -235,6 +229,17 @@ App::~App() {
     for (const std::pair<const std::string, Participations>& ls : participations_by_user) {
         for (const Participation* p : ls.second) delete p;
     }
+}
+
+void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
+    onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
+    onStream << "  " << *meeting << std::endl;
+    onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+}
+
+void App::writeRoom(std::ostream &onStream, const Room *room) {
+    onStream << "- " << *room << std::endl;
+    onStream << "  Capacity: " << room->getCapacity() << " people";
 }
 
 Meetings * App::_getMutMeetingsByRoom(const std::string &roomId) {
