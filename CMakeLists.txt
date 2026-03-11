@@ -42,6 +42,26 @@ else ()
     message(WARNING "Doxygen not found. Documentation will not be generated.")
 endif ()
 
+#Auto open browser with index.html to immediately see the documentation
+if(TARGET generate_docs)
+    # Determine the correct command to open a web page based on the Operating System
+    if(CMAKE_HOST_WIN32)
+        # Windows command
+        set(OPEN_BROWSER_CMD powershell -NoProfile -Command "Start-Process '${CMAKE_CURRENT_SOURCE_DIR}/docs/html/index.html'")
+    else()
+        # Linux command
+        set(OPEN_BROWSER_CMD xdg-open "${CMAKE_CURRENT_SOURCE_DIR}/docs/html/index.html")
+    endif()
+
+    # Tell CMake to run this command strictly AFTER generate_docs finishes building
+    add_custom_command(
+            TARGET generate_docs
+            POST_BUILD
+            COMMAND ${OPEN_BROWSER_CMD}
+            COMMENT "Opening documentation in the default web browser..."
+    )
+endif()
+
 set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp)
 
 # Set source files for RELEASE target
