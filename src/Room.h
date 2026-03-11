@@ -12,8 +12,10 @@ public:
     Room(const std::string &name, const std::string &id, unsigned capacity);
     bool isProperlyInitialized() const;
 
-    const std::string& getId();
-    const std::string& toString();
+    const std::string& getId() const;
+    const std::string& toString() const;
+    unsigned getCapacity() const;
+
     friend std::ostream& operator <<(std::ostream& os, Room& room);
     ~Room();
 private:

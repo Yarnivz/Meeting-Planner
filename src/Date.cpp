@@ -77,4 +77,8 @@ std::ostream & operator<<(std::ostream &os, Date &date) {
     return os;
 }
 
+bool Date::operator==(const Date &other) const {
+    return (other.day == day && other.month == month && other.year == year);
+}
+
 Date::~Date() = default;

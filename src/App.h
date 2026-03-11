@@ -4,14 +4,21 @@
 
 #ifndef MEETING_PLANNER_APP_H
 #define MEETING_PLANNER_APP_H
+#include <list>
 #include <string>
 #include <unordered_map>
-#include <iostream>
-#include <list>
 
 #include "Room.h"
 #include "Meeting.h"
 #include "Participation.h"
+
+using Meetings = std::unordered_map<std::string, Meeting*>;
+using Rooms = std::unordered_map<std::string, Room*>;
+using Participations = std::list<Participation*>;
+
+
+using MeetingsByRoomMap = std::unordered_map<std::string, Meetings>;
+using ParticipationsByUserMap = std::unordered_map<std::string, Participations>;
 
 class App {
 public:
@@ -53,13 +60,16 @@ public:
      */
     void addMeeting(Meeting* meeting);
 
+
+    Meeting* getMeetingInRoom(const std::string& meetingId, const std::string& roomId);
+
     /**
      * @brief Retrieve a meeting based on its id.
      *
-     * @param id id of the meeting to retrieve
+     * @param meetingId id of the meeting to retrieve
      * @return a pointer to the meeting with given id if it exists, nullptr otherwise
      */
-    Meeting* getMeeting(const std::string& id);
+    Meeting* getMeeting(const std::string& meetingId);
 
     /**
      * @brief Register a participation.
@@ -71,6 +81,7 @@ public:
      */
     void addParticipation(Participation* participation);
 
+
     /**
      * @brief Retrieve a list of all participations concerning the given user.
      *
@@ -78,16 +89,26 @@ public:
      * @return a const pointer to the requested list, if it exists;\n
      *         nullptr otherwise (if the user has no registered participations)
      */
-    const std::list<Participation *> *getParticipationList(const std::string &user);
+    //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
+    const Meetings *getMeetingsByRoom(const std::string &roomId);
+    const Participations* getParticipationsByUser(const std::string &userId);
+
+
+    bool isRoomOccupied(const std::string& roomId, const Date& date);
+    bool isUserOccupied(const std::string& userId, const Date& date);
 
     void processMeetings();
     ~App();
 
 
 private:
-    std::unordered_map<std::string, Room*> rooms;
-    std::unordered_map<std::string, Meeting*> meetings;
-    std::unordered_map<std::string, std::list<Participation*>> participation_lists;
+    Meetings *_getMutMeetingsByRoom(const std::string &roomId);
+    Participations *_getMutParticipationsByUser(const std::string &userId);
+
+
+    Rooms rooms;
+    MeetingsByRoomMap meetings_by_room;
+    ParticipationsByUserMap participations_by_user;
 
     void* init_check_this_ptr = nullptr;
 };

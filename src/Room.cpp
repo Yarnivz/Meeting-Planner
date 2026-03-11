@@ -26,18 +26,23 @@ bool Room::isProperlyInitialized() const {
 }
 
 
-const std::string& Room::getId()
+const std::string& Room::getId() const
 {
     REQUIRE(!id.empty(), "id must not be empty");
     return id;
 
 }
 
-const std::string& Room::toString()
+const std::string& Room::toString() const
 {
     REQUIRE(!name.empty(), "name must not be empty");
     return name;
 }
+
+unsigned Room::getCapacity() const {
+    return capacity;
+}
+
 
 std::ostream & operator<<(std::ostream& os, Room &room) {
     REQUIRE(room.isProperlyInitialized(), "room must be initialized");

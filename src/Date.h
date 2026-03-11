@@ -60,6 +60,7 @@ public:
      * @return
      */
     friend std::ostream& operator<<(std::ostream &os, Date& date);
+    bool operator==(const Date &other) const;
 
     /**
      * Default destructor
