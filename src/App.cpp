@@ -170,7 +170,46 @@ void App::parseFile(const std::string& filename)
     }
 }
 
-void App::writeToStream(std::ostream stream) {
+void App::writeToStream(std::ostream& onStream) {
+
+    std::list<Meeting*> today;
+    std::list<Meeting*> past;
+    std::list<Meeting*> future;
+    Date currentDate;
+    for (const std::pair<std::string, Meeting*> item : all_meetings) {
+        Meeting* meeting = item.second;
+        Date meetingDate = meeting->getDate();
+        if (meetingDate < currentDate) past.push_back(meeting);
+        else if (meetingDate > currentDate) future.push_back(meeting);
+        else today.push_back(meeting);
+    }
+
+    //Write all today's meetings
+    if (!today.empty()) onStream << std::endl << "Today's meetings:" << std::endl;
+    for (const Meeting* meeting : today) {
+        writeMeeting(onStream, meeting);
+    }
+
+    //Write all past meetings
+    if (!past.empty()) onStream << std::endl << "Past meetings:" << std::endl;
+    for (const Meeting* meeting : past) {
+        writeMeeting(onStream, meeting);
+    }
+
+    //Write all future meetings
+    if (!future.empty()) onStream << std::endl << "Future meetings:" << std::endl;
+    for (const Meeting* meeting : future) {
+        writeMeeting(onStream, meeting);
+
+    }
+
+    //Write all rooms
+    if (!rooms.empty()) onStream << std::endl << "Rooms:" << std::endl;
+    for (const std::pair<std::string, Room*> item : rooms) {
+        const Room* room = item.second;
+        writeRoom(onStream, room);
+    }
+
 }
 
 void App::processMeetings()
@@ -194,7 +233,6 @@ void App::processMeetings()
         std::cout << it->second << std::endl;
     }
 }
-
 
 void App::addRoom(Room *room) {
     REQUIRE(room, "The provided room cannot be null.");
@@ -287,11 +325,15 @@ void App::addParticipation(Participation *participation) {
     const Room* rm = getRoom(mt->getRoomId());
     ENSURE(rm, "Something went wrong. Encountered a meeting with invalid room id.");
 
+    const Room* mt_room = getRoom(mt->getRoomId());
+    ENSURE(mt_room, "Something went wrong. Found meeting in App but it did not have an assigned room.");
 
     Participations* ps_by_meeting = _getMutParticipationsByMeeting(participation->getMeetingId());
     ENSURE(ps_by_meeting, "Something went wrong. The list of participations by meeting went out of sync.");
     REQUIRE(ps_by_meeting->size() <= rm->getCapacity(), "Could not add participation: The room the meeting takes place in was full.");
 
+    //REQUIRE(!isRoomOccupied(mt_room->getId(), mt->getDate()), "This rooms is already occupied.");
+    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "This user already participates in another meeting.");
 
 
 
@@ -314,9 +356,6 @@ void App::addParticipation(Participation *participation) {
     ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "Something went wrong. The participation was not added to the list by user.");
     ENSURE(_getMutParticipationsByMeeting(participation->getMeetingId())->back() == participation, "Something went wrong. The participation was not added to the list by app.");
 }
-
-
-
 
 
 const Participations* App::getParticipationsByUser(const std::string &userId) {
@@ -379,24 +418,23 @@ bool App::isUserOccupied(const std::string &userId, const Date &date) {
     return false;
 }
 
-
-
-
-
-
-
-
-
 App::~App() {
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
     for (const std::pair<const std::string, Meeting*>& m : all_meetings) delete m.second;
     for (Participation* p : all_participations) delete p;
 }
 
+void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
+    const Date date{meeting->getDate()};
+    onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << date.getWeekDay() << " " << date << std::endl;
+    onStream << "  " << *meeting << std::endl;
+    onStream << "  Meeting ID: " << meeting->getId() << std::endl;
+}
 
-
-
-
+void App::writeRoom(std::ostream &onStream, const Room *room) {
+    onStream << "- " << *room << std::endl;
+    onStream << "  Capacity: " << room->getCapacity() << " people";
+}
 
 Meetings * App::_getMutMeetingsByRoom(const std::string &roomId) {
     const MeetingsByRoomMap::iterator it = meetings_by_room.find(roomId);

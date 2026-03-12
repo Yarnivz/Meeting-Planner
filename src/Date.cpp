@@ -72,27 +72,26 @@ bool Date::isProperlyInitialized() const {
 }
 
 
-int Date::getYear() {
+int Date::getYear() const {
     ENSURE(isProperlyInitialized(), "Failed to get Year. Date must be properly initialized with the constructor!");
 
     return static_cast<int>(year);
 }
 
-int Date::getMonth() {
+int Date::getMonth() const {
     ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!");
 
     return static_cast<unsigned>(month);
 }
 
-int Date::getDay() {
+int Date::getDay() const {
     ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!");
     return static_cast<unsigned>(day);
 }
 
-std::string Date::getWeekDay() {
-    ENSURE(isProperlyInitialized(), "Failed to get Weekday. Date must be properly initialized with the constructor!");
+std::string Date::getWeekDay() const {
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
-    return std::format("%A", std::chrono::weekday(date).c_encoding());
+    return std::format("{:%A}", std::chrono::weekday(date));
 }
 
 std::string Date::toString() const {
@@ -102,7 +101,7 @@ std::string Date::toString() const {
     return std::format("{:%d/%m/%Y}", date);
 }
 
-std::ostream& operator<<(std::ostream &os, Date &date) {
+std::ostream& operator<<(std::ostream &os, const Date &date) {
     os << date.toString();
     return os;
 }
