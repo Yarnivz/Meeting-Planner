@@ -1,6 +1,7 @@
 //
 // Created by lucas on 2026-03-05.
 //
+#pragma once
 
 #include <gtest/gtest.h>
 
@@ -29,17 +30,19 @@ TEST_F(DateTest, HappyDay) {
 
 }
 
-TEST_F(DateTest, Fail) {
+TEST_F(DateTest, CopyConstructor) {
     Date d1 = Date();
     Date d2 = d1;
 
-    EXPECT_FALSE(d2.isProperlyInitialized());
-    EXPECT_DEATH(d2.getYear(), "");
-    EXPECT_DEATH(d2.getMonth(), "");
-    EXPECT_DEATH(d2.getDay(), "");
+    EXPECT_TRUE(d2.isProperlyInitialized());
+    EXPECT_EQ(d1.getDay(), d2.getDay());
+    EXPECT_EQ(d1.getYear(), d2.getYear());
+    EXPECT_EQ(d1.getMonth(), d2.getMonth());
+
 }
 
 TEST_F(DateTest, FailConstructor) {
+    EXPECT_DEATH(Date(1,-1,-23), "");
     EXPECT_DEATH(Date(0,0,0), "");
     EXPECT_DEATH(Date(2025, 12, 0), "");
     EXPECT_DEATH(Date(2025, 12, 0), "");

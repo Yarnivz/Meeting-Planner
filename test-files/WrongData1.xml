@@ -1,0 +1,27 @@
+<SYSTEM>
+    <ROOM>
+        <NAME>M.G.025</NAME>
+        <IDENTIFIER>M.G.025</IDENTIFIER>
+        <CAPACITY>55</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>M.G.023</NAME>
+        <IDENTIFIER>Room98732</IDENTIFIER>
+        <CAPACITY>0</CAPACITY>
+    </ROOM>
+    <MEETING>
+        <LABEL>Weekly meeting</LABEL>
+        <IDENTIFIER></IDENTIFIER>
+        <ROOM>Room98732</ROOM>
+        <DATE>2026-05-22</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Weekly meeting</LABEL>
+        <IDENTIFIER>Meeting_514203</IDENTIFIER>
+        <ROOM>Room98732</ROOM>
+    </MEETING>
+    <PARTICIPATION>
+        <MEETING>Meeting_478463</MEETING>
+        <USER>Peter Selie</USER>
+    </PARTICIPATION>
+</SYSTEM>

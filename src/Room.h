@@ -20,7 +20,21 @@ public:
      */
     Room(const std::string &name, const std::string &id, unsigned capacity);
 
+    /**
+     * @brief Copies a Room object.
+     * It copies all important values but makes sure the 'properlyInitialized' test still passes.
+     * @param r Room to be copied
+     */
+    Room(const Room &r);
+
+
+    /**
+     * @brief Checks whether this Room was properly initialized by the constructor.
+     * @return bool indicating result
+     */
     bool isProperlyInitialized() const;
+
+
 
     /**
      * @brief Id getter.
