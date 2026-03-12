@@ -33,19 +33,25 @@ public:
      * @brief Year getter.
      * @return the date's year
      */
-    int getYear();
+    int getYear() const;
 
     /**
      * @brief Month getter.
      * @return the date's month
      */
-    int getMonth();
+    int getMonth() const;
 
     /**
      * @brief Day getter.
      * @return the date's day
      */
-    int getDay();
+    int getDay() const;
+
+    /**
+     * @brief Weekday getter.
+     * @return the date's weekday
+     */
+    std::string getWeekDay() const;
 
 
     std::string getWeekDay();
@@ -63,7 +69,7 @@ public:
      * @param date to write on the stream
      * @return the stream
      */
-    friend std::ostream& operator<<(std::ostream &os, Date& date);
+    friend std::ostream& operator<<(std::ostream &os, const Date& date);
 
     /**
      * @brief Compares 2 dates with each other.

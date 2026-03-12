@@ -19,7 +19,6 @@ using Participations = std::list<Participation*>;
 
 using MeetingsByRoomMap = std::unordered_map<std::string, Meetings>;
 using ParticipationsByUserMap = std::unordered_map<std::string, Participations>;
-using ParticipationsByMeetingMap = std::unordered_map<std::string, Participations>;
 
 class App {
 public:
@@ -95,6 +94,8 @@ public:
      *         nullptr otherwise (if the user has no registered participations)
      */
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
+    const Participations* getParticipationsByUser(const std::string &userId);
+
     const Meetings *getMeetingsByRoom(const std::string &roomId);
     const Participations *getParticipationsByUser(const std::string &userId);
 
@@ -114,6 +115,10 @@ public:
 
 
 private:
+
+    void writeMeeting(std::ostream& onStream, const Meeting* meeting);
+    void writeRoom(std::ostream& onStream, const Room* room);
+
     Meetings *_getMutMeetingsByRoom(const std::string &roomId);
     Participations *_getMutParticipationsByUser(const std::string &userId);
 

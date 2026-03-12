@@ -78,10 +78,9 @@ int Date::getDay() {
     return static_cast<unsigned>(day);
 }
 
-std::string Date::getWeekDay() {
-    ENSURE(isProperlyInitialized(), "Failed to get Weekday. Date must be properly initialized with the constructor!");
+std::string Date::getWeekDay() const {
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
-    return std::format("%A", std::chrono::weekday(date).c_encoding());
+    return std::format("{:%A}", std::chrono::weekday(date));
 }
 
 std::string Date::toString() const {
