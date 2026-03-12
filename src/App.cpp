@@ -483,15 +483,16 @@ void App::processMeetings()
     for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
     {
         Meeting* meeting = it->second;
-        //REQUIRE(meeting->isProperlyInitialized(), meeting->getId() + " has not been properly loaded");
-        //std::cout << thisMeetingId << " has taken place" << std::endl;
-        if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
+        REQUIRE(meeting->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
+        if (/*isRoomOccupied(meeting->getRoomId(), meeting->getDate())*/1==1)
         {
+            std::cout << meeting->getDate() << std::endl;
             bool foundConflictingMeeting = false;
             const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
             for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
             {
-                if (!cancelling_meetings.contains(it2->first))
+                REQUIRE(it2->second->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
+                if (ongoing_meetings.contains(it2->first))
                 {
                     foundConflictingMeeting = true;
                 }
@@ -499,19 +500,21 @@ void App::processMeetings()
             if (foundConflictingMeeting)
             {
                 cancelling_meetings.insert({meeting->getId(), meeting});
-                std::cout << it->second << " has been cancelled due to the room being already occupied" << std::endl;
+                std::cout << it->second->getId() << " has been cancelled due to the room being already occupied" << std::endl;
             } else
             {
                 ongoing_meetings.insert({meeting->getId(), meeting});
-                std::cout << it->second << " has taken place" << std::endl;
+
+                std::cout << it->second->getId() << " has taken place" << std::endl;
             }
         } else
         {
             ongoing_meetings.insert({meeting->getId(), meeting});
             std::cout << it->second << " has taken place" << std::endl;
         }
-
     }
+
+    ENSURE(!ongoing_meetings.empty() == 1, "A meeting has not taken place");
 }
 
 void App::addRoom(Room *room) {
