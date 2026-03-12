@@ -13,8 +13,8 @@ public:
     bool isProperlyInitialized() const;
 
     const std::string& getId();
-    const std::string& toString();
-    friend std::ostream& operator<<(std::ostream &os, Meeting& meeting);
+    const std::string& toString() const;
+    friend std::ostream& operator<<(std::ostream &os, const Meeting& meeting);
     void process();
     ~Meeting();
 private:

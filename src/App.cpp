@@ -22,7 +22,7 @@ void App::parseFile(const std::string& filename)
 {
     TiXmlDocument doc;
     REQUIRE(!filename.empty(), "The provided file cannot be empty");
-    REQUIRE(!doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
+    REQUIRE(doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
 
     if(!doc.LoadFile(filename.c_str())) {
         std::cerr << doc.ErrorDesc() << std::endl;

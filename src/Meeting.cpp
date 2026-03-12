@@ -17,9 +17,9 @@ bool Meeting::isProperlyInitialized() const {
 
 const std::string& Meeting::getId() { return id; }
 
-const std::string& Meeting::toString() { return label; }
+const std::string& Meeting::toString() const { return label; }
 
-std::ostream & operator<<(std::ostream &os, Meeting &meeting) {
+std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {
     os << meeting.toString();
     return os;
 }
