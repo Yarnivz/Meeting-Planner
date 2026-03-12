@@ -694,6 +694,13 @@ void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
     const Date date{meeting->getDate()};
     onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << date.getWeekDay() << " " << date << std::endl;
     onStream << "  " << *meeting << std::endl;
+    const Participations* participations = getParticipationsByMeeting(meeting->getId());
+    onStream << "  ";
+    for (Participation* participation : *participations) {
+        onStream << participation->getUser();
+        if (participation != participations->back()) onStream << ", ";
+    }
+    onStream << std::endl;
     onStream << "  Meeting ID: " << meeting->getId() << std::endl;
 }
 
