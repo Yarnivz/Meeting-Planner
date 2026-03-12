@@ -5,6 +5,6 @@ int main() {
 
     App app;
     app.parseFile("test.xml");
-    std::cout << app.getMeeting("Meeting_478463")->getId();
+    app.processMeetings();
     return 0;
 }

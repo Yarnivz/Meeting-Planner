@@ -5,8 +5,6 @@
 #include "App.h"
 #include <tinyxml.h>
 
-#include "DesignByContract.h"
-
 App::App() : rooms(), meetings(), participation_lists() {
     init_check_this_ptr = this;
 }
@@ -15,16 +13,10 @@ bool App::isProperlyInitialized() const {
     return init_check_this_ptr == this;
 }
 
-/**
- * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
- * @param filename
- */
+
 void App::parseFile(const std::string& filename)
 {
     TiXmlDocument doc;
-    REQUIRE(!filename.empty(), "The provided file cannot be empty");
-    REQUIRE(!doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
-
     if(!doc.LoadFile(filename.c_str())) {
         std::cerr << doc.ErrorDesc() << std::endl;
     }
@@ -43,23 +35,22 @@ void App::parseFile(const std::string& filename)
                 {
                     std::string name, identifier;
                     unsigned int capacity = 0;
-
                     for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
                     {
                         if (currentElement->FirstChild() != NULL)
                         {
-                            std::string tempElementValue = currentElement->FirstChild()->Value();
+                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
                             if (std::string(currentElement->Value()) == "NAME")
                             {
-                                name = tempElementValue;
+                                name = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "IDENTIFIER")
                             {
-                                identifier = tempElementValue;
+                                identifier = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "CAPACITY")
                             {
                                 try
                                 {
-                                    capacity = std::stoi(tempElementValue);
+                                    capacity = std::stoi(tempElementChildValue);
                                 } catch (const std::exception& e)
                                 {
                                     std::cerr << e.what() << " (could not convert room capacity from string to int defaulting to 303)" << std::endl;
@@ -83,13 +74,13 @@ void App::parseFile(const std::string& filename)
                     {
                         if (currentElement->FirstChild() != NULL)
                         {
-                            std::string tempElementValue = currentElement->FirstChild()->Value();
+                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
                             if (std::string(currentElement->Value()) == "LABEL")
                             {
-                                label = tempElementValue;
+                                label = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "IDENTIFIER")
                             {
-                                identifier = tempElementValue;
+                                identifier = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "ROOM")
                             {
                                 room = std::string(currentElement->FirstChild()->Value());
@@ -128,19 +119,20 @@ void App::parseFile(const std::string& filename)
                     {
                         if (currentElement->FirstChild() != NULL)
                         {
-                            std::string tempElementValue = currentElement->FirstChild()->Value();
+                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
                             if (std::string(currentElement->Value()) == "MEETING")
                             {
-                                meeting = tempElementValue;
+                                meeting = tempElementChildValue;
                             } else if (std::string(currentElement->Value()) == "USER")
                             {
-                                user = tempElementValue;
+                                user = tempElementChildValue;
                             }
                         }
                     }
                     try
                     {
-                        participations[user] = new Participation(user, meeting);
+                        Participation* participation = new Participation(user, meeting);
+                        participation_lists[meeting].push_back(participation);
                     } catch (std::exception& e)
                     {
                         std::cerr << e.what() << " (could not assign a value to a specific participation/add it to the map of participations)" << std::endl;
@@ -158,7 +150,13 @@ void App::writeToStream(std::ostream stream) {
 }
 
 
-void App::processMeetings() {
+void App::processMeetings()
+{
+    std::cout << "test" << std::endl;
+    for (auto it = meetings.begin(); it != meetings.end(); ++it)
+    {
+        std::cout << it->second->getId() << std::endl;
+    }
 }
 
 
@@ -169,7 +167,7 @@ void App::addRoom(Room *room) {
 }
 
 Room* App::getRoom(const std::string& id) {
-    auto it = rooms.find(id);
+    const std::unordered_map<std::string, Room*>::iterator it = rooms.find(id);
 
     if (it == rooms.end()) return nullptr;
 
@@ -183,7 +181,8 @@ void App::addMeeting(Meeting *meeting) {
 }
 
 Meeting* App::getMeeting(const std::string& id) {
-    auto it = meetings.find(id);
+    const std::unordered_map<std::string, Meeting*>::iterator it = meetings.find(id);
+
     if (it == meetings.end()) return nullptr;
 
     return it->second;
@@ -192,15 +191,24 @@ Meeting* App::getMeeting(const std::string& id) {
 void App::addParticipation(Participation *participation) {
     if (!participation) return;
 
-    //! participations.insert({std::string(), participation});
+    const std::string u = participation->getUser();
+
+    const std::unordered_map<std::string, std::list<Participation*>>::iterator it = participation_lists.find(u);
+
+    if (it == participation_lists.end()) {
+        participation_lists.insert({participation->getUser(), {participation}});
+        return;
+    }
+
+    it->second.push_back(participation);
 }
 
-Participation* App::getParticipation(const std::string& id) {
-    auto it = participations.find(id);
+const std::list<Participation *> *App::getParticipationList(const std::string &username) {
+    const std::unordered_map<std::string, std::list<Participation*>>::iterator it = participation_lists.find(username);
 
-    if (it == participations.end()) return nullptr;
+    if (it == participation_lists.end()) return nullptr;
 
-    return it->second;
+    return &it->second;
 }
 
 
@@ -208,5 +216,11 @@ Participation* App::getParticipation(const std::string& id) {
 App::~App() {
     for (auto& r : rooms) delete r.second;
     for (auto& m : meetings) delete m.second;
-    for (auto& p : participations) delete p.second;
+    for (const auto& pl : participation_lists) {
+        for (const auto& p : pl.second ) {
+            delete p;
+        }
+    }
 }
+
+
