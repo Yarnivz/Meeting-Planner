@@ -19,7 +19,26 @@ void App::parseFile(std::string filename) {
 void App::writeToStream(std::ostream stream) {
 }
 
-void App::processMeetings() {
+void App::processMeetings()
+{
+    for (auto it = all_meetings.begin(); it != all_meetings.end(); ++it)
+    {
+        REQUIRE(it->second->isProperlyInitialized(), "this meeting has not been properly loaded");
+        std::string thisMeetingId = it->second->getId();
+        std::cout << thisMeetingId << " has taken place" << std::endl;
+        for (auto it2 = all_meetings.begin(); it2 != all_meetings.end(); ++it2)
+        {
+            REQUIRE(it2->second->isProperlyInitialized(), "other meeting has not been properly loaded");
+            std::string otherMeetingId = it2->second->getId();
+            if (it->second->getRoomId() == it2->second->getRoomId())
+            {
+                std::cerr<< otherMeetingId <<  " shares the same room with " <<  thisMeetingId << ", cancelling " << otherMeetingId << std::endl;
+                delete it->second;
+                all_meetings.erase(it2);
+            }
+        }
+        std::cout << it->second << std::endl;
+    }
 }
 
 
