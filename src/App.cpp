@@ -21,23 +21,37 @@ void App::writeToStream(std::ostream stream) {
 
 void App::processMeetings()
 {
-    for (auto it = all_meetings.begin(); it != all_meetings.end(); ++it)
+    for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
     {
-        REQUIRE(it->second->isProperlyInitialized(), "this meeting has not been properly loaded");
-        std::string thisMeetingId = it->second->getId();
-        std::cout << thisMeetingId << " has taken place" << std::endl;
-        for (auto it2 = all_meetings.begin(); it2 != all_meetings.end(); ++it2)
+        Meeting* meeting = it->second;
+        //REQUIRE(meeting->isProperlyInitialized(), meeting->getId() + " has not been properly loaded");
+        //std::cout << thisMeetingId << " has taken place" << std::endl;
+        if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
         {
-            REQUIRE(it2->second->isProperlyInitialized(), "other meeting has not been properly loaded");
-            std::string otherMeetingId = it2->second->getId();
-            if (it->second->getRoomId() == it2->second->getRoomId())
+            bool foundConflictingMeeting = false;
+            const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
+            for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
             {
-                std::cerr<< otherMeetingId <<  " shares the same room with " <<  thisMeetingId << ", cancelling " << otherMeetingId << std::endl;
-                delete it->second;
-                all_meetings.erase(it2);
+                if (!cancelling_meetings.contains(it2->first))
+                {
+                    foundConflictingMeeting = true;
+                }
             }
+            if (foundConflictingMeeting)
+            {
+                cancelling_meetings.insert({meeting->getId(), meeting});
+                std::cout << it->second << " has been cancelled due to the room being already occupied" << std::endl;
+            } else
+            {
+                ongoing_meetings.insert({meeting->getId(), meeting});
+                std::cout << it->second << " has taken place" << std::endl;
+            }
+        } else
+        {
+            ongoing_meetings.insert({meeting->getId(), meeting});
+            std::cout << it->second << " has taken place" << std::endl;
         }
-        std::cout << it->second << std::endl;
+
     }
 }
 
