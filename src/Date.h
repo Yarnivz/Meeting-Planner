@@ -46,9 +46,6 @@ public:
      */
     int getDay();
 
-
-    std::string getWeekDay();
-
     /**
      * @brief Converts the date class to a readable string format.
      * @return the date represented as a string.
@@ -62,7 +59,7 @@ public:
      * @param date to write on the stream
      * @return the stream
      */
-    friend std::ostream& operator<<(std::ostream &os, Date& date);
+    friend std::ostream& operator<<(std::ostream &os, const Date& date);
 
     /**
      * @brief Compares 2 dates with each other.

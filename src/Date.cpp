@@ -65,20 +65,12 @@ int Date::getDay() {
     return static_cast<unsigned>(day);
 }
 
-std::string Date::getWeekDay() {
-    ENSURE(isProperlyInitialized(), "Failed to get Weekday. Date must be properly initialized with the constructor!");
-    std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
-    return std::format("%A", std::chrono::weekday(date).c_encoding());
-}
-
 std::string Date::toString() const {
-    ENSURE(isProperlyInitialized(), "Failed to convert date to string. Date must be properly initialized with the constructor!");
-
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
     return std::format("{:%d/%m/%Y}", date);
 }
 
-std::ostream& operator<<(std::ostream &os, Date &date) {
+std::ostream& operator<<(std::ostream &os, const Date &date) {
     os << date.toString();
     return os;
 }
