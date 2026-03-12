@@ -19,6 +19,7 @@ using Participations = std::list<Participation*>;
 
 using MeetingsByRoomMap = std::unordered_map<std::string, Meetings>;
 using ParticipationsByUserMap = std::unordered_map<std::string, Participations>;
+using ParticipationsByMeetingMap = std::unordered_map<std::string, Participations>;
 
 class App {
 public:
@@ -34,7 +35,7 @@ public:
     * @param filename
     */
     void parseFile(const std::string& filename);
-    void writeToStream(std::ostream stream);
+    void writeToStream(std::ostream& onStream);
 
     /**
      * @brief Register a room.
@@ -96,10 +97,10 @@ public:
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
     const Participations* getParticipationsByUser(const std::string &userId);
 
-    const Meetings *getMeetingsByRoom(const std::string &roomId);
-    const Participations *getParticipationsByUser(const std::string &userId);
-
     const Participations *getParticipationsByMeeting(const std::string &meetindId);
+
+    const Meetings *getMeetingsByRoom(const std::string &roomId);
+
 
     const Meetings& getAllMeetings() const;
     const Participations &getAllParticipations() const;

@@ -176,7 +176,7 @@ void App::writeToStream(std::ostream& onStream) {
     std::list<Meeting*> past;
     std::list<Meeting*> future;
     Date currentDate;
-    for (const std::pair<std::string, Meeting*> item : meetings) {
+    for (const std::pair<std::string, Meeting*> item : all_meetings) {
         Meeting* meeting = item.second;
         Date meetingDate = meeting->getDate();
         if (meetingDate < currentDate) past.push_back(meeting);
@@ -234,11 +234,6 @@ void App::processMeetings()
     }
 }
 
-
-
-
-
-
 void App::addRoom(Room *room) {
     REQUIRE(room, "The provided room cannot be null.");
     REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
@@ -259,11 +254,6 @@ Room* App::getRoom(const std::string& roomId) {
     ENSURE(it->second->getId() == roomId, "Something went wrong. The room which was found did not have the right id.");
     return it->second;
 }
-
-
-
-
-
 
 void App::addMeeting(Meeting *meeting) {
     REQUIRE(meeting, "Meeting can not be null.");
@@ -321,14 +311,6 @@ Meeting* App::getMeeting(const std::string& meetingId) {
     ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return it->second;
 }
-
-
-
-
-
-
-
-
 
 void App::addParticipation(Participation *participation) {
     REQUIRE(participation != nullptr, "Participation can not be null.");
@@ -435,14 +417,6 @@ bool App::isUserOccupied(const std::string &userId, const Date &date) {
 
     return false;
 }
-
-
-
-
-
-
-
-
 
 App::~App() {
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
