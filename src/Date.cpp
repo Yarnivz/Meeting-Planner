@@ -56,6 +56,17 @@ Date::Date(int year, int month, int day) {
     ENSURE(date.ok(), "Date creation failed. Date validity check did not pass.");
 }
 
+Date::Date(std::chrono::year_month_day year_month_day) {
+    REQUIRE(year_month_day.ok(), "Invalid date provided. Please check if this date really exists!");
+
+    this->year = year_month_day.year();
+    this->month = year_month_day.month();
+    this->day = year_month_day.day();
+
+    init_test_this_ptr = this;
+    ENSURE(year_month_day.ok(), "Date creation failed. Date validity check did not pass.");
+}
+
 bool Date::isProperlyInitialized() const {
     return init_test_this_ptr == this;
 }

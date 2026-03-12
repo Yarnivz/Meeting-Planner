@@ -17,7 +17,7 @@ public:
     Date();
     Date(const Date& d);
 
-    bool isProperlyInitialized() const;
+
 
     /**
      * @brief Creates the date class.
@@ -28,6 +28,18 @@ public:
      * @param day
      */
     Date(int year, int month, int day);
+
+    /**
+     * @brief Creates the date class.
+     * The date class has a year, month and day attribute.
+     * When the date class constructor gets called with parameters, all parameters are required and the date will be initialized with the given data.
+     * @param year_month_day date to initialize the Date class with.
+     */
+    Date(std::chrono::year_month_day year_month_day);
+
+
+    bool isProperlyInitialized() const;
+
 
     /**
      * @brief Year getter.
