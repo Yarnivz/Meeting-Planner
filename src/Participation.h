@@ -18,6 +18,17 @@ public:
      */
     Participation(const std::string &user, const std::string &meeting);
 
+    /**
+     * @brief Copies a Participation object.
+     * It copies all important values but makes sure the 'properlyInitialized' test still passes.
+     * @param p The Participation to be copied.
+     */
+    Participation(const Participation& p);
+
+    /**
+     * @brief Checks whether this Participation was properly initialized by the constructor.
+     * @return bool indicating result
+     */
     bool isProperlyInitialized() const;
 
     /**

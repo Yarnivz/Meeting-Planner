@@ -21,6 +21,16 @@ name(name), id(id), capacity(capacity) {
     init_check_this_ptr = this;
 }
 
+Room::Room(const Room& r) {
+    REQUIRE(r.isProperlyInitialized(), "Tried to copy a room which was not properly initialized by the constructor.");
+
+    name = r.name;
+    id = r.id;
+    capacity = r.capacity;
+
+    init_check_this_ptr = this;
+}
+
 bool Room::isProperlyInitialized() const {
     return init_check_this_ptr == this;
 }
