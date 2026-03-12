@@ -433,7 +433,7 @@ void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
 
 void App::writeRoom(std::ostream &onStream, const Room *room) {
     onStream << "- " << *room << std::endl;
-    onStream << "  Capacity: " << room->getCapacity() << " people";
+    onStream << "  Capacity: " << room->getCapacity() << " people" << std::endl;
 }
 
 Meetings * App::_getMutMeetingsByRoom(const std::string &roomId) {
