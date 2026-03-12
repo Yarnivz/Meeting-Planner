@@ -97,6 +97,8 @@ void App::addMeeting(Meeting *meeting) {
     all_meetings.insert({meeting->getId(), meeting}); // Insert into flat map by meetingId
     mt_list->insert({meeting->getId(), meeting});     // Also into nested map by roomId => meetingId
 
+    participations_by_meeting.insert({meeting->getId(), {}}); // Insert empty participations list
+
 
     ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "Something went wrong, The meeting was not added to the App");
     ENSURE(getMeeting(meeting->getId()) == meeting, "Something went wrong, the meeting was not added to the App");
@@ -140,34 +142,53 @@ void App::addParticipation(Participation *participation) {
 
 
     const Meeting* mt = getMeeting(participation->getMeetingId());
-    REQUIRE(mt, "The requested meeting does not exist.");
-
-    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "This user already participates in another meeting.");
+    REQUIRE(mt, "Could not add participation: The requested meeting does not exist.");
+    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "Could not add participation: This user already participates in another meeting.");
 
 
     const Room* rm = getRoom(mt->getRoomId());
+    ENSURE(rm, "Something went wrong. Encountered a meeting with invalid room id.");
+
+
+    Participations* ps_by_meeting = _getMutParticipationsByMeeting(participation->getMeetingId());
+    ENSURE(ps_by_meeting, "Something went wrong. The list of participations by meeting went out of sync.");
+    REQUIRE(ps_by_meeting->size() <= rm->getCapacity(), "Could not add participation: The room the meeting takes place in was full.");
+
 
 
 
     all_participations.push_back(participation); //Add it to a flat list of all participations
 
+
     //Also insert into map by userId
-    Participations* prts =  _getMutParticipationsByUser(participation->getUser());
-    if (prts) {
-        prts->push_back(participation);
+    Participations* ps_by_user =  _getMutParticipationsByUser(participation->getUser());
+    if (ps_by_user) {
+        ps_by_user->push_back(participation);
     } else {
         participations_by_user.insert({participation->getUser(), {participation}});
     }
 
 
-    ENSURE(all_participations.back() == participation, "Something went wrong. The participation was not added to the App.");
-    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "Something went wrong. The participation was not added to the App.");
+
+    ps_by_meeting->push_back(participation);
+
+    ENSURE(all_participations.back() == participation, "Something went wrong. The participation was not added to the global list.");
+    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "Something went wrong. The participation was not added to the list by user.");
+    ENSURE(_getMutParticipationsByMeeting(participation->getMeetingId())->back() == participation, "Something went wrong. The participation was not added to the list by app.");
 }
+
+
+
 
 
 const Participations* App::getParticipationsByUser(const std::string &userId) {
     return _getMutParticipationsByUser(userId);
 }
+
+const Participations* App::getParticipationsByMeeting(const std::string &meetindId) {
+    return _getMutParticipationsByMeeting(meetindId);
+}
+
 
 
 
@@ -178,6 +199,8 @@ const Meetings & App::getAllMeetings() const {
 const Participations & App::getAllParticipations() const {
     return all_participations;
 }
+
+
 
 const Rooms & App::getAllRooms() const {
     return rooms;
@@ -249,6 +272,14 @@ Participations *App::_getMutParticipationsByUser(const std::string &userId) {
     const ParticipationsByUserMap::iterator it = participations_by_user.find(userId);
 
     if (it == participations_by_user.end()) return nullptr;
+
+    return &it->second;
+}
+
+Participations *App::_getMutParticipationsByMeeting(const std::string &meetingId) {
+    const ParticipationsByMeetingMap::iterator it = participations_by_meeting.find(meetingId);
+
+    if (it == participations_by_meeting.end()) return nullptr;
 
     return &it->second;
 }
