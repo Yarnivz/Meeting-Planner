@@ -4,9 +4,15 @@
 
 #include "Meeting.h"
 
-Meeting::Meeting(const std::string &label, const std::string &id, const std::string &room, const Date &date)
-: label(label), id(id), room(room), date(date)
+#include "DesignByContract.h"
+
+Meeting::Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date)
+: label(label), id(id), room(roomId), date(date)
 {
+    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
+    REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
+    REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
+
     init_check_this_ptr = this;
 }
 
@@ -15,11 +21,28 @@ bool Meeting::isProperlyInitialized() const {
 }
 
 
-const std::string& Meeting::getId() { return id; }
+const std::string& Meeting::getId() const {
+    REQUIRE(isProperlyInitialized(), "Failed to get id. Meeting has to be properly initialized with the constructor.");
+    return id;
+}
 
-const std::string& Meeting::toString() const { return label; }
+const std::string & Meeting::getRoomId() const {
+    REQUIRE(isProperlyInitialized(), "Failed to get room id. Meeting has to be properly initialized with the constructor.");
+    return room;
+}
 
-std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {
+const Date & Meeting::getDate() const {
+    REQUIRE(isProperlyInitialized(), "Failed to get date. Meeting has to be properly initialized with the constructor.");
+    return date;
+}
+
+
+const std::string& Meeting::toString() {
+    REQUIRE(isProperlyInitialized(), "Failed to convert to string. Meeting has to be properly initialized with the constructor.");
+    return label;
+}
+
+std::ostream & operator<<(std::ostream &os, Meeting &meeting) {
     os << meeting.toString();
     return os;
 }

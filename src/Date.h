@@ -15,6 +15,7 @@ public:
      * When the date class constructor gets called without parameters, the date that gets created will be the current date.
      */
     Date();
+    Date(const Date& d);
 
     bool isProperlyInitialized() const;
 

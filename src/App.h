@@ -19,6 +19,7 @@ using Participations = std::list<Participation*>;
 
 using MeetingsByRoomMap = std::unordered_map<std::string, Meetings>;
 using ParticipationsByUserMap = std::unordered_map<std::string, Participations>;
+using ParticipationsByMeetingMap = std::unordered_map<std::string, Participations>;
 
 class App {
 public:
@@ -97,6 +98,8 @@ public:
     const Meetings *getMeetingsByRoom(const std::string &roomId);
     const Participations *getParticipationsByUser(const std::string &userId);
 
+    const Participations *getParticipationsByMeeting(const std::string &meetindId);
+
     const Meetings& getAllMeetings() const;
     const Participations &getAllParticipations() const;
 
@@ -114,6 +117,8 @@ private:
     Meetings *_getMutMeetingsByRoom(const std::string &roomId);
     Participations *_getMutParticipationsByUser(const std::string &userId);
 
+    Participations *_getMutParticipationsByMeeting(const std::string &meetingId);
+
 
     Rooms rooms;
     Meetings all_meetings;
@@ -121,6 +126,7 @@ private:
 
     Participations all_participations;
     ParticipationsByUserMap participations_by_user;
+    ParticipationsByMeetingMap participations_by_meeting;
 
     void* init_check_this_ptr = nullptr;
 };

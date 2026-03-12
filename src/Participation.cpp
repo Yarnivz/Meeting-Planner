@@ -15,6 +15,15 @@ Participation::Participation(const std::string &user, const std::string &meeting
     init_check_this_ptr = this;
 }
 
+Participation::Participation(const Participation &p) {
+    REQUIRE(p.isProperlyInitialized(), "Tried to copy a participation which was not properly initialized by the constructor.");
+
+    user = p.user;
+    meeting = p.meeting;
+
+    init_check_this_ptr = this;
+}
+
 bool Participation::isProperlyInitialized() const {
     return init_check_this_ptr == this;
 }
