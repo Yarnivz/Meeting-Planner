@@ -249,11 +249,7 @@ void App::addMeeting(Meeting *meeting) {
     ENSURE(getMeeting(meeting->getId()) == meeting, "Something went wrong, the meeting was not added to the App");
 }
 
-Meeting* App::getMeeting(const std::string& id) {
-    const std::unordered_map<std::string, Meeting*>::iterator it = meetings.find(id);
 
-    if (it == meetings.end()) return nullptr;
-}
 
 Meeting * App::getMeetingInRoom(const std::string &meetingId, const std::string &roomId) {
     Meetings* ms = _getMutMeetingsByRoom(roomId);
@@ -353,7 +349,6 @@ const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
 }
 
 
-    const std::string u = participation->getUser();
 
 bool App::isRoomOccupied(const std::string &roomId, const Date& date) {
     Meetings *mt_list = _getMutMeetingsByRoom(roomId);

@@ -9,7 +9,6 @@
 
 class MeetingTest : public ::testing::Test {
 protected:
-    //Meeting meeting_;
 };
 
 
