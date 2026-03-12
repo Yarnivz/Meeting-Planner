@@ -46,6 +46,9 @@ public:
      */
     int getDay();
 
+
+    std::string getWeekDay();
+
     /**
      * @brief Converts the date class to a readable string format.
      * @return the date represented as a string.
