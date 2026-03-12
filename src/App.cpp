@@ -232,7 +232,8 @@ App::~App() {
 }
 
 void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
-    onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << meeting->getDate() << std::endl;
+    const Date date{meeting->getDate()};
+    onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << date.getWeekDay() << " " << date << std::endl;
     onStream << "  " << *meeting << std::endl;
     onStream << "  Meeting ID: " << meeting->getId() << std::endl;
 }

@@ -32,25 +32,25 @@ public:
      * @brief Year getter.
      * @return the date's year
      */
-    int getYear();
+    int getYear() const;
 
     /**
      * @brief Month getter.
      * @return the date's month
      */
-    int getMonth();
+    int getMonth() const;
 
     /**
      * @brief Day getter.
      * @return the date's day
      */
-    int getDay();
+    int getDay() const;
 
     /**
      * @brief Weekday getter.
      * @return the date's weekday
      */
-    std::string getWeekDay();
+    std::string getWeekDay() const;
 
     /**
      * @brief Converts the date class to a readable string format.

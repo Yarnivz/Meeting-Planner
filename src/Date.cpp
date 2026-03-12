@@ -48,27 +48,21 @@ bool Date::isProperlyInitialized() const {
 }
 
 
-int Date::getYear() {
-    ENSURE(isProperlyInitialized(), "Failed to get Year. Date must be properly initialized with the constructor!");
-
+int Date::getYear() const {
     return static_cast<int>(year);
 }
 
-int Date::getMonth() {
-    ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!");
-
+int Date::getMonth() const {
     return static_cast<unsigned>(month);
 }
 
-int Date::getDay() {
-    ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!");
+int Date::getDay() const {
     return static_cast<unsigned>(day);
 }
 
-std::string Date::getWeekDay() {
-    ENSURE(isProperlyInitialized(), "Failed to get Weekday. Date must be properly initialized with the constructor!");
+std::string Date::getWeekDay() const {
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
-    return std::format("%A", std::chrono::weekday(date).c_encoding());
+    return std::format("{:%A}", std::chrono::weekday(date));
 }
 
 std::string Date::toString() const {
