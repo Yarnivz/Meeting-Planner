@@ -62,7 +62,7 @@ public:
      * @param room to write on the stream
      * @return the stream
      */
-    friend std::ostream& operator <<(std::ostream& os, Room& room);
+    friend std::ostream& operator <<(std::ostream& os, const Room& room);
 
     /**
     * @brief Default destructor

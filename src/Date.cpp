@@ -56,32 +56,42 @@ Date::Date(int year, int month, int day) {
     ENSURE(date.ok(), "Date creation failed. Date validity check did not pass.");
 }
 
+Date::Date(std::chrono::year_month_day year_month_day) {
+    REQUIRE(year_month_day.ok(), "Invalid date provided. Please check if this date really exists!");
+
+    this->year = year_month_day.year();
+    this->month = year_month_day.month();
+    this->day = year_month_day.day();
+
+    init_test_this_ptr = this;
+    ENSURE(year_month_day.ok(), "Date creation failed. Date validity check did not pass.");
+}
+
 bool Date::isProperlyInitialized() const {
     return init_test_this_ptr == this;
 }
 
 
-int Date::getYear() {
+int Date::getYear() const {
     ENSURE(isProperlyInitialized(), "Failed to get Year. Date must be properly initialized with the constructor!");
 
     return static_cast<int>(year);
 }
 
-int Date::getMonth() {
+int Date::getMonth() const {
     ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!");
 
     return static_cast<unsigned>(month);
 }
 
-int Date::getDay() {
+int Date::getDay() const {
     ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!");
     return static_cast<unsigned>(day);
 }
 
-std::string Date::getWeekDay() {
-    ENSURE(isProperlyInitialized(), "Failed to get Weekday. Date must be properly initialized with the constructor!");
+std::string Date::getWeekDay() const {
     std::chrono::year_month_day date{std::chrono::year(year),std::chrono::month(month),std::chrono::day(day)};
-    return std::format("%A", std::chrono::weekday(date).c_encoding());
+    return std::format("{:%A}", std::chrono::weekday(date));
 }
 
 std::string Date::toString() const {
@@ -91,7 +101,7 @@ std::string Date::toString() const {
     return std::format("{:%d/%m/%Y}", date);
 }
 
-std::ostream& operator<<(std::ostream &os, Date &date) {
+std::ostream& operator<<(std::ostream &os, const Date &date) {
     os << date.toString();
     return os;
 }

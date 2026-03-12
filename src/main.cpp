@@ -1,8 +1,12 @@
 #include <iostream>
+
 #include "App.h"
+#include <fstream>
+
 int main() {
-    App app;
-    app.parseFile("test-files/WrongData1.xml");
-    app.processMeetings();
-    return 0;
+    App* app = new App();
+    app->parseFile("./test-files/HappyDay1.xml");
+    std::ofstream fout("output.txt");
+    app->writeToStream(fout);
+    delete app;
 }

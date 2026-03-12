@@ -35,7 +35,7 @@ public:
     * @param filename
     */
     void parseFile(const std::string& filename);
-    void writeToStream(std::ostream stream);
+    void writeToStream(std::ostream& onStream);
 
     /**
      * @brief Register a room.
@@ -95,10 +95,12 @@ public:
      *         nullptr otherwise (if the user has no registered participations)
      */
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
-    const Meetings *getMeetingsByRoom(const std::string &roomId);
-    const Participations *getParticipationsByUser(const std::string &userId);
+    const Participations* getParticipationsByUser(const std::string &userId);
 
     const Participations *getParticipationsByMeeting(const std::string &meetindId);
+
+    const Meetings *getMeetingsByRoom(const std::string &roomId);
+
 
     const Meetings& getAllMeetings() const;
     const Participations &getAllParticipations() const;
@@ -114,6 +116,10 @@ public:
 
 
 private:
+
+    void writeMeeting(std::ostream& onStream, const Meeting* meeting);
+    void writeRoom(std::ostream& onStream, const Room* room);
+
     Meetings *_getMutMeetingsByRoom(const std::string &roomId);
     Participations *_getMutParticipationsByUser(const std::string &userId);
 

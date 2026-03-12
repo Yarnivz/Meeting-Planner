@@ -3,3 +3,4 @@ cmake-build-debug
 gtest/lib/
 bin/
 docs/
+output.txt
