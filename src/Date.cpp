@@ -22,6 +22,19 @@ Date::Date() {
     ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
 }
 
+Date::Date(const Date &d) {
+    REQUIRE(d.isProperlyInitialized(), "Tried to copy a date which was not properly initialized by the constructor.");
+
+    year = d.year;
+    month = d.month;
+    day = d.day;
+
+    init_test_this_ptr = this; //Reset this pointer, do not copy it from the other date.
+}
+
+
+
+
 Date::Date(int year, int month, int day) {
     REQUIRE(year > 0, "Year can not be negative!");
     REQUIRE(month > 0, "Month can not be negative!");

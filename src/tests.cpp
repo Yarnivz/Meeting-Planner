@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include "DateTest.cpp"
+#include "DateTest.h"
+#include "MeetingTest.h"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
