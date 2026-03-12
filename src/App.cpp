@@ -32,130 +32,141 @@ void App::parseFile(const std::string& filename)
     {
         std::cerr << "Failed to load file: No root element." << std::endl;
         doc.Clear();
-    } else
+        return;
+    }
+    for (TiXmlElement* rootChildElement = root->FirstChildElement(); rootChildElement != NULL; rootChildElement = rootChildElement->NextSiblingElement())
     {
-        try
+        if (std::string(rootChildElement->Value()) == "ROOM" && rootChildElement->FirstChild() != NULL)
         {
-            for (TiXmlElement* rootChildElement = root->FirstChildElement(); rootChildElement != NULL; rootChildElement = rootChildElement->NextSiblingElement())
+            std::string name, identifier, capacity;
+
+            for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
             {
-                if (std::string(rootChildElement->Value()) == "ROOM" && rootChildElement->FirstChild() != NULL)
+                if (currentElement->FirstChild() != NULL)
                 {
-                    std::string name, identifier;
-                    unsigned int capacity = 0;
-                    for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
+                    std::string tempElementChildValue = currentElement->FirstChild()->Value();
+                    if (std::string(currentElement->Value()) == "NAME")
                     {
-                        if (currentElement->FirstChild() != NULL)
-                        {
-                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
-                            if (std::string(currentElement->Value()) == "NAME")
-                            {
-                                name = tempElementChildValue;
-                            } else if (std::string(currentElement->Value()) == "IDENTIFIER")
-                            {
-                                identifier = tempElementChildValue;
-                            } else if (std::string(currentElement->Value()) == "CAPACITY")
-                            {
-                                try
-                                {
-                                    capacity = std::stoi(tempElementChildValue);
-                                } catch (const std::exception& e)
-                                {
-                                    std::cerr << e.what() << " (could not convert room capacity from string to int defaulting to 303)" << std::endl;
-                                }
-                            }
-                        }
-                    }
-                    try
+                        name = tempElementChildValue;
+                    } else if (std::string(currentElement->Value()) == "IDENTIFIER")
                     {
-                        rooms[identifier] = new Room(name, identifier, capacity);
-                    } catch (std::exception& e)
+                        identifier = tempElementChildValue;
+                    } else if (std::string(currentElement->Value()) == "CAPACITY")
                     {
-                        std::cerr << e.what() << " (could not assign a value to a specific room/add it to the map of rooms)" << std::endl;
-                    }
-                } else if (std::string(rootChildElement->Value()) == "MEETING")
-                {
-                    std::string label, identifier, room, dateString;
-                    int day, month, year;
-
-                    for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
-                    {
-                        if (currentElement->FirstChild() != NULL)
-                        {
-                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
-                            if (std::string(currentElement->Value()) == "LABEL")
-                            {
-                                label = tempElementChildValue;
-                            } else if (std::string(currentElement->Value()) == "IDENTIFIER")
-                            {
-                                identifier = tempElementChildValue;
-                            } else if (std::string(currentElement->Value()) == "ROOM")
-                            {
-                                room = std::string(currentElement->FirstChild()->Value());
-                            } else if (std::string(currentElement->Value()) == "DATE")
-                            {
-                                dateString = std::string(currentElement->FirstChild()->Value());
-                            }
-                        }
-                    }
-                    try
-                    {
-                        day   = std::stoi(dateString.substr(8, 2));
-                        month = std::stoi(dateString.substr(5, 2));
-                        year  = std::stoi(dateString.substr(0, 4));
-                    } catch (const std::exception& e)
-                    {
-                        std::cerr << e.what() << " (make sure the date syntax follows xx/xx/xxxx, defaulting to 0000/00/00) " << std::endl;
-                        day = 00;
-                        month = 00;
-                        year = 0000;
-                    }
-                    Date date(year, month, day);
-                    try
-                    {
-                        meetings[identifier] = new Meeting(label, identifier, room, date);
-                    } catch (std::exception& e)
-                    {
-                        std::cerr << e.what() << " (could not assign a value to a specific meeting/add it to the map of meetings)" << std::endl;
-                    }
-
-                } else if (std::string(rootChildElement->Value()) == "PARTICIPATION")
-                {
-                    std::string meeting, user;
-
-                    for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
-                    {
-                        if (currentElement->FirstChild() != NULL)
-                        {
-                            std::string tempElementChildValue = currentElement->FirstChild()->Value();
-                            if (std::string(currentElement->Value()) == "MEETING")
-                            {
-                                meeting = tempElementChildValue;
-                            } else if (std::string(currentElement->Value()) == "USER")
-                            {
-                                user = tempElementChildValue;
-                            }
-                        }
-                    }
-                    try
-                    {
-                        Participation* participation = new Participation(user, meeting);
-                        participation_lists[meeting].push_back(participation);
-                    } catch (std::exception& e)
-                    {
-                        std::cerr << e.what() << " (could not assign a value to a specific participation/add it to the map of participations)" << std::endl;
+                        capacity = tempElementChildValue;
                     }
                 }
-
             }
 
-            ENSURE(!rooms.empty(), "Rooms cannot be empty.");
-            ENSURE(!meetings.empty(), "Meeting cannot be empty.");
-            ENSURE(!participation_lists.empty(), "Participations cannot be empty.");
+            int capacityInt = 0;
+            //Check if Capacity can be converted to an int
+            try {
+                capacityInt = std::stoi(capacity);
+            } catch (std::exception& except) {
+                std::cerr << "Capacity could not be converted to an integer. Room will not be added \n\t- " << except.what() << std::endl;
+                continue;
+            }
+            //Check if Capacity is larger than 0
+            if (capacityInt <= 0) {
+                std::cerr << "Room capacity needs to be larger than 0. Room will not be added." << std::endl;
+                continue;
+            }
+            //Check if Id is not empty
+            if (identifier.empty()) {
+                std::cerr << "Room identifier cannot be empty or non-existent. Room will not be added." << std::endl;
+                continue;
+            }
+            //Check if Name is not empty
+            if (name.empty()) {
+                std::cerr << "Room name cannot be empty or non-existent. Room will not be added." << std::endl;
+                continue;
+            }
+            //Add room if all the checks have passed
+            addRoom(new Room(name, identifier, capacityInt));
 
-        } catch (std::exception& e)
+        } else if (std::string(rootChildElement->Value()) == "MEETING")
         {
-            std::cerr << e.what() << " (something unaccounted for went wrong while parsing the xml file)" << std::endl;
+            std::string label, identifier, room, dateString;
+            int day, month, year;
+
+            for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
+            {
+                if (currentElement->FirstChild() != NULL)
+                {
+                    std::string tempElementChildValue = currentElement->FirstChild()->Value();
+                    if (std::string(currentElement->Value()) == "LABEL")
+                    {
+                        label = tempElementChildValue;
+                    } else if (std::string(currentElement->Value()) == "IDENTIFIER")
+                    {
+                        identifier = tempElementChildValue;
+                    } else if (std::string(currentElement->Value()) == "ROOM")
+                    {
+                        room = tempElementChildValue;
+                    } else if (std::string(currentElement->Value()) == "DATE")
+                    {
+                        dateString = tempElementChildValue;
+                    }
+                }
+            }
+            //Check if Date is valid
+            try {
+                day   = std::stoi(dateString.substr(8, 2));
+                month = std::stoi(dateString.substr(5, 2));
+                year  = std::stoi(dateString.substr(0, 4));
+            } catch (std::exception& except) {
+                std::cerr << "Date value could not be converted to a date format: \n\t- " << except.what() << std::endl;
+                continue;
+            }
+            //Check if Id is not empty
+            if (identifier.empty()) {
+                std::cerr << "Meeting identifier cannot be empty or non-existent. Meeting will not be added." << std::endl;
+                continue;
+            }
+            //Check if Label is not empty
+            if (label.empty()) {
+                std::cerr << "Meeting label cannot be empty or non-existent. Meeting will not be added." << std::endl;
+                continue;
+            }
+            //Check if Room is not empty
+            if (label.empty()) {
+                std::cerr << "Meeting room cannot be empty or non-existent. Meeting will not be added." << std::endl;
+                continue;
+            }
+            Date date(year, month, day);
+            addMeeting(new Meeting(label, identifier, room, date));
+
+        } else if (std::string(rootChildElement->Value()) == "PARTICIPATION")
+        {
+            std::string meeting, user;
+
+            for (TiXmlElement* currentElement = rootChildElement->FirstChildElement(); currentElement != NULL; currentElement = currentElement->NextSiblingElement())
+            {
+                if (currentElement->FirstChild() != NULL)
+                {
+                    std::string tempElementChildValue = currentElement->FirstChild()->Value();
+                    if (std::string(currentElement->Value()) == "MEETING")
+                    {
+                        meeting = tempElementChildValue;
+                    } else if (std::string(currentElement->Value()) == "USER")
+                    {
+                        user = tempElementChildValue;
+                    }
+                }
+            }
+            //Check if meeting is not empty
+            if (meeting.empty()) {
+                std::cerr << "Meeting cannot be empty or non-existent. Participation will not be added." << std::endl;
+                continue;
+            }
+            //Check if user is not empty
+            if (user.empty()) {
+                std::cerr << "User cannot be empty or non-existent. Participation will not be added." << std::endl;
+                continue;
+            }
+            addParticipation(new Participation(user, meeting));
         }
+
     }
 }
 

@@ -1,10 +1,8 @@
 #include <iostream>
 #include "App.h"
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-
     App app;
-    app.parseFile("test.xml");
+    app.parseFile("test-files/WrongData1.xml");
     app.processMeetings();
     return 0;
 }
