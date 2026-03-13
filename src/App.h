@@ -76,6 +76,18 @@ public:
      */
     Meeting* getMeeting(const std::string& meetingId);
 
+    Meeting *getCanceledMeeting(const std::string &meetingId);
+
+    Meeting *getDoneMeeting(const std::string &meetingId);
+
+    void cancelMeeting(const std::string &meetingId);
+
+    void uncancelMeeting(const std::string &meetingId);
+
+    void doMeeting(const std::string &meetingId);
+
+    void undoMeeting(const std::string &meetingId);
+
     /**
      * @brief Register a participation.
      *
@@ -127,9 +139,11 @@ private:
 
 
     Rooms rooms;
+
     Meetings all_meetings;
     Meetings ongoing_meetings;
     Meetings cancelling_meetings;
+
     MeetingsByRoomMap meetings_by_room;
 
     Participations all_participations;
