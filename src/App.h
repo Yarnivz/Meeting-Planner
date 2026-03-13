@@ -180,7 +180,7 @@ public:
      * @brief Cancel a meeting.
      *
      * @param meetingId of the meeting to cancel.
-     * @param reason
+     * @param reason for the cancellation (may be left empty)
      */
     void cancelMeeting(const std::string &meetingId, const std::string &reason = "");
 
