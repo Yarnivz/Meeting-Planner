@@ -480,24 +480,41 @@ void App::writeToStream(std::ostream& onStream) {
 
 void App::processMeetings()
 {
-    for (auto it = all_meetings.begin(); it != all_meetings.end(); ++it)
+    for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
     {
-        REQUIRE(it->second->isProperlyInitialized(), "this meeting has not been properly loaded");
-        std::string thisMeetingId = it->second->getId();
-        std::cout << thisMeetingId << " has taken place" << std::endl;
-        for (auto it2 = all_meetings.begin(); it2 != all_meetings.end(); ++it2)
+        Meeting* meeting = it->second;
+        REQUIRE(meeting->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
+        if (/*isRoomOccupied(meeting->getRoomId(), meeting->getDate())*/1==1)
         {
-            REQUIRE(it2->second->isProperlyInitialized(), "other meeting has not been properly loaded");
-            std::string otherMeetingId = it2->second->getId();
-            if (it->second->getRoomId() == it2->second->getRoomId())
+            std::cout << meeting->getDate() << std::endl;
+            bool foundConflictingMeeting = false;
+            const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
+            for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
             {
-                std::cerr<< otherMeetingId <<  " shares the same room with " <<  thisMeetingId << ", cancelling " << otherMeetingId << std::endl;
-                delete it->second;
-                all_meetings.erase(it2);
+                REQUIRE(it2->second->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
+                if (ongoing_meetings.contains(it2->first))
+                {
+                    foundConflictingMeeting = true;
+                }
             }
+            if (foundConflictingMeeting)
+            {
+                cancelling_meetings.insert({meeting->getId(), meeting});
+                std::cout << it->second->getId() << " has been cancelled due to the room being already occupied" << std::endl;
+            } else
+            {
+                ongoing_meetings.insert({meeting->getId(), meeting});
+
+                std::cout << it->second->getId() << " has taken place" << std::endl;
+            }
+        } else
+        {
+            ongoing_meetings.insert({meeting->getId(), meeting});
+            std::cout << it->second << " has taken place" << std::endl;
         }
-        std::cout << it->second << std::endl;
     }
+
+    ENSURE(!ongoing_meetings.empty() == 1, "A meeting has not taken place");
 }
 
 void App::addRoom(Room *room) {
@@ -694,12 +711,19 @@ void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
     const Date date{meeting->getDate()};
     onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << date.getWeekDay() << " " << date << std::endl;
     onStream << "  " << *meeting << std::endl;
+    const Participations* participations = getParticipationsByMeeting(meeting->getId());
+    onStream << "  ";
+    for (Participation* participation : *participations) {
+        onStream << participation->getUser();
+        if (participation != participations->back()) onStream << ", ";
+    }
+    onStream << std::endl;
     onStream << "  Meeting ID: " << meeting->getId() << std::endl;
 }
 
 void App::writeRoom(std::ostream &onStream, const Room *room) {
     onStream << "- " << *room << std::endl;
-    onStream << "  Capacity: " << room->getCapacity() << " people";
+    onStream << "  Capacity: " << room->getCapacity() << " people" << std::endl;
 }
 
 Meetings * App::_getMutMeetingsByRoom(const std::string &roomId) {
