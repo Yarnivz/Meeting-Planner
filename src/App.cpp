@@ -475,7 +475,6 @@ void App::writeToStream(std::ostream& onStream) {
     for (const std::pair<const std::string, Meeting *>& item : cancelling_meetings) {
         const Meeting* meeting = item.second;
         writeMeeting(onStream, meeting);
-        onStream << canceled_meeting_reasons.at(meeting->getId()) << std::endl;
     }
 
     //Write all rooms
@@ -489,7 +488,7 @@ void App::writeToStream(std::ostream& onStream) {
 
 void App::processSingleMeeting(const std::string &meetingId)
 {
-    Meeting* meeting = getMeeting(meetingId);
+    Meeting* meeting = all_meetings.find(meetingId)->second;
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
     //bool meetingPassed = false;
@@ -508,7 +507,7 @@ void App::processSingleMeeting(const std::string &meetingId)
         if (foundConflictingMeeting)
         {
             cancelMeeting(meetingId, "TODO");
-            std::cout << meeting->getId() << " has been cancelled due to the room being already occupied by another meeting" << std::endl;
+            std::cout << meeting->getId() << " has been cancelled due to " + getCancellationReason(meeting->getId()) << std::endl;
         } else
         {
             ongoing_meetings.insert({meeting->getId(), meeting});
