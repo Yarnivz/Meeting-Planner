@@ -28,13 +28,32 @@ public:
      */
     App();
 
+    /**
+     * @brief Checks whether the App was properly initialized by the constructor.
+     * @return bool indicating result
+     */
     bool isProperlyInitialized() const;
 
     /**
-    * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
-    * @param filename
+    * @brief Parse an xml file, and registers all items specified in that file.
+    *
+    * Read in and parse an xml file.
+    * All meetings, rooms and participations specified in the xml file are registered in the app.
+    *
+    * If there is an error with a single item, the parser will attempt to recover and skip over that item.
+    * If an unrecoverable error occurs, the parser exits without changing anything.
+    *
+    * @param filename of the .xml file to parse
     */
     void parseFile(const std::string& filename);
+
+    /**
+     * @brief Print all meetings and rooms to a stream
+     *
+     * Prints all registered meetings and rooms to the given ostream.
+     *
+     * @param onStream to write to
+     */
     void writeToStream(std::ostream& onStream);
 
     /**
@@ -56,6 +75,39 @@ public:
     Room* getRoom(const std::string& roomId);
 
     /**
+     * @brief Retrieve a map of all registered rooms
+     *
+     * Retrieves a map of all registered rooms.
+     * With key == room-id and value == room-pointer
+     *
+     * @return a map of all registered rooms
+     */
+    const Rooms &getAllRooms() const;
+
+    /**
+     * @brief Check if the room with given id is occupied by another meeting, on the given date.
+     *
+     * Checks if the room with given id is occupied by another meeting, on the given date.
+     *
+     * A room is occupied iff:
+     *   -A meeting takes place in that room.
+     *   -That meeting takes place on the given date
+     *   -The meeting was registered as 'done' by the meeting processor
+     *
+     *
+     * @param roomId of the room to check
+     * @param date to check
+     * @return bool indicating the result
+     */
+    bool isRoomOccupied(const std::string& roomId, const Date& date);
+
+
+
+
+
+
+
+    /**
      * @brief Register and plan a meeting.
      *
      * Register and plan a new meeting.
@@ -65,28 +117,93 @@ public:
      */
     void addMeeting(Meeting* meeting);
 
-
+    /**
+     * @brief Retrieve a meeting based on its id and the id of the room it takes place in.
+     *
+     * @param meetingId of the meeting to retrieve
+     * @param roomId of the room the meeting takes place in
+     * @return a pointer to the correct meeting. Returns nullptr if the meeting was not found for that room.
+     */
     Meeting* getMeetingInRoom(const std::string& meetingId, const std::string& roomId);
 
     /**
      * @brief Retrieve a meeting based on its id.
      *
-     * @param meetingId id of the meeting to retrieve
-     * @return a pointer to the meeting with given id if it exists, nullptr otherwise
+     * @param meetingId of the meeting to retrieve
+     * @return a pointer to the meeting; nullptr if the meeting was not found.
      */
     Meeting* getMeeting(const std::string& meetingId);
 
+
+    /**
+     * @brief Retrieve a map of all registered meetings
+     *
+     * Retrieves a map of all registered meetings.
+     * With key == meeting-id and value == meeting-pointer
+     *
+     * @return a map of all registered meetings
+     */
+    const Meetings& getAllMeetings() const;
+
+
+    /**
+     * @brief Retrieve a map of all registered meetings in a given room
+     *
+     * Retrieves a map of all registered meetings that take place in the given room.
+     * With key == meeting-id and value == meeting-pointer.
+     *
+     * @param roomId of the room to search
+     * @return a map of all registered meetings
+     */
+    const Meetings *getMeetingsByRoom(const std::string &roomId);
+
+
+    /**
+     * @brief Retrieve a canceled meeting based on its id.
+     *
+     * @param meetingId of the meeting to retrieve
+     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't canceled.
+     */
     Meeting *getCanceledMeeting(const std::string &meetingId);
 
+    /**
+     * @brief Retrieve a processed meeting based on its id.
+     *
+     * @param meetingId of the meeting to retrieve
+     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't processed.
+     */
     Meeting *getDoneMeeting(const std::string &meetingId);
 
+    /**
+     * @brief Cancel a meeting.
+     *
+     * @param meetingId of the meeting to cancel.
+     */
     void cancelMeeting(const std::string &meetingId);
 
+    /**
+     * @brief Uncancel a meeting.
+     *
+     * @param meetingId of the meeting to uncancel.
+     */
     void uncancelMeeting(const std::string &meetingId);
 
+    /**
+     * @brief 'Does' a meeting.
+     *
+     * @param meetingId of the meeting to do.
+     */
     void doMeeting(const std::string &meetingId);
 
+    /**
+     * @brief 'Undoes' a meeting.
+     *
+     * @param meetingId of the meeting to undo.
+     */
     void undoMeeting(const std::string &meetingId);
+
+
+
 
     /**
      * @brief Register a participation.
@@ -102,26 +219,47 @@ public:
     /**
      * @brief Retrieve a list of all participations concerning the given user.
      *
-     * @param userId user for which to return all participations
-     * @return a const pointer to the requested list, if it exists;\n
-     *         nullptr otherwise (if the user has no registered participations)
+     * @param userId of the user for which to return all participations
+     * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
      */
-    //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
     const Participations* getParticipationsByUser(const std::string &userId);
 
+    /**
+     * @brief Retrieve a list of all participations concerning the given meeting.
+     *
+     * @param meetindId of the meeting for which to return all participations
+     * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the meeting has no registered participations)
+     */
     const Participations *getParticipationsByMeeting(const std::string &meetindId);
 
-    const Meetings *getMeetingsByRoom(const std::string &roomId);
 
-
-    const Meetings& getAllMeetings() const;
+    /**
+     * @brief Retrieve a list of all registered participations
+     *
+     * @return a list of all registered participations
+     */
     const Participations &getAllParticipations() const;
 
-    const Rooms &getAllRooms() const;
 
 
-    bool isRoomOccupied(const std::string& roomId, const Date& date);
+    /**
+     * @brief Check if the user with given id is occupied by another meeting, on the given date.
+     *
+     * Checks if the user with given id is occupied by another meeting, on the given date.
+     *
+     * A user is occupied iff:
+     *   -The user participates in some meeting.
+     *   -That meeting takes place on the given date
+     *   -The meeting was registered as 'done' by the meeting processor
+     *
+     *
+     * @param userId of the user to check
+     * @param date to check
+     * @return bool indicating the result
+     */
     bool isUserOccupied(const std::string& userId, const Date& date);
+
+
 
     void processSingleMeeting(const std::string &meetingId);
     void processMeetings();
