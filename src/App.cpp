@@ -110,7 +110,7 @@ void App::parseFile(const std::string& filename)
                     capacity = tempElementChildValue;
                 } else {
                     //> Filter out any other unrecognized tags
-                    std::cerr << "Unrecongized property for ROOM: \"" << propertyElementType << "\"" << std::endl;
+                    std::cerr << "Unrecognized property for ROOM: \"" << propertyElementType << "\"" << std::endl;
                     goto continue_to_next_object_element;
                 }
             }
@@ -149,13 +149,13 @@ void App::parseFile(const std::string& filename)
 
             //> Check if id is not empty
             if (identifier.empty()) {
-                std::cerr << "Room identifier cannot be empty or non-existent. Room will not be added." << std::endl;
+                std::cerr << "Room identifier cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if Name is not empty
             if (name.empty()) {
-                std::cerr << "Room name cannot be empty or non-existent. Room will not be added." << std::endl;
+                std::cerr << "Room name cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -245,19 +245,19 @@ void App::parseFile(const std::string& filename)
 
             //> Check if all required properties were provided
             if (!found_id) {
-                std::cerr << "ROOM must have a IDENTIFIER property" << std::endl;
+                std::cerr << "MEETING must have a IDENTIFIER property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_label) {
-                std::cerr << "ROOM must have a LABEL property" << std::endl;
+                std::cerr << "MEETING must have a LABEL property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_room) {
-                std::cerr << "ROOM must have a ROOM property" << std::endl;
+                std::cerr << "MEETING must have a ROOM property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_datestring) {
-                std::cerr << "ROOM must have a DATE property" << std::endl;
+                std::cerr << "MEETING must have a DATE property" << std::endl;
                 goto continue_to_next_object_element;
             }
 
