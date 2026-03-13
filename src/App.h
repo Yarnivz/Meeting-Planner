@@ -31,7 +31,10 @@ public:
     bool isProperlyInitialized() const;
 
     /**
+    *@brief Extract data from xml file.
+    *
     * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
+    *
     * @param filename
     */
     void parseFile(const std::string& filename);
@@ -123,7 +126,19 @@ public:
     bool isRoomOccupied(const std::string& roomId, const Date& date);
     bool isUserOccupied(const std::string& userId, const Date& date);
 
+    /**
+    *@brief Check this planned meeting for conflicting rooms/dates.
+    *
+    * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
+    *
+    *@param meetingId Id of the meeting to retrieve.
+    */
     void processSingleMeeting(const std::string &meetingId);
+    /**
+    *@brief Checks all planned meeting entries for conflicting rooms/dates.
+    *
+    * Checks if all meeting entries plans conflict with eachother and cancels/plans it accordingly.
+    */
     void processAllMeetings();
     ~App();
 
