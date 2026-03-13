@@ -222,6 +222,7 @@ public:
      * @param userId of the user for which to return all participations
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
      */
+    //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
     const Participations* getParticipationsByUser(const std::string &userId);
 
     /**
@@ -259,9 +260,19 @@ public:
      */
     bool isUserOccupied(const std::string& userId, const Date& date);
 
-
-
+    /**
+    *@brief Check this planned meeting for conflicting rooms/dates.
+    *
+    * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
+    *
+    *@param meetingId Id of the meeting to retrieve.
+    */
     void processSingleMeeting(const std::string &meetingId);
+    /**
+    *@brief Checks all planned meeting entries for conflicting rooms/dates.
+    *
+    * Checks if all meeting entries plans conflict with eachother and cancels/plans it accordingly.
+    */
     void processAllMeetings();
     ~App();
 

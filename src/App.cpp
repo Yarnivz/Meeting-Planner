@@ -499,8 +499,8 @@ void App::processSingleMeeting(const std::string &meetingId)
         }
         if (foundConflictingMeeting)
         {
-            cancelling_meetings.insert({meeting->getId(), meeting});
-            std::cout << meeting->getId() << " has been cancelled due to the room being already occupied" << std::endl;
+            cancelMeeting(meetingId);
+            std::cout << meeting->getId() << " has been cancelled due to the room being already occupied by another meeting" << std::endl;
         } else
         {
             ongoing_meetings.insert({meeting->getId(), meeting});
@@ -513,6 +513,7 @@ void App::processSingleMeeting(const std::string &meetingId)
         std::cout << meeting->getId() << " has taken place" << std::endl;
         meetingPassed = true;
     }
+    //seems unnecessary to exit for just that instead of replanning, possibly change later?
     ENSURE(meetingPassed, "This meeting has not taken place");
 }
 
@@ -525,6 +526,7 @@ void App::processAllMeetings()
         REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
         processSingleMeeting(currentMeeting->getId());
     }
+    //seems unnecessary to exit for just that instead of replanning, possibly change later?
     ENSURE(cancelling_meetings.empty() == 1, "Not all meetings have taken place");
 }
 
