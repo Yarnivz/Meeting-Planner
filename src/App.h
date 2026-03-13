@@ -262,7 +262,7 @@ public:
 
 
     void processSingleMeeting(const std::string &meetingId);
-    void processMeetings();
+    void processAllMeetings();
     ~App();
 
 

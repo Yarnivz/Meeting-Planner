@@ -484,9 +484,9 @@ void App::processSingleMeeting(const std::string &meetingId)
     Meeting* meeting = all_meetings.find(meetingId)->second;
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    bool meetingPassed = false;
     if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
     {
-        std::cout << "yoink" << std::endl;
         bool foundConflictingMeeting = false;
         const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
         for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
@@ -504,20 +504,28 @@ void App::processSingleMeeting(const std::string &meetingId)
         } else
         {
             ongoing_meetings.insert({meeting->getId(), meeting});
-
             std::cout << meeting->getId() << " has taken place" << std::endl;
+            meetingPassed = true;
         }
     } else
     {
         ongoing_meetings.insert({meeting->getId(), meeting});
         std::cout << meeting->getId() << " has taken place" << std::endl;
+        meetingPassed = true;
     }
-ENSURE(!ongoing_meetings.empty() == 1, "A meeting has not taken place");
+    ENSURE(meetingPassed, "This meeting has not taken place");
 }
 
-void App::processMeetings()
+void App::processAllMeetings()
 {
-
+    for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
+    {
+        Meeting* currentMeeting = it->second;
+        REQUIRE(currentMeeting, "Meeting can not be null.");
+        REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+        processSingleMeeting(currentMeeting->getId());
+    }
+    ENSURE(cancelling_meetings.empty() == 1, "Not all meetings have taken place");
 }
 
 void App::addRoom(Room *room) {
