@@ -470,6 +470,13 @@ void App::writeToStream(std::ostream& onStream) {
 
     }
 
+    //Write all conflicts
+    if (!cancelling_meetings.empty()) onStream << std::endl << "Conflicts:" << std::endl;
+    for (const std::pair<const std::string, Meeting *>& item : cancelling_meetings) {
+        const Meeting* meeting = item.second;
+        writeMeeting(onStream, meeting);
+    }
+
     //Write all rooms
     if (!rooms.empty()) onStream << std::endl << "Rooms:" << std::endl;
     for (const std::pair<std::string, Room*> item : rooms) {
