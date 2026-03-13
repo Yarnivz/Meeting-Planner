@@ -3,6 +3,9 @@
 //
 
 #include "App.h"
+
+#include <filesystem>
+#include <queue>
 #include <tinyxml.h>
 #include "DesignByContract.h"
 
@@ -510,8 +513,8 @@ void App::processSingleMeeting(const std::string &meetingId)
         }
         if (foundConflictingMeeting)
         {
-            cancelMeeting(meetingId, "TODO");
-            std::cout << meeting->getId() << " has been cancelled due to " + getCancellationReason(meeting->getId()) << std::endl;
+            cancelMeeting(meetingId, "room has already been occupied by another meeting");
+            std::cout << meeting->getId() << " has been cancelled due to '" + getCancellationReason(meeting->getId()) << "'" << std::endl;
             meetingProcessed = true;
         } else
         {
@@ -531,9 +534,24 @@ void App::processSingleMeeting(const std::string &meetingId)
 
 void App::processAllMeetings()
 {
+    std::vector<Meeting*> sortedMeetings;
     for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
     {
-        Meeting* currentMeeting = it->second;
+        sortedMeetings.push_back(it->second);
+    }
+    std::sort(sortedMeetings.begin(), sortedMeetings.end(), [](Meeting* comparedMeeting1, Meeting* comparedMeeting2)
+    {
+        if (comparedMeeting1->getDate() != comparedMeeting2->getDate())
+        {
+            return comparedMeeting1->getDate() < comparedMeeting2->getDate();
+        }
+        return comparedMeeting1->getId() < comparedMeeting2->getId();
+    });
+
+    for (size_t i = 0; i < sortedMeetings.size(); ++i)
+    {
+
+        Meeting* currentMeeting = sortedMeetings[i];
         REQUIRE(currentMeeting, "Meeting can not be null.");
         REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
         processSingleMeeting(currentMeeting->getId());
@@ -547,7 +565,6 @@ void App::addRoom(Room *room) {
     REQUIRE(room, "The provided room cannot be null.");
     REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
     REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
-
 
     rooms.insert({room->getId(), room});          // Add room
     meetings_by_room.insert({room->getId(), {}}); // Add empty meetings map

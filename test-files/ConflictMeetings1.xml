@@ -22,6 +22,12 @@
         <DATE>2026-03-12</DATE>
     </MEETING>
     <MEETING>
+        <LABEL>CSA info session 2</LABEL>
+        <IDENTIFIER>Meeting_00004</IDENTIFIER>
+        <ROOM>m027482</ROOM>
+        <DATE>2026-03-11</DATE>
+    </MEETING>
+    <MEETING>
         <LABEL>Mathematics for dummies</LABEL>
         <IDENTIFIER>Meeting_00003</IDENTIFIER>
         <ROOM>m045022</ROOM>
