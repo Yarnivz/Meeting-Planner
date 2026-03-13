@@ -99,4 +99,46 @@ TEST_F(WriteToStreamTest, Empty) {
     EXPECT_TRUE(file_is_empty(actual));
 }
 
+TEST_F(WriteToStreamTest, Processed) {
+    App p = App();
+    EXPECT_TRUE(p.isProperlyInitialized());
+
+    Date date1 = Date(2026, 12, 12);
+    Date date2 = Date(2026, 1, 1);
+
+    p.addRoom(new Room("M.G.025", "MG025", 20));
+    p.addRoom(new Room("G.T.103", "GT103", 20));
+
+    p.addMeeting(new Meeting("Important Meeting 1", "m1", "MG025" , date1));
+    p.addMeeting(new Meeting("Important Meeting 2", "m2", "MG025", date2));
+
+    p.addMeeting(new Meeting("Conflict", "m3", "MG025", date1));
+
+    p.addParticipation(new Participation("John Doe", "m1"));
+    p.addParticipation(new Participation("Peter Selie", "m1"));
+    p.addParticipation(new Participation("Jane Doe", "m1"));
+
+    p.addParticipation(new Participation("Alice", "m2"));
+    p.addParticipation(new Participation("Bob", "m2"));
+
+    p.addParticipation(new Participation("Charlie", "m3"));
+    p.addParticipation(new Participation("David", "m3"));
+
+    p.processAllMeetings();
+
+    const std::string actual = "test-files/Processed-actual.txt";
+    const std::string expected = "test-files/Processed-expected.txt";
+
+
+    std::ofstream f = std::ofstream(actual);
+    p.writeToStream(f);
+
+    EXPECT_TRUE(file_exists(actual));
+    EXPECT_TRUE(file_exists(expected));
+
+    EXPECT_TRUE(file_compare(actual, expected));
+}
+
+
+
 #endif //MEETING_PLANNER_WRITETOSTREAMTESTS_H
