@@ -8,11 +8,11 @@
 #include "gtest/gtest.h"
 #include "Participation.h"
 
-class ParticipationTest : public ::testing::Test {
+class ParticipationTests : public ::testing::Test {
 protected:
 };
 
-TEST_F(ParticipationTest, HappyDay) {
+TEST_F(ParticipationTests, HappyDay) {
     Participation p("John Doe", "my_meeting1");
     Participation articipation("Peter Selie", "my_meeting_9000_pro_max++");
 
@@ -25,12 +25,12 @@ TEST_F(ParticipationTest, HappyDay) {
     EXPECT_EQ("my_meeting_9000_pro_max++", articipation.getMeetingId());
 }
 
-TEST_F(ParticipationTest, ContractViolation) {
+TEST_F(ParticipationTests, ContractViolation) {
     EXPECT_DEATH(Participation p("Evil Meeting User With No Meeting Id", ""), "");
     EXPECT_DEATH(Participation p("", "no user :("), "");
 }
 
-TEST_F(ParticipationTest, CopyConstructor) {
+TEST_F(ParticipationTests, CopyConstructor) {
     Participation p1("me", "some_meeting");
     Participation p2 = p1;
 
@@ -42,7 +42,7 @@ TEST_F(ParticipationTest, CopyConstructor) {
     EXPECT_EQ("some_meeting", p2.getMeetingId());
 }
 
-TEST_F(ParticipationTest, ProperlyInitialized) {
+TEST_F(ParticipationTests, ProperlyInitialized) {
     Participation p1("user", "meeting");
     Participation* p2 = (Participation*) malloc(sizeof(Participation)); //Unsafe malloc
 
