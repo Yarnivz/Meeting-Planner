@@ -1,0 +1,26 @@
+
+Past meetings:
+- Room 2, Friday 02/01/2026
+  Meeting 4
+  
+  Meeting ID: m4
+- Room 2, Friday 02/01/2026
+  Meeting 3
+  John Doe
+  Meeting ID: m3
+- Room 1, Wednesday 04/03/2026
+  Meeting 2
+  
+  Meeting ID: m2
+- Room 1, Friday 02/01/2026
+  Meeting 1
+  Peter Selie
+  Meeting ID: m1
+
+Rooms:
+- Empty Room
+  Capacity: 1 people
+- Room 2
+  Capacity: 20 people
+- Room 1
+  Capacity: 20 people

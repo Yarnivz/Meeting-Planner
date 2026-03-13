@@ -166,6 +166,8 @@ public:
      */
     Meeting *getCanceledMeeting(const std::string &meetingId);
 
+    const std::string &getCancellationReason(const std::string &meetingId);
+
     /**
      * @brief Retrieve a processed meeting based on its id.
      *
@@ -178,8 +180,9 @@ public:
      * @brief Cancel a meeting.
      *
      * @param meetingId of the meeting to cancel.
+     * @param reason
      */
-    void cancelMeeting(const std::string &meetingId);
+    void cancelMeeting(const std::string &meetingId, const std::string &reason = "");
 
     /**
      * @brief Uncancel a meeting.
@@ -293,6 +296,7 @@ private:
     Meetings all_meetings;
     Meetings ongoing_meetings;
     Meetings cancelling_meetings;
+    std::unordered_map<std::string, std::string> canceled_meeting_reasons;
 
     MeetingsByRoomMap meetings_by_room;
 

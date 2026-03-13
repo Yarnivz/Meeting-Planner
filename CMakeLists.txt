@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Werror -O2")
 set(CMAKE_EXE_LINKER_FLAGS -pthread)
 
 # Set include dir
-include_directories(./gtest/include ./xml_parser/include)
+include_directories(./gtest/include ./xml_parser/include ./file_utils)
 
 # Set Library dir
 link_directories(gtest/lib)
@@ -53,7 +53,7 @@ set(RELEASE_SOURCE_FILES ./src/main.cpp)
 # Set source files for DEBUG target
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
-set(DEBUG_SOURCE_FILES src/tests.cpp)
+set(DEBUG_SOURCE_FILES src/tests.cpp file_utils/FileUtils.cpp)
 
 # Create RELEASE target
 add_executable(release_target ${RELEASE_SOURCE_FILES} ${COMMON_SOURCE_FILES} ${XML_PARSER_SOURCE})
