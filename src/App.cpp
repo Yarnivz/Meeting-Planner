@@ -475,6 +475,7 @@ void App::writeToStream(std::ostream& onStream) {
     for (const std::pair<const std::string, Meeting *>& item : cancelling_meetings) {
         const Meeting* meeting = item.second;
         writeMeeting(onStream, meeting);
+        onStream << canceled_meeting_reasons.at(meeting->getId()) << std::endl;
     }
 
     //Write all rooms
@@ -488,18 +489,18 @@ void App::writeToStream(std::ostream& onStream) {
 
 void App::processSingleMeeting(const std::string &meetingId)
 {
-    Meeting* meeting = all_meetings.find(meetingId)->second;
+    Meeting* meeting = getMeeting(meetingId);
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    bool meetingPassed = false;
+    //bool meetingPassed = false;
     if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
     {
         bool foundConflictingMeeting = false;
         const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
         for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
         {
-            REQUIRE(it2->second->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
-            if (ongoing_meetings.contains(it2->first))
+            ENSURE(it2->second->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
+            if (getDoneMeeting(it2->first))
             {
                 foundConflictingMeeting = true;
             }
@@ -512,16 +513,16 @@ void App::processSingleMeeting(const std::string &meetingId)
         {
             ongoing_meetings.insert({meeting->getId(), meeting});
             std::cout << meeting->getId() << " has taken place" << std::endl;
-            meetingPassed = true;
+            //meetingPassed = true;
         }
     } else
     {
         ongoing_meetings.insert({meeting->getId(), meeting});
         std::cout << meeting->getId() << " has taken place" << std::endl;
-        meetingPassed = true;
+        //meetingPassed = true;
     }
     //seems unnecessary to exit for just that instead of replanning, possibly change later?
-    ENSURE(meetingPassed, "This meeting has not taken place");
+    //ENSURE(meetingPassed, "This meeting has not taken place");
 }
 
 void App::processAllMeetings()
@@ -534,7 +535,7 @@ void App::processAllMeetings()
         processSingleMeeting(currentMeeting->getId());
     }
     //seems unnecessary to exit for just that instead of replanning, possibly change later?
-    ENSURE(cancelling_meetings.empty() == 1, "Not all meetings have taken place");
+    //ENSURE(cancelling_meetings.empty() == 1, "Not all meetings have taken place");
 }
 
 void App::addRoom(Room *room) {
