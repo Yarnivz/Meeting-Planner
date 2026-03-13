@@ -111,6 +111,7 @@ public:
     bool isRoomOccupied(const std::string& roomId, const Date& date);
     bool isUserOccupied(const std::string& userId, const Date& date);
 
+    void processSingleMeeting(const std::string &meetingId);
     void processMeetings();
     ~App();
 
