@@ -17,8 +17,9 @@ public:
      * @param id identifier of the meeting
      * @param roomId identifier of the room where the meeting takes place
      * @param date of when the meeting takes/took place
+     * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date());
+    Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date(), int order = 0);
 
     bool isProperlyInitialized() const;
 
@@ -59,11 +60,16 @@ public:
     friend std::ostream& operator<<(std::ostream &os, const Meeting& meeting);
     void process();
     ~Meeting();
+protected:
+
+    int getOrder() const;
+
 private:
     std::string label;
     std::string id;
     std::string room;
     Date date;
+    int order;
 
     void* init_check_this_ptr;
 };

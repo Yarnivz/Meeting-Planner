@@ -44,6 +44,7 @@ void App::parseFile(const std::string& filename)
     std::list<Room*> rooms_parsed = {};
     std::list<Participation*> participations_parsed = {};
 
+    int meetingOrder = 1;
 
     for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement = objectElement->NextSiblingElement())
     {
@@ -305,7 +306,8 @@ void App::parseFile(const std::string& filename)
 
 
             //> Add meeting if all checks passed
-            meetings_parsed.push_back(new Meeting(label, identifier, room, Date(chrono_date)));
+            meetings_parsed.push_back(new Meeting(label, identifier, room, Date(chrono_date), meetingOrder));
+            meetingOrder+=1;
 
 
 
