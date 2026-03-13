@@ -1,0 +1,46 @@
+<SYSTEM>
+    <ROOM>
+        <NAME>M.G.026</NAME>
+        <IDENTIFIER>m027482</IDENTIFIER>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>M.G.128</NAME>
+        <IDENTIFIER>m045022</IDENTIFIER>
+        <CAPACITY>30</CAPACITY>
+    </ROOM>
+    <MEETING>
+        <LABEL>Seminar about Integrity</LABEL>
+        <IDENTIFIER>Meeting_00001</IDENTIFIER>
+        <ROOM>m045022</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>CSA info session</LABEL>
+        <IDENTIFIER>Meeting_00002</IDENTIFIER>
+        <ROOM>m027482</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Mathematics for dummies</LABEL>
+        <IDENTIFIER>Meeting_00003</IDENTIFIER>
+        <ROOM>m045022</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <PARTICIPATION>
+        <MEETING>Meeting_00001</MEETING>
+        <USER>Jane Doe</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>Meeting_00003</MEETING>
+        <USER>John Doe</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>Meeting_00002</MEETING>
+        <USER>Sam Pieters</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>Meeting_00002</MEETING>
+        <USER>Tim Apers</USER>
+    </PARTICIPATION>
+</SYSTEM>
