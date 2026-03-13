@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "DateTest.h"
-#include "MeetingTest.h"
-#include "ParticipationTest.h"
+#include "DateTests.h"
+#include "MeetingTests.h"
+#include "ParticipationTests.h"
 #include "RoomTest.h"
 
 int main(int argc, char **argv) {
