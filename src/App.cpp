@@ -844,6 +844,8 @@ App::~App() {
     for (Participation* p : all_participations) delete p;
 }
 
+
+
 void App::writeMeeting(std::ostream &onStream, const Meeting *meeting) {
     const Date date{meeting->getDate()};
     onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << date.getWeekDay() << " " << date << std::endl;
