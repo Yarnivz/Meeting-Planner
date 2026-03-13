@@ -499,7 +499,7 @@ void App::processSingleMeeting(const std::string &meetingId)
         }
         if (foundConflictingMeeting)
         {
-            cancelMeeting(meetingId);
+            cancelMeeting(meetingId, "TODO");
             std::cout << meeting->getId() << " has been cancelled due to the room being already occupied by another meeting" << std::endl;
         } else
         {
@@ -651,6 +651,19 @@ Meeting* App::getCanceledMeeting(const std::string& meetingId) {
     return it->second;
 }
 
+const std::string& App::getCancellationReason(const std::string& meetingId) {
+    REQUIRE(getCanceledMeeting(meetingId), "That meeting does not exist or it isn't cancelled");
+
+    const std::unordered_map<std::string, std::string>::iterator it = canceled_meeting_reasons.find(meetingId);
+
+    ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
+    ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
+
+    return it->second;
+}
+
+
+
 Meeting* App::getDoneMeeting(const std::string& meetingId) {
     const Meetings::iterator it = ongoing_meetings.find(meetingId);
 
@@ -663,13 +676,14 @@ Meeting* App::getDoneMeeting(const std::string& meetingId) {
 
 
 
-void App::cancelMeeting(const std::string& meetingId) {
+void App::cancelMeeting(const std::string& meetingId, const std::string& reason) {
     Meeting* m;
     REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
     REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was already canceled.");
     REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
 
     cancelling_meetings.insert({meetingId, m});
+    canceled_meeting_reasons.insert({meetingId, reason});
 
     ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not canceled.");
 }
@@ -681,6 +695,7 @@ void App::uncancelMeeting(const std::string& meetingId) {
     REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
 
     cancelling_meetings.erase(meetingId);
+    canceled_meeting_reasons.erase(meetingId);
 
     ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not uncanceled.");
 }
