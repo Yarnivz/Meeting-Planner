@@ -477,7 +477,7 @@ void App::writeToStream(std::ostream& onStream) {
     for (const std::pair<const std::string, Meeting *>& item : cancelling_meetings) {
         const Meeting* meeting = item.second;
         writeMeeting(onStream, meeting);
-        onStream << getCanceledMeeting(meeting->getId()) << std::endl;
+        onStream << getCancellationReason(meeting->getId()) << std::endl;
     }
 
     //Write all rooms
