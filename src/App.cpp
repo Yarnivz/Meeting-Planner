@@ -404,6 +404,7 @@ void App::parseFile(const std::string& filename)
     }
 
 
+
     //> Add all elements in the correct order
     //  Final integrity checks
 
@@ -483,10 +484,9 @@ void App::processSingleMeeting(const std::string &meetingId)
     Meeting* meeting = all_meetings.find(meetingId)->second;
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    REQUIRE(!all_meetings.contains(meeting->getId()), "Meetings Id needs to be unique!");
-    if (/*isRoomOccupied(meeting->getRoomId(), meeting->getDate())*/1==1)
+    if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
     {
-        std::cout << meeting->getDate() << std::endl;
+        std::cout << "yoink" << std::endl;
         bool foundConflictingMeeting = false;
         const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
         for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
@@ -540,6 +540,40 @@ Room* App::getRoom(const std::string& roomId) {
     ENSURE(it->second->getId() == roomId, "Something went wrong. The room which was found did not have the right id.");
     return it->second;
 }
+
+
+const Rooms & App::getAllRooms() const {
+    return rooms;
+}
+
+
+
+
+bool App::isRoomOccupied(const std::string &roomId, const Date& date) {
+    Meetings *mt_list = _getMutMeetingsByRoom(roomId);
+    REQUIRE(mt_list, "This room doesnt exist.");
+
+    for (Meetings::iterator it = mt_list->begin(); it != mt_list->end(); ++it) {
+        const Meeting* m = it->second;
+
+        if (getDoneMeeting(m->getId()) && m->getDate() == date)
+            return true;
+    }
+
+    return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 void App::addMeeting(Meeting *meeting) {
     REQUIRE(meeting, "Meeting can not be null.");
@@ -598,6 +632,99 @@ Meeting* App::getMeeting(const std::string& meetingId) {
     return it->second;
 }
 
+Meeting* App::getCanceledMeeting(const std::string& meetingId) {
+    const Meetings::iterator it = cancelling_meetings.find(meetingId);
+
+    if (it == cancelling_meetings.end()) return nullptr;
+
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
+    return it->second;
+}
+
+Meeting* App::getDoneMeeting(const std::string& meetingId) {
+    const Meetings::iterator it = ongoing_meetings.find(meetingId);
+
+    if (it == ongoing_meetings.end()) return nullptr;
+
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
+    return it->second;
+}
+
+
+
+
+void App::cancelMeeting(const std::string& meetingId) {
+    Meeting* m;
+    REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
+    REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was already canceled.");
+    REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+
+    cancelling_meetings.insert({meetingId, m});
+
+    ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not canceled.");
+}
+
+void App::uncancelMeeting(const std::string& meetingId) {
+    Meeting* m;
+    REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
+    REQUIRE(getCanceledMeeting(meetingId), "This meeting was not canceled.");
+    REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+
+    cancelling_meetings.erase(meetingId);
+
+    ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not uncanceled.");
+}
+
+void App::doMeeting(const std::string& meetingId) {
+    Meeting* m;
+    REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
+    REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meetings was canceled.");
+    REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done");
+
+    ongoing_meetings.insert({meetingId, m});
+
+    ENSURE(getDoneMeeting(meetingId) == m, "Something went wrong. The meeting was not done.");
+}
+
+void App::undoMeeting(const std::string& meetingId) {
+    Meeting* m;
+    REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
+    REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meetings was canceled.");
+    REQUIRE(getDoneMeeting(meetingId), "This meeting was not done.");
+
+    ongoing_meetings.erase(meetingId);
+
+    ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not undone.");
+
+}
+
+
+
+const Meetings & App::getAllMeetings() const {
+    return all_meetings;
+}
+
+const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
+    return _getMutMeetingsByRoom(roomId);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void App::addParticipation(Participation *participation) {
     REQUIRE(participation != nullptr, "Participation can not be null.");
     REQUIRE(participation->isProperlyInitialized(), "Participation needs to be properly initialized.");
@@ -644,6 +771,13 @@ void App::addParticipation(Participation *participation) {
 }
 
 
+
+
+
+const Participations & App::getAllParticipations() const {
+    return all_participations;
+}
+
 const Participations* App::getParticipationsByUser(const std::string &userId) {
     return _getMutParticipationsByUser(userId);
 }
@@ -655,37 +789,21 @@ const Participations* App::getParticipationsByMeeting(const std::string &meetind
 
 
 
-const Meetings & App::getAllMeetings() const {
-    return all_meetings;
-}
-
-const Participations & App::getAllParticipations() const {
-    return all_participations;
-}
 
 
 
-const Rooms & App::getAllRooms() const {
-    return rooms;
-}
-
-const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
-    return _getMutMeetingsByRoom(roomId);
-}
 
 
 
-bool App::isRoomOccupied(const std::string &roomId, const Date& date) {
-    Meetings *mt_list = _getMutMeetingsByRoom(roomId);
-    REQUIRE(mt_list, "This room doesnt exist.");
 
-    for (Meetings::iterator it = mt_list->begin(); it != mt_list->end(); ++it) {
-        Meeting* m = it->second;
-        if (m->getDate() == date) return true;
-    }
 
-    return false;
-}
+
+
+
+
+
+
+
 
 bool App::isUserOccupied(const std::string &userId, const Date &date) {
     Participations *prt_list = _getMutParticipationsByUser(userId);
@@ -703,6 +821,14 @@ bool App::isUserOccupied(const std::string &userId, const Date &date) {
 
     return false;
 }
+
+
+
+
+
+
+
+
 
 App::~App() {
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;

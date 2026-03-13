@@ -5,8 +5,8 @@
 
 int main() {
     App* app = new App();
-    app->parseFile("./test-files/HappyDay1.xml");
-    app->processMeetings();
+    app->parseFile("./test-files/HappyDay2.xml");
+    app->processSingleMeeting("Meeting_478463");
     std::ofstream fout("output.txt");
     app->writeToStream(fout);
     delete app;
