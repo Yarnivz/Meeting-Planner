@@ -491,7 +491,7 @@ void App::processSingleMeeting(const std::string &meetingId)
     Meeting* meeting = all_meetings.find(meetingId)->second;
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    bool meetingPassed = false;
+    //bool meetingPassed = false;
     if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
     {
         bool foundConflictingMeeting = false;
@@ -499,7 +499,7 @@ void App::processSingleMeeting(const std::string &meetingId)
         for (Meetings::const_iterator it2 = sameRoomMeetings->begin(); it2 != sameRoomMeetings->end(); ++it2)
         {
             REQUIRE(it2->second->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
-            if (ongoing_meetings.contains(it2->first))
+            if (getDoneMeeting(it2->second->getId()))
             {
                 foundConflictingMeeting = true;
             }
@@ -507,21 +507,21 @@ void App::processSingleMeeting(const std::string &meetingId)
         if (foundConflictingMeeting)
         {
             cancelMeeting(meetingId, "TODO");
-            std::cout << meeting->getId() << " has been cancelled due to the room being already occupied by another meeting" << std::endl;
+            std::cout << meeting->getId() << " has been cancelled due to " + getCancellationReason(meeting->getId()) << std::endl;
         } else
         {
             ongoing_meetings.insert({meeting->getId(), meeting});
             std::cout << meeting->getId() << " has taken place" << std::endl;
-            meetingPassed = true;
+            //meetingPassed = true;
         }
     } else
     {
         ongoing_meetings.insert({meeting->getId(), meeting});
         std::cout << meeting->getId() << " has taken place" << std::endl;
-        meetingPassed = true;
+        //meetingPassed = true;
     }
     //seems unnecessary to exit for just that instead of replanning, possibly change later?
-    ENSURE(meetingPassed, "This meeting has not taken place");
+    //ENSURE(meetingPassed, "This meeting has not taken place");
 }
 
 void App::processAllMeetings()
@@ -534,7 +534,7 @@ void App::processAllMeetings()
         processSingleMeeting(currentMeeting->getId());
     }
     //seems unnecessary to exit for just that instead of replanning, possibly change later?
-    ENSURE(cancelling_meetings.empty() == 1, "Not all meetings have taken place");
+    //ENSURE(cancelling_meetings.empty() == 1, "Not all meetings have taken place");
 }
 
 void App::addRoom(Room *room) {
