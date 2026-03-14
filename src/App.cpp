@@ -447,35 +447,18 @@ void App::parseFile(const std::string& filename)
 
 void App::writeToStream(std::ostream& onStream) {
 
-    std::list<Meeting*> today;
-    std::list<Meeting*> past;
-    std::list<Meeting*> future;
-    Date currentDate;
-    for (const std::pair<std::string, Meeting*> item : all_meetings) {
-        Meeting* meeting = item.second;
-        Date meetingDate = meeting->getDate();
-        if (meetingDate < currentDate) past.push_back(meeting);
-        else if (meetingDate > currentDate) future.push_back(meeting);
-        else today.push_back(meeting);
-    }
-
-    //Write all today's meetings
-    if (!today.empty()) onStream << std::endl << "Today's meetings:" << std::endl;
-    for (const Meeting* meeting : today) {
-        writeMeeting(onStream, meeting);
-    }
-
     //Write all past meetings
-    if (!past.empty()) onStream << std::endl << "Past meetings:" << std::endl;
-    for (const Meeting* meeting : past) {
+    if (!ongoing_meetings.empty()) onStream << std::endl << "Past meetings:" << std::endl;
+    for (const std::pair<std::string,Meeting*> item : ongoing_meetings) {
+        Meeting* meeting = item.second;
         writeMeeting(onStream, meeting);
     }
 
     //Write all future meetings
-    if (!future.empty()) onStream << std::endl << "Future meetings:" << std::endl;
-    for (const Meeting* meeting : future) {
+    if (!future_meetings.empty()) onStream << std::endl << "Future meetings:" << std::endl;
+    for (const std::pair<std::string, Meeting*> item : future_meetings) {
+        Meeting* meeting = item.second;
         writeMeeting(onStream, meeting);
-
     }
 
     //Write all conflicts
@@ -533,7 +516,7 @@ void App::processAllMeetings()
         {
             return comparedMeeting1->getDate() < comparedMeeting2->getDate();
         }
-        return comparedMeeting1->getOrder() > comparedMeeting2->getOrder();
+        return comparedMeeting1->getOrder() < comparedMeeting2->getOrder();
     });
 
     for (size_t i = 0; i < sortedMeetings.size(); ++i)
@@ -641,8 +624,9 @@ void App::addMeeting(Meeting *meeting) {
     ENSURE(mt_list, "Something went wrong, the meeting list was not found.");
 
 
-    all_meetings.insert({meeting->getId(), meeting}); // Insert into flat map by meetingId
-    mt_list->insert({meeting->getId(), meeting});     // Also into nested map by roomId => meetingId
+    all_meetings.insert({meeting->getId(), meeting});       // Insert into flat map by meetingId
+    future_meetings.insert({meeting->getId(), meeting});    // Also into future meetings
+    mt_list->insert({meeting->getId(), meeting});           // Also into nested map by roomId => meetingId
 
     participations_by_meeting.insert({meeting->getId(), {}}); // Insert empty participations list
 
@@ -707,7 +691,14 @@ Meeting* App::getDoneMeeting(const std::string& meetingId) {
     return it->second;
 }
 
+Meeting* App::getFutureMeeting(const std::string& meetingId) {
+    const Meetings::iterator it = future_meetings.find(meetingId);
 
+    if (it == future_meetings.end()) return nullptr;
+
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
+    return it->second;
+}
 
 
 void App::cancelMeeting(const std::string& meetingId, const std::string& reason) {
@@ -737,12 +728,16 @@ void App::uncancelMeeting(const std::string& meetingId) {
 void App::doMeeting(const std::string& meetingId) {
     Meeting* m;
     REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
-    REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meetings was canceled.");
+    REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was canceled.");
     REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done");
+    REQUIRE(getFutureMeeting(meetingId), "This meeting is not planned in for the future");
 
+
+    future_meetings.erase(meetingId);
     ongoing_meetings.insert({meetingId, m});
 
     ENSURE(getDoneMeeting(meetingId) == m, "Something went wrong. The meeting was not done.");
+    ENSURE(getFutureMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not deleted from future (unprocessed) meetings");
 }
 
 void App::undoMeeting(const std::string& meetingId) {

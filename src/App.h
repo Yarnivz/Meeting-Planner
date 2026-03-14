@@ -184,6 +184,14 @@ public:
     Meeting *getDoneMeeting(const std::string &meetingId);
 
     /**
+     * @brief Retrieve an unprocessed future meeting based on its id.
+     *
+     * @param meetingId of the meeting to retrieve
+     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it was already processed.
+     */
+    Meeting *getFutureMeeting(const std::string &meetingId);
+
+    /**
      * @brief Cancel a meeting.
      *
      * @param meetingId of the meeting to cancel.
@@ -301,6 +309,7 @@ private:
     Rooms rooms;
 
     Meetings all_meetings;
+    Meetings future_meetings;
     Meetings ongoing_meetings;
     Meetings cancelling_meetings;
     std::unordered_map<std::string, std::string> canceled_meeting_reasons;
