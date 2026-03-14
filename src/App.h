@@ -281,7 +281,7 @@ public:
     /**
     *@brief Checks all planned meeting entries for conflicting rooms/dates.
     *
-    * Checks if all meeting entries plans conflict with eachother and cancels/plans it accordingly.
+    * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
     */
     void processAllMeetings();
     ~App();

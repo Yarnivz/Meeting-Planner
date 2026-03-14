@@ -489,7 +489,6 @@ void App::writeToStream(std::ostream& onStream) {
         const Room* room = item.second;
         writeRoom(onStream, room);
     }
-
 }
 
 void App::processSingleMeeting(const std::string &meetingId)
@@ -535,7 +534,6 @@ void App::processAllMeetings()
 
     for (size_t i = 0; i < sortedMeetings.size(); ++i)
     {
-
         Meeting* currentMeeting = sortedMeetings[i];
         REQUIRE(currentMeeting, "Meeting can not be null.");
         REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
