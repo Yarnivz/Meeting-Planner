@@ -1,11 +1,9 @@
 
-Past meetings:
+Future meetings:
 - M.G.025, Thursday 01/01/2026
   Important Meeting 2
   Alice, Bob, Charlie, David
   Meeting ID: m2
-
-Future meetings:
 - M.G.025, Saturday 12/12/2026
   Important Meeting 1
   John Doe, Peter Selie, Jane Doe

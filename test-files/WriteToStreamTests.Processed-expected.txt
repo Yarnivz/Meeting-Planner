@@ -1,0 +1,29 @@
+
+Past meetings:
+- M.G.025, Saturday 12/12/2026
+  Important Meeting 1
+  John Doe, Peter Selie, Jane Doe
+  Meeting ID: m1
+- M.G.025, Thursday 01/01/2026
+  Important Meeting 2
+  Alice, Bob
+  Meeting ID: m2
+
+Future meetings:
+- M.G.025, Saturday 12/12/2026
+  Conflict
+  Charlie, David
+  Meeting ID: m3
+
+Conflicts:
+- M.G.025, Saturday 12/12/2026
+  Conflict
+  Charlie, David
+  Meeting ID: m3
+  Reason: conflict with meeting m1
+
+Rooms:
+- G.T.103
+  Capacity: 20 people
+- M.G.025
+  Capacity: 20 people

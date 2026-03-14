@@ -1,5 +1,9 @@
 
 Past meetings:
+- M.G.025, Saturday 12/12/2026
+  Important Meeting 1
+  John Doe, Peter Selie, Jane Doe
+  Meeting ID: m1
 - M.G.025, Thursday 01/01/2026
   Important Meeting 2
   Alice, Bob
@@ -10,10 +14,6 @@ Future meetings:
   Conflict
   Charlie, David
   Meeting ID: m3
-- M.G.025, Saturday 12/12/2026
-  Important Meeting 1
-  John Doe, Peter Selie, Jane Doe
-  Meeting ID: m1
 
 Conflicts:
 - M.G.025, Saturday 12/12/2026
