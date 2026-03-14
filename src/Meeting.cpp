@@ -6,8 +6,8 @@
 
 #include "DesignByContract.h"
 
-Meeting::Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date, int order)
-: label(label), id(id), room(roomId), date(date), order(order)
+Meeting::Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date)
+: label(label), id(id), room(roomId), date(date)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
@@ -42,6 +42,12 @@ const std::string& Meeting::toString() const {
     return label;
 }
 
+
+int Meeting::getOrder() const { return order; }
+
+void Meeting::setOrder(const int orderAdded) { order = orderAdded; }
+
+
 std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {
     os << meeting.toString();
     return os;
@@ -51,6 +57,5 @@ void Meeting::process() {}
 
 Meeting::~Meeting() = default;
 
-int Meeting::getOrder() const { return order; }
 
 
