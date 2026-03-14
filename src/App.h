@@ -101,10 +101,17 @@ public:
      */
     bool isRoomOccupied(const std::string& roomId, const Date& date);
 
-
-
-
-
+    /**
+     * @brief Find a meeting which would conflict with the given meeting.
+     *
+     * A meeting would conflict iff:
+     *    -Another meeting takes place on the same date, in the same room
+     *    -That meeting was registered as 'done"
+     *
+     * @param meetingId of the meeting to check
+     * @return pointer to the conflicting meeting; nullptr if no conflict exists
+     */
+    Meeting *findConflictingMeeting(const std::string &meetingId);
 
 
     /**

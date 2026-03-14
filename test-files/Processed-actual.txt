@@ -17,10 +17,10 @@ Future meetings:
 
 Conflicts:
 - M.G.025, Saturday 12/12/2026
-  Important Meeting 1
-  John Doe, Peter Selie, Jane Doe
-  Meeting ID: m1
-0x558d14ab2f70
+  Conflict
+  Charlie, David
+  Meeting ID: m3
+  Reason: conflict with meeting m1
 
 Rooms:
 - G.T.103

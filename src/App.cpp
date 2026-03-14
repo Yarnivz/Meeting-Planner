@@ -494,37 +494,22 @@ void App::writeToStream(std::ostream& onStream) {
 
 void App::processSingleMeeting(const std::string &meetingId)
 {
-    REQUIRE(!meetingId.empty(), "Meeting id is empty");
-    Meeting* meeting = all_meetings.find(meetingId)->second;
-    REQUIRE(meeting, "Meeting can not be null.");
+    //REQUIRE(!meetingId.empty(), "Meeting id is empty");
+    Meeting* meeting = getMeeting(meetingId);
+    REQUIRE(meeting, "This meeting doesn't exist.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+
     bool meetingProcessed = false;
-    if (isRoomOccupied(meeting->getRoomId(), meeting->getDate()))
+
+    Meeting* conflict;
+    if ((conflict = findConflictingMeeting(meetingId)))
     {
-        bool foundConflictingMeeting = false;
-        const Meetings* sameRoomMeetings = getMeetingsByRoom(meeting->getRoomId());
-        for (Meetings::const_iterator it = sameRoomMeetings->begin(); it != sameRoomMeetings->end(); ++it)
-        {
-            REQUIRE(it->second->isProperlyInitialized(), (meeting->getId() , " has not been properly initialized"));
-            if (getDoneMeeting(it->first) != nullptr)
-            {
-                foundConflictingMeeting = true;
-            }
-        }
-        if (foundConflictingMeeting)
-        {
-            cancelMeeting(meetingId, "room has already been occupied by another meeting");
-            std::cout << meeting->getId() << " has been cancelled due to '" + getCancellationReason(meeting->getId()) << "'" << std::endl;
-            meetingProcessed = true;
-        } else
-        {
-            ongoing_meetings.insert({meeting->getId(), meeting});
-            std::cout << meeting->getId() << " has taken place" << std::endl;
-            meetingProcessed = true;
-        }
+        cancelMeeting(meetingId, "conflict with meeting " + conflict->getId());
+        std::cout << meeting->getId() << " has been cancelled due to '" + getCancellationReason(meeting->getId()) << "'" << std::endl;
+        meetingProcessed = true;
     } else
     {
-        ongoing_meetings.insert({meeting->getId(), meeting});
+        doMeeting(meetingId);
         std::cout << meeting->getId() << " has taken place" << std::endl;
         meetingProcessed = true;
     }
@@ -601,6 +586,22 @@ bool App::isRoomOccupied(const std::string &roomId, const Date& date) {
     }
 
     return false;
+}
+
+Meeting* App::findConflictingMeeting(const std::string &meetingId) {
+    Meeting* m = getMeeting(meetingId);
+    REQUIRE(m, "This meeting doesn't exist.");
+    Meetings *mt_list = _getMutMeetingsByRoom(m->getRoomId());
+    ENSURE(mt_list, "Encountered a meeting with a roomId which doesnt exist.");
+
+    for (Meetings::iterator it = mt_list->begin(); it != mt_list->end(); ++it) {
+        Meeting* other_m = it->second;
+
+        if (getDoneMeeting(other_m->getId()) && other_m->getDate() == m->getDate())
+            return other_m;
+    }
+
+    return nullptr;
 }
 
 
