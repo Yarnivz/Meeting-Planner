@@ -49,6 +49,7 @@ void Meeting::setOrder(const int orderAdded) { order = orderAdded; }
 
 
 std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {
+    REQUIRE(meeting.isProperlyInitialized(), "meeting must be properly initialized");
     os << meeting.toString();
     return os;
 }
