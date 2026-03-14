@@ -309,7 +309,10 @@ void App::parseFile(const std::string& filename)
 
 
             //> Add meeting if all checks passed
-            meetings_parsed.push_back(new Meeting(label, identifier, room, Date(chrono_date), meetingOrder));
+            Meeting* m = new Meeting(label, identifier, room, Date(chrono_date));
+            m->setOrder(meetingOrder);
+            meetings_parsed.push_back(m);
+            // Increment meeting order
             meetingOrder+=1;
 
 
@@ -514,7 +517,7 @@ void App::processSingleMeeting(const std::string &meetingId)
         meetingProcessed = true;
     }
 
-    ENSURE(meetingProcessed, "Meeting hasnt been processed");
+    ENSURE(meetingProcessed, "Meeting hasn't been processed");
 }
 
 void App::processAllMeetings()
@@ -530,7 +533,7 @@ void App::processAllMeetings()
         {
             return comparedMeeting1->getDate() < comparedMeeting2->getDate();
         }
-        return comparedMeeting1->getId() < comparedMeeting2->getId();
+        return comparedMeeting1->getOrder() > comparedMeeting2->getOrder();
     });
 
     for (size_t i = 0; i < sortedMeetings.size(); ++i)
