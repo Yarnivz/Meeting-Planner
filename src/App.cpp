@@ -611,10 +611,10 @@ void App::addMeeting(Meeting *meeting) {
         "The meeting has to take place in a room which was already registered."
         );
 
-    REQUIRE(
-        !isRoomOccupied(rm->getId(), meeting->getDate()),
-        "There is already a meeting planned in this room at that date."
-        );
+    // REQUIRE(
+    //     !isRoomOccupied(rm->getId(), meeting->getDate()),
+    //     "There is already a meeting planned in this room at that date."
+    //     );
 
 
     Meetings *mt_list = _getMutMeetingsByRoom(meeting->getRoomId());
