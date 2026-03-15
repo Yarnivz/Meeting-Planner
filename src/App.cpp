@@ -623,6 +623,10 @@ void App::addMeeting(Meeting *meeting) {
     Meetings *mt_list = _getMutMeetingsByRoom(meeting->getRoomId());
     ENSURE(mt_list, "Something went wrong, the meeting list was not found.");
 
+    // If meeting order was not assigned, automatically assign the order using the count of the meetings already saved in the system.
+    if (meeting->getOrder() == 0) {
+        meeting->setOrder(static_cast<int>(all_meetings.size() + 1));
+    }
 
     all_meetings.insert({meeting->getId(), meeting});       // Insert into flat map by meetingId
     future_meetings.insert({meeting->getId(), meeting});    // Also into future meetings
