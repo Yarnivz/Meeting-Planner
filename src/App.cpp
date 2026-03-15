@@ -506,7 +506,7 @@ void App::processAllMeetings(const bool verbose)
     {
         sortedMeetings.push_back(it->second);
     }
-    std::sort(sortedMeetings.begin(), sortedMeetings.end(), [](Meeting* comparedMeeting1, Meeting* comparedMeeting2)
+    std::sort(sortedMeetings.begin(), sortedMeetings.end(), [](const Meeting* comparedMeeting1, const Meeting* comparedMeeting2)
     {
         if (comparedMeeting1->getDate() != comparedMeeting2->getDate())
         {
@@ -517,7 +517,7 @@ void App::processAllMeetings(const bool verbose)
 
     for (size_t i = 0; i < sortedMeetings.size(); ++i)
     {
-        Meeting* currentMeeting = sortedMeetings[i];
+        const Meeting* currentMeeting = sortedMeetings[i];
         REQUIRE(currentMeeting, "Meeting can not be null.");
         REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
         processSingleMeeting(currentMeeting->getId(), verbose);

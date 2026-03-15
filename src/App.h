@@ -173,7 +173,13 @@ public:
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't canceled.
      */
     Meeting *getCanceledMeeting(const std::string &meetingId);
-
+    /**
+    *@brief Retrieves the cancellation reason of the appropriate meeting.
+    *
+    * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
+    *
+    *@param meetingId of the meetings cancellation reason to retrieve.
+    */
     const std::string &getCancellationReason(const std::string &meetingId);
 
     /**
@@ -291,7 +297,7 @@ public:
     /**
     *@brief Checks all planned meeting entries for conflicting rooms/dates.
     *
-    * Checks if all meeting entries plans conflict with eachother and cancels/plans it accordingly.
+    * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
     *
     *@param verbose Prints text to console when enabled. This option is enabled by default.
     */
