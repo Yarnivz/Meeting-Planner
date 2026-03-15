@@ -705,7 +705,9 @@ void App::cancelMeeting(const std::string& meetingId, const std::string& reason)
     REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
     REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was already canceled.");
     REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+    REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
 
+    future_meetings.erase(meetingId);
     cancelling_meetings.insert({meetingId, m});
     canceled_meeting_reasons.insert({meetingId, reason});
 
@@ -717,7 +719,9 @@ void App::uncancelMeeting(const std::string& meetingId) {
     REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
     REQUIRE(getCanceledMeeting(meetingId), "This meeting was not canceled.");
     REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+    REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
 
+    future_meetings.insert({meetingId, m});
     cancelling_meetings.erase(meetingId);
     canceled_meeting_reasons.erase(meetingId);
 
@@ -728,8 +732,8 @@ void App::doMeeting(const std::string& meetingId) {
     Meeting* m;
     REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
     REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was canceled.");
-    REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done");
-    REQUIRE(getFutureMeeting(meetingId), "This meeting is not planned in for the future");
+    REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+    REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
 
 
     future_meetings.erase(meetingId);
