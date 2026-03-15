@@ -37,24 +37,34 @@ TEST_F(AppTests, HappyDay1) {
 
     EXPECT_TRUE(p.getMeetingsByRoom("r4")->empty());
     EXPECT_EQ(int(p.getAllMeetings().size()), 4);
+
     p.addMeeting(new Meeting("Meeting 5", "m5", "r4" , date1));
     EXPECT_EQ(int(p.getAllMeetings().size()), 5);
     EXPECT_TRUE(!p.getMeetingsByRoom("r4")->empty());
     EXPECT_EQ(int(p.getAllRooms().size()), 5);
+
     p.addRoom(new Room("Room 5", "r5", 20));
     EXPECT_EQ(int(p.getAllRooms().size()), 6);
     EXPECT_EQ(int(p.getAllParticipations().size()), 2);
+
     p.addParticipation(new Participation("Math Smith", "m2"));
     EXPECT_EQ(int(p.getAllParticipations().size()), 3);
 
-
-    //look later on why a crash happens but it doesnt detect it
-    //ASSERT_DEATH(p.getMeetingsByRoom("r1111"), "program continues torun despite getting an invalid room");
     EXPECT_TRUE(!p.getParticipationsByMeeting("m3")->empty());
 
-    //look further into same crash detection issue with those
-    //EXPECT_DEATH(p.getParticipationsByUser("unknown"), "program continues to run despite getting the user from an invalid name");
-    //ASSERT_DEATH(p.getParticipationsByMeeting("shadowrealm"), "program continues torun despite getting a user from an invalid meeting");
+    EXPECT_TRUE(p.getParticipationsByMeeting("m3")->front() == john);
+}
+
+TEST_F(AppTests, RetrieveInvalid)
+{
+    App p = App();
+    EXPECT_EQ(p.getMeetingsByRoom("r1111"), nullptr);
+    EXPECT_EQ(p.getParticipationsByUser("unknown"), nullptr);
+    EXPECT_EQ(p.getParticipationsByMeeting("shadowrealm"), nullptr);
+
+    EXPECT_TRUE(p.getAllMeetings().empty());
+    EXPECT_TRUE(p.getAllParticipations().empty());
+    EXPECT_TRUE(p.getAllRooms().empty());
 }
 
 
