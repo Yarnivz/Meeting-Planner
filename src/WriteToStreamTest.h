@@ -109,10 +109,16 @@ TEST_F(WriteToStreamTest, Processed) {
     p.addRoom(new Room("M.G.025", "MG025", 20));
     p.addRoom(new Room("G.T.103", "GT103", 20));
 
-    p.addMeeting(new Meeting("Important Meeting 1", "m1", "MG025" , date1));
-    p.addMeeting(new Meeting("Important Meeting 2", "m2", "MG025", date2));
+    Meeting* m1 = new Meeting("Important Meeting 1", "m1", "MG025" , date1);
+    Meeting* m2 = new Meeting("Important Meeting 2", "m2", "MG025", date2);
+    Meeting* m3 = new Meeting("Conflict", "m3", "MG025", date1);
 
-    p.addMeeting(new Meeting("Conflict", "m3", "MG025", date1));
+    // Meetings added first get priority
+    p.addMeeting(m1);
+    p.addMeeting(m2);
+    p.addMeeting(m3);
+
+    std::cout << m1->getOrder() << m2->getOrder() << m3->getOrder() << std::endl;
 
     p.addParticipation(new Participation("John Doe", "m1"));
     p.addParticipation(new Participation("Peter Selie", "m1"));

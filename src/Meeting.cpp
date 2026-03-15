@@ -13,6 +13,7 @@ Meeting::Meeting(const std::string &label, const std::string &id, const std::str
     REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
+    this->order = 0;
     init_check_this_ptr = this;
 }
 
