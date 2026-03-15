@@ -56,8 +56,6 @@ std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {
     return os;
 }
 
-void Meeting::process() {}
-
 Meeting::~Meeting() = default;
 
 
