@@ -21,6 +21,10 @@ public:
      */
     Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date());
 
+    /**
+     * @brief Checks whether this Participation was properly initialized by the constructor.
+     * @return bool indicating result
+     */
     bool isProperlyInitialized() const;
 
     /**
@@ -58,12 +62,37 @@ public:
      * @return the stream
      */
 
+    /**
+     * @brief The orders getter
+     * @return The Meetings 'order' variable
+     */
     int getOrder() const;
 
+    /**
+     * @brief The orders setter
+     *
+     * Sets the order of the Meeting.
+     * When processing multiple meetings, the meeting with the *lowest* order is prioritized.
+     * An order of zero means you allow the App class to decide the order of this meeting when registering it.
+     *
+     * @param orderAdded of the meeting
+     */
     void setOrder(int orderAdded);
 
+    /**
+     * @brief writes the output of 'toString' to a stream
+     *
+     * @param os stream to write to
+     * @param meeting to print out
+     * @return modified ostream
+     */
     friend std::ostream& operator<<(std::ostream &os, const Meeting& meeting);
-    void process();
+
+    /**
+     * @brief Destroys the Meeting class.
+     *
+     * ((default constructor))
+     */
     ~Meeting();
 
 
