@@ -1,5 +1,5 @@
 //
-// Created by lucas on 2026-03-12.
+// Created by Lucas on 2026-03-12.
 //
 
 #ifndef MEETING_PLANNER_ROOMTEST_H

@@ -1,5 +1,5 @@
 //
-// Created by lucas on 2026-03-13.
+// Created by Lucas on 2026-03-13.
 //
 
 #ifndef MEETING_PLANNER_WRITETOSTREAMTESTS_H

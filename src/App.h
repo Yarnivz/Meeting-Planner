@@ -1,5 +1,5 @@
 //
-// Created by User on 2/26/2026.
+// Created by Yarni on 2/26/2026.
 //
 
 #ifndef MEETING_PLANNER_APP_H
