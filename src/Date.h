@@ -15,9 +15,13 @@ public:
      * When the date class constructor gets called without parameters, the date that gets created will be the current date.
      */
     Date();
+
+    /**
+     * @brief Copies a Date object.
+     * It copies all important values but makes sure the 'properlyInitialized' test still passes.
+     * @param d The Date to be copied.
+     */
     Date(const Date& d);
-
-
 
     /**
      * @brief Creates the date class.
@@ -37,9 +41,11 @@ public:
      */
     Date(std::chrono::year_month_day year_month_day);
 
-
+    /**
+     * @brief Checks whether this Participation was properly initialized by the constructor.
+     * @return bool indicating result
+     */
     bool isProperlyInitialized() const;
-
 
     /**
      * @brief Year getter.
@@ -64,9 +70,6 @@ public:
      * @return the date's weekday
      */
     std::string getWeekDay() const;
-
-
-    std::string getWeekDay();
 
     /**
      * @brief Converts the date class to a readable string format.
