@@ -1,0 +1,51 @@
+<SYSTEM>
+    <ROOM>
+        <NAME>M.G.025</NAME>
+        <IDENTIFIER>MG025</IDENTIFIER>
+        <CAPACITY>40</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>G.T.103</NAME>
+        <IDENTIFIER>GT103</IDENTIFIER>
+        <CAPACITY>100</CAPACITY>
+    </ROOM>
+
+    <MEETING>
+        <LABEL>Seminar about Integrity</LABEL>
+        <IDENTIFIER>A1</IDENTIFIER>
+        <ROOM>MG025</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>CSA info session</LABEL>
+        <IDENTIFIER>A2</IDENTIFIER>
+        <ROOM>MG025</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Mathematics for dummies</LABEL>
+        <IDENTIFIER>A3</IDENTIFIER>
+        <ROOM>MG025</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+
+
+    <MEETING>
+        <LABEL>Generic Meeting 1</LABEL>
+        <IDENTIFIER>B1</IDENTIFIER>
+        <ROOM>GT103</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Generic Meeting 2</LABEL>
+        <IDENTIFIER>B2</IDENTIFIER>
+        <ROOM>GT103</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Generic Meeting 3</LABEL>
+        <IDENTIFIER>B3</IDENTIFIER>
+        <ROOM>GT103</ROOM>
+        <DATE>2026-03-12</DATE>
+    </MEETING>
+</SYSTEM>

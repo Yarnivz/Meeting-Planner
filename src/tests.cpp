@@ -5,6 +5,7 @@
 //#include "RoomTests.h"
 #include "ParseFileTests.h"
 //#include "WriteToStreamTest.h"
+#include "ProcessMeetingsTests.h"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
