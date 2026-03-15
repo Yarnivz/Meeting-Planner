@@ -167,5 +167,23 @@ TEST_F(ParseFileTests, InvalidData1) {
         delete app;
 }
 
+TEST_F(ParseFileTests, InvalidXml) {
+
+        App* app = new App();
+
+        EXPECT_DEATH(app->parseFile("./test-files/InvalidXml.xml"), "");
+
+        delete app;
+}
+
+TEST_F(ParseFileTests, FileNotFound) {
+
+        App* app = new App();
+
+        EXPECT_DEATH(app->parseFile("./test-files/FileThatDoesntExist.xml"),"");
+
+        delete app;
+}
+
 
 #endif //MEETING_PLANNER_PARSEFILETESTS_H
