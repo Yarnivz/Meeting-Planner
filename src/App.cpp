@@ -478,7 +478,7 @@ void App::writeToStream(std::ostream& onStream) {
 
 }
 
-void App::processSingleMeeting(const std::string &meetingId)
+void App::processSingleMeeting(const std::string &meetingId, const bool verbose)
 {
     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
     Meeting* meeting = getMeeting(meetingId);
@@ -491,19 +491,19 @@ void App::processSingleMeeting(const std::string &meetingId)
     if ((conflict = findConflictingMeeting(meetingId)))
     {
         cancelMeeting(meetingId, "conflict with meeting " + conflict->getId());
-        std::cout << meeting->getId() << " has been cancelled due to '" + getCancellationReason(meeting->getId()) << "'" << std::endl;
+        if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + getCancellationReason(meeting->getId()) << "'" << std::endl;
         meetingProcessed = true;
     } else
     {
         doMeeting(meetingId);
-        std::cout << meeting->getId() << " has taken place" << std::endl;
+        if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
         meetingProcessed = true;
     }
 
     ENSURE(meetingProcessed, "Meeting hasn't been processed");
 }
 
-void App::processAllMeetings()
+void App::processAllMeetings(const bool verbose)
 {
     std::vector<Meeting*> sortedMeetings;
     for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
@@ -525,7 +525,7 @@ void App::processAllMeetings()
         Meeting* currentMeeting = sortedMeetings[i];
         REQUIRE(currentMeeting, "Meeting can not be null.");
         REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-        processSingleMeeting(currentMeeting->getId());
+        processSingleMeeting(currentMeeting->getId(), verbose);
     }
     int totalMeetingsProcessed = cancelling_meetings.size() + ongoing_meetings.size();
     int allMeetingsSize = all_meetings.size();

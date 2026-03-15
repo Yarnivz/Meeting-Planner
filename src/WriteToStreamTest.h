@@ -124,7 +124,7 @@ TEST_F(WriteToStreamTest, Processed) {
     p.addParticipation(new Participation("Charlie", "m3"));
     p.addParticipation(new Participation("David", "m3"));
 
-    p.processAllMeetings();
+    p.processAllMeetings(false);
 
     const std::string actual = "test-files/WriteToStreamTests.Processed-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";

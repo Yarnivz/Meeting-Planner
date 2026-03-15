@@ -284,14 +284,17 @@ public:
     * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
     *
     *@param meetingId Id of the meeting to retrieve.
+    *@param verbose Prints text to console when enabled. This option is enabled by default.
     */
-    void processSingleMeeting(const std::string &meetingId);
+    void processSingleMeeting(const std::string &meetingId, bool verbose = true);
     /**
     *@brief Checks all planned meeting entries for conflicting rooms/dates.
     *
     * Checks if all meeting entries plans conflict with eachother and cancels/plans it accordingly.
+    *
+    *@param verbose Prints text to console when enabled. This option is enabled by default.
     */
-    void processAllMeetings();
+    void processAllMeetings(bool verbose = true);
     ~App();
 
 
