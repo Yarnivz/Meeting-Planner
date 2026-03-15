@@ -178,7 +178,7 @@ public:
     *
     * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
     *
-    *@param meetingId of the meetings cancellation reason to retrieve.
+    *@param meetingId that's tied to meetings appropriate cancellation reason.
     */
     const std::string &getCancellationReason(const std::string &meetingId);
 
