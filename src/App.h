@@ -1,5 +1,5 @@
 //
-// Created by User on 2/26/2026.
+// Created by Yarni on 2/26/2026.
 //
 
 #ifndef MEETING_PLANNER_APP_H
@@ -44,8 +44,9 @@ public:
     * If an unrecoverable error occurs, the parser exits without changing anything.
     *
     * @param filename of the .xml file to parse
+    * @param errStream stream to print errors to in case they appear. Defaults to the standard console error stream.
     */
-    void parseFile(const std::string& filename);
+    void parseFile(const std::string& filename, std::ostream& errStream = std::cerr);
 
     /**
      * @brief Print all meetings and rooms to a stream
@@ -184,6 +185,14 @@ public:
     Meeting *getDoneMeeting(const std::string &meetingId);
 
     /**
+     * @brief Retrieve an unprocessed future meeting based on its id.
+     *
+     * @param meetingId of the meeting to retrieve
+     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it was already processed.
+     */
+    Meeting *getFutureMeeting(const std::string &meetingId);
+
+    /**
      * @brief Cancel a meeting.
      *
      * @param meetingId of the meeting to cancel.
@@ -233,7 +242,7 @@ public:
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
      */
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
-    const Participations* getParticipationsByUser(const std::string &userId);
+    Participations* getParticipationsByUser(const std::string &userId);
 
     /**
      * @brief Retrieve a list of all participations concerning the given meeting.
@@ -241,7 +250,7 @@ public:
      * @param meetindId of the meeting for which to return all participations
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the meeting has no registered participations)
      */
-    const Participations *getParticipationsByMeeting(const std::string &meetindId);
+    Participations *getParticipationsByMeeting(const std::string &meetindId);
 
 
     /**
@@ -276,14 +285,17 @@ public:
     * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
     *
     *@param meetingId Id of the meeting to retrieve.
+    *@param verbose Prints text to console when enabled. This option is enabled by default.
     */
-    void processSingleMeeting(const std::string &meetingId);
+    void processSingleMeeting(const std::string &meetingId, bool verbose = true);
     /**
     *@brief Checks all planned meeting entries for conflicting rooms/dates.
     *
-    * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
+    * Checks if all meeting entries plans conflict with eachother and cancels/plans it accordingly.
+    *
+    *@param verbose Prints text to console when enabled. This option is enabled by default.
     */
-    void processAllMeetings();
+    void processAllMeetings(bool verbose = true);
     ~App();
 
 
@@ -301,6 +313,7 @@ private:
     Rooms rooms;
 
     Meetings all_meetings;
+    Meetings future_meetings;
     Meetings ongoing_meetings;
     Meetings cancelling_meetings;
     std::unordered_map<std::string, std::string> canceled_meeting_reasons;

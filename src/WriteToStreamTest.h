@@ -1,5 +1,5 @@
 //
-// Created by lucas on 2026-03-13.
+// Created by Lucas on 2026-03-13.
 //
 
 #ifndef MEETING_PLANNER_WRITETOSTREAMTESTS_H
@@ -36,8 +36,8 @@ TEST_F(WriteToStreamTest, HappyDay1) {
     p.addParticipation(new Participation("John Doe", "m3"));
     p.addParticipation(new Participation("Peter Selie", "m1"));
 
-    const std::string actual = "test-files/HappyDay1-actual.txt";
-    const std::string expected = "test-files/HappyDay1-expected.txt";
+    const std::string actual = "test-files/WriteToStreamTests.HappyDay1-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.HappyDay1-expected.txt";
 
 
     std::ofstream f = std::ofstream(actual);
@@ -71,8 +71,8 @@ TEST_F(WriteToStreamTest, HappyDay2) {
     p.addParticipation(new Participation("Charlie", "m2"));
     p.addParticipation(new Participation("David", "m2"));
 
-    const std::string actual = "test-files/HappyDay2-actual.txt";
-    const std::string expected = "test-files/HappyDay2-expected.txt";
+    const std::string actual = "test-files/WriteToStreamTests.HappyDay2-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.HappyDay2-expected.txt";
 
 
     std::ofstream f = std::ofstream(actual);
@@ -89,7 +89,7 @@ TEST_F(WriteToStreamTest, Empty) {
     EXPECT_TRUE(p.isProperlyInitialized());
 
 
-    const std::string actual = "test-files/Empty-actual.txt";
+    const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
 
 
     std::ofstream f = std::ofstream(actual);
@@ -124,10 +124,10 @@ TEST_F(WriteToStreamTest, Processed) {
     p.addParticipation(new Participation("Charlie", "m3"));
     p.addParticipation(new Participation("David", "m3"));
 
-    p.processAllMeetings();
+    p.processAllMeetings(false);
 
-    const std::string actual = "test-files/Processed-actual.txt";
-    const std::string expected = "test-files/Processed-expected.txt";
+    const std::string actual = "test-files/WriteToStreamTests.Processed-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";
 
 
     std::ofstream f = std::ofstream(actual);
@@ -138,7 +138,6 @@ TEST_F(WriteToStreamTest, Processed) {
 
     EXPECT_TRUE(file_compare(actual, expected));
 }
-
 
 
 #endif //MEETING_PLANNER_WRITETOSTREAMTESTS_H

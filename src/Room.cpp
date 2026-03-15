@@ -1,5 +1,5 @@
 //
-// Created by User on 2/26/2026.
+// Created by Yarni on 2/26/2026.
 //
 
 #include "Room.h"
@@ -55,7 +55,7 @@ unsigned Room::getCapacity() const {
 
 
 std::ostream & operator<<(std::ostream& os, const Room &room) {
-    REQUIRE(room.isProperlyInitialized(), "room must be initialized");
+    REQUIRE(room.isProperlyInitialized(), "room must be properly initialized");
     os << room.toString();
     ENSURE(os, "ostream variable is not usable");
     return os;

@@ -1,5 +1,5 @@
 //
-// Created by User on 2/26/2026.
+// Created by Yarni on 2/26/2026.
 //
 
 #ifndef MEETING_PLANNER_MEETING_H
@@ -19,7 +19,7 @@ public:
      * @param date of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date(), int order = 0);
+    Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date());
 
     bool isProperlyInitialized() const;
 
@@ -57,12 +57,15 @@ public:
      * @param meeting object to write on the stream
      * @return the stream
      */
+
+    int getOrder() const;
+
+    void setOrder(int orderAdded);
+
     friend std::ostream& operator<<(std::ostream &os, const Meeting& meeting);
     void process();
     ~Meeting();
-protected:
 
-    int getOrder() const;
 
 private:
     std::string label;

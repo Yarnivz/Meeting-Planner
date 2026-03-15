@@ -2,7 +2,8 @@
 #include "DateTests.h"
 #include "MeetingTests.h"
 #include "ParticipationTests.h"
-#include "RoomTest.h"
+#include "RoomTests.h"
+#include "ParseFileTests.h"
 #include "WriteToStreamTest.h"
 
 int main(int argc, char **argv) {

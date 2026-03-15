@@ -1,5 +1,5 @@
 //
-// Created by lucas on 2026-03-05.
+// Created by Lucas on 2026-03-05.
 //
 #pragma once
 

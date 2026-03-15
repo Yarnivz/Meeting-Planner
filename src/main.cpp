@@ -9,5 +9,6 @@ int main() {
     app->processAllMeetings();
     std::ofstream fout("output.txt");
     app->writeToStream(fout);
+    fout.close();
     delete app;
 }
