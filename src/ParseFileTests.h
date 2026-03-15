@@ -42,8 +42,8 @@ TEST_F(ParseFileTests, HappyDay1) {
         //Test participation
         const Participations* participationsByMeeting = app->getParticipationsByMeeting(meeting_id);
         const Participations* participationsByUser = app->getParticipationsByUser("Peter Selie");
-        EXPECT_EQ(1, participationsByMeeting->size());
-        EXPECT_EQ(1, participationsByUser->size());
+        EXPECT_EQ(1u, participationsByMeeting->size());
+        EXPECT_EQ(1u, participationsByUser->size());
 
         delete app;
 }
@@ -91,11 +91,11 @@ TEST_F(ParseFileTests, HappyDay2) {
 
         //Test participations meeting #1
         Participations* p = app->getParticipationsByMeeting(meeting1);
-        EXPECT_EQ(3, p->size());
+        EXPECT_EQ(3u, p->size());
 
         //Length Test participations meeting #2
         p = app->getParticipationsByMeeting(meeting2);
-        EXPECT_EQ(1, p->size());
+        EXPECT_EQ(1u, p->size());
 
         //Value Test participations user #1
         p = app->getParticipationsByUser("Peter Selie");
