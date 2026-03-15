@@ -118,8 +118,6 @@ TEST_F(WriteToStreamTest, Processed) {
     p.addMeeting(m2);
     p.addMeeting(m3);
 
-    std::cout << m1->getOrder() << m2->getOrder() << m3->getOrder() << std::endl;
-
     p.addParticipation(new Participation("John Doe", "m1"));
     p.addParticipation(new Participation("Peter Selie", "m1"));
     p.addParticipation(new Participation("Jane Doe", "m1"));
