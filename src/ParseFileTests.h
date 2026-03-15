@@ -121,7 +121,7 @@ TEST_F(ParseFileTests, InvalidData1) {
 
         std::stringstream errMsg;
         std::string errMsgLine;
-        std::string actualErrMsg;
+        std::string expectedErrMsg;
         std::string meeting1 = "Meeting_478463";
         std::string meeting2 = "Meeting_514203";
         std::string user = "Peter Selie";
@@ -146,23 +146,23 @@ TEST_F(ParseFileTests, InvalidData1) {
         //Test meeting #1
         Meeting* meeting = app->getMeeting(meeting1);
         EXPECT_FALSE(meeting);
-        actualErrMsg = "Meeting identifier cannot be empty. Meeting will not be added.";
+        expectedErrMsg = "Property IDENTIFIER needs to contain text.";
         std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(actualErrMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test meeting #2
         meeting = app->getMeeting(meeting2);
         EXPECT_FALSE(meeting);
-        actualErrMsg = "MEETING must have a DATE property";
+        expectedErrMsg = "MEETING must have a DATE property";
         std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(actualErrMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test participation
         Participations* p = app->getParticipationsByUser(user);
         EXPECT_FALSE(p);
-        actualErrMsg = "User '" + user + "' participates in a meeting '" + meeting1 + "' which doesnt exist.";
+        expectedErrMsg = "User '" + user + "' participates in a meeting '" + meeting1 + "' which doesnt exist.";
         std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(actualErrMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         delete app;
 }
