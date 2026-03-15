@@ -17,11 +17,8 @@ bool App::isProperlyInitialized() const {
     return init_check_this_ptr == this;
 }
 
-/**
- * Takes an xml filename as input and extracts the relevant data, then sets the relevant class variables to it.
- * @param filename
- */
-void App::parseFile(const std::string& filename)
+
+void App::parseFile(const std::string& filename, std::ostream& errStream)
 {
     TiXmlDocument doc;
     REQUIRE(!filename.empty(), "The provided filepath cannot be empty");
@@ -29,7 +26,7 @@ void App::parseFile(const std::string& filename)
 
 
     if(!doc.LoadFile(filename.c_str())) {
-        std::cerr << doc.ErrorDesc() << std::endl;
+        errStream << doc.ErrorDesc() << std::endl;
         return;
     }
 
@@ -37,7 +34,7 @@ void App::parseFile(const std::string& filename)
     TiXmlElement* root = doc.FirstChildElement();
     if(root == nullptr)
     {
-        std::cerr << "Failed to load file: No root element." << std::endl;
+        errStream << "Failed to load file: No root element." << std::endl;
         doc.Clear();
         return;
     }
@@ -72,7 +69,7 @@ void App::parseFile(const std::string& filename)
                 std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr) {
-                    std::cerr << "Property " << propertyElementType << " needs to contain text." << std::endl;
+                    errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
                     goto continue_to_next_object_element;;
                 }
 
@@ -84,7 +81,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <NAME> tag.
                     //  Which would mean multiple <NAME> tags are present => ERROR
                     if (found_name) {
-                        std::cerr << "ROOM element cant have more than one NAME property." << std::endl;
+                        errStream << "ROOM element cant have more than one NAME property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -95,7 +92,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <IDENTIFIER> tag.
                     //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
                     if (found_id) {
-                        std::cerr << "ROOM element cant have more than one IDENTIFIER property." << std::endl;
+                        errStream << "ROOM element cant have more than one IDENTIFIER property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -106,7 +103,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <CAPACITY> tag.
                     //  Which would mean multiple <CAPACITY> tags are present => ERROR
                     if (found_capacity) {
-                        std::cerr << "ROOM element cant have more than one CAPACITY property." << std::endl;
+                        errStream << "ROOM element cant have more than one CAPACITY property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -114,7 +111,7 @@ void App::parseFile(const std::string& filename)
                     capacity = tempElementChildValue;
                 } else {
                     //> Filter out any other unrecognized tags
-                    std::cerr << "Unrecognized property for ROOM: \"" << propertyElementType << "\"" << std::endl;
+                    errStream << "Unrecognized property for ROOM: \"" << propertyElementType << "\"" << std::endl;
                     goto continue_to_next_object_element;
                 }
             }
@@ -122,15 +119,15 @@ void App::parseFile(const std::string& filename)
 
             //> Check if all required properties were provided
             if (!found_name) {
-                std::cerr << "ROOM must have a NAME property" << std::endl;
+                errStream << "ROOM must have a NAME property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_id) {
-                std::cerr << "ROOM must have a IDENTIFIER property" << std::endl;
+                errStream << "ROOM must have a IDENTIFIER property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_capacity) {
-                std::cerr << "ROOM must have a CAPACITY property" << std::endl;
+                errStream << "ROOM must have a CAPACITY property" << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -141,25 +138,25 @@ void App::parseFile(const std::string& filename)
             try {
                 capacityInt = std::stoi(capacity);
             } catch (std::exception& except) {
-                std::cerr << "Capacity could not be converted to an integer. Room will not be added \n\t- " << except.what() << std::endl;
+                errStream << "Capacity could not be converted to an integer. Room will not be added \n\t- " << except.what() << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if capacity is larger than 0
             if (capacityInt <= 0) {
-                std::cerr << "Room capacity needs to be larger than 0. Room will not be added." << std::endl;
+                errStream << "Room capacity needs to be larger than 0. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if id is not empty
             if (identifier.empty()) {
-                std::cerr << "Room identifier cannot be empty. Room will not be added." << std::endl;
+                errStream << "Room identifier cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if Name is not empty
             if (name.empty()) {
-                std::cerr << "Room name cannot be empty. Room will not be added." << std::endl;
+                errStream << "Room name cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -190,7 +187,7 @@ void App::parseFile(const std::string& filename)
                 std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr) {
-                    std::cerr << "Property " << propertyElementType << " needs to contain text." << std::endl;
+                    errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
                     goto continue_to_next_object_element;;
                 }
 
@@ -201,7 +198,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <LABEL> tag.
                     //  Which would mean multiple <LABEL> tags are present => ERROR
                     if (found_label) {
-                        std::cerr << "MEETING element cant have more than one LABEL property." << std::endl;
+                        errStream << "MEETING element cant have more than one LABEL property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -213,7 +210,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <IDENTIFIER> tag.
                     //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
                     if (found_id) {
-                        std::cerr << "MEETING element cant have more than one IDENTIFIER property." << std::endl;
+                        errStream << "MEETING element cant have more than one IDENTIFIER property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -225,7 +222,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <ROOM> tag.
                     //  Which would mean multiple <ROOM> tags are present => ERROR
                     if (found_room) {
-                        std::cerr << "MEETING element cant have more than one ROOM property." << std::endl;
+                        errStream << "MEETING element cant have more than one ROOM property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -237,7 +234,7 @@ void App::parseFile(const std::string& filename)
                     //> Check if we already encountered another <DATE> tag.
                     //  Which would mean multiple <DATE> tags are present => ERROR
                     if (found_datestring) {
-                        std::cerr << "MEETING element cant have more than one DATE property." << std::endl;
+                        errStream << "MEETING element cant have more than one DATE property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -249,38 +246,38 @@ void App::parseFile(const std::string& filename)
 
             //> Check if all required properties were provided
             if (!found_id) {
-                std::cerr << "MEETING must have a IDENTIFIER property" << std::endl;
+                errStream << "MEETING must have a IDENTIFIER property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_label) {
-                std::cerr << "MEETING must have a LABEL property" << std::endl;
+                errStream << "MEETING must have a LABEL property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_room) {
-                std::cerr << "MEETING must have a ROOM property" << std::endl;
+                errStream << "MEETING must have a ROOM property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_datestring) {
-                std::cerr << "MEETING must have a DATE property" << std::endl;
+                errStream << "MEETING must have a DATE property" << std::endl;
                 goto continue_to_next_object_element;
             }
 
 
             //> Check if id is not empty
             if (identifier.empty()) {
-                std::cerr << "Meeting identifier cannot be empty. Meeting will not be added." << std::endl;
+                errStream << "Meeting identifier cannot be empty. Meeting will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if label is not empty
             if (label.empty()) {
-                std::cerr << "Meeting label cannot be empty. Meeting will not be added." << std::endl;
+                errStream << "Meeting label cannot be empty. Meeting will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if room is not empty
             if (room.empty()) {
-                std::cerr << "Meeting room cannot be empty. Meeting will not be added." << std::endl;
+                errStream << "Meeting room cannot be empty. Meeting will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -296,14 +293,14 @@ void App::parseFile(const std::string& filename)
                 month = std::stoi(dateString.substr(5, 2));
                 year  = std::stoi(dateString.substr(0, 4));
             } catch (std::exception& except) {
-                std::cerr << "MEETING \'" << identifier << "\': Date value could not be converted to a date format: \n\t- " << except.what() << std::endl;
+                errStream << "MEETING \'" << identifier << "\': Date value could not be converted to a date format: \n\t- " << except.what() << std::endl;
                 goto continue_to_next_object_element;
             }
 
             std::chrono::year_month_day chrono_date = {std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
             //> Check if date exists
             if (!chrono_date.ok()) {
-                std::cerr << "MEETING \'" << identifier << "\': Date " << dateString << " does not exist." << std::endl;
+                errStream << "MEETING \'" << identifier << "\': Date " << dateString << " does not exist." << std::endl;
                 goto continue_to_next_object_element;;
             }
 
@@ -340,7 +337,7 @@ void App::parseFile(const std::string& filename)
                 std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr) {
-                    std::cerr << "Property " << propertyElementType << " needs to contain text." << std::endl;
+                    errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
                     goto continue_to_next_object_element;;
                 }
 
@@ -352,7 +349,7 @@ void App::parseFile(const std::string& filename)
                 if (propertyElementType == "MEETING")
                 {
                     if (found_meeting) {
-                        std::cerr << "PARTICIPATION element cant have more than one MEETING property." << std::endl;
+                        errStream << "PARTICIPATION element cant have more than one MEETING property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -361,7 +358,7 @@ void App::parseFile(const std::string& filename)
                 } else if (propertyElementType == "USER")
                 {
                     if (found_user) {
-                        std::cerr << "PARTICIPATION element cant have more than one USER property." << std::endl;
+                        errStream << "PARTICIPATION element cant have more than one USER property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -373,11 +370,11 @@ void App::parseFile(const std::string& filename)
 
             //> Check if all required properties are present
             if (!found_user) {
-                std::cerr << "PARTICIPATION must have a USER property" << std::endl;
+                errStream << "PARTICIPATION must have a USER property" << std::endl;
                 goto continue_to_next_object_element;
             }
             if (!found_meeting) {
-                std::cerr << "PARTICIPATION must have a MEETING property" << std::endl;
+                errStream << "PARTICIPATION must have a MEETING property" << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -385,13 +382,13 @@ void App::parseFile(const std::string& filename)
 
             //> Check if meeting is not empty
             if (meeting.empty()) {
-                std::cerr << "Meeting cannot be empty. Participation will not be added." << std::endl;
+                errStream << "Meeting cannot be empty. Participation will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
             //> Check if user is not empty
             if (user.empty()) {
-                std::cerr << "User cannot be empty. Participation will not be added." << std::endl;
+                errStream << "User cannot be empty. Participation will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -404,7 +401,7 @@ void App::parseFile(const std::string& filename)
 
 
         } else {
-            std::cerr << "Unrecognized object element: " << objectElementType << std::endl;
+            errStream << "Unrecognized object element: " << objectElementType << std::endl;
             goto continue_to_next_object_element;
         }
 
@@ -418,7 +415,7 @@ void App::parseFile(const std::string& filename)
 
     for (Room* r : rooms_parsed) {
         if (getRoom(r->getId()) != nullptr) {
-            std::cerr << "Room ids must be unique: " << r->getId() << std::endl;
+            errStream << "Room ids must be unique: " << r->getId() << std::endl;
             continue;
         }
 
@@ -427,7 +424,7 @@ void App::parseFile(const std::string& filename)
 
     for (Meeting* m : meetings_parsed) {
         if (getRoom(m->getRoomId()) == nullptr) {
-            std::cerr << "Meeting " << m->getId() << " takes place in a room \'" << m->getRoomId() << "\' which doesnt exist." << std::endl;
+            errStream << "Meeting " << m->getId() << " takes place in a room \'" << m->getRoomId() << "\' which doesnt exist." << std::endl;
             continue;
         }
 
@@ -436,7 +433,7 @@ void App::parseFile(const std::string& filename)
 
     for (Participation* p : participations_parsed) {
         if (getMeeting(p->getMeetingId()) == nullptr) {
-            std::cerr << "User \'" << p->getUser() << "\' participates in a meeting \'" << p->getMeetingId() << "\' which doesnt exist." << std::endl;
+            errStream << "User \'" << p->getUser() << "\' participates in a meeting \'" << p->getMeetingId() << "\' which doesnt exist." << std::endl;
             continue;
         }
 
@@ -836,11 +833,11 @@ const Participations & App::getAllParticipations() const {
     return all_participations;
 }
 
-const Participations* App::getParticipationsByUser(const std::string &userId) {
+Participations* App::getParticipationsByUser(const std::string &userId) {
     return _getMutParticipationsByUser(userId);
 }
 
-const Participations* App::getParticipationsByMeeting(const std::string &meetindId) {
+Participations* App::getParticipationsByMeeting(const std::string &meetindId) {
     return _getMutParticipationsByMeeting(meetindId);
 }
 

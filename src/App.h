@@ -44,8 +44,9 @@ public:
     * If an unrecoverable error occurs, the parser exits without changing anything.
     *
     * @param filename of the .xml file to parse
+    * @param errStream stream to print errors to in case they appear. Defaults to the standard console error stream.
     */
-    void parseFile(const std::string& filename);
+    void parseFile(const std::string& filename, std::ostream& errStream = std::cerr);
 
     /**
      * @brief Print all meetings and rooms to a stream
@@ -241,7 +242,7 @@ public:
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
      */
     //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
-    const Participations* getParticipationsByUser(const std::string &userId);
+    Participations* getParticipationsByUser(const std::string &userId);
 
     /**
      * @brief Retrieve a list of all participations concerning the given meeting.
@@ -249,7 +250,7 @@ public:
      * @param meetindId of the meeting for which to return all participations
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the meeting has no registered participations)
      */
-    const Participations *getParticipationsByMeeting(const std::string &meetindId);
+    Participations *getParticipationsByMeeting(const std::string &meetindId);
 
 
     /**
