@@ -4,3 +4,4 @@ gtest/lib/
 bin/
 docs/
 output.txt
+logs/*
