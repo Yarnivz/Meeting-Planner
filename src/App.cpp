@@ -502,9 +502,9 @@ void App::processSingleMeeting(const std::string &meetingId, const bool verbose)
 void App::processAllMeetings(const bool verbose)
 {
     std::vector<Meeting*> sortedMeetings;
-    for (Meetings::iterator it = all_meetings.begin(); it != all_meetings.end(); ++it)
+    for (std::pair<std::string, Meeting*> m : all_meetings)
     {
-        sortedMeetings.push_back(it->second);
+        if (m.second->getDate() <= Date()) sortedMeetings.push_back(m.second);
     }
     std::sort(sortedMeetings.begin(), sortedMeetings.end(), [](const Meeting* comparedMeeting1, const Meeting* comparedMeeting2)
     {
@@ -523,8 +523,8 @@ void App::processAllMeetings(const bool verbose)
         processSingleMeeting(currentMeeting->getId(), verbose);
     }
     int totalMeetingsProcessed = cancelling_meetings.size() + ongoing_meetings.size();
-    int allMeetingsSize = all_meetings.size();
-    ENSURE(allMeetingsSize == totalMeetingsProcessed, "Not all meetings have been processed");
+    int allPastMeetingsSize = all_meetings.size() - future_meetings.size();
+    ENSURE(allPastMeetingsSize == totalMeetingsProcessed, "Not all meetings have been processed");
 }
 
 void App::addRoom(Room *room) {
