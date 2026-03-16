@@ -131,11 +131,11 @@ bool Date::operator>(const Date &other) const {
 }
 
 bool Date::operator<=(const Date &other) const {
-    return this == &other || this < &other;
+    return *this == other || *this < other;
 }
 
 bool Date::operator>=(const Date &other) const {
-    return this == &other || this > &other;
+    return *this == other || *this > other;
 }
 
 Date::~Date() = default;
