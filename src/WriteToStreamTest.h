@@ -53,7 +53,7 @@ TEST_F(WriteToStreamTest, HappyDay2) {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    Date date1 = Date(2026, 12, 12);
+    Date date1 = Date(2025, 12, 12);
     Date date2 = Date(2026, 1, 1);
 
     p.addRoom(new Room("M.G.025", "MG025", 20));
