@@ -9,12 +9,6 @@ Past meetings:
   Alice, Bob
   Meeting ID: m2
 
-Future meetings:
-- M.G.025, Saturday 12/12/2026
-  Conflict
-  Charlie, David
-  Meeting ID: m3
-
 Conflicts:
 - M.G.025, Saturday 12/12/2026
   Conflict
