@@ -69,6 +69,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
                 std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr) {
+                    //TODO o.emptyElement();
                     errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
                     goto continue_to_next_object_element;;
                 }

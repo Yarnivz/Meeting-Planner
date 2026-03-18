@@ -18,6 +18,10 @@ public:
      * @param roomId identifier of the room where the meeting takes place
      * @param date of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
+    *    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
+    REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
+    REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
+
      */
     Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date());
 
