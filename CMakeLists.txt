@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.31.6)
 project(Meeting_Planner)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -24,7 +24,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/bin/doxygen.exe")
 endif()
 
 #For linux: it checks whether the system has the doxygen package installed
-find_package(Doxygen REQUIRED)
+find_package(Doxygen OPTIONAL_COMPONENTS)
 
 if (DOXYGEN_FOUND)
     # set doxygen configuration

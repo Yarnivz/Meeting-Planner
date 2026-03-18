@@ -1,7 +1,5 @@
 cmake-build-debug
 .idea
-gtest/lib/
 bin/
 docs/
-output.txt
 logs/*
