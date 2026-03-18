@@ -8,8 +8,10 @@
 #include <queue>
 #include <tinyxml.h>
 #include "DesignByContract.h"
+#include "Parser.h"
+#include "XmlParser.h"
 
-App::App() : rooms(), meetings_by_room() {
+App::App(Parser* parser, std::ostream* output) : parser(parser), output(output) {
     init_check_this_ptr = this;
 }
 
@@ -20,401 +22,13 @@ bool App::isProperlyInitialized() const {
 
 void App::parseFile(const std::string& filename, std::ostream& errStream)
 {
-    TiXmlDocument doc;
-    REQUIRE(!filename.empty(), "The provided filepath cannot be empty");
-    REQUIRE(doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
-
-
-    if(!doc.LoadFile(filename.c_str())) {
-        errStream << doc.ErrorDesc() << std::endl;
-        return;
-    }
-
-
-    TiXmlElement* root = doc.FirstChildElement();
-    if(root == nullptr)
-    {
-        errStream << "Failed to load file: No root element." << std::endl;
-        doc.Clear();
-        return;
-    }
-
-
-    std::list<Meeting*> meetings_parsed = {};
-    std::list<Room*> rooms_parsed = {};
-    std::list<Participation*> participations_parsed = {};
-
-    int meetingOrder = 1;
-
-    for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement = objectElement->NextSiblingElement())
-    {
-
-        //== The type of the element 'ROOM'/'MEETING'/...
-        std::string objectElementType = objectElement->Value();
-
-        if (objectElementType == "ROOM")
-        {
-
-            //== string properties from child XML elements
-            std::string name, identifier, capacity;
-
-            //== booleans indicating whether the above properties were already found
-            bool found_name = false;
-            bool found_id = false;
-            bool found_capacity = false;
-
-
-            for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr; propertyElement = propertyElement->NextSiblingElement())
-            {
-                std::string propertyElementType = propertyElement->Value();
-
-                if (propertyElement->FirstChild() == nullptr) {
-                    //TODO o.emptyElement();
-                    errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-                    goto continue_to_next_object_element;;
-                }
-
-
-                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-
-                if (propertyElementType == "NAME")
-                {
-                    //> Check if we already encountered another <NAME> tag.
-                    //  Which would mean multiple <NAME> tags are present => ERROR
-                    if (found_name) {
-                        errStream << "ROOM element cant have more than one NAME property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_name = true;
-                    name = tempElementChildValue;
-                } else if (propertyElementType == "IDENTIFIER")
-                {
-                    //> Check if we already encountered another <IDENTIFIER> tag.
-                    //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
-                    if (found_id) {
-                        errStream << "ROOM element cant have more than one IDENTIFIER property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_id = true;
-                    identifier = tempElementChildValue;
-                } else if (propertyElementType == "CAPACITY")
-                {
-                    //> Check if we already encountered another <CAPACITY> tag.
-                    //  Which would mean multiple <CAPACITY> tags are present => ERROR
-                    if (found_capacity) {
-                        errStream << "ROOM element cant have more than one CAPACITY property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_capacity = true;
-                    capacity = tempElementChildValue;
-                } else {
-                    //> Filter out any other unrecognized tags
-                    errStream << "Unrecognized property for ROOM: \"" << propertyElementType << "\"" << std::endl;
-                    goto continue_to_next_object_element;
-                }
-            }
-
-
-            //> Check if all required properties were provided
-            if (!found_name) {
-                errStream << "ROOM must have a NAME property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-            if (!found_id) {
-                errStream << "ROOM must have a IDENTIFIER property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-            if (!found_capacity) {
-                errStream << "ROOM must have a CAPACITY property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //== 'capacity' string parsed into an int
-            int capacityInt = 0;
-
-            //> Try to parse 'capacity' to int.
-            try {
-                capacityInt = std::stoi(capacity);
-            } catch (std::exception& except) {
-                errStream << "Capacity could not be converted to an integer. Room will not be added \n\t- " << except.what() << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if capacity is larger than 0
-            if (capacityInt <= 0) {
-                errStream << "Room capacity needs to be larger than 0. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if id is not empty
-            if (identifier.empty()) {
-                errStream << "Room identifier cannot be empty. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if Name is not empty
-            if (name.empty()) {
-                errStream << "Room name cannot be empty. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Add room if all the checks have passed
-            rooms_parsed.push_back(new Room(name, identifier, capacityInt));
-
-
-
-
-
-
-
-
-        } else if (objectElementType == "MEETING")
-        {
-            //== string properties from child XML elements
-            std::string label, identifier, room, dateString;
-
-            //== booleans indicating whether the above properties were already found
-            bool found_label = false;
-            bool found_id = false;
-            bool found_room = false;
-            bool found_datestring = false;
-
-
-            for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr; propertyElement = propertyElement->NextSiblingElement())
-            {
-                std::string propertyElementType = propertyElement->Value();
-
-                if (propertyElement->FirstChild() == nullptr) {
-                    errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-                    goto continue_to_next_object_element;;
-                }
-
-                std::string propertyElementContents = propertyElement->FirstChild()->Value();
-
-                if (propertyElementType == "LABEL")
-                {
-                    //> Check if we already encountered another <LABEL> tag.
-                    //  Which would mean multiple <LABEL> tags are present => ERROR
-                    if (found_label) {
-                        errStream << "MEETING element cant have more than one LABEL property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_label = true;
-                    label = propertyElementContents;
-
-                } else if (propertyElementType == "IDENTIFIER")
-                {
-                    //> Check if we already encountered another <IDENTIFIER> tag.
-                    //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
-                    if (found_id) {
-                        errStream << "MEETING element cant have more than one IDENTIFIER property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_id = true;
-                    identifier = propertyElementContents;
-
-                } else if (propertyElementType == "ROOM")
-                {
-                    //> Check if we already encountered another <ROOM> tag.
-                    //  Which would mean multiple <ROOM> tags are present => ERROR
-                    if (found_room) {
-                        errStream << "MEETING element cant have more than one ROOM property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_room = true;
-                    room = propertyElementContents;
-
-                } else if (propertyElementType == "DATE")
-                {
-                    //> Check if we already encountered another <DATE> tag.
-                    //  Which would mean multiple <DATE> tags are present => ERROR
-                    if (found_datestring) {
-                        errStream << "MEETING element cant have more than one DATE property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_datestring = true;
-                    dateString = propertyElementContents;
-                }
-            }
-
-
-            //> Check if all required properties were provided
-            if (!found_id) {
-                errStream << "MEETING must have a IDENTIFIER property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-            if (!found_label) {
-                errStream << "MEETING must have a LABEL property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-            if (!found_room) {
-                errStream << "MEETING must have a ROOM property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-            if (!found_datestring) {
-                errStream << "MEETING must have a DATE property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-
-            //> Check if id is not empty
-            if (identifier.empty()) {
-                errStream << "Meeting identifier cannot be empty. Meeting will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if label is not empty
-            if (label.empty()) {
-                errStream << "Meeting label cannot be empty. Meeting will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if room is not empty
-            if (room.empty()) {
-                errStream << "Meeting room cannot be empty. Meeting will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-
-
-
-
-            int day, month, year;
-
-            //> Try to parse date
-            try {
-                day   = std::stoi(dateString.substr(8, 2));
-                month = std::stoi(dateString.substr(5, 2));
-                year  = std::stoi(dateString.substr(0, 4));
-            } catch (std::exception& except) {
-                errStream << "MEETING \'" << identifier << "\': Date value could not be converted to a date format: \n\t- " << except.what() << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            std::chrono::year_month_day chrono_date = {std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
-            //> Check if date exists
-            if (!chrono_date.ok()) {
-                errStream << "MEETING \'" << identifier << "\': Date " << dateString << " does not exist." << std::endl;
-                goto continue_to_next_object_element;;
-            }
-
-
-            //> Add meeting if all checks passed
-            Meeting* m = new Meeting(label, identifier, room, Date(chrono_date));
-            m->setOrder(meetingOrder);
-            meetings_parsed.push_back(m);
-            // Increment meeting order
-            meetingOrder+=1;
-
-
-
-
-
-
-
-
-
-        } else if (objectElementType == "PARTICIPATION")
-        {
-            //== string properties from child XML elements
-            std::string meeting, user;
-
-            //== booleans indicating whether the above properties were already found
-            bool found_meeting = false;
-            bool found_user = false;
-
-
-
-            for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr; propertyElement = propertyElement->NextSiblingElement())
-            {
-
-                std::string propertyElementType = propertyElement->Value();
-
-                if (propertyElement->FirstChild() == nullptr) {
-                    errStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-                    goto continue_to_next_object_element;;
-                }
-
-
-
-
-                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-
-                if (propertyElementType == "MEETING")
-                {
-                    if (found_meeting) {
-                        errStream << "PARTICIPATION element cant have more than one MEETING property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_meeting = true;
-                    meeting = tempElementChildValue;
-                } else if (propertyElementType == "USER")
-                {
-                    if (found_user) {
-                        errStream << "PARTICIPATION element cant have more than one USER property." << std::endl;
-                        goto continue_to_next_object_element;
-                    }
-
-                    found_user = true;
-                    user = tempElementChildValue;
-                }
-            }
-
-
-            //> Check if all required properties are present
-            if (!found_user) {
-                errStream << "PARTICIPATION must have a USER property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-            if (!found_meeting) {
-                errStream << "PARTICIPATION must have a MEETING property" << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-
-
-            //> Check if meeting is not empty
-            if (meeting.empty()) {
-                errStream << "Meeting cannot be empty. Participation will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if user is not empty
-            if (user.empty()) {
-                errStream << "User cannot be empty. Participation will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-
-
-            //> Add participation if all checks passed
-            participations_parsed.push_back(new Participation(user, meeting));
-
-
-
-
-        } else {
-            errStream << "Unrecognized object element: " << objectElementType << std::endl;
-            goto continue_to_next_object_element;
-        }
-
-        continue_to_next_object_element:;
-    }
-
+    parser->Parse(errStream);
 
 
     //> Add all elements in the correct order
     //  Final integrity checks
 
-    for (Room* r : rooms_parsed) {
+    for (Room* r : parser->getRooms()) {
         if (getRoom(r->getId()) != nullptr) {
             errStream << "Room ids must be unique: " << r->getId() << std::endl;
             continue;
@@ -423,7 +37,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addRoom(r);
     }
 
-    for (Meeting* m : meetings_parsed) {
+    for (Meeting* m : parser->getMeetings()) {
         if (getRoom(m->getRoomId()) == nullptr) {
             errStream << "Meeting " << m->getId() << " takes place in a room \'" << m->getRoomId() << "\' which doesnt exist." << std::endl;
             continue;
@@ -432,7 +46,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addMeeting(m);
     }
 
-    for (Participation* p : participations_parsed) {
+    for (Participation* p : parser->getParticipations()) {
         if (getMeeting(p->getMeetingId()) == nullptr) {
             errStream << "User \'" << p->getUser() << "\' participates in a meeting \'" << p->getMeetingId() << "\' which doesnt exist." << std::endl;
             continue;
@@ -443,35 +57,34 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
 }
 
-void App::writeToStream(std::ostream& onStream) {
-
+void App::writeToStream() {
     //Write all past meetings
-    if (!ongoing_meetings.empty()) onStream << std::endl << "Past meetings:" << std::endl;
+    if (!ongoing_meetings.empty()) output << std::endl << "Past meetings:" << std::endl;
     for (const std::pair<std::string,Meeting*> item : ongoing_meetings) {
         Meeting* meeting = item.second;
-        writeMeeting(onStream, meeting);
+        writeMeeting(*output, meeting);
     }
 
     //Write all future meetings
-    if (!future_meetings.empty()) onStream << std::endl << "Future meetings:" << std::endl;
+    if (!future_meetings.empty()) output << std::endl << "Future meetings:" << std::endl;
     for (const std::pair<std::string, Meeting*> item : future_meetings) {
         Meeting* meeting = item.second;
-        writeMeeting(onStream, meeting);
+        writeMeeting(*output, meeting);
     }
 
     //Write all conflicts
-    if (!cancelling_meetings.empty()) onStream << std::endl << "Conflicts:" << std::endl;
+    if (!cancelling_meetings.empty()) output << std::endl << "Conflicts:" << std::endl;
     for (const std::pair<const std::string, Meeting *>& item : cancelling_meetings) {
         const Meeting* meeting = item.second;
-        writeMeeting(onStream, meeting);
-        onStream << "  Reason: " << getCancellationReason(meeting->getId()) << std::endl;
+        writeMeeting(*output, meeting);
+        *output << "  Reason: " << getCancellationReason(meeting->getId()) << std::endl;
     }
 
     //Write all rooms
-    if (!rooms.empty()) onStream << std::endl << "Rooms:" << std::endl;
+    if (!rooms.empty()) output << std::endl << "Rooms:" << std::endl;
     for (const std::pair<std::string, Room*> item : rooms) {
         const Room* room = item.second;
-        writeRoom(onStream, room);
+        writeRoom(*output, room);
     }
 }
 

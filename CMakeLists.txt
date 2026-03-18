@@ -42,7 +42,11 @@ else ()
     message(WARNING "Doxygen not found. Documentation will not be generated.")
 endif ()
 
-set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp)
+set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp
+        src/Parser.cpp
+        src/Parser.h
+        src/XmlParser.cpp
+        src/XmlParser.h)
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!

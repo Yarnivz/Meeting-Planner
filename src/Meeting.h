@@ -7,6 +7,7 @@
 #include <string>
 #include "Date.h"
 
+
 class Meeting {
 public:
     /**
@@ -83,6 +84,17 @@ public:
      */
     void setOrder(int orderAdded);
 
+
+    void process();
+
+    void cancel();
+
+    bool isUnProcessed() const;
+
+    bool isProcessed() const;
+
+    bool isCancelled() const;
+
     /**
      * @brief writes the output of 'toString' to a stream
      *
@@ -101,10 +113,12 @@ public:
 
 
 private:
+    using State = enum {UNPROCESSED, PROCESSED, CANCELLED};
     std::string label;
     std::string id;
     std::string room;
     Date date;
+    State state;
     int order;
 
     void* init_check_this_ptr;

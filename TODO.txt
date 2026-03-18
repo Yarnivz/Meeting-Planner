@@ -4,22 +4,10 @@ Yarni:
 - fix ParseFileTest.h ""overflow"" bug.
 - use filecompare for parser errors in ParseFileTest
 
-fix file structure:
-  tests/ directory
-  XTests -> TestX
+Ishaak:
+- more ENSURES (in setters)
+- make sure all functions have contracts
+- copy contracts to documentation
 
-more ENSURES (in setters)
-
-make sure all functions have contracts
-
-copy contracts to documentation
-
-doMeeting/ cancelMeeting -> my_meeting.Cancel()/ my_meeting.Do()
-
-
-
-
-# NEW
-
-seperate pure virtual Parser+Output class
- -> dependency injection: 'App(my_parser, my_output)'
+Lucas:
+- fix code
