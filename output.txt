@@ -1,0 +1,23 @@
+
+Past meetings:
+- M.G.026, Thursday 12/03/2026
+  CSA info session
+  Sam Pieters, Tim Apers
+  Meeting ID: Meeting_00002
+- M.G.128, Thursday 12/03/2026
+  Seminar about Integrity
+  Jane Doe
+  Meeting ID: Meeting_00001
+
+Conflicts:
+- M.G.128, Thursday 12/03/2026
+  Mathematics for dummies
+  John Doe
+  Meeting ID: Meeting_00003
+  Reason: conflict with meeting Meeting_00001
+
+Rooms:
+- M.G.128
+  Capacity: 30 people
+- M.G.026
+  Capacity: 10 people
