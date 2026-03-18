@@ -5,14 +5,14 @@
 
 #include <gtest/gtest.h>
 
-#include "Date.h"
+#include "../Date.h"
 
-class DateTests : public ::testing::Test {
+class TestDate : public ::testing::Test {
 protected:
     Date date_;
 };
 
-TEST_F(DateTests, HappyDay) {
+TEST_F(TestDate, HappyDay) {
 
     int data[][3] = {
         {2025, 10, 2}, {2027, 1, 12},
@@ -30,7 +30,7 @@ TEST_F(DateTests, HappyDay) {
 
 }
 
-TEST_F(DateTests, CopyConstructor) {
+TEST_F(TestDate, CopyConstructor) {
     Date d1 = Date();
     Date d2 = d1;
 
@@ -41,7 +41,7 @@ TEST_F(DateTests, CopyConstructor) {
 
 }
 
-TEST_F(DateTests, FailConstructor) {
+TEST_F(TestDate, FailConstructor) {
     EXPECT_DEATH(Date(1,-1,-23), "");
     EXPECT_DEATH(Date(0,0,0), "");
     EXPECT_DEATH(Date(2025, 12, 0), "");
@@ -53,7 +53,7 @@ TEST_F(DateTests, FailConstructor) {
     EXPECT_DEATH(Date(2024, 2, 30), "");
 }
 
-TEST_F(DateTests, EdgeCases) {
+TEST_F(TestDate, EdgeCases) {
     // Schrikkeljaren
     Date correct = Date(2024, 2, 29);
     EXPECT_TRUE(correct.isProperlyInitialized());

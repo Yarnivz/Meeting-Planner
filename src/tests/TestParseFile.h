@@ -7,12 +7,12 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
-#include "App.h"
+#include "../App.h"
 
-class ParseFileTests : public ::testing::Test {
+class TestParseFile : public ::testing::Test {
 };
 
-TEST_F(ParseFileTests, HappyDay1) {
+TEST_F(TestParseFile, HappyDay1) {
 
         std::ofstream errLog("./logs/HappyDay1-Errors.log");
         std::string meeting_id = "Meeting_478463";
@@ -49,7 +49,7 @@ TEST_F(ParseFileTests, HappyDay1) {
 }
 
 
-TEST_F(ParseFileTests, HappyDay2) {
+TEST_F(TestParseFile, HappyDay2) {
 
 
         std::ofstream errLog("./logs/HappyDay2-Errors.log");
@@ -116,7 +116,7 @@ TEST_F(ParseFileTests, HappyDay2) {
         delete app;
 }
 
-TEST_F(ParseFileTests, InvalidData1) {
+TEST_F(TestParseFile, InvalidData1) {
 
 
         std::stringstream errMsg;
@@ -167,7 +167,7 @@ TEST_F(ParseFileTests, InvalidData1) {
         delete app;
 }
 
-TEST_F(ParseFileTests, InvalidXml) {
+TEST_F(TestParseFile, InvalidXml) {
 
         App* app = new App();
 
@@ -176,7 +176,7 @@ TEST_F(ParseFileTests, InvalidXml) {
         delete app;
 }
 
-TEST_F(ParseFileTests, FileNotFound) {
+TEST_F(TestParseFile, FileNotFound) {
 
         App* app = new App();
 

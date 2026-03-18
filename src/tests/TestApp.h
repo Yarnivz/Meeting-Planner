@@ -5,13 +5,13 @@
 #ifndef MEETING_PLANNER_APPTESTS_H
 #define MEETING_PLANNER_APPTESTS_H
 #include <gtest/gtest.h>
-#include "App.h"
+#include "../App.h"
 
-class AppTests : public ::testing::Test {
+class TestApp : public ::testing::Test {
 protected:
 };
 
-TEST_F(AppTests, HappyDay1) {
+TEST_F(TestApp, HappyDay1) {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -58,7 +58,7 @@ TEST_F(AppTests, HappyDay1) {
     EXPECT_TRUE(p.getParticipationsByUser("John Doe")->front() == john);
 }
 
-TEST_F(AppTests, RetrieveInvalid)
+TEST_F(TestApp, RetrieveInvalid)
 {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());

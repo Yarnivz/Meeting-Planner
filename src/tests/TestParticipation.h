@@ -6,13 +6,13 @@
 #define MEETING_PLANNER_PARTICIPATIONTEST_H
 
 #include "gtest/gtest.h"
-#include "Participation.h"
+#include "../Participation.h"
 
-class ParticipationTests : public ::testing::Test {
+class TestParticipation : public ::testing::Test {
 protected:
 };
 
-TEST_F(ParticipationTests, HappyDay) {
+TEST_F(TestParticipation, HappyDay) {
     Participation p("John Doe", "my_meeting1");
     Participation articipation("Peter Selie", "my_meeting_9000_pro_max++");
 
@@ -25,12 +25,12 @@ TEST_F(ParticipationTests, HappyDay) {
     EXPECT_EQ("my_meeting_9000_pro_max++", articipation.getMeetingId());
 }
 
-TEST_F(ParticipationTests, ContractViolation) {
+TEST_F(TestParticipation, ContractViolation) {
     EXPECT_DEATH(Participation p("Evil Meeting User With No Meeting Id", ""), "");
     EXPECT_DEATH(Participation p("", "no user :("), "");
 }
 
-TEST_F(ParticipationTests, CopyConstructor) {
+TEST_F(TestParticipation, CopyConstructor) {
     Participation p1("me", "some_meeting");
     Participation p2 = p1;
 
@@ -42,7 +42,7 @@ TEST_F(ParticipationTests, CopyConstructor) {
     EXPECT_EQ("some_meeting", p2.getMeetingId());
 }
 
-TEST_F(ParticipationTests, ProperlyInitialized) {
+TEST_F(TestParticipation, ProperlyInitialized) {
     Participation p1("user", "meeting");
     Participation* p2 = (Participation*) malloc(sizeof(Participation)); //Unsafe malloc
 

@@ -7,16 +7,16 @@
 
 #include "gtest/gtest.h"
 #include "FileUtils.h"
-#include "App.h"
+#include "../App.h"
 #include <fstream>
 
-class WriteToStreamTest : public ::testing::Test {
+class TestWriteToStream : public ::testing::Test {
 protected:
 };
 
 
 
-TEST_F(WriteToStreamTest, HappyDay1) {
+TEST_F(TestWriteToStream, HappyDay1) {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -49,7 +49,7 @@ TEST_F(WriteToStreamTest, HappyDay1) {
     EXPECT_TRUE(file_compare(actual, expected));
 }
 
-TEST_F(WriteToStreamTest, HappyDay2) {
+TEST_F(TestWriteToStream, HappyDay2) {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -84,7 +84,7 @@ TEST_F(WriteToStreamTest, HappyDay2) {
     EXPECT_TRUE(file_compare(actual, expected));
 }
 
-TEST_F(WriteToStreamTest, Empty) {
+TEST_F(TestWriteToStream, Empty) {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -99,7 +99,7 @@ TEST_F(WriteToStreamTest, Empty) {
     EXPECT_TRUE(file_is_empty(actual));
 }
 
-TEST_F(WriteToStreamTest, Processed) {
+TEST_F(TestWriteToStream, Processed) {
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 

@@ -1,7 +1,8 @@
 # FIX
 
-fix ParseFileTest.h ""overflow"" bug.
-use filecompare for parser errors in ParseFileTest
+Yarni:
+- fix ParseFileTest.h ""overflow"" bug.
+- use filecompare for parser errors in ParseFileTest
 
 fix file structure:
   tests/ directory
