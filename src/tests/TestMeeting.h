@@ -5,14 +5,14 @@
 
 #include "gtest/gtest.h"
 
-#include "Meeting.h"
+#include "../Meeting.h"
 
-class MeetingTests : public ::testing::Test {
+class TestMeeting : public ::testing::Test {
 protected:
 };
 
 
-TEST_F(MeetingTests, HappyDay) {
+TEST_F(TestMeeting, HappyDay) {
     Meeting meeting = Meeting("My Meeting", "meeting0", "some_room", Date(2025,2,2));
 
     EXPECT_TRUE(meeting.isProperlyInitialized());
@@ -29,7 +29,7 @@ TEST_F(MeetingTests, HappyDay) {
     EXPECT_EQ(2, d.getDay());
 }
 
-TEST_F(MeetingTests, ContractViolation) {
+TEST_F(TestMeeting, ContractViolation) {
     EXPECT_DEATH(Meeting("hello", "", "my_room", Date()), "");
     EXPECT_DEATH(Meeting("world", "some_id", "", Date()), "");
 }

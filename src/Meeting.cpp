@@ -13,6 +13,7 @@ Meeting::Meeting(const std::string &label, const std::string &id, const std::str
     REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
+    this->state = UNPROCESSED;
     this->order = 0;
     init_check_this_ptr = this;
 }
@@ -43,10 +44,20 @@ const std::string& Meeting::toString() const {
     return label;
 }
 
-
+//TODO: add contracts
 int Meeting::getOrder() const { return order; }
 
 void Meeting::setOrder(const int orderAdded) { order = orderAdded; }
+
+void Meeting::process() { state = PROCESSED; }
+
+void Meeting::cancel() { state = CANCELLED; }
+
+bool Meeting::isUnProcessed() const { return state == UNPROCESSED; }
+
+bool Meeting::isProcessed() const { return state == PROCESSED; }
+
+bool Meeting::isCancelled() const { return state == CANCELLED; }
 
 
 std::ostream & operator<<(std::ostream &os, const Meeting &meeting) {

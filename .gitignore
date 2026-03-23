@@ -1,7 +1,7 @@
 cmake-build-debug
 .idea
-gtest/lib/
 bin/
 docs/
-output.txt
+.~lock.timesheet.xls#
+gtest/lib/
 logs/*

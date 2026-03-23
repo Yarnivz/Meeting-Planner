@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.31.6)
 project(Meeting_Planner)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -24,7 +24,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/bin/doxygen.exe")
 endif()
 
 #For linux: it checks whether the system has the doxygen package installed
-find_package(Doxygen REQUIRED)
+find_package(Doxygen OPTIONAL_COMPONENTS)
 
 if (DOXYGEN_FOUND)
     # set doxygen configuration
@@ -42,7 +42,11 @@ else ()
     message(WARNING "Doxygen not found. Documentation will not be generated.")
 endif ()
 
-set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp)
+set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp
+        src/Parser.cpp
+        src/Parser.h
+        src/XmlParser.cpp
+        src/XmlParser.h)
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!

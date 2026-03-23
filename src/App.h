@@ -10,6 +10,7 @@
 
 #include "Room.h"
 #include "Meeting.h"
+#include "Parser.h"
 #include "Participation.h"
 
 using Meetings = std::unordered_map<std::string, Meeting*>;
@@ -26,7 +27,7 @@ public:
     /**
      * @brief Constructor of the App class.
      */
-    App();
+    App(Parser* parser, std::ostream* output);
 
     /**
      * @brief Checks whether the App was properly initialized by the constructor.
@@ -49,13 +50,12 @@ public:
     void parseFile(const std::string& filename, std::ostream& errStream = std::cerr);
 
     /**
-     * @brief Print all meetings and rooms to a stream
+     * @brief Print all meetings and rooms to a stream.
      *
-     * Prints all registered meetings and rooms to the given ostream.
+     * Prints all registered meetings and rooms to the app's output.
      *
-     * @param onStream to write to
      */
-    void writeToStream(std::ostream& onStream);
+    void writeToStream();
 
     /**
      * @brief Register a room.
@@ -315,6 +315,8 @@ private:
 
     Participations *_getMutParticipationsByMeeting(const std::string &meetingId);
 
+    Parser* parser;
+    std::ostream* output;
 
     Rooms rooms;
 

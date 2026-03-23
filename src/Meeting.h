@@ -7,6 +7,7 @@
 #include <string>
 #include "Date.h"
 
+
 class Meeting {
 public:
     /**
@@ -18,6 +19,10 @@ public:
      * @param roomId identifier of the room where the meeting takes place
      * @param date of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
+    *    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
+    REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
+    REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
+
      */
     Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date());
 
@@ -79,6 +84,17 @@ public:
      */
     void setOrder(int orderAdded);
 
+
+    void process();
+
+    void cancel();
+
+    bool isUnProcessed() const;
+
+    bool isProcessed() const;
+
+    bool isCancelled() const;
+
     /**
      * @brief writes the output of 'toString' to a stream
      *
@@ -97,10 +113,12 @@ public:
 
 
 private:
+    using State = enum {UNPROCESSED, PROCESSED, CANCELLED};
     std::string label;
     std::string id;
     std::string room;
     Date date;
+    State state;
     int order;
 
     void* init_check_this_ptr;

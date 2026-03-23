@@ -5,14 +5,14 @@
 #ifndef MEETING_PLANNER_ROOMTEST_H
 #define MEETING_PLANNER_ROOMTEST_H
 
-#include "Room.h"
+#include "../Room.h"
 #include "gtest/gtest.h"
 
-class RoomTests : public ::testing::Test {
+class TestRoom : public ::testing::Test {
 protected:
 };
 
-TEST_F(RoomTests, HappyDay) {
+TEST_F(TestRoom, HappyDay) {
     Room r("A Room", "a_room_id", 20);
 
     EXPECT_TRUE(r.isProperlyInitialized());
@@ -21,12 +21,12 @@ TEST_F(RoomTests, HappyDay) {
     EXPECT_EQ("a_room_id", r.getId());
 }
 
-TEST_F(RoomTests, ContractViolation) {
+TEST_F(TestRoom, ContractViolation) {
     EXPECT_DEATH(Room("Room With Empty Id", "", 20), "");
     EXPECT_DEATH(Room("Room With No Capacity", "a_id", 0), "");
 }
 
-TEST_F(RoomTests, CopyConstructor) {
+TEST_F(TestRoom, CopyConstructor) {
     Room r1("A Room", "room20", 13);
     Room r2 = r1;
 

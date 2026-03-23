@@ -1,0 +1,13 @@
+# FIX
+
+Yarni:
+- fix ParseFileTest.h ""overflow"" bug.
+- use filecompare for parser errors in ParseFileTest
+
+Ishaak:
+- more ENSURES (in setters)
+- make sure all functions have contracts
+- copy contracts to documentation
+
+Lucas:
+- fix code
