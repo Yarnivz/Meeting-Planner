@@ -1,0 +1,43 @@
+<SYSTEM>
+    <ROOM>
+        <NAME>M.G.025</NAME>
+        <IDENTIFIER>mg025</IDENTIFIER>
+        <CAPACITY>25</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>G.T.123</NAME>
+        <IDENTIFIER>gt123</IDENTIFIER>
+        <CAPACITY>100</CAPACITY>
+    </ROOM>
+    <ROOM/>
+    <MEETING>
+        <LABEL>Movie Marathon</LABEL>
+        <IDENTIFIER>m656</IDENTIFIER>
+        <ROOM>mg025</ROOM>
+        <DATE>2026-06-13</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Very important meeting</LABEL>
+        <IDENTIFIER>m720</IDENTIFIER>
+        <ROOM>gt123</ROOM>
+        <DATE>2026-06-13</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Meeting that probably won't happen</LABEL>
+        <IDENTIFIER>m999</IDENTIFIER>
+        <ROOM>r009</ROOM>
+        <DATE>2026-02-29</DATE>
+    </MEETING>
+    <PARTICIPATION>
+        <MEETING>m656</MEETING>
+        <USER>Peter Selie</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <USER>Freddy Gonzalez</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m720</MEETING>
+        <USER></USER>
+    </PARTICIPATION>
+    <PARTICIPATION></PARTICIPATION>
+</SYSTEM>

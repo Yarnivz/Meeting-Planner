@@ -140,8 +140,9 @@ TEST_F(ParseFileTests, InvalidData1) {
         //Test room #2
         room = app->getRoom("Room98732");
         EXPECT_FALSE(room);
+        expectedErrMsg = "Room capacity needs to be larger than 0. Room will not be added.";
         std::getline(errMsg, errMsgLine);
-        EXPECT_EQ("Room capacity needs to be larger than 0. Room will not be added.", errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test meeting #1
         Meeting* meeting = app->getMeeting(meeting1);
@@ -167,9 +168,65 @@ TEST_F(ParseFileTests, InvalidData1) {
         delete app;
 }
 
+TEST_F(ParseFileTests, InvalidData2) {
+
+
+        std::stringstream errMsg;
+        std::string errMsgLine;
+        std::string expectedErrMsg;
+        std::string room1 = "mg025";
+        std::string room2 = "gt123";
+        std::string meeting1 = "m656";
+        std::string meeting2 = "m720";
+        std::string meeting3 = "m999";
+        std::string user1 = "Peter Selie";
+        std::string user2 = "Freddy Gonzalez";
+
+
+
+
+        App* app = new App();
+        EXPECT_TRUE(app->isProperlyInitialized());
+        app->parseFile("./test-files/InvalidData2.xml");
+
+        //Test room #1
+        Room* room = app->getRoom(room1);
+        EXPECT_EQ("M.G.025", room->toString());
+        EXPECT_EQ(25u, room->getCapacity());
+
+        //Test room #2
+        room = app->getRoom(room2);
+        EXPECT_EQ("M.G.025", room->toString());
+        EXPECT_EQ(100u, room->getCapacity());
+
+        //Test room #3
+        EXPECT_EQ(2u, app->getAllRooms().size());
+        expectedErrMsg = "ROOM must have a NAME property";
+        std::getline(errMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
+
+        //Test meeting #1
+        Meeting* meeting = app->getMeeting(meeting1);
+        EXPECT_EQ("Movie Marathon", meeting->toString());
+        EXPECT_EQ(room1, meeting->getRoomId());
+        EXPECT_EQ(Date(2026,6,13), meeting->getDate());
+
+        //Test meeting #2
+        meeting = app->getMeeting(meeting1);
+        EXPECT_EQ("Very important meeting", meeting->toString());
+        EXPECT_EQ(room1, meeting->getRoomId());
+        EXPECT_EQ(Date(2026,6,13), meeting->getDate());
+
+        //Test meeting #3
+
+        delete app;
+}
+
 TEST_F(ParseFileTests, InvalidXml) {
 
         App* app = new App();
+        EXPECT_TRUE(app->isProperlyInitialized());
+
 
         EXPECT_DEATH(app->parseFile("./test-files/InvalidXml.xml"), "");
 
@@ -179,6 +236,8 @@ TEST_F(ParseFileTests, InvalidXml) {
 TEST_F(ParseFileTests, FileNotFound) {
 
         App* app = new App();
+        EXPECT_TRUE(app->isProperlyInitialized());
+
 
         EXPECT_DEATH(app->parseFile("./test-files/FileThatDoesntExist.xml"),"");
 
