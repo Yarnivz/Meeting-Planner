@@ -7,13 +7,10 @@
 #include "DesignByContract.h"
 #include "tinyxml.h"
 
-
-XmlParser::XmlParser(const std::string& filename): Parser(filename) {}
-
-void XmlParser::Parse(std::ostream &errorStream) {
+void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {
     TiXmlDocument doc;
-    REQUIRE(!filename.empty(), "The provided filepath cannot be empty");
-    REQUIRE(doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
+    REQUIRE(!filename.empty(), "The file cannot be empty");
+    REQUIRE(doc.LoadFile(filename.c_str()), "The provided file \'%s\' doesn't exist in your current work directory or cannot be opened.", filename.c_str());
 
 
     if(!doc.LoadFile(filename.c_str())) {
@@ -30,10 +27,6 @@ void XmlParser::Parse(std::ostream &errorStream) {
         return;
     }
 
-
-    std::list<Meeting*> meetings_parsed = {};
-    std::list<Room*> rooms_parsed = {};
-    std::list<Participation*> participations_parsed = {};
 
     int meetingOrder = 1;
 
@@ -153,7 +146,7 @@ void XmlParser::Parse(std::ostream &errorStream) {
             }
 
             //> Add room if all the checks have passed
-            rooms_parsed.push_back(new Room(name, identifier, capacityInt));
+            parsed_rooms.push_back(new Room(name, identifier, capacityInt));
 
 
 
@@ -300,7 +293,7 @@ void XmlParser::Parse(std::ostream &errorStream) {
             //> Add meeting if all checks passed
             Meeting* m = new Meeting(label, identifier, room, Date(chrono_date));
             m->setOrder(meetingOrder);
-            meetings_parsed.push_back(m);
+            parsed_meetings.push_back(m);
             // Increment meeting order
             meetingOrder+=1;
 
@@ -387,7 +380,7 @@ void XmlParser::Parse(std::ostream &errorStream) {
 
 
             //> Add participation if all checks passed
-            participations_parsed.push_back(new Participation(user, meeting));
+            parsed_participations.push_back(new Participation(user, meeting));
 
 
 

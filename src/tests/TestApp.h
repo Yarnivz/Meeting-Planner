@@ -12,7 +12,7 @@ protected:
 };
 
 TEST_F(TestApp, HappyDay1) {
-    App p = App();
+    App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     Date date1 = Date(2026, 1, 2);
@@ -60,7 +60,7 @@ TEST_F(TestApp, HappyDay1) {
 
 TEST_F(TestApp, RetrieveInvalid)
 {
-    App p = App();
+    App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     EXPECT_EQ(p.getMeetingsByRoom("r1111"), nullptr);

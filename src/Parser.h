@@ -15,18 +15,26 @@
 
 class Parser {
 public:
-    Parser(const std::string& filename);
-    virtual void Parse(const std::ostream& errorStream);
+    explicit Parser() = default;
 
-    const std::list<Room*>& getRooms() const;
-    const std::list<Meeting*>& getMeetings() const;
-    const std::list<Participation*>& getParticipations() const;
+    virtual void parse(const std::string& filename, std::ostream& errorStream) = 0;
+
+    const std::list<Room*>& parsedRooms() const;
+
+    void clearRooms();
+
+    const std::list<Meeting*>& parsedMeetings() const;
+
+    void clearMeetings();
+
+    const std::list<Participation*>& parsedParticipations() const;
+
+    void clearParticipations();
 
     virtual ~Parser() = default;
 protected:
-    std::string filename;
-    std::list<Room*> rooms;
-    std::list<Meeting*> meetings;
-    std::list<Participation*> participations;
+    std::list<Room*> parsed_rooms;
+    std::list<Meeting*> parsed_meetings;
+    std::list<Participation*> parsed_participations;
 };
 #endif //PARSER_H

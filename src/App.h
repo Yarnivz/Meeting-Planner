@@ -27,7 +27,7 @@ public:
     /**
      * @brief Constructor of the App class.
      */
-    App(Parser* parser, std::ostream* output);
+    App(Parser* parser = nullptr, std::ostream* output = nullptr);
 
     /**
      * @brief Checks whether the App was properly initialized by the constructor.

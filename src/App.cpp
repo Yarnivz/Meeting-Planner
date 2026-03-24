@@ -11,6 +11,7 @@
 #include "Parser.h"
 #include "XmlParser.h"
 
+
 App::App(Parser* parser, std::ostream* output) : parser(parser), output(output) {
     init_check_this_ptr = this;
 }
@@ -22,13 +23,18 @@ bool App::isProperlyInitialized() const {
 
 void App::parseFile(const std::string& filename, std::ostream& errStream)
 {
-    parser->Parse(errStream);
+
+    if (!parser) {errStream << "This App does not have a parser!" << std::endl; return;}
+
+
+
+    parser->parse(filename, errStream);
 
 
     //> Add all elements in the correct order
     //  Final integrity checks
 
-    for (Room* r : parser->getRooms()) {
+    for (Room* r : parser->parsedRooms()) {
         if (getRoom(r->getId()) != nullptr) {
             errStream << "Room ids must be unique: " << r->getId() << std::endl;
             continue;
@@ -37,7 +43,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addRoom(r);
     }
 
-    for (Meeting* m : parser->getMeetings()) {
+    for (Meeting* m : parser->parsedMeetings()) {
         if (getRoom(m->getRoomId()) == nullptr) {
             errStream << "Meeting " << m->getId() << " takes place in a room \'" << m->getRoomId() << "\' which doesnt exist." << std::endl;
             continue;
@@ -46,7 +52,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addMeeting(m);
     }
 
-    for (Participation* p : parser->getParticipations()) {
+    for (Participation* p : parser->parsedParticipations()) {
         if (getMeeting(p->getMeetingId()) == nullptr) {
             errStream << "User \'" << p->getUser() << "\' participates in a meeting \'" << p->getMeetingId() << "\' which doesnt exist." << std::endl;
             continue;
@@ -55,25 +61,32 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addParticipation(p);
     }
 
+
+
+    parser->clearRooms();
+    parser->clearMeetings();
+    parser->clearParticipations();
 }
 
 void App::writeToStream() {
+    REQUIRE(output, "App doesnt have an output attached.");
+
     //Write all past meetings
-    if (!ongoing_meetings.empty()) output << std::endl << "Past meetings:" << std::endl;
+    if (!ongoing_meetings.empty()) *output << std::endl << "Past meetings:" << std::endl;
     for (const std::pair<std::string,Meeting*> item : ongoing_meetings) {
         Meeting* meeting = item.second;
         writeMeeting(*output, meeting);
     }
 
     //Write all future meetings
-    if (!future_meetings.empty()) output << std::endl << "Future meetings:" << std::endl;
+    if (!future_meetings.empty()) *output << std::endl << "Future meetings:" << std::endl;
     for (const std::pair<std::string, Meeting*> item : future_meetings) {
         Meeting* meeting = item.second;
         writeMeeting(*output, meeting);
     }
 
     //Write all conflicts
-    if (!cancelling_meetings.empty()) output << std::endl << "Conflicts:" << std::endl;
+    if (!cancelling_meetings.empty()) *output << std::endl << "Conflicts:" << std::endl;
     for (const std::pair<const std::string, Meeting *>& item : cancelling_meetings) {
         const Meeting* meeting = item.second;
         writeMeeting(*output, meeting);
@@ -81,7 +94,7 @@ void App::writeToStream() {
     }
 
     //Write all rooms
-    if (!rooms.empty()) output << std::endl << "Rooms:" << std::endl;
+    if (!rooms.empty()) *output << std::endl << "Rooms:" << std::endl;
     for (const std::pair<std::string, Room*> item : rooms) {
         const Room* room = item.second;
         writeRoom(*output, room);
@@ -136,8 +149,9 @@ void App::processAllMeetings(const bool verbose)
         REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
         processSingleMeeting(currentMeeting->getId(), verbose);
     }
-    int totalMeetingsProcessed = cancelling_meetings.size() + ongoing_meetings.size();
-    int allPastMeetingsSize = all_meetings.size() - future_meetings.size();
+
+    size_t totalMeetingsProcessed = cancelling_meetings.size() + ongoing_meetings.size();
+    size_t allPastMeetingsSize = all_meetings.size() - future_meetings.size();
     ENSURE(allPastMeetingsSize == totalMeetingsProcessed, "Not all meetings have been processed");
 }
 

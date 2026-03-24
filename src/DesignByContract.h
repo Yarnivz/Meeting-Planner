@@ -19,34 +19,41 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 static inline void contract_fail(
     const char *expr,
     const char *file,
     int line,
-    const char *msg)
+    const char *fmt, ...)
 {
+
     fprintf(stderr,
             "Contract violation\n"
             "  Expression: %s\n"
-            "  Message:    %s\n"
-            "  Location:   %s:%d\n",
-            expr,
-            msg ? msg : "(none)",
-            file,
-            line);
+            "  Location:   %s:%d\n"
+            "  Message:    ",
+            expr, file, line);
+
+    va_list args;
+    va_start(args, fmt);
+
+    vfprintf(stderr, fmt, args);
+
+    va_end(args);
+    fputc('\n', stderr);
 
     abort();
 }
 
-#define REQUIRE(assertion, what) \
+#define REQUIRE(assertion, what_fmt, ...) \
     do { \
         if (!(assertion)) \
-            contract_fail(#assertion, __FILE__, __LINE__, what); \
+            contract_fail(#assertion, __FILE__, __LINE__, what_fmt, ##__VA_ARGS__); \
     } while (0)
 
-#define ENSURE(assertion, what) \
+#define ENSURE(assertion, what_fmt, ...) \
     do { \
         if (!(assertion)) \
-            contract_fail(#assertion, __FILE__, __LINE__, what); \
+            contract_fail(#assertion, __FILE__, __LINE__, what_fmt, ##__VA_ARGS__); \
     } while (0)
