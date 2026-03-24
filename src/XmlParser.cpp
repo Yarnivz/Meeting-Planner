@@ -7,13 +7,10 @@
 #include "DesignByContract.h"
 #include "tinyxml.h"
 
-
-XmlParser::XmlParser(const std::string& filename): Parser(filename) {}
-
-void XmlParser::Parse(std::ostream &errorStream) {
+void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {
     TiXmlDocument doc;
-    REQUIRE(!filename.empty(), "The provided filepath cannot be empty");
-    REQUIRE(doc.LoadFile(filename.c_str()), "The provided file doesn't exist in your current work directory or cannot be opened.");
+    REQUIRE(!filename.empty(), "The file cannot be empty");
+    REQUIRE(doc.LoadFile(filename.c_str()), "The provided file \'%s\' doesn't exist in your current work directory or cannot be opened.", filename.c_str());
 
 
     if(!doc.LoadFile(filename.c_str())) {

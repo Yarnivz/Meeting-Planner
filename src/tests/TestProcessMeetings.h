@@ -14,7 +14,7 @@ protected:
 
 
 TEST_F(ProcessMeetingsTest, HappyDay) {
-    App p = App();
+    App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     p.addRoom(new Room("M.G.025", "MG025", 40));
@@ -73,7 +73,7 @@ TEST_F(ProcessMeetingsTest, HappyDay) {
 }
 
 TEST_F(ProcessMeetingsTest, Conflicts) {
-    App p = App();
+    App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     const std::string r1 = "MG025";
@@ -152,7 +152,7 @@ TEST_F(ProcessMeetingsTest, Conflicts) {
 }
 
 TEST_F(ProcessMeetingsTest, Order) {
-    App p = App();
+    App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     p.addRoom(new Room("M.G.025", "MG025", 40));
@@ -182,10 +182,10 @@ TEST_F(ProcessMeetingsTest, Order) {
 }
 
 TEST_F(ProcessMeetingsTest, ParseOrder) {
-    App p = App();
+    App p = App(new XmlParser(), nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    p.parseFile("test-files/ConflictMeetings2.xml");
+    p.parseFile("./test-files/ConflictMeetings2.xml");
 
     p.processAllMeetings(false);
 
@@ -217,7 +217,7 @@ TEST_F(ProcessMeetingsTest, ParseOrder) {
 }
 
 TEST_F(ProcessMeetingsTest, ContractViolation) {
-    App p = App();
+    App p = App(nullptr, nullptr);
 
     p.addRoom(new Room("r", "r", 20));
 

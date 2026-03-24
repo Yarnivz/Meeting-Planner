@@ -17,7 +17,11 @@ protected:
 
 
 TEST_F(TestWriteToStream, HappyDay1) {
-    App p = App();
+    const std::string actual = "test-files/WriteToStreamTests.HappyDay1-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.HappyDay1-expected.txt";
+    std::ofstream f = std::ofstream(actual);
+
+    App p = App(nullptr, &f);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     Date date1 = Date(2026, 1, 2);
@@ -36,12 +40,7 @@ TEST_F(TestWriteToStream, HappyDay1) {
     p.addParticipation(new Participation("John Doe", "m3"));
     p.addParticipation(new Participation("Peter Selie", "m1"));
 
-    const std::string actual = "test-files/WriteToStreamTests.HappyDay1-actual.txt";
-    const std::string expected = "test-files/WriteToStreamTests.HappyDay1-expected.txt";
-
-
-    std::ofstream f = std::ofstream(actual);
-    p.writeToStream(f);
+    p.writeToStream();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));
@@ -50,7 +49,11 @@ TEST_F(TestWriteToStream, HappyDay1) {
 }
 
 TEST_F(TestWriteToStream, HappyDay2) {
-    App p = App();
+    const std::string actual = "test-files/WriteToStreamTests.HappyDay2-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.HappyDay2-expected.txt";
+    std::ofstream f = std::ofstream(actual);
+
+    App p = App(nullptr, &f);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     Date date1 = Date(2025, 12, 12);
@@ -71,12 +74,7 @@ TEST_F(TestWriteToStream, HappyDay2) {
     p.addParticipation(new Participation("Charlie", "m2"));
     p.addParticipation(new Participation("David", "m2"));
 
-    const std::string actual = "test-files/WriteToStreamTests.HappyDay2-actual.txt";
-    const std::string expected = "test-files/WriteToStreamTests.HappyDay2-expected.txt";
-
-
-    std::ofstream f = std::ofstream(actual);
-    p.writeToStream(f);
+    p.writeToStream();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));
@@ -85,22 +83,24 @@ TEST_F(TestWriteToStream, HappyDay2) {
 }
 
 TEST_F(TestWriteToStream, Empty) {
-    App p = App();
+    const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
+    std::ofstream f = std::ofstream(actual);
+
+    App p = App(nullptr, &f);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-
-    const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
-
-
-    std::ofstream f = std::ofstream(actual);
-    p.writeToStream(f);
+    p.writeToStream();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_is_empty(actual));
 }
 
 TEST_F(TestWriteToStream, Processed) {
-    App p = App();
+    const std::string actual = "test-files/WriteToStreamTests.Processed-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";
+    std::ofstream f = std::ofstream(actual);
+
+    App p = App(nullptr, &f);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     Date date1 = Date(2025, 12, 12);
@@ -130,12 +130,8 @@ TEST_F(TestWriteToStream, Processed) {
 
     p.processAllMeetings(false);
 
-    const std::string actual = "test-files/WriteToStreamTests.Processed-actual.txt";
-    const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";
 
-
-    std::ofstream f = std::ofstream(actual);
-    p.writeToStream(f);
+    p.writeToStream();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));

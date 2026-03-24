@@ -5,10 +5,12 @@
 #include "Parser.h"
 
 
-Parser::Parser(const std::string& filename): filename(filename) {}
 
-const std::list<Room *> & Parser::getRooms() const { return rooms; }
+const std::list<Room *> & Parser::parsedRooms() const { return rooms; }
+void Parser::clearRooms() { rooms = {};}
 
-const std::list<Meeting *> & Parser::getMeetings() const { return meetings; }
+const std::list<Meeting *> & Parser::parsedMeetings() const { return meetings; }
+void Parser::clearMeetings() { meetings = {};}
 
-const std::list<Participation *> & Parser::getParticipations() const { return participations; }
+const std::list<Participation *> & Parser::parsedParticipations() const { return participations; }
+void Parser::clearParticipations() { participations = {};}

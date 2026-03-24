@@ -9,8 +9,8 @@
 
 class XmlParser : public Parser {
 public:
-    XmlParser(const std::string &filename);
-    void Parse(std::ostream& errorStream) override;
+    explicit XmlParser() = default;
+    void parse(const std::string& filename, std::ostream& errorStream) override;
 };
 
 

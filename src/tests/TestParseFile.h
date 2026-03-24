@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 #include "../App.h"
+#include "../XmlParser.h"
 
 class TestParseFile : public ::testing::Test {
 };
@@ -18,10 +19,11 @@ TEST_F(TestParseFile, HappyDay1) {
         std::string meeting_id = "Meeting_478463";
 
 
-
-        App* app = new App();
+        XmlParser* xml_parser = new XmlParser();
+        App* app = new App(xml_parser, nullptr);
         EXPECT_TRUE(app->isProperlyInitialized());
-        app->parseFile("./test-files/HappyDay1.xml", errLog);
+
+        app->parseFile("./test-files/HappyDay1", errLog);
 
         //Test room #1
         Room* room = app->getRoom("M.G.025");
@@ -58,7 +60,9 @@ TEST_F(TestParseFile, HappyDay2) {
 
 
 
-        App* app = new App();
+
+        App* app = new App(new XmlParser(), &std::cout);
+
         EXPECT_TRUE(app->isProperlyInitialized());
         app->parseFile("./test-files/HappyDay2.xml");
 
@@ -128,7 +132,7 @@ TEST_F(TestParseFile, InvalidData1) {
 
 
 
-        App* app = new App();
+        App* app = new App(new XmlParser(), &std::cout);
         EXPECT_TRUE(app->isProperlyInitialized());
         app->parseFile("./test-files/InvalidData1.xml", errMsg);
 
@@ -169,7 +173,7 @@ TEST_F(TestParseFile, InvalidData1) {
 
 TEST_F(TestParseFile, InvalidXml) {
 
-        App* app = new App();
+        App* app = new App(new XmlParser(), &std::cout);
 
         EXPECT_DEATH(app->parseFile("./test-files/InvalidXml.xml"), "");
 
@@ -178,7 +182,7 @@ TEST_F(TestParseFile, InvalidXml) {
 
 TEST_F(TestParseFile, FileNotFound) {
 
-        App* app = new App();
+        App* app = new App(new XmlParser(), &std::cout);
 
         EXPECT_DEATH(app->parseFile("./test-files/FileThatDoesntExist.xml"),"");
 
