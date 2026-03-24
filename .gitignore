@@ -5,3 +5,4 @@ docs/
 .~lock.timesheet.xls#
 gtest/lib/
 logs/*
+output.txt
