@@ -28,10 +28,6 @@ void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {
     }
 
 
-    std::list<Meeting*> meetings_parsed = {};
-    std::list<Room*> rooms_parsed = {};
-    std::list<Participation*> participations_parsed = {};
-
     int meetingOrder = 1;
 
     for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement = objectElement->NextSiblingElement())
@@ -150,7 +146,7 @@ void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {
             }
 
             //> Add room if all the checks have passed
-            rooms_parsed.push_back(new Room(name, identifier, capacityInt));
+            parsed_rooms.push_back(new Room(name, identifier, capacityInt));
 
 
 
@@ -297,7 +293,7 @@ void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {
             //> Add meeting if all checks passed
             Meeting* m = new Meeting(label, identifier, room, Date(chrono_date));
             m->setOrder(meetingOrder);
-            meetings_parsed.push_back(m);
+            parsed_meetings.push_back(m);
             // Increment meeting order
             meetingOrder+=1;
 
@@ -384,7 +380,7 @@ void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {
 
 
             //> Add participation if all checks passed
-            participations_parsed.push_back(new Participation(user, meeting));
+            parsed_participations.push_back(new Participation(user, meeting));
 
 
 

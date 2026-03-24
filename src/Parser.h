@@ -33,8 +33,8 @@ public:
 
     virtual ~Parser() = default;
 protected:
-    std::list<Room*> rooms;
-    std::list<Meeting*> meetings;
-    std::list<Participation*> participations;
+    std::list<Room*> parsed_rooms;
+    std::list<Meeting*> parsed_meetings;
+    std::list<Participation*> parsed_participations;
 };
 #endif //PARSER_H

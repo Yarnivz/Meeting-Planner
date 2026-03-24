@@ -6,11 +6,11 @@
 
 
 
-const std::list<Room *> & Parser::parsedRooms() const { return rooms; }
-void Parser::clearRooms() { rooms = {};}
+const std::list<Room *> & Parser::parsedRooms() const { return parsed_rooms; }
+void Parser::clearRooms() { parsed_rooms = {};}
 
-const std::list<Meeting *> & Parser::parsedMeetings() const { return meetings; }
-void Parser::clearMeetings() { meetings = {};}
+const std::list<Meeting *> & Parser::parsedMeetings() const { return parsed_meetings; }
+void Parser::clearMeetings() { parsed_meetings = {};}
 
-const std::list<Participation *> & Parser::parsedParticipations() const { return participations; }
-void Parser::clearParticipations() { participations = {};}
+const std::list<Participation *> & Parser::parsedParticipations() const { return parsed_participations; }
+void Parser::clearParticipations() { parsed_participations = {};}

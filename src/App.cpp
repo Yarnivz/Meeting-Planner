@@ -30,6 +30,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
     parser->parse(filename, errStream);
 
+
     //> Add all elements in the correct order
     //  Final integrity checks
 
