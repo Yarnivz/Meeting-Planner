@@ -1,0 +1,4 @@
+Room capacity needs to be larger than 0. Room will not be added.
+Property IDENTIFIER needs to contain text.
+MEETING must have a DATE property
+User 'Peter Selie' participates in a meeting 'Meeting_478463' which doesnt exist.

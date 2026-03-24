@@ -3,12 +3,17 @@
 #include "App.h"
 #include <fstream>
 
+#include "XmlParser.h"
+
 int main() {
-    App* app = new App();
-    app->parseFile("./test-files/ConflictMeetings1.xml");
+    XmlParser* parser = new XmlParser();
+    std::ostream* scout = &std::cout;
+    std::ofstream* fout = new std::ofstream("output.txt");
+    App* app = new App(parser, scout);
+    app->parseFile("./test-files/InvalidData2.xml");
     app->processAllMeetings();
-    std::ofstream fout("output.txt");
-    app->writeToStream(fout);
-    fout.close();
+    app->writeToStream();
+    delete parser;
+    delete fout;
     delete app;
 }

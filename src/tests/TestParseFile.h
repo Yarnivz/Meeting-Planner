@@ -7,6 +7,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
+#include "FileUtils.h"
 #include "../App.h"
 #include "../XmlParser.h"
 
@@ -69,7 +70,7 @@ TEST_F(TestParseFile, HappyDay2) {
         App* app = new App(new XmlParser(), &std::cout);
 
         EXPECT_TRUE(app->isProperlyInitialized());
-        app->parseFile("./test-files/HappyDay2.xml");
+        app->parseFile("./test-files/HappyDay2.xml", errLog);
 
         //Test room #1
         Room* room = app->getRoom("id_026");
@@ -138,10 +139,10 @@ TEST_F(TestParseFile, HappyDay2) {
 
 TEST_F(TestParseFile, InvalidData1) {
 
+        const std::string actual = "./test-files/InvalidData1-errors-actual.txt";
+        const std::string expected = "./test-files/InvalidData1-errors-expected.txt";
 
-        std::stringstream errMsg;
-        std::string errMsgLine;
-        std::string expectedErrMsg;
+        std::ofstream errLog(actual);
 
         const std::string meeting1 = "Meeting_478463";
         const std::string meeting2 = "Meeting_514203";
@@ -151,7 +152,7 @@ TEST_F(TestParseFile, InvalidData1) {
 
         App* app = new App(new XmlParser(), nullptr);
         EXPECT_TRUE(app->isProperlyInitialized());
-        app->parseFile("./test-files/InvalidData1.xml", errMsg);
+        app->parseFile("./test-files/InvalidData1.xml", errLog);
 
         //Test room #1
         Room* room = app->getRoom("M.G.025");
@@ -162,40 +163,33 @@ TEST_F(TestParseFile, InvalidData1) {
         //Test room #2
         room = app->getRoom("Room98732");
         EXPECT_EQ(nullptr, room);
-        expectedErrMsg = "Room capacity needs to be larger than 0. Room will not be added.";
-        std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test meeting #1
         Meeting* meeting = app->getMeeting(meeting1);
         EXPECT_EQ(nullptr, meeting);
-        expectedErrMsg = "Property IDENTIFIER needs to contain text.";
-        std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test meeting #2
         meeting = app->getMeeting(meeting2);
         EXPECT_EQ(nullptr, meeting);
-        expectedErrMsg = "MEETING must have a DATE property";
-        std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test participation
         Participations* p = app->getParticipationsByUser(user);
         EXPECT_EQ(nullptr, p);
-        expectedErrMsg = "User '" + user + "' participates in a meeting '" + meeting1 + "' which doesnt exist.";
-        std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(expectedErrMsg, errMsgLine);
+
+        //Test errors
+        EXPECT_TRUE(file_compare(actual, expected));
+
 
         delete app;
 }
 
 TEST_F(TestParseFile, InvalidData2) {
 
+        std::string actual = "./test-files/InvalidData2-errors-actual.txt";
+        std::string expected = "./test-files/InvalidData2-errors-expected.txt";
 
-        std::stringstream errMsg;
-        std::string errMsgLine;
-        std::string expectedErrMsg;
+        std::ofstream errLog(actual);
+
         std::string room1 = "mg025";
         std::string room2 = "gt123";
         std::string meeting1 = "m656";
@@ -207,39 +201,52 @@ TEST_F(TestParseFile, InvalidData2) {
 
 
 
-        App* app = new App();
+        App* app = new App(new XmlParser(), nullptr);
         EXPECT_TRUE(app->isProperlyInitialized());
-        app->parseFile("./test-files/InvalidData2.xml");
+        app->parseFile("./test-files/InvalidData2.xml", errLog);
 
         //Test room #1
         Room* room = app->getRoom(room1);
+        EXPECT_NE(nullptr, room);
         EXPECT_EQ("M.G.025", room->toString());
         EXPECT_EQ(25u, room->getCapacity());
 
         //Test room #2
         room = app->getRoom(room2);
-        EXPECT_EQ("M.G.025", room->toString());
+        EXPECT_NE(nullptr, room);
+        EXPECT_EQ("G.T.123", room->toString());
         EXPECT_EQ(100u, room->getCapacity());
 
         //Test room #3
         EXPECT_EQ(2u, app->getAllRooms().size());
-        expectedErrMsg = "ROOM must have a NAME property";
-        std::getline(errMsg, errMsgLine);
-        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test meeting #1
         Meeting* meeting = app->getMeeting(meeting1);
+        EXPECT_NE(nullptr, meeting);
         EXPECT_EQ("Movie Marathon", meeting->toString());
         EXPECT_EQ(room1, meeting->getRoomId());
         EXPECT_EQ(Date(2026,6,13), meeting->getDate());
 
         //Test meeting #2
-        meeting = app->getMeeting(meeting1);
+        meeting = app->getMeeting(meeting2);
+        EXPECT_NE(nullptr, meeting);
         EXPECT_EQ("Very important meeting", meeting->toString());
-        EXPECT_EQ(room1, meeting->getRoomId());
+        EXPECT_EQ(room2, meeting->getRoomId());
         EXPECT_EQ(Date(2026,6,13), meeting->getDate());
 
         //Test meeting #3
+        meeting = app->getMeeting(meeting3);
+        EXPECT_EQ(nullptr, meeting);
+        EXPECT_EQ(2u, app->getAllMeetings().size());
+
+        //Test participations
+        Participations p = app->getAllParticipations();
+        EXPECT_EQ(1u, p.size());
+        EXPECT_EQ(meeting1, p.back()->getMeetingId());
+        EXPECT_EQ(user1, p.back()->getUser());
+
+        //Test errors
+        EXPECT_TRUE(file_compare(actual, expected));
 
         delete app;
 }
@@ -264,7 +271,7 @@ TEST_F(TestParseFile, FileNotFound) {
         EXPECT_DEATH(app->parseFile("./test-files/FileThatDoesntExist.xml"),"");
 
         delete app;
-}
+};
 
 
 #endif //MEETING_PLANNER_PARSEFILETESTS_H
