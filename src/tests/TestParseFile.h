@@ -139,7 +139,9 @@ TEST_F(TestParseFile, HappyDay2) {
 TEST_F(TestParseFile, InvalidData1) {
 
 
-        std::ofstream errLog("./test-files/TestParseFile.InvalidData1-Errors-actual.log");
+        std::stringstream errMsg;
+        std::string errMsgLine;
+        std::string expectedErrMsg;
 
         const std::string meeting1 = "Meeting_478463";
         const std::string meeting2 = "Meeting_514203";
@@ -149,7 +151,7 @@ TEST_F(TestParseFile, InvalidData1) {
 
         App* app = new App(new XmlParser(), nullptr);
         EXPECT_TRUE(app->isProperlyInitialized());
-        app->parseFile("./test-files/InvalidData1.xml", errLog);
+        app->parseFile("./test-files/InvalidData1.xml", errMsg);
 
         //Test room #1
         Room* room = app->getRoom("M.G.025");
@@ -160,18 +162,29 @@ TEST_F(TestParseFile, InvalidData1) {
         //Test room #2
         room = app->getRoom("Room98732");
         EXPECT_EQ(nullptr, room);
+        std::getline(errMsg, errMsgLine);
+        EXPECT_EQ("Room capacity needs to be larger than 0. Room will not be added.", errMsgLine);
 
         //Test meeting #1
         Meeting* meeting = app->getMeeting(meeting1);
         EXPECT_EQ(nullptr, meeting);
+        expectedErrMsg = "Property IDENTIFIER needs to contain text.";
+        std::getline(errMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test meeting #2
         meeting = app->getMeeting(meeting2);
         EXPECT_EQ(nullptr, meeting);
+        expectedErrMsg = "MEETING must have a DATE property";
+        std::getline(errMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         //Test participation
         Participations* p = app->getParticipationsByUser(user);
         EXPECT_EQ(nullptr, p);
+        expectedErrMsg = "User '" + user + "' participates in a meeting '" + meeting1 + "' which doesnt exist.";
+        std::getline(errMsg, errMsgLine);
+        EXPECT_EQ(expectedErrMsg, errMsgLine);
 
         delete app;
 }
