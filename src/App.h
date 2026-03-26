@@ -47,6 +47,8 @@ public:
     * @param filename of the .xml file to parse
     * @param errStream stream to print errors to in case they appear. Defaults to the standard console error stream.
     */
+
+    //TODO: Delete errStream and use parser errStream
     void parseFile(const std::string& filename, std::ostream& errStream = std::cerr);
 
     /**
@@ -326,13 +328,17 @@ private:
     Rooms rooms;
 
     Meetings all_meetings;
+    //TODO: delete datastructures below and use class attributes instead
     Meetings future_meetings;
     Meetings ongoing_meetings;
     Meetings cancelling_meetings;
+    //TODO: delete and make attribute
     std::unordered_map<std::string, std::string> canceled_meeting_reasons;
 
+    //TODO: delete datastructure and implement in function in class/app
     MeetingsByRoomMap meetings_by_room;
 
+    //TODO: delete datastructures and implement in function in class/app
     Participations all_participations;
     ParticipationsByUserMap participations_by_user;
     ParticipationsByMeetingMap participations_by_meeting;
