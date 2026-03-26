@@ -10,7 +10,7 @@ int main() {
     std::ostream* scout = &std::cout;
     std::ofstream* fout = new std::ofstream("output.txt");
     App* app = new App(parser, scout);
-    app->parseFile("./test-files/InvalidData2.xml");
+    app->parseFile("./test-files/HappyDay1.xml");
     app->processAllMeetings();
     app->writeToStream();
     delete parser;

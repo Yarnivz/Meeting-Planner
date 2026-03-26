@@ -64,6 +64,7 @@ public:
      * The App class expects ownership of the Room pointer passed in.
      *
      * @param room to register
+     * REQUIRE(output, "App doesnt have an output attached.");
      */
     void addRoom(Room* room);
 
@@ -292,6 +293,10 @@ public:
     *
     *@param meetingId Id of the meeting to retrieve.
     *@param verbose Prints text to console when enabled. This option is enabled by default.
+    *@yes
+    * REQUIRE(meeting, "This meeting doesn't exist.");
+    * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
     */
     void processSingleMeeting(const std::string &meetingId, bool verbose = true);
     /**
