@@ -85,6 +85,12 @@ public:
      * With key == room-id and value == room-pointer
      *
      * @return a map of all registered rooms
+     *
+     * @contracts
+    * REQUIRE(room, "The provided room cannot be null.");
+    * @n REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
+    * @n REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
+    * @n ENSURE(getRoom(room->getId()) == room, "The room was not added to the App");
      */
     const Rooms &getAllRooms() const;
 
@@ -293,20 +299,26 @@ public:
     *
     * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
     *
-    *@param meetingId Id of the meeting to retrieve.
-    *@param verbose Prints text to console when enabled. This option is enabled by default.
-    *@yes
+    * @param meetingId Id of the meeting to retrieve.
+    * @param verbose Prints text to console when enabled. This option is enabled by default.
+    *
+    * @contracts
     * REQUIRE(meeting, "This meeting doesn't exist.");
     * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
     * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
     */
     void processSingleMeeting(const std::string &meetingId, bool verbose = true);
     /**
-    *@brief Checks all planned meeting entries for conflicting rooms/dates.
+    * @brief Checks all planned meeting entries for conflicting rooms/dates.
     *
     * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
     *
-    *@param verbose Prints text to console when enabled. This option is enabled by default.
+    * @param verbose Prints text to console when enabled. This option is enabled by default.
+    *
+    * @contracts
+    * REQUIRE(currentMeeting, "Meeting can not be null.");
+    * @n REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    * @n ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
     */
     void processAllMeetings(bool verbose = true);
     ~App();
