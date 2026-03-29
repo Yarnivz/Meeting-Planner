@@ -66,7 +66,6 @@ public:
      * The App class expects ownership of the Room pointer passed in.
      *
      * @param room to register
-     * REQUIRE(output, "App doesnt have an output attached.");
      */
     void addRoom(Room* room);
 
@@ -75,6 +74,9 @@ public:
      *
      * @param roomId of the room to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
+     *
+     * @contracts
+     *  ENSURE(it->second->getId() == roomId, "Something went wrong. The room which was found did not have the right id.");
      */
     Room* getRoom(const std::string& roomId);
 
@@ -85,12 +87,6 @@ public:
      * With key == room-id and value == room-pointer
      *
      * @return a map of all registered rooms
-     *
-     * @contracts
-    * REQUIRE(room, "The provided room cannot be null.");
-    * @n REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
-    * @n REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
-    * @n ENSURE(getRoom(room->getId()) == room, "The room was not added to the App");
      */
     const Rooms &getAllRooms() const;
 
@@ -314,7 +310,6 @@ public:
     * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
     *
     * @param verbose Prints text to console when enabled. This option is enabled by default.
-    *
     * @contracts
     * REQUIRE(currentMeeting, "Meeting can not be null.");
     * @n REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");

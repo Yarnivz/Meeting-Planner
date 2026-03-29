@@ -1,0 +1,33 @@
+\chapter{README}
+\hypertarget{md_README}{}\label{md_README}\index{README@{README}}
+\begin{quote}
+{\bfseries{Note\+:}} The cross-\/platform build pipeline and Doxygen documentation setup described below were generated and co-\/authored with Gemini (Google AI) to ensure a seamless workflow for both Windows and Linux developers. \end{quote}
+\hypertarget{md_README_autotoc_md0}{}\doxysubsection{\texorpdfstring{🛠️ Build Prerequisites}{🛠️ Build Prerequisites}}\label{md_README_autotoc_md0}
+This project uses {\bfseries{CMake}} for the build system and {\bfseries{Doxygen}} to generate code documentation.
+
+The CMake configuration is completely cross-\/platform. It is designed to automatically find your local Doxygen installation, regardless of your OS.\hypertarget{md_README_autotoc_md1}{}\doxysubsubsection{\texorpdfstring{For Linux Users (\+Ubuntu/\+Debian)}{For Linux Users (Ubuntu/Debian)}}\label{md_README_autotoc_md1}
+You will need to install Doxygen globally on your system. Run the following command in your terminal\+:
+
+{\ttfamily sudo apt update \&\& sudo apt install doxygen}\hypertarget{md_README_autotoc_md2}{}\doxysubsubsection{\texorpdfstring{For Windows Users}{For Windows Users}}\label{md_README_autotoc_md2}
+To keep your system PATH clean, this project expects a portable version of Doxygen to be placed directly inside the project directory.
+
+
+\begin{DoxyEnumerate}
+\item Download the latest Windows binary {\ttfamily .zip} file from the \href{https://www.doxygen.nl/download.html}{\texttt{ official Doxygen download page}}.
+\item Create a folder named {\ttfamily bin} in the root directory of this project.
+\item Extract {\bfseries{only}} the {\ttfamily doxygen.\+exe} and {\ttfamily libclang.\+dll} files from the downloaded {\ttfamily .zip} and place them into the {\ttfamily bin/} folder. \texorpdfstring{$\ast$}{*}(Note\+: These binary files are ignored by Git, so they will not be committed to the repository).\texorpdfstring{$\ast$}{*}
+\end{DoxyEnumerate}
+
+\DoxyHorRuler{0}
+\hypertarget{md_README_autotoc_md4}{}\doxysubsection{\texorpdfstring{🚀 How to Build}{🚀 How to Build}}\label{md_README_autotoc_md4}
+\hypertarget{md_README_autotoc_md5}{}\doxysubsubsection{\texorpdfstring{1. Build the Main Project}{1. Build the Main Project}}\label{md_README_autotoc_md5}
+Once your dependencies are in place, you can configure and build the C++ project. From the root of the project, run\+:
+
+{\ttfamily cmake -\/B build} {\ttfamily cmake -\/-\/build build}\hypertarget{md_README_autotoc_md6}{}\doxysubsubsection{\texorpdfstring{2. Generate the Documentation}{2. Generate the Documentation}}\label{md_README_autotoc_md6}
+To keep daily compile times fast, the documentation does not generate automatically on every build. When you have updated the code comments and want to generate fresh HTML docs, run this specific target\+:
+
+{\ttfamily cmake -\/-\/build build -\/-\/target generate\+\_\+docs}
+
+\texorpdfstring{$\ast$}{*}(If you are using CLion, you can simply select {\ttfamily generate\+\_\+docs} from the run configuration dropdown at the top right and click the Build hammer).\texorpdfstring{$\ast$}{*}
+
+{\itshape Note\+: The HTML documentation will generate inside the {\ttfamily docs/} folder. You can open {\ttfamily docs/html/index.\+html} in your browser to view it. The {\ttfamily docs/} folder is ignored by Git, so everyone should generate their own local copy.} 
