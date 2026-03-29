@@ -233,10 +233,7 @@ void App::addMeeting(Meeting *meeting) {
 
     Room* rm = getRoom(meeting->getRoomId());
 
-    REQUIRE(
-        rm,
-        "The meeting has to take place in a room which was already registered."
-        );
+    REQUIRE(rm, "The meeting has to take place in a room which was already registered.");
 
     // REQUIRE(
     //     !isRoomOccupied(rm->getId(), meeting->getDate()),

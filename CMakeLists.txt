@@ -27,14 +27,11 @@ endif()
 find_package(Doxygen OPTIONAL_COMPONENTS)
 
 if (DOXYGEN_FOUND)
-    # set doxygen configuration
-    set(DOXYGEN_PROJECT_NAME "Meeting-Planner")
-    set(DOXYGEN_PROJECT_BRIEF "Auto-generated documentation")
-    set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/docs")
     # add doxygen docs every time the project is build
     doxygen_add_docs(
             generate_docs
             ${CMAKE_CURRENT_SOURCE_DIR}/src  # Folder containing the code to document
+            CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile"  # set doxygen configuration
             COMMENT "Auto-generating Doxygen documentation..."
     )
 else ()
