@@ -179,7 +179,6 @@ public:
      */
     Meeting* getMeeting(const std::string& meetingId);
 
-    //TODO continue contracts documentation from here
     /**
      * @brief Retrieve a map of all registered meetings
      *
@@ -208,14 +207,22 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't canceled.
+     *
+     * @contracts
+     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting *getCanceledMeeting(const std::string &meetingId);
     /**
-    *@brief Retrieves the cancellation reason of the appropriate meeting.
+    * @brief Retrieves the cancellation reason of the appropriate meeting.
     *
     * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
     *
-    *@param meetingId that's tied to meetings appropriate cancellation reason.
+    * @param meetingId that's tied to meetings appropriate cancellation reason.
+    *
+    * @contracts
+    * REQUIRE(getCanceledMeeting(meetingId), "That meeting does not exist or it isn't cancelled");
+    * @n  ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
+    * @n ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
     */
     const std::string &getCancellationReason(const std::string &meetingId);
 
@@ -224,6 +231,9 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't processed.
+     *
+     * @contracts
+     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting *getDoneMeeting(const std::string &meetingId);
 
@@ -232,6 +242,9 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it was already processed.
+     *
+     * @contracts
+     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting *getFutureMeeting(const std::string &meetingId);
 
@@ -240,6 +253,13 @@ public:
      *
      * @param meetingId of the meeting to cancel.
      * @param reason for the cancellation (may be left empty)
+     *
+     * @contracts
+     * REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
+     * @n REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was already canceled.");
+     * @n REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+     * @n REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
+     * @n ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not canceled.");
      */
     void cancelMeeting(const std::string &meetingId, const std::string &reason = "");
 
@@ -247,7 +267,15 @@ public:
      * @brief Uncancel a meeting.
      *
      * @param meetingId of the meeting to uncancel.
+     *
+     * @contracts
+     * REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
+     * @n REQUIRE(getCanceledMeeting(meetingId), "This meeting was not canceled.");
+     * @n REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
+     * @n REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
+     * @n ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not uncanceled.");
      */
+    //TODO continue from here
     void uncancelMeeting(const std::string &meetingId);
 
     /**

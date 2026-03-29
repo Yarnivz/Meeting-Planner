@@ -101,8 +101,7 @@ void App::writeToStream() {
     }
 }
 
-void App::processSingleMeeting(const std::string &meetingId, const bool verbose)
-{
+void App::processSingleMeeting(const std::string &meetingId, const bool verbose) {
     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
     Meeting* meeting = getMeeting(meetingId);
     REQUIRE(meeting, "This meeting doesn't exist.");
@@ -126,8 +125,7 @@ void App::processSingleMeeting(const std::string &meetingId, const bool verbose)
     ENSURE(meetingProcessed, "Meeting hasn't been processed");
 }
 
-void App::processAllMeetings(const bool verbose)
-{
+void App::processAllMeetings(const bool verbose) {
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : all_meetings)
     {
