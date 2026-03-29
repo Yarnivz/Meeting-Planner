@@ -46,7 +46,11 @@ set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/D
         src/Parser.cpp
         src/Parser.h
         src/XmlParser.cpp
-        src/XmlParser.h)
+        src/XmlParser.h
+        src/Campus.cpp
+        src/Campus.h
+        src/Building.cpp
+        src/Building.h)
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
