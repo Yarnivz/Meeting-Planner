@@ -26,8 +26,10 @@ endif()
 #For linux: it checks whether the system has the doxygen package installed
 find_package(Doxygen OPTIONAL_COMPONENTS)
 
+set(DOCS_TOOLS_SOURCES tools/ContractsDocumentationGenerator.cpp)
 if (DOXYGEN_FOUND)
     # add doxygen docs every time the project is build
+    add_executable(docs_tools_target ${DOCS_TOOLS_SOURCES})
     doxygen_add_docs(
             generate_docs
             ${CMAKE_CURRENT_SOURCE_DIR}/src  # Folder containing the code to document
@@ -36,7 +38,7 @@ if (DOXYGEN_FOUND)
     )
 else ()
     # if doxygen is not found we give the user a warning
-    message(WARNING "Doxygen not found. Documentation will not be generated.")
+    message(WARNING "Doxygen or CLANG not found. Documentation will not be generated.")
 endif ()
 
 set(COMMON_SOURCE_FILES src/Room.cpp src/Meeting.cpp src/Participation.cpp src/Date.cpp src/App.cpp
