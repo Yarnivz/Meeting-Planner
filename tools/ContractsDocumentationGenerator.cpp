@@ -53,6 +53,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
     std::vector<std::string> contracts;
     for (size_t i = 0; i < headerFileLines.size(); ++i)
     {
+        contracts.clear();
         if ((headerFileLines[i].find(");") != std::string::npos ||
             headerFileLines[i].find(") const;") != std::string::npos) &&
             headerFileLines[i].find("ENSURE") == std::string::npos &&
@@ -62,8 +63,8 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             currentFunction.pop_back();
 
             //TODO add codeFile for loop to find contracts in current function
-            
-            contracts.push_back("test " + currentFunction);
+
+            contracts.push_back("test" + currentFunction);
             contracts.push_back("test1");
             contracts.push_back("test2");
             size_t documentationLastLine = 0;
@@ -74,7 +75,8 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                 {
                     if (documentationLastLine != 0 && contractDocumentationFirstLine != 0)
                     {
-
+                        //TODO update contract if it exists
+                        break;
                     } else if (documentationLastLine != 0 && contractDocumentationFirstLine == 0)
                     {
                         std::cout << "adding fresh contract                          --------";
@@ -87,6 +89,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                             headerFileLines.insert((headerFileLines.begin() + documentationLastLine + c + 2), "     * @n " + contracts[c]);
                         }
                         i += contracts.size() + 2;
+                        break;
                     } else
                     {
                         std::cout << "No documentation found for " << headerFileLines[i] << std::endl;
@@ -103,7 +106,6 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             }
             previousFunction = currentFunction;
             std::cout << " found function " << currentFunction << " in " << baseFilename+".h"<<std::endl;
-            contracts.clear();
         }
 
     }
