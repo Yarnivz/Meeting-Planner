@@ -50,6 +50,7 @@ const std::string& Room::toString() const
 }
 
 unsigned Room::getCapacity() const {
+    REQUIRE(capacity > 0, "Capacity must be greater than 0");
     return capacity;
 }
 

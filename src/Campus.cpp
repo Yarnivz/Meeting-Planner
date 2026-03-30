@@ -3,10 +3,17 @@
 //
 
 #include "Campus.h"
+#include "DesignByContract.h"
 
 Campus::Campus(const std::string &name, const std::string &id):
 name(name), id(id) {
+    REQUIRE(!name.empty(), "Name cannot be empty");
+    REQUIRE(!id.empty(), "Id cannot be empty");
+
     init_check_this_ptr = this;
+
+    ENSURE(this->name == name, "Name was not added to this Campus object");
+    ENSURE(this->id == id, "Id was not added to this Campus object");
 }
 
 bool Campus::isProperlyInitialized() const {
@@ -14,14 +21,17 @@ bool Campus::isProperlyInitialized() const {
 }
 
 const std::string & Campus::getId() const {
+    REQUIRE(!id.empty(), "Id cannot be empty");
     return id;
 }
 
 const std::string & Campus::toString() const {
+    REQUIRE(!id.empty(), "Name cannot be empty");
     return name;
 }
 
 std::ostream & operator<<(std::ostream &os, const Campus &campus) {
+    REQUIRE(campus.isProperlyInitialized(), "Campus must be properly initialized");
     os << campus.toString();
     return os;
 }
