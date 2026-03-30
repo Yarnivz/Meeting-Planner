@@ -20,6 +20,8 @@ public:
      * @brief Copies a Date object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      * @param d The Date to be copied.
+     *
+     * @contracts
      */
     Date(const Date& d);
 
@@ -30,6 +32,10 @@ public:
      * @param year
      * @param month
      * @param day
+     * @contracts
+     * testcontract yes
+     * @n another testcontract indeed
+     * @n yet another testcontract
      */
     Date(int year, int month, int day);
 
