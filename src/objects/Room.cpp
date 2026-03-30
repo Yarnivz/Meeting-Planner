@@ -2,11 +2,11 @@
 // Created by Yarni on 2/26/2026.
 //
 
-#include "Room.h"
+#include "./Room.h"
 
 #include <stdexcept>
 
-#include "DesignByContract.h"
+#include "../helper/DesignByContract.h"
 
 Room::Room(const std::string &name, const std::string &id, unsigned capacity):
 name(name), id(id), capacity(capacity) {

@@ -2,9 +2,9 @@
 // Created by Yarni on 2/26/2026.
 //
 
-#include "Participation.h"
+#include "./Participation.h"
 
-#include "DesignByContract.h"
+#include "../helper/DesignByContract.h"
 
 Participation::Participation(const std::string &user, const std::string &meeting)
 : user(user), meeting(meeting)

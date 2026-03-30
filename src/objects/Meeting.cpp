@@ -2,9 +2,9 @@
 // Created by Yarni on 2/26/2026.
 //
 
-#include "Meeting.h"
+#include "./Meeting.h"
 
-#include "DesignByContract.h"
+#include "../helper/DesignByContract.h"
 
 Meeting::Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date)
 : label(label), id(id), room(roomId), date(date)

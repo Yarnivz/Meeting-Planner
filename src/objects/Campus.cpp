@@ -1,9 +1,9 @@
 //
-// Created by User on 3/29/2026.
+// Created by Yarni on 3/29/2026.
 //
 
-#include "Campus.h"
-#include "DesignByContract.h"
+#include "./Campus.h"
+#include "../helper/DesignByContract.h"
 
 Campus::Campus(const std::string &name, const std::string &id):
 name(name), id(id) {

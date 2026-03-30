@@ -1,9 +1,9 @@
 //
-// Created by User on 3/29/2026.
+// Created by Yarni on 3/29/2026.
 //
 
-#include "Building.h"
-#include "DesignByContract.h"
+#include "./Building.h"
+#include "../helper/DesignByContract.h"
 
 Building::Building(const std::string &name, const std::string &id, const std::string &campus):
 name(name), id(id), campus(campus) {

@@ -8,10 +8,10 @@
 #include <string>
 #include <unordered_map>
 
-#include "Room.h"
-#include "Meeting.h"
-#include "Parser.h"
-#include "Participation.h"
+#include "objects/Room.h"
+#include "objects/Meeting.h"
+#include "parser/Parser.h"
+#include "objects/Participation.h"
 
 using Meetings = std::unordered_map<std::string, Meeting*>;
 using Rooms = std::unordered_map<std::string, Room*>;
