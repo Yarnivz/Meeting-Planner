@@ -102,14 +102,19 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
 
             if (documentationLastLine != 0 && contractDocumentationFirstLine != 0)
             {
-                //TODO update contract if it exists
-                std::cout << "update function contract" << std::endl;
+                std::cout << "updating existing contracts" << std::endl;
+                headerFileLines.erase(headerFileLines.begin() + contractDocumentationFirstLine+1, headerFileLines.begin() + documentationLastLine);
+                headerFileLines.insert((headerFileLines.begin() + contractDocumentationFirstLine + 1), "     * " + contracts[0]);
+                for (size_t c = 1; c < contracts.size(); ++c)
+                {
+                    headerFileLines.insert((headerFileLines.begin() + contractDocumentationFirstLine + c + 1), "     * @n " + contracts[c]);
+                }
+                i += contracts.size() + 1;
             } else if (documentationLastLine != 0 && contractDocumentationFirstLine == 0)
             {
                 std::cout << "adding new contract" << std::endl;
                 //headerFileLines.insert((headerFileLines.begin() + documentationLastLine), "     *");
                 headerFileLines.insert((headerFileLines.begin() + documentationLastLine), "     * @contracts");
-
                 headerFileLines.insert((headerFileLines.begin() + documentationLastLine + 1), "     * " + contracts[0]);
                 for (size_t c = 1; c < contracts.size(); ++c)
                 {
