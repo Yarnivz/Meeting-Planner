@@ -19,7 +19,7 @@ int main() {
             if (std::filesystem::exists(sourceDirectory+baseFilename+".h"))
             {
                 //Temporarily use Date only for small scale test
-                if (baseFilename == "Date")
+                if (baseFilename == "App")
                 {
                     ContractsDocumentationGenerator::generateContractsDocumentation(baseFilename, sourceDirectory);
                     std::cout << baseFilename << " has header file "<< std::endl;
@@ -60,15 +60,65 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             headerFileLines[i].find("REQUIRE") == std::string::npos)
         {
             currentFunction = headerFileLines[i];
+            size_t preEmptySpace = currentFunction.find_first_not_of(' ');
+            if (preEmptySpace != std::string::npos) {
+                currentFunction.erase(0, preEmptySpace);
+            }
+            size_t postEmptySpace = currentFunction.find_last_not_of(' ');
+            if (postEmptySpace != std::string::npos) {
+                currentFunction.erase(postEmptySpace + 1);
+            }
             currentFunction.pop_back();
 
 
-            //TODO add codeFile for loop to find contracts in current function
+            int layer = 0;
+            bool functionFound = false;
+            for (size_t k = 0; k < codeFileLines.size(); ++k)
+
+            {
+                std::string stringToRemove = baseFilename+"::";
+                size_t removeStringIndex = codeFileLines[k].find(stringToRemove);
+                if (removeStringIndex != std::string::npos) {
+                    codeFileLines[k].erase(removeStringIndex, stringToRemove.length());
+                }
+                if (codeFileLines[k].find(currentFunction) != std::string::npos)
+                {
+                    functionFound = true;
+                }
+
+                if (functionFound)
+                {
+                    if (codeFileLines[k].find("REQUIRE") != std::string::npos)
+                    {
+                        std::cout << "contract detected for " << currentFunction << std::endl;
+                        std::erase(codeFileLines[k], ' ');
+                        contracts.push_back(codeFileLines[k]);
+                    } else if (codeFileLines[k].find("ENSURE") != std::string::npos)
+                    {
+                        std::cout << "contract detected for " << currentFunction << std::endl;
+                        std::erase(codeFileLines[k], ' ');
+                        contracts.push_back(codeFileLines[k]);
+                    }
+
+                    if (codeFileLines[k].find("{") != std::string::npos)
+                    {
+                        layer +=1;
+                    }
+                    if (codeFileLines[k].find("}") != std::string::npos)
+                    {
+                        layer -=1;
+                    }
+                    if (layer <= 0 && functionFound)
+                    {
+                        break;
+                    }
+                }
+            }
 
 
-            contracts.push_back("test" + currentFunction);
+            /*contracts.push_back("test" + currentFunction);
             contracts.push_back("test1");
-            contracts.push_back("test2");
+            contracts.push_back("test2");*/
             size_t documentationLastLine = 0;
             size_t contractDocumentationFirstLine = 0;
             for (size_t j = i-1; j >= 1; --j)
@@ -103,17 +153,18 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             if (documentationLastLine != 0 && contractDocumentationFirstLine != 0)
             {
                 std::cout << "updating existing contracts" << std::endl;
-                headerFileLines.erase(headerFileLines.begin() + contractDocumentationFirstLine+1, headerFileLines.begin() + documentationLastLine);
+                headerFileLines.erase(headerFileLines.begin() + contractDocumentationFirstLine + 1, headerFileLines.begin() + documentationLastLine);
+                i -= documentationLastLine - contractDocumentationFirstLine - 1 ;
+
                 headerFileLines.insert((headerFileLines.begin() + contractDocumentationFirstLine + 1), "     * " + contracts[0]);
                 for (size_t c = 1; c < contracts.size(); ++c)
                 {
                     headerFileLines.insert((headerFileLines.begin() + contractDocumentationFirstLine + c + 1), "     * @n " + contracts[c]);
                 }
-                i += contracts.size() + 1;
+                i += contracts.size();
             } else if (documentationLastLine != 0 && contractDocumentationFirstLine == 0)
             {
                 std::cout << "adding new contract" << std::endl;
-                //headerFileLines.insert((headerFileLines.begin() + documentationLastLine), "     *");
                 headerFileLines.insert((headerFileLines.begin() + documentationLastLine), "     * @contracts");
                 headerFileLines.insert((headerFileLines.begin() + documentationLastLine + 1), "     * " + contracts[0]);
                 for (size_t c = 1; c < contracts.size(); ++c)
@@ -129,7 +180,6 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             previousFunctionLine = i;
             std::cout << " found function " << currentFunction << " in " << baseFilename+".h"<<std::endl;
         }
-
         contracts.clear();
     }
     codeFile.close();

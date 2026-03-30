@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "DesignByContract.h"
+#include <cxxabi.h>
 
 
 Date::Date() {

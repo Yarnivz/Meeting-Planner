@@ -312,7 +312,6 @@ public:
      * @param userId of the user for which to return all participations
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
      */
-    //const std::list<Participation *> *getParticipationListByUser(const std::string &user);
     Participations* getParticipationsByUser(const std::string &userId);
 
     /**
