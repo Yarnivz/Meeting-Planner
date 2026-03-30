@@ -7,9 +7,8 @@
 #include <filesystem>
 #include <queue>
 #include <tinyxml.h>
-#include "DesignByContract.h"
-#include "Parser.h"
-#include "XmlParser.h"
+#include "helper/DesignByContract.h"
+#include "parser/Parser.h"
 
 
 App::App(Parser* parser, std::ostream* output) : parser(parser), output(output) {

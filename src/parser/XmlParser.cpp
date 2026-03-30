@@ -2,9 +2,9 @@
 // Created by s0255946 on 18/03/2026.
 //
 
-#include "XmlParser.h"
+#include "../XmlParser.h"
 
-#include "DesignByContract.h"
+#include "../helper/DesignByContract.h"
 #include "tinyxml.h"
 
 void XmlParser::parse(const std::string& filename, std::ostream &errorStream) {

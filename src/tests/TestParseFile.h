@@ -9,7 +9,7 @@
 
 #include "FileUtils.h"
 #include "../App.h"
-#include "../XmlParser.h"
+#include "../parser/XmlParser.h"
 
 class TestParseFile : public ::testing::Test {
 };

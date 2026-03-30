@@ -1,5 +1,5 @@
 //
-// Created by User on 3/29/2026.
+// Created by Yarni on 3/29/2026.
 //
 
 #ifndef MEETING_PLANNER_CAMPUS_H
@@ -14,8 +14,14 @@ public:
      * This is the object that houses a bunch of different buildings that have rooms inside of them to hold meetings.
      * A campus needs to be initialized using its name and identifier.
      *
+     * @pre Name cannot be empty
+     * @pre Id cannot be empty
+     *
      * @param name the name of this campus
      * @param id the unique identifier of this campus that can be used to call this object from the app.
+     *
+     * @post Name was added to this Campus object
+     * @post Id was added to this Campus object
      */
     Campus(const std::string& name, const std::string& id);
 
@@ -28,6 +34,8 @@ public:
     /**
      * @brief Id getter.
      *
+     * @pre Id cannot be empty
+     *
      * @return the identifier of this campus
      */
     const std::string& getId() const;
@@ -35,14 +43,21 @@ public:
     /**
      * @brief Converts this campus object into a readable string format.
      * This is represented by its name.
+     *
+     * @pre Name cannot be empty
+     *
      * @return the campus in string format
      */
     const std::string& toString() const;
 
     /**
      * @brief Standard stream operator using the toString function to append the campus to the stream.
+     *
+     * @pre Campus must be properly initialized
+     *
      * @param os stream to write on
      * @param campus object to write on the stream
+     *
      * @return the stream
      */
     friend std::ostream& operator <<(std::ostream& os, const Campus& campus);
