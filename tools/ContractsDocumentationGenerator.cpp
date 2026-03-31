@@ -22,7 +22,7 @@ int main() {
             {
                 std::cout << "base " << baseFilename << std::endl;
                 //Temporarily use Date only for small scale test
-                if (baseFilename == "Building")
+                if (baseFilename == "App")
                 {
                     std::cout << baseFilename << " has header and cpp file "<< std::endl;
                     ContractsDocumentationGenerator::generateContractsDocumentation(baseFilename, entry.path().parent_path().string()+'/');

@@ -11,8 +11,7 @@ Meeting::Meeting(const std::string& label, const std::string& id, const std::str
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
-    REQUIRE(date.isProperlyInitialized(),
-            "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
+    REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
     this->state = UNPROCESSED;
     this->order = 0;
@@ -33,23 +32,20 @@ const std::string& Meeting::getId() const
 
 const std::string& Meeting::getRoomId() const
 {
-    REQUIRE(isProperlyInitialized(),
-            "Failed to get room id. Meeting has to be properly initialized with the constructor.");
+    REQUIRE(isProperlyInitialized(), "Failed to get room id. Meeting has to be properly initialized with the constructor.");
     return room;
 }
 
 const Date& Meeting::getDate() const
 {
-    REQUIRE(isProperlyInitialized(),
-            "Failed to get date. Meeting has to be properly initialized with the constructor.");
+    REQUIRE(isProperlyInitialized(), "Failed to get date. Meeting has to be properly initialized with the constructor.");
     return date;
 }
 
 
 const std::string& Meeting::toString() const
 {
-    REQUIRE(isProperlyInitialized(),
-            "Failed to convert to string. Meeting has to be properly initialized with the constructor.");
+    REQUIRE(isProperlyInitialized(), "Failed to convert to string. Meeting has to be properly initialized with the constructor.");
     return label;
 }
 

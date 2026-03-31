@@ -106,8 +106,7 @@ std::string Date::getWeekDay() const
 
 std::string Date::toString() const
 {
-    ENSURE(isProperlyInitialized(),
-           "Failed to convert date to string. Date must be properly initialized with the constructor!");
+    ENSURE(isProperlyInitialized(), "Failed to convert date to string. Date must be properly initialized with the constructor!");
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
     return std::format("{:%d/%m/%Y}", date);

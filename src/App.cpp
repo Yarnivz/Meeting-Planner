@@ -271,8 +271,7 @@ void App::addMeeting(Meeting* meeting)
     participations_by_meeting.insert({meeting->getId(), {}}); // Insert empty participations list
 
 
-    ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting,
-           "Something went wrong, The meeting was not added to the App");
+    ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "Something went wrong, The meeting was not added to the App");
     ENSURE(getMeeting(meeting->getId()) == meeting, "Something went wrong, the meeting was not added to the App");
 }
 
@@ -286,8 +285,7 @@ Meeting* App::getMeetingInRoom(const std::string& meetingId, const std::string& 
 
     if (ms_it == ms->end()) return nullptr;
 
-    ENSURE(ms_it->second->getId() == meetingId,
-           "Something went wrong, The meeting which was found did not have the correct id.");
+    ENSURE(ms_it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return ms_it->second;
 }
 
@@ -298,8 +296,7 @@ Meeting* App::getMeeting(const std::string& meetingId)
 
     if (it == all_meetings.end()) return nullptr;
 
-    ENSURE(it->second->getId() == meetingId,
-           "Something went wrong, The meeting which was found did not have the correct id.");
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return it->second;
 }
 
@@ -309,8 +306,7 @@ Meeting* App::getCanceledMeeting(const std::string& meetingId)
 
     if (it == cancelling_meetings.end()) return nullptr;
 
-    ENSURE(it->second->getId() == meetingId,
-           "Something went wrong, The meeting which was found did not have the correct id.");
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return it->second;
 }
 
@@ -320,8 +316,7 @@ const std::string& App::getCancellationReason(const std::string& meetingId)
 
     const std::unordered_map<std::string, std::string>::iterator it = canceled_meeting_reasons.find(meetingId);
 
-    ENSURE(it != canceled_meeting_reasons.end(),
-           "Something went wrong, The meeting was found but the cancellation reason wasn't.");
+    ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
     ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
 
     return it->second;
@@ -334,8 +329,7 @@ Meeting* App::getDoneMeeting(const std::string& meetingId)
 
     if (it == ongoing_meetings.end()) return nullptr;
 
-    ENSURE(it->second->getId() == meetingId,
-           "Something went wrong, The meeting which was found did not have the correct id.");
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return it->second;
 }
 
@@ -345,8 +339,7 @@ Meeting* App::getFutureMeeting(const std::string& meetingId)
 
     if (it == future_meetings.end()) return nullptr;
 
-    ENSURE(it->second->getId() == meetingId,
-           "Something went wrong, The meeting which was found did not have the correct id.");
+    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
     return it->second;
 }
 
@@ -394,8 +387,7 @@ void App::doMeeting(const std::string& meetingId)
     ongoing_meetings.insert({meetingId, m});
 
     ENSURE(getDoneMeeting(meetingId) == m, "Something went wrong. The meeting was not done.");
-    ENSURE(getFutureMeeting(meetingId) == nullptr,
-           "Something went wrong. The meeting was not deleted from future (unprocessed) meetings");
+    ENSURE(getFutureMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not deleted from future (unprocessed) meetings");
 }
 
 void App::undoMeeting(const std::string& meetingId)
@@ -432,8 +424,7 @@ void App::addParticipation(Participation* participation)
 
     const Meeting* mt = getMeeting(participation->getMeetingId());
     REQUIRE(mt, "Could not add participation: The requested meeting does not exist.");
-    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()),
-            "Could not add participation: This user already participates in another meeting.");
+    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "Could not add participation: This user already participates in another meeting.");
 
 
     const Room* rm = getRoom(mt->getRoomId());
@@ -444,12 +435,10 @@ void App::addParticipation(Participation* participation)
 
     Participations* ps_by_meeting = _getMutParticipationsByMeeting(participation->getMeetingId());
     ENSURE(ps_by_meeting, "Something went wrong. The list of participations by meeting went out of sync.");
-    REQUIRE(ps_by_meeting->size() <= rm->getCapacity(),
-            "Could not add participation: The room the meeting takes place in was full.");
+    REQUIRE(ps_by_meeting->size() <= rm->getCapacity(), "Could not add participation: The room the meeting takes place in was full.");
 
     //REQUIRE(!isRoomOccupied(mt_room->getId(), mt->getDate()), "This rooms is already occupied.");
-    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()),
-            "This user already participates in another meeting.");
+    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "This user already participates in another meeting.");
 
 
     all_participations.push_back(participation); //Add it to a flat list of all participations
@@ -469,12 +458,9 @@ void App::addParticipation(Participation* participation)
 
     ps_by_meeting->push_back(participation);
 
-    ENSURE(all_participations.back() == participation,
-           "Something went wrong. The participation was not added to the global list.");
-    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation,
-           "Something went wrong. The participation was not added to the list by user.");
-    ENSURE(_getMutParticipationsByMeeting(participation->getMeetingId())->back() == participation,
-           "Something went wrong. The participation was not added to the list by app.");
+    ENSURE(all_participations.back() == participation, "Something went wrong. The participation was not added to the global list.");
+    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "Something went wrong. The participation was not added to the list by user.");
+    ENSURE(_getMutParticipationsByMeeting(participation->getMeetingId())->back() == participation, "Something went wrong. The participation was not added to the list by app.");
 }
 
 

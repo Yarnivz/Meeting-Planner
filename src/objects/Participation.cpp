@@ -17,8 +17,7 @@ Participation::Participation(const std::string& user, const std::string& meeting
 
 Participation::Participation(const Participation& p)
 {
-    REQUIRE(p.isProperlyInitialized(),
-            "Tried to copy a participation which was not properly initialized by the constructor.");
+    REQUIRE(p.isProperlyInitialized(), "Tried to copy a participation which was not properly initialized by the constructor.");
 
     user = p.user;
     meeting = p.meeting;
