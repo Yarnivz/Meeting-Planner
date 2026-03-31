@@ -7,7 +7,8 @@
 #include <iostream>
 #include <chrono>
 
-class Date {
+class Date
+{
 public:
     /**
      * @brief Creates the date class.
@@ -90,7 +91,7 @@ public:
      * @param date to write on the stream
      * @return the stream
      */
-    friend std::ostream& operator<<(std::ostream &os, const Date& date);
+    friend std::ostream& operator<<(std::ostream& os, const Date& date);
 
     /**
      * @brief Compares 2 dates with each other.
@@ -99,7 +100,7 @@ public:
      * @param other date to compare with
      * @return whether the dates are the same
      */
-    bool operator==(const Date &other) const;
+    bool operator==(const Date& other) const;
 
     /**
      * @brief Compares 2 dates with each other.
@@ -108,7 +109,7 @@ public:
      * @param other date to compare with
      * @return whether the date is lesser than the other date
      */
-    bool operator<(const Date &other) const;
+    bool operator<(const Date& other) const;
 
     /**
      * @brief Compares 2 dates with each other.
@@ -117,7 +118,7 @@ public:
      * @param other date to compare with
      * @return whether the date is greater than the other date
      */
-    bool operator>(const Date &other) const;
+    bool operator>(const Date& other) const;
 
     /**
      * @brief Compares 2 dates with each other.
@@ -126,7 +127,7 @@ public:
      * @param other date to compare with
      * @return whether the date is lesser or equal to the other date
      */
-    bool operator<=(const Date &other) const;
+    bool operator<=(const Date& other) const;
 
     /**
      * @brief Compares 2 dates with each other.
@@ -135,12 +136,13 @@ public:
      * @param other date to compare with
      * @return whether the date is greater or equal to the other date
      */
-    bool operator>=(const Date &other) const;
+    bool operator>=(const Date& other) const;
 
     /**
      * @brief Default destructor.
      */
     ~Date();
+
 private:
     std::chrono::year year{};
     std::chrono::month month{};

@@ -38,7 +38,7 @@ if (DOXYGEN_FOUND)
     )
 else ()
     # if doxygen is not found we give the user a warning
-    message(WARNING "Doxygen or CLANG not found. Documentation will not be generated.")
+    message(WARNING "Doxygen not found. Documentation will not be generated.")
 endif ()
 
 set(COMMON_SOURCE_FILES src/objects/Room.cpp src/objects/Meeting.cpp src/objects/Participation.cpp src/objects/Date.cpp src/App.cpp

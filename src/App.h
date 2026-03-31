@@ -22,7 +22,8 @@ using MeetingsByRoomMap = std::unordered_map<std::string, Meetings>;
 using ParticipationsByUserMap = std::unordered_map<std::string, Participations>;
 using ParticipationsByMeetingMap = std::unordered_map<std::string, Participations>;
 
-class App {
+class App
+{
 public:
     /**
      * @brief Constructor of the App class.
@@ -98,7 +99,7 @@ public:
      * @contracts
      * ENSURE(!rooms.empty(), "rooms contains no room");
      */
-    const Rooms &getAllRooms() const;
+    const Rooms& getAllRooms() const;
 
     /**
      * @brief Check if the room with given id is occupied by another meeting, on the given date.
@@ -134,7 +135,7 @@ public:
      * REQUIRE(m, "This meeting doesn't exist.");
      * @n ENSURE(mt_list, "Encountered a meeting with a roomId which doesnt exist.");
      */
-    Meeting *findConflictingMeeting(const std::string &meetingId);
+    Meeting* findConflictingMeeting(const std::string& meetingId);
 
 
     /**
@@ -199,7 +200,7 @@ public:
      * @param roomId of the room to search
      * @return a map of all registered meetings
      */
-    const Meetings *getMeetingsByRoom(const std::string &roomId);
+    const Meetings* getMeetingsByRoom(const std::string& roomId);
 
 
     /**
@@ -211,7 +212,7 @@ public:
      * @contracts
      * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
-    Meeting *getCanceledMeeting(const std::string &meetingId);
+    Meeting* getCanceledMeeting(const std::string& meetingId);
     /**
     * @brief Retrieves the cancellation reason of the appropriate meeting.
     *
@@ -224,7 +225,7 @@ public:
     * @n  ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
     * @n ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
     */
-    const std::string &getCancellationReason(const std::string &meetingId);
+    const std::string& getCancellationReason(const std::string& meetingId);
 
     /**
      * @brief Retrieve a processed meeting based on its id.
@@ -235,7 +236,7 @@ public:
      * @contracts
      * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
-    Meeting *getDoneMeeting(const std::string &meetingId);
+    Meeting* getDoneMeeting(const std::string& meetingId);
 
     /**
      * @brief Retrieve an unprocessed future meeting based on its id.
@@ -246,7 +247,7 @@ public:
      * @contracts
      * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
-    Meeting *getFutureMeeting(const std::string &meetingId);
+    Meeting* getFutureMeeting(const std::string& meetingId);
 
     /**
      * @brief Cancel a meeting.
@@ -261,7 +262,7 @@ public:
      * @n REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
      * @n ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not canceled.");
      */
-    void cancelMeeting(const std::string &meetingId, const std::string &reason = "");
+    void cancelMeeting(const std::string& meetingId, const std::string& reason = "");
 
     /**
      * @brief Uncancel a meeting.
@@ -276,23 +277,21 @@ public:
      * @n ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not uncanceled.");
      */
     //TODO continue from here
-    void uncancelMeeting(const std::string &meetingId);
+    void uncancelMeeting(const std::string& meetingId);
 
     /**
      * @brief 'Does' a meeting.
      *
      * @param meetingId of the meeting to do.
      */
-    void doMeeting(const std::string &meetingId);
+    void doMeeting(const std::string& meetingId);
 
     /**
      * @brief 'Undoes' a meeting.
      *
      * @param meetingId of the meeting to undo.
      */
-    void undoMeeting(const std::string &meetingId);
-
-
+    void undoMeeting(const std::string& meetingId);
 
 
     /**
@@ -312,7 +311,7 @@ public:
      * @param userId of the user for which to return all participations
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
      */
-    Participations* getParticipationsByUser(const std::string &userId);
+    Participations* getParticipationsByUser(const std::string& userId);
 
     /**
      * @brief Retrieve a list of all participations concerning the given meeting.
@@ -320,7 +319,7 @@ public:
      * @param meetindId of the meeting for which to return all participations
      * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the meeting has no registered participations)
      */
-    Participations *getParticipationsByMeeting(const std::string &meetindId);
+    Participations* getParticipationsByMeeting(const std::string& meetindId);
 
 
     /**
@@ -328,8 +327,7 @@ public:
      *
      * @return a list of all registered participations
      */
-    const Participations &getAllParticipations() const;
-
+    const Participations& getAllParticipations() const;
 
 
     /**
@@ -362,7 +360,7 @@ public:
     * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
     * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
     */
-    void processSingleMeeting(const std::string &meetingId, bool verbose = true);
+    void processSingleMeeting(const std::string& meetingId, bool verbose = true);
     /**
     * @brief Checks all planned meeting entries for conflicting rooms/dates.
     *
@@ -377,16 +375,14 @@ public:
     void processAllMeetings(bool verbose = true);
     ~App();
 
-
 private:
-
     void writeMeeting(std::ostream& onStream, const Meeting* meeting);
     void writeRoom(std::ostream& onStream, const Room* room);
 
-    Meetings *_getMutMeetingsByRoom(const std::string &roomId);
-    Participations *_getMutParticipationsByUser(const std::string &userId);
+    Meetings* _getMutMeetingsByRoom(const std::string& roomId);
+    Participations* _getMutParticipationsByUser(const std::string& userId);
 
-    Participations *_getMutParticipationsByMeeting(const std::string &meetingId);
+    Participations* _getMutParticipationsByMeeting(const std::string& meetingId);
 
     Parser* parser;
     std::ostream* output;

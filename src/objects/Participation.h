@@ -6,7 +6,8 @@
 #define MEETING_PLANNER_PARTICIPATION_H
 #include <string>
 
-class Participation {
+class Participation
+{
 public:
     /**
      * @brief Creates the Participation class.
@@ -16,7 +17,7 @@ public:
      * @param user username of the user that participates in the meeting
      * @param meeting meeting id of the meeting that is being participated in
      */
-    Participation(const std::string &user, const std::string &meeting);
+    Participation(const std::string& user, const std::string& meeting);
 
     /**
      * @brief Copies a Participation object.
@@ -49,6 +50,7 @@ public:
      * @brief Default destructor.
      */
     ~Participation();
+
 private:
     std::string user;
     std::string meeting;

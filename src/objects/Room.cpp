@@ -8,20 +8,22 @@
 
 #include "../helper/DesignByContract.h"
 
-Room::Room(const std::string &name, const std::string &id, unsigned capacity):
-name(name), id(id), capacity(capacity) {
-
+Room::Room(const std::string& name, const std::string& id, unsigned capacity) :
+    name(name), id(id), capacity(capacity)
+{
     REQUIRE(!name.empty(), "name must not be empty");
     REQUIRE(!id.empty(), "id must not be empty");
     REQUIRE(capacity > 0, "capacity must be greater than 0");
-    if (capacity == 0) {
+    if (capacity == 0)
+    {
         throw std::invalid_argument("Capacity must be strict greater than 0");
     }
 
     init_check_this_ptr = this;
 }
 
-Room::Room(const Room& r) {
+Room::Room(const Room& r)
+{
     REQUIRE(r.isProperlyInitialized(), "Tried to copy a room which was not properly initialized by the constructor.");
 
     name = r.name;
@@ -31,7 +33,8 @@ Room::Room(const Room& r) {
     init_check_this_ptr = this;
 }
 
-bool Room::isProperlyInitialized() const {
+bool Room::isProperlyInitialized() const
+{
     return init_check_this_ptr == this;
 }
 
@@ -40,7 +43,6 @@ const std::string& Room::getId() const
 {
     REQUIRE(!id.empty(), "id must not be empty");
     return id;
-
 }
 
 const std::string& Room::toString() const
@@ -49,13 +51,15 @@ const std::string& Room::toString() const
     return name;
 }
 
-unsigned Room::getCapacity() const {
+unsigned Room::getCapacity() const
+{
     REQUIRE(capacity > 0, "Capacity must be greater than 0");
     return capacity;
 }
 
 
-std::ostream & operator<<(std::ostream& os, const Room &room) {
+std::ostream& operator<<(std::ostream& os, const Room& room)
+{
     REQUIRE(room.isProperlyInitialized(), "room must be properly initialized");
     os << room.toString();
     ENSURE(os, "ostream variable is not usable");

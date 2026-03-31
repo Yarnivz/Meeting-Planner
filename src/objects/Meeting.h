@@ -8,7 +8,8 @@
 #include "Date.h"
 
 
-class Meeting {
+class Meeting
+{
 public:
     /**
      * @brief Creates the Meeting class.
@@ -24,7 +25,7 @@ public:
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
      */
-    Meeting(const std::string &label, const std::string &id, const std::string &roomId, const Date &date = Date());
+    Meeting(const std::string& label, const std::string& id, const std::string& roomId, const Date& date = Date());
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -102,7 +103,7 @@ public:
      * @param meeting to print out
      * @return modified ostream
      */
-    friend std::ostream& operator<<(std::ostream &os, const Meeting& meeting);
+    friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
 
     /**
      * @brief Destroys the Meeting class.
@@ -111,9 +112,8 @@ public:
      */
     ~Meeting();
 
-
 private:
-    using State = enum {UNPROCESSED, PROCESSED, CANCELLED};
+    using State = enum { UNPROCESSED, PROCESSED, CANCELLED };
     std::string label;
     std::string id;
     std::string room;

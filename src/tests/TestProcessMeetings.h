@@ -8,12 +8,14 @@
 #include "gtest/gtest.h"
 #include "../App.h"
 
-class ProcessMeetingsTest : public ::testing::Test {
+class ProcessMeetingsTest : public ::testing::Test
+{
 protected:
 };
 
 
-TEST_F(ProcessMeetingsTest, HappyDay) {
+TEST_F(ProcessMeetingsTest, HappyDay)
+{
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -23,14 +25,14 @@ TEST_F(ProcessMeetingsTest, HappyDay) {
     Meeting* m1 = new Meeting("Important Meeting", "M1", "MG025", Date(2026, 1, 1));
     Meeting* m2 = new Meeting("Important Meeting 2", "M2", "GT103", Date(2026, 1, 1));
     Meeting* m3 = new Meeting("Conflict", "M3", "MG025", Date(2026, 1, 1));
-    Meeting* m4 = new Meeting("Conflict 2", "M4", "GT103", Date(2026,1,1));
+    Meeting* m4 = new Meeting("Conflict 2", "M4", "GT103", Date(2026, 1, 1));
     p.addMeeting(m1);
     p.addMeeting(m2);
     p.addMeeting(m3);
     p.addMeeting(m4);
 
     p.processSingleMeeting("M1", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
+    EXPECT_EQ(m1, p.getDoneMeeting("M1"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M2"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
@@ -40,8 +42,8 @@ TEST_F(ProcessMeetingsTest, HappyDay) {
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M4"));
 
     p.processSingleMeeting("M2", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(m2     , p.getDoneMeeting("M2"));
+    EXPECT_EQ(m1, p.getDoneMeeting("M1"));
+    EXPECT_EQ(m2, p.getDoneMeeting("M2"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
@@ -50,29 +52,30 @@ TEST_F(ProcessMeetingsTest, HappyDay) {
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M4"));
 
     p.processSingleMeeting("M3", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(m2     , p.getDoneMeeting("M2"));
+    EXPECT_EQ(m1, p.getDoneMeeting("M1"));
+    EXPECT_EQ(m2, p.getDoneMeeting("M2"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M2"));
-    EXPECT_EQ(m3     , p.getCanceledMeeting("M3"));
+    EXPECT_EQ(m3, p.getCanceledMeeting("M3"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M4"));
     EXPECT_EQ("conflict with meeting M1", p.getCancellationReason("M3"));
 
     p.processSingleMeeting("M4", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(m2     , p.getDoneMeeting("M2"));
+    EXPECT_EQ(m1, p.getDoneMeeting("M1"));
+    EXPECT_EQ(m2, p.getDoneMeeting("M2"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M2"));
-    EXPECT_EQ(m3     , p.getCanceledMeeting("M3"));
-    EXPECT_EQ(m4     , p.getCanceledMeeting("M4"));
+    EXPECT_EQ(m3, p.getCanceledMeeting("M3"));
+    EXPECT_EQ(m4, p.getCanceledMeeting("M4"));
     EXPECT_EQ("conflict with meeting M2", p.getCancellationReason("M4"));
 }
 
-TEST_F(ProcessMeetingsTest, Conflicts) {
+TEST_F(ProcessMeetingsTest, Conflicts)
+{
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -90,25 +93,29 @@ TEST_F(ProcessMeetingsTest, Conflicts) {
     std::vector<Meeting*> l3 = {};
     std::vector<Meeting*> l4 = {};
 
-    for (size_t i = 0; i < 30; ++i) {
-        std::string id = "A"+ std::to_string(i);
-        l1.push_back(new Meeting("Meeting "+id, id, r1, d1));
+    for (size_t i = 0; i < 30; ++i)
+    {
+        std::string id = "A" + std::to_string(i);
+        l1.push_back(new Meeting("Meeting " + id, id, r1, d1));
+    }
+    for (size_t i = 0; i < 30; ++i)
+    {
+        std::string id = "B" + std::to_string(i);
+        l2.push_back(new Meeting("Meeting " + id, id, r2, d1));
+    }
+    for (size_t i = 0; i < 30; ++i)
+    {
+        std::string id = "C" + std::to_string(i);
+        l3.push_back(new Meeting("Meeting " + id, id, r2, d2));
+    }
+    for (size_t i = 0; i < 30; ++i)
+    {
+        std::string id = "D" + std::to_string(i);
+        l4.push_back(new Meeting("Meeting " + id, id, r1, d2));
+    }
 
-    }
-    for (size_t i = 0; i < 30; ++i) {
-        std::string id = "B"+ std::to_string(i);
-        l2.push_back(new Meeting("Meeting "+id, id, r2, d1));
-    }
-    for (size_t i = 0; i < 30; ++i) {
-        std::string id = "C"+ std::to_string(i);
-        l3.push_back(new Meeting("Meeting "+id, id, r2, d2));
-    }
-    for (size_t i = 0; i < 30; ++i) {
-        std::string id = "D"+ std::to_string(i);
-        l4.push_back(new Meeting("Meeting "+id, id, r1, d2));
-    }
-
-    for (size_t i = 0; i < 30; ++i) {
+    for (size_t i = 0; i < 30; ++i)
+    {
         p.addMeeting(l1[i]);
         p.processSingleMeeting(l1[i]->getId(), false);
         p.addMeeting(l2[i]);
@@ -128,7 +135,8 @@ TEST_F(ProcessMeetingsTest, Conflicts) {
     EXPECT_EQ(nullptr, p.getCanceledMeeting(l3[0]->getId()));
     EXPECT_EQ(nullptr, p.getCanceledMeeting(l4[0]->getId()));
 
-    for (size_t i = 1; i < 30; ++i) {
+    for (size_t i = 1; i < 30; ++i)
+    {
         EXPECT_EQ(nullptr, p.getDoneMeeting(l1[i]->getId()));
         EXPECT_EQ(nullptr, p.getDoneMeeting(l2[i]->getId()));
         EXPECT_EQ(nullptr, p.getDoneMeeting(l3[i]->getId()));
@@ -148,10 +156,10 @@ TEST_F(ProcessMeetingsTest, Conflicts) {
         EXPECT_EQ(creason3, p.getCancellationReason(l3[i]->getId()));
         EXPECT_EQ(creason4, p.getCancellationReason(l4[i]->getId()));
     }
-
 }
 
-TEST_F(ProcessMeetingsTest, Order) {
+TEST_F(ProcessMeetingsTest, Order)
+{
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -171,17 +179,18 @@ TEST_F(ProcessMeetingsTest, Order) {
     p.processAllMeetings(false);
     EXPECT_EQ(nullptr, p.getDoneMeeting("M1"));
     EXPECT_EQ(nullptr, p.getDoneMeeting("M2"));
-    EXPECT_EQ(m3     , p.getDoneMeeting("M3"));
+    EXPECT_EQ(m3, p.getDoneMeeting("M3"));
 
-    EXPECT_EQ(m1     , p.getCanceledMeeting("M1"));
-    EXPECT_EQ(m2     , p.getCanceledMeeting("M2"));
+    EXPECT_EQ(m1, p.getCanceledMeeting("M1"));
+    EXPECT_EQ(m2, p.getCanceledMeeting("M2"));
     EXPECT_EQ(nullptr, p.getCanceledMeeting("M3"));
 
     EXPECT_EQ("conflict with meeting M3", p.getCancellationReason("M1"));
     EXPECT_EQ("conflict with meeting M3", p.getCancellationReason("M2"));
 }
 
-TEST_F(ProcessMeetingsTest, ParseOrder) {
+TEST_F(ProcessMeetingsTest, ParseOrder)
+{
     App p = App(new XmlParser(), nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -216,12 +225,13 @@ TEST_F(ProcessMeetingsTest, ParseOrder) {
     EXPECT_EQ("conflict with meeting B1", p.getCancellationReason("B3"));
 }
 
-TEST_F(ProcessMeetingsTest, ContractViolation) {
+TEST_F(ProcessMeetingsTest, ContractViolation)
+{
     App p = App(nullptr, nullptr);
 
     p.addRoom(new Room("r", "r", 20));
 
-    p.addMeeting(new Meeting("m", "m", "r", Date(2026,1,1)));
+    p.addMeeting(new Meeting("m", "m", "r", Date(2026, 1, 1)));
 
     //double use
     EXPECT_NO_FATAL_FAILURE(p.processSingleMeeting("m", false));

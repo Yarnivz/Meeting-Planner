@@ -7,7 +7,8 @@
 #include <string>
 
 
-class Campus {
+class Campus
+{
 public:
     /**
      * @brief Creates the Campus class.

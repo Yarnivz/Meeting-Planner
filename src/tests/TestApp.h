@@ -7,11 +7,13 @@
 #include <gtest/gtest.h>
 #include "../App.h"
 
-class TestApp : public ::testing::Test {
+class TestApp : public ::testing::Test
+{
 protected:
 };
 
-TEST_F(TestApp, HappyDay1) {
+TEST_F(TestApp, HappyDay1)
+{
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -25,7 +27,7 @@ TEST_F(TestApp, HappyDay1) {
     p.addRoom(new Room("Room 4", "r4", 20));
     p.addRoom(new Room("Empty Room", "empty", 1));
 
-    Meeting* meeting1 = new Meeting("Meeting 1", "m1", "r1" , date1);
+    Meeting* meeting1 = new Meeting("Meeting 1", "m1", "r1", date1);
     p.addMeeting(meeting1);
     p.addMeeting(new Meeting("Meeting 2", "m2", "r1", date2));
 
@@ -40,7 +42,7 @@ TEST_F(TestApp, HappyDay1) {
     EXPECT_TRUE(p.getMeetingsByRoom("r4")->empty());
     EXPECT_EQ(int(p.getAllMeetings().size()), 4);
     EXPECT_EQ(p.getMeeting("m1"), meeting1);
-    p.addMeeting(new Meeting("Meeting 5", "m5", "r4" , date1));
+    p.addMeeting(new Meeting("Meeting 5", "m5", "r4", date1));
     EXPECT_EQ(int(p.getAllMeetings().size()), 5);
     EXPECT_TRUE(!p.getMeetingsByRoom("r4")->empty());
 

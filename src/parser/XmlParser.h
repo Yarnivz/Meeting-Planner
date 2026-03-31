@@ -7,12 +7,12 @@
 #include "Parser.h"
 
 
-class XmlParser : public Parser {
+class XmlParser : public Parser
+{
 public:
     explicit XmlParser() = default;
     void parse(const std::string& filename, std::ostream& errorStream) override;
 };
-
 
 
 #endif //XMLPARSER_H

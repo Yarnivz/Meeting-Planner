@@ -10,30 +10,34 @@
 int main() {
     std::cout << "test" << std::endl;
     std::string sourceDirectory = "./src/";
-    for (const std::filesystem::directory_entry& entry: std::filesystem::directory_iterator(sourceDirectory))
+    for (const std::filesystem::directory_entry& entry: std::filesystem::recursive_directory_iterator(sourceDirectory))
     {
         std::cout << "passed " << entry.path().filename().string() << std::endl;
         if (entry.path().extension() == ".cpp")
         {
+            std::filesystem::path headerFile = entry.path();
+            headerFile.replace_extension(".h");
             std::string baseFilename = entry.path().stem().string();
-            if (std::filesystem::exists(sourceDirectory+baseFilename+".h"))
+            if (std::filesystem::exists(headerFile))
             {
+                std::cout << "base " << baseFilename << std::endl;
                 //Temporarily use Date only for small scale test
-                if (baseFilename == "App")
+                if (baseFilename == "Building")
                 {
-                    ContractsDocumentationGenerator::generateContractsDocumentation(baseFilename, sourceDirectory);
-                    std::cout << baseFilename << " has header file "<< std::endl;
+                    std::cout << baseFilename << " has header and cpp file "<< std::endl;
+                    ContractsDocumentationGenerator::generateContractsDocumentation(baseFilename, entry.path().parent_path().string()+'/');
+
                 }
             }
         }
     }
 }
-void ContractsDocumentationGenerator::generateContractsDocumentation(const std::string& baseFilename, const std::string& sourceDirectory)
+void ContractsDocumentationGenerator::generateContractsDocumentation(const std::string& baseFilename, const std::string& fileDirectory)
 {
     std::vector<std::string> codeFileLines;
     std::vector<std::string> headerFileLines;
-    std::ifstream codeFile(sourceDirectory+baseFilename+".cpp");
-    std::ifstream headerFile(sourceDirectory+baseFilename+".h");
+    std::ifstream codeFile(fileDirectory+baseFilename+".cpp");
+    std::ifstream headerFile(fileDirectory+baseFilename+".h");
 
     std::string line;
     while (getline(codeFile, line))
@@ -52,6 +56,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
     std::string previousFunction;
     size_t previousFunctionLine = 1;
     std::vector<std::string> contracts;
+
     for (size_t i = 0; i < headerFileLines.size(); ++i)
     {
         if ((headerFileLines[i].find(");") != std::string::npos ||
@@ -60,19 +65,13 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             headerFileLines[i].find("REQUIRE") == std::string::npos)
         {
             currentFunction = headerFileLines[i];
-            size_t preEmptySpace = currentFunction.find_first_not_of(' ');
-            if (preEmptySpace != std::string::npos) {
-                currentFunction.erase(0, preEmptySpace);
-            }
-            size_t postEmptySpace = currentFunction.find_last_not_of(' ');
-            if (postEmptySpace != std::string::npos) {
-                currentFunction.erase(postEmptySpace + 1);
-            }
+            removeWhitespace(currentFunction);
             currentFunction.pop_back();
-
+            std::cout << "currentfunctionbase is " << currentFunction << std::endl;
 
             int layer = 0;
             bool functionFound = false;
+            bool processingFunction = false;
             for (size_t k = 0; k < codeFileLines.size(); ++k)
 
             {
@@ -103,13 +102,15 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                     if (codeFileLines[k].find("{") != std::string::npos)
                     {
                         layer +=1;
+                        processingFunction = true;
                     }
                     if (codeFileLines[k].find("}") != std::string::npos)
                     {
                         layer -=1;
                     }
-                    if (layer <= 0 && functionFound)
+                    if (layer <= 0 && processingFunction && functionFound)
                     {
+                        std::cout << "gone" << std::endl;
                         break;
                     }
                 }
@@ -178,19 +179,29 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             }
             previousFunction = currentFunction;
             previousFunctionLine = i;
-            std::cout << " found function " << currentFunction << " in " << baseFilename+".h"<<std::endl;
+            std::cout << " finished function " << currentFunction << " in " << baseFilename+".h"<<std::endl;
+            std::cout << "\n" << std::endl;
         }
         contracts.clear();
     }
-    codeFile.close();
-    headerFile.close();
 
-    //std::ofstream writableHeaderFile(sourceDirectory+baseFilename+".h"); //hold off until tested properly enough
+    //std::ofstream writableHeaderFile(fileDirectory+baseFilename+".h"); //hold off until tested properly enough
     for (std::string writeLine : headerFileLines)
     {
         std::cout << writeLine << std::endl;
         //writableHeaderFile << writeLine << "\n"; //hold off until tested properly enough
     }
     //writableHeaderFile.close(); //hold off until tested properly enough
+}
 
+void ContractsDocumentationGenerator::removeWhitespace(std::string& targetString)
+{
+    size_t preEmptySpace = targetString.find_first_not_of(' ');
+    if (preEmptySpace != std::string::npos) {
+        targetString.erase(0, preEmptySpace);
+    }
+    size_t postEmptySpace = targetString.find_last_not_of(' ');
+    if (postEmptySpace != std::string::npos) {
+        targetString.erase(postEmptySpace + 1);
+    }
 }

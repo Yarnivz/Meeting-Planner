@@ -22,12 +22,11 @@
 #include <stdarg.h>
 
 static inline void contract_fail(
-    const char *expr,
-    const char *file,
+    const char* expr,
+    const char* file,
     int line,
-    const char *fmt, ...)
+    const char* fmt, ...)
 {
-
     fprintf(stderr,
             "Contract violation\n"
             "  Expression: %s\n"

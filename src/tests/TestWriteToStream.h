@@ -10,13 +10,14 @@
 #include "../App.h"
 #include <fstream>
 
-class TestWriteToStream : public ::testing::Test {
+class TestWriteToStream : public ::testing::Test
+{
 protected:
 };
 
 
-
-TEST_F(TestWriteToStream, HappyDay1) {
+TEST_F(TestWriteToStream, HappyDay1)
+{
     const std::string actual = "test-files/WriteToStreamTests.HappyDay1-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.HappyDay1-expected.txt";
     std::ofstream f = std::ofstream(actual);
@@ -31,7 +32,7 @@ TEST_F(TestWriteToStream, HappyDay1) {
     p.addRoom(new Room("Room 2", "r2", 20));
     p.addRoom(new Room("Empty Room", "empty", 1));
 
-    p.addMeeting(new Meeting("Meeting 1", "m1", "r1" , date1));
+    p.addMeeting(new Meeting("Meeting 1", "m1", "r1", date1));
     p.addMeeting(new Meeting("Meeting 2", "m2", "r1", date2));
 
     p.addMeeting(new Meeting("Meeting 3", "m3", "r2", date1));
@@ -48,7 +49,8 @@ TEST_F(TestWriteToStream, HappyDay1) {
     EXPECT_TRUE(file_compare(actual, expected));
 }
 
-TEST_F(TestWriteToStream, HappyDay2) {
+TEST_F(TestWriteToStream, HappyDay2)
+{
     const std::string actual = "test-files/WriteToStreamTests.HappyDay2-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.HappyDay2-expected.txt";
     std::ofstream f = std::ofstream(actual);
@@ -62,7 +64,7 @@ TEST_F(TestWriteToStream, HappyDay2) {
     p.addRoom(new Room("M.G.025", "MG025", 20));
     p.addRoom(new Room("G.T.103", "GT103", 20));
 
-    p.addMeeting(new Meeting("Important Meeting 1", "m1", "MG025" , date1));
+    p.addMeeting(new Meeting("Important Meeting 1", "m1", "MG025", date1));
     p.addMeeting(new Meeting("Important Meeting 2", "m2", "MG025", date2));
 
     p.addParticipation(new Participation("John Doe", "m1"));
@@ -82,7 +84,8 @@ TEST_F(TestWriteToStream, HappyDay2) {
     EXPECT_TRUE(file_compare(actual, expected));
 }
 
-TEST_F(TestWriteToStream, Empty) {
+TEST_F(TestWriteToStream, Empty)
+{
     const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
     std::ofstream f = std::ofstream(actual);
 
@@ -95,7 +98,8 @@ TEST_F(TestWriteToStream, Empty) {
     EXPECT_TRUE(file_is_empty(actual));
 }
 
-TEST_F(TestWriteToStream, Processed) {
+TEST_F(TestWriteToStream, Processed)
+{
     const std::string actual = "test-files/WriteToStreamTests.Processed-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";
     std::ofstream f = std::ofstream(actual);
@@ -109,7 +113,7 @@ TEST_F(TestWriteToStream, Processed) {
     p.addRoom(new Room("M.G.025", "MG025", 20));
     p.addRoom(new Room("G.T.103", "GT103", 20));
 
-    Meeting* m1 = new Meeting("Important Meeting 1", "m1", "MG025" , date1);
+    Meeting* m1 = new Meeting("Important Meeting 1", "m1", "MG025", date1);
     Meeting* m2 = new Meeting("Important Meeting 2", "m2", "MG025", date2);
     Meeting* m3 = new Meeting("Conflict", "m3", "MG025", date1);
 

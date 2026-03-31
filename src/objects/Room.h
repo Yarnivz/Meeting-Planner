@@ -7,7 +7,8 @@
 #include <string>
 #include <iostream>
 
-class Room {
+class Room
+{
 public:
     /**
      * @brief Creates the Room class.
@@ -18,14 +19,14 @@ public:
      * @param id the identifier of this room
      * @param capacity the amount of people that fit in this room
      */
-    Room(const std::string &name, const std::string &id, unsigned capacity);
+    Room(const std::string& name, const std::string& id, unsigned capacity);
 
     /**
      * @brief Copies a Room object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      * @param r Room to be copied
      */
-    Room(const Room &r);
+    Room(const Room& r);
 
 
     /**
@@ -33,7 +34,6 @@ public:
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
-
 
 
     /**
@@ -68,6 +68,7 @@ public:
     * @brief Default destructor
     */
     ~Room();
+
 private:
     std::string name;
     std::string id;

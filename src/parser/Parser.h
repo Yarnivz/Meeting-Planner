@@ -13,7 +13,8 @@
 #include "../objects/Room.h"
 
 
-class Parser {
+class Parser
+{
 public:
     explicit Parser() = default;
 
@@ -32,6 +33,7 @@ public:
     void clearParticipations();
 
     virtual ~Parser() = default;
+
 protected:
     std::list<Room*> parsed_rooms;
     std::list<Meeting*> parsed_meetings;

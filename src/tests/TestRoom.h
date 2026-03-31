@@ -8,11 +8,13 @@
 #include "../Room.h"
 #include "gtest/gtest.h"
 
-class TestRoom : public ::testing::Test {
+class TestRoom : public ::testing::Test
+{
 protected:
 };
 
-TEST_F(TestRoom, HappyDay) {
+TEST_F(TestRoom, HappyDay)
+{
     Room r("A Room", "a_room_id", 20);
 
     EXPECT_TRUE(r.isProperlyInitialized());
@@ -21,12 +23,14 @@ TEST_F(TestRoom, HappyDay) {
     EXPECT_EQ("a_room_id", r.getId());
 }
 
-TEST_F(TestRoom, ContractViolation) {
+TEST_F(TestRoom, ContractViolation)
+{
     EXPECT_DEATH(Room("Room With Empty Id", "", 20), "");
     EXPECT_DEATH(Room("Room With No Capacity", "a_id", 0), "");
 }
 
-TEST_F(TestRoom, CopyConstructor) {
+TEST_F(TestRoom, CopyConstructor)
+{
     Room r1("A Room", "room20", 13);
     Room r2 = r1;
 

@@ -7,13 +7,14 @@
 
 #include "../Date.h"
 
-class TestDate : public ::testing::Test {
+class TestDate : public ::testing::Test
+{
 protected:
     Date date_;
 };
 
-TEST_F(TestDate, HappyDay) {
-
+TEST_F(TestDate, HappyDay)
+{
     int data[][3] = {
         {2025, 10, 2}, {2027, 1, 12},
         {2023, 12, 30}, {2031, 7, 23}
@@ -27,10 +28,10 @@ TEST_F(TestDate, HappyDay) {
         EXPECT_EQ(d.getMonth(), t[1]);
         EXPECT_EQ(d.getDay(), t[2]);
     }
-
 }
 
-TEST_F(TestDate, CopyConstructor) {
+TEST_F(TestDate, CopyConstructor)
+{
     Date d1 = Date();
     Date d2 = d1;
 
@@ -38,12 +39,12 @@ TEST_F(TestDate, CopyConstructor) {
     EXPECT_EQ(d1.getDay(), d2.getDay());
     EXPECT_EQ(d1.getYear(), d2.getYear());
     EXPECT_EQ(d1.getMonth(), d2.getMonth());
-
 }
 
-TEST_F(TestDate, FailConstructor) {
-    EXPECT_DEATH(Date(1,-1,-23), "");
-    EXPECT_DEATH(Date(0,0,0), "");
+TEST_F(TestDate, FailConstructor)
+{
+    EXPECT_DEATH(Date(1, -1, -23), "");
+    EXPECT_DEATH(Date(0, 0, 0), "");
     EXPECT_DEATH(Date(2025, 12, 0), "");
     EXPECT_DEATH(Date(2025, 12, 0), "");
     EXPECT_DEATH(Date(2025, 11, 31), "");
@@ -53,7 +54,8 @@ TEST_F(TestDate, FailConstructor) {
     EXPECT_DEATH(Date(2024, 2, 30), "");
 }
 
-TEST_F(TestDate, EdgeCases) {
+TEST_F(TestDate, EdgeCases)
+{
     // Schrikkeljaren
     Date correct = Date(2024, 2, 29);
     EXPECT_TRUE(correct.isProperlyInitialized());
