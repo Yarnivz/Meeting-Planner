@@ -1,0 +1,5 @@
+*
+
+# Clion settings stuff like formatting
+!CodeStyles/
+!.gitignore
