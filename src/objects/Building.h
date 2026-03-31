@@ -39,7 +39,7 @@ public:
 
  /**
   * @brief Id getter.
- *
+  *
   * @pre Id cannot be empty
   *
   * @return the identifier of this building
@@ -67,7 +67,7 @@ public:
 
  /**
   * @brief Standard stream operator using the toString function to append the building to the stream.
- *
+  *
   * @pre Building must be properly initialized
   *
   * @param os stream to write on
