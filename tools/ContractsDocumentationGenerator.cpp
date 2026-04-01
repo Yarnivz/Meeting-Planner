@@ -220,7 +220,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             {
                 std::cout << "updating existing contracts" << std::endl;
                 headerFileLines.erase(headerFileLines.begin() + preDocumentationFirstLine, headerFileLines.begin() + preDocumentationLastLine + 1);
-                i -= preDocumentationLastLine - preDocumentationFirstLine;
+                i -= preDocumentationLastLine - preDocumentationFirstLine + 1;
 
                 headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine ), "     * @pre " + preContracts[0]);
                 for (size_t c = 1; c < preContracts.size(); ++c)
