@@ -214,17 +214,17 @@ public:
      */
     Meeting* getCanceledMeeting(const std::string& meetingId);
     /**
-    * @brief Retrieves the cancellation reason of the appropriate meeting.
-    *
-    * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
-    *
-    * @param meetingId that's tied to meetings appropriate cancellation reason.
-    *
-    * @contracts
-    * REQUIRE(getCanceledMeeting(meetingId), "That meeting does not exist or it isn't cancelled");
-    * @n  ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
-    * @n ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
-    */
+     * @brief Retrieves the cancellation reason of the appropriate meeting.
+     *
+     * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
+     *
+     * @param meetingId that's tied to meetings appropriate cancellation reason.
+     *
+     * @contracts
+     * REQUIRE(getCanceledMeeting(meetingId), "That meeting does not exist or it isn't cancelled");
+     * @n  ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
+     * @n ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
+     */
     const std::string& getCancellationReason(const std::string& meetingId);
 
     /**
@@ -348,30 +348,30 @@ public:
     bool isUserOccupied(const std::string& userId, const Date& date);
 
     /**
-    *@brief Check this planned meeting for conflicting rooms/dates.
-    *
-    * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
-    *
-    * @param meetingId Id of the meeting to retrieve.
-    * @param verbose Prints text to console when enabled. This option is enabled by default.
-    *
-    * @contracts
-    * REQUIRE(meeting, "This meeting doesn't exist.");
-    * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
-    */
+     *@brief Check this planned meeting for conflicting rooms/dates.
+     *
+     * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
+     *
+     * @param meetingId Id of the meeting to retrieve.
+     * @param verbose Prints text to console when enabled. This option is enabled by default.
+     *
+     * @contracts
+     * REQUIRE(meeting, "This meeting doesn't exist.");
+     * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+     * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
+     */
     void processSingleMeeting(const std::string& meetingId, bool verbose = true);
     /**
-    * @brief Checks all planned meeting entries for conflicting rooms/dates.
-    *
-    * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
-    *
-    * @param verbose Prints text to console when enabled. This option is enabled by default.
-    * @contracts
-    * REQUIRE(currentMeeting, "Meeting can not be null.");
-    * @n REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    * @n ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
-    */
+     * @brief Checks all planned meeting entries for conflicting rooms/dates.
+     *
+     * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
+     *
+     * @param verbose Prints text to console when enabled. This option is enabled by default.
+     * @contracts
+     * REQUIRE(currentMeeting, "Meeting can not be null.");
+     * @n REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+     * @n ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
+     */
     void processAllMeetings(bool verbose = true);
     ~App();
 

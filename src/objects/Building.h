@@ -48,7 +48,7 @@ public:
 
  /**
   * @brief Campus id getter.
- *
+  *
   * @pre CampusId cannot be empty
   *
   * @return the identifier of the campus this building is located on
@@ -58,7 +58,7 @@ public:
  /**
   * @brief Converts this building object into a readable string format.
   * This is represented by its name.
- *
+  *
   * @pre Name cannot be empty
   *
   * @return the building in string format

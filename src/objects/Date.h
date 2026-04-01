@@ -33,10 +33,6 @@ public:
      * @param year
      * @param month
      * @param day
-     * @contracts
-     * testcontract yes
-     * @n another testcontract indeed
-     * @n yet another testcontract
      */
     Date(int year, int month, int day);
 
@@ -44,6 +40,9 @@ public:
      * @brief Creates the date class.
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called with parameters, all parameters are required and the date will be initialized with the given data.
+     *
+     * @pre test
+     *
      * @param year_month_day date to initialize the Date class with.
      */
     Date(std::chrono::year_month_day year_month_day);

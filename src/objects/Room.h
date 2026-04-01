@@ -65,8 +65,8 @@ public:
     friend std::ostream& operator <<(std::ostream& os, const Room& room);
 
     /**
-    * @brief Default destructor
-    */
+     * @brief Default destructor
+     */
     ~Room();
 
 private:
