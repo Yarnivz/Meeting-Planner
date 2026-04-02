@@ -97,10 +97,9 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                         std::string contractComment = codeFileLines[k].substr(startIndex, endIndex - startIndex);
                         std::cout << "contractcomment is " << contractComment << std::endl;
                         preContracts.push_back(contractComment);
-                        std::cout << preContracts.size() << std::endl;
                     } else if (codeFileLines[k].find("ENSURE") != std::string::npos)
                     {
-                        std::cout << "REQUIRE contract detected for " << currentFunction << std::endl;
+                        std::cout << "ENSURE contract detected for " << currentFunction << std::endl;
                         size_t startIndex = codeFileLines[k].find('"') + 1;
                         size_t endIndex = codeFileLines[k].find_last_of('"');
                         std::string contractComment = codeFileLines[k].substr(startIndex, endIndex - startIndex);
@@ -134,6 +133,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             size_t postDocumentationFirstLine = 0;
             size_t postDocumentationLastLine = 0;
             bool documentationFound = false;
+            std::string documenationAsterix;
             for (size_t j = previousFunctionLine; j <= headerFileLines.size(); ++j)
             {
                 // if for loop reaches currentfunctionline, stop loop
@@ -144,13 +144,15 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                 // if documentation opening is found, set documentationfirstline and if documentation end is found, set documentationendline
                 if (headerFileLines[j].find("/**") != std::string::npos)
                 {
+                    documenationAsterix.resize(headerFileLines[j].find("/**") + 1, ' ');
+                    documenationAsterix += "* ";
                     documentationFound = true;
                     documentationFirstLine = j;
                 } else if (headerFileLines[j].find("*/") != std::string::npos && documentationFound)
                 {
                     documentationLastLine = j;
                 }
-                // Check for eligible precondition first line
+                // Check for eligible precondition line
                 if (headerFileLines[j].find("@pre") != std::string::npos && documentationFound)
                 {
                     if (preDocumentationFirstLine == 0)
@@ -168,9 +170,24 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                 {
                         preDocumentationFirstLine = j;
                 }
-                // Check for eligible precondition first line
-                // TODO add postcondition functionality after testing precondition documentation functionality
+
+                // Check for eligible postcondition line
+                if (headerFileLines[j].find("@post") != std::string::npos && documentationFound)
+                {
+                    if (postDocumentationFirstLine == 0)
+                    {
+                        postDocumentationFirstLine = j;
+                    }
+                    postDocumentationLastLine = j;
+                } else if (headerFileLines[j].find("@return") != std::string::npos && documentationFound && postDocumentationLastLine == 0)
+                {
+                    postDocumentationFirstLine = j+1;
+                } else if (headerFileLines[j].find("*/") != std::string::npos && documentationFound && postDocumentationLastLine == 0)
+                {
+                    postDocumentationFirstLine = j;
+                }
             }
+            std::cout << postDocumentationFirstLine << " and " << postDocumentationLastLine << std::endl;
             // If no documentation is found, continue (probably will change later to auto add documentation with just contracts)
             if (documentationFirstLine == 0 && documentationLastLine == 0)
             {
@@ -187,22 +204,11 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                 previousFunctionLine = i;
                 previousFunction = currentFunction;
                 continue;
-            } else if (preContracts.empty())
-            {
-                previousFunctionLine = i;
-                previousFunction = currentFunction;
-                continue;
             }
             if (postContracts.empty() && postDocumentationLastLine != 0)
             {
                 headerFileLines.erase(headerFileLines.begin() + postDocumentationFirstLine, headerFileLines.begin() + postDocumentationLastLine + 1);
                 i -= postDocumentationLastLine - postDocumentationFirstLine;
-                previousFunctionLine = i;
-                previousFunction = currentFunction;
-                std::cout << "yes?";
-                continue;
-            } else if (postContracts.empty())
-            {
                 previousFunctionLine = i;
                 previousFunction = currentFunction;
                 continue;
@@ -216,32 +222,65 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
                 continue;
             }
             // if precondition contracts are found in documentations are found, clear it and replace with current ones, else just add
-            if (preDocumentationFirstLine != 0 && preDocumentationLastLine != 0)
+            if (preDocumentationFirstLine != 0 && preDocumentationLastLine != 0 && !preContracts.empty())
             {
-                std::cout << "updating existing contracts" << std::endl;
+                std::cout << "updating existing pre contracts" << std::endl;
                 headerFileLines.erase(headerFileLines.begin() + preDocumentationFirstLine, headerFileLines.begin() + preDocumentationLastLine + 1);
                 i -= preDocumentationLastLine - preDocumentationFirstLine + 1;
+                if (postDocumentationFirstLine != 0) postDocumentationFirstLine -= preDocumentationLastLine - preDocumentationFirstLine + 1;
+                if (postDocumentationLastLine != 0) postDocumentationLastLine -= preDocumentationLastLine - preDocumentationFirstLine + 1;
 
-                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine ), "     * @pre " + preContracts[0]);
+
+                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine ), documenationAsterix + "@pre " + preContracts[0]);
                 for (size_t c = 1; c < preContracts.size(); ++c)
                 {
-                    headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + c), "     * @pre " + preContracts[c]);
+                    headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + c), documenationAsterix + "@pre " + preContracts[c]);
                 }
                 i += preContracts.size();
-            } else if (preDocumentationFirstLine != 0)
+                if (postDocumentationFirstLine != 0) postDocumentationFirstLine += preContracts.size();
+                if (postDocumentationLastLine != 0) postDocumentationLastLine += preContracts.size();
+            } else if (preDocumentationFirstLine != 0 && !preContracts.empty())
             {
-                std::cout << "adding new contract" << std::endl;
+                std::cout << "adding new pre contracts" << std::endl;
 
-                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine), "     * ");
-                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + 1), "     * @pre " + preContracts[0]);
+                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine), documenationAsterix);
+                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + 1), documenationAsterix + "@pre " + preContracts[0]);
                 for (size_t c = 1; c < preContracts.size(); ++c)
                 {
-                    headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + c + 1), "     * @pre " + preContracts[c]);
+                    headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + c + 1), documenationAsterix + "@pre " + preContracts[c]);
                 }
-                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + preContracts.size() + 1), "     * ");
+                headerFileLines.insert((headerFileLines.begin() + preDocumentationFirstLine + preContracts.size() + 1), documenationAsterix);
                 i += preContracts.size() + 2;
+                if (postDocumentationFirstLine != 0) postDocumentationFirstLine += preContracts.size() + 2;
+                if (postDocumentationLastLine != 0) postDocumentationLastLine += preContracts.size() + 2;
             }
-            // TODO add postcondition functionality after testing precondition documentation functionality
+            // if postcondition contracts are found in documentations are found, clear it and replace with current ones, else just add
+            if (postDocumentationFirstLine != 0 && postDocumentationLastLine != 0 && !postContracts.empty())
+            {
+                std::cout << "updating existing post contracts" << std::endl;
+                headerFileLines.erase(headerFileLines.begin() + postDocumentationFirstLine, headerFileLines.begin() + postDocumentationLastLine + 1);
+                i -= postDocumentationLastLine - postDocumentationFirstLine + 1;
+
+                headerFileLines.insert((headerFileLines.begin() + postDocumentationFirstLine ), documenationAsterix + "@post " + postContracts[0]);
+                for (size_t c = 1; c < postContracts.size(); ++c)
+                {
+                    headerFileLines.insert((headerFileLines.begin() + postDocumentationFirstLine + c), documenationAsterix + "@post " + postContracts[c]);
+                }
+                i += postContracts.size();
+            } else if (postDocumentationFirstLine != 0 && !postContracts.empty())
+            {
+                std::cout << "adding new post contracts" << std::endl;
+
+                headerFileLines.insert((headerFileLines.begin() + postDocumentationFirstLine), documenationAsterix);
+                headerFileLines.insert((headerFileLines.begin() + postDocumentationFirstLine + 1), documenationAsterix + "@post " + postContracts[0]);
+                for (size_t c = 1; c < postContracts.size(); ++c)
+                {
+                    headerFileLines.insert((headerFileLines.begin() + postDocumentationFirstLine + c + 1), documenationAsterix + "@post " + postContracts[c]);
+                }
+                i += postContracts.size() + 1;
+            }
+
+
             previousFunction = currentFunction;
             previousFunctionLine = i;
             std::cout << " finished function " << currentFunction << " in " << baseFilename+".h"<<std::endl;
