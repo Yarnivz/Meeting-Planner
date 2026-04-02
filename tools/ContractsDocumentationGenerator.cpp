@@ -22,7 +22,7 @@ int main() {
             {
                 std::cout << "base " << baseFilename << std::endl;
                 //Temporarily use Date only for small scale test
-                if (baseFilename == "Date")
+                if (baseFilename == "App")
                 {
                     std::cout << baseFilename << " has header and cpp file "<< std::endl;
                     ContractsDocumentationGenerator::generateContractsDocumentation(baseFilename, entry.path().parent_path().string()+'/');
@@ -288,14 +288,13 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
         }
 
     }
-
-    //std::ofstream writableHeaderFile(fileDirectory+baseFilename+".h"); //hold off until tested properly enough
+    std::ofstream writableHeaderFile(fileDirectory+baseFilename+"Exp.h"); // hold off and use experimentfile until tested properly enough
     for (std::string writeLine : headerFileLines)
     {
-        std::cout << writeLine << std::endl;
-        //writableHeaderFile << writeLine << "\n"; //hold off until tested properly enough
+        //std::cout << writeLine << std::endl;
+        writableHeaderFile << writeLine << "\n"; // hold off and use experimentfile until tested properly enough
     }
-    //writableHeaderFile.close(); //hold off until tested properly enough
+    writableHeaderFile.close(); // hold off and use experimentfile until tested properly enough
 }
 
 void ContractsDocumentationGenerator::removeWhitespace(std::string& targetString)

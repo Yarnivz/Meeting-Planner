@@ -56,9 +56,6 @@ public:
      * @brief Print all meetings and rooms to a stream.
      *
      * Prints all registered meetings and rooms to the app's output.
-     *
-     * @contracts
-     * REQUIRE(output, "App doesnt have an output attached.");
      */
     void writeToStream();
 
@@ -69,11 +66,6 @@ public:
      * The App class expects ownership of the Room pointer passed in.
      *
      * @param room to register
-     * @contracts
-     * REQUIRE(room, "The provided room cannot be null.");
-     * @n REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
-     * @n REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
-     * @n ENSURE(getRoom(room->getId()) == room, "The room was not added to the App");
      */
     void addRoom(Room* room);
 
@@ -82,9 +74,6 @@ public:
      *
      * @param roomId of the room to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
-     *
-     * @contracts
-     * ENSURE(it->second->getId() == roomId, "Something went wrong. The room which was found did not have the right id.");
      */
     Room* getRoom(const std::string& roomId);
 
@@ -95,9 +84,6 @@ public:
      * With key == room-id and value == room-pointer
      *
      * @return a map of all registered rooms
-     *
-     * @contracts
-     * ENSURE(!rooms.empty(), "rooms contains no room");
      */
     const Rooms& getAllRooms() const;
 
@@ -111,13 +97,9 @@ public:
      *   -That meeting takes place on the given date
      *   -The meeting was registered as 'done' by the meeting processor
      *
-     *
      * @param roomId of the room to check
      * @param date to check
      * @return bool indicating the result
-     *
-     * @contracts
-     * REQUIRE(mt_list, "This room doesnt exist.");
      */
     bool isRoomOccupied(const std::string& roomId, const Date& date);
 
@@ -130,10 +112,6 @@ public:
      *
      * @param meetingId of the meeting to check
      * @return pointer to the conflicting meeting; nullptr if no conflict exists
-     *
-     * @contracts
-     * REQUIRE(m, "This meeting doesn't exist.");
-     * @n ENSURE(mt_list, "Encountered a meeting with a roomId which doesnt exist.");
      */
     Meeting* findConflictingMeeting(const std::string& meetingId);
 
@@ -145,15 +123,6 @@ public:
      * The App expects ownership of the Meeting* passed in.
      *
      * @param meeting to plan and register
-     *
-     * @contracts
-     * REQUIRE(meeting, "Meeting can not be null.");
-     * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-     * @n REQUIRE(!all_meetings.contains(meeting->getId()), "Meetings Id needs to be unique!");
-     * @n REQUIRE(rm, "The meeting has to take place in a room which was already registered.");
-     * @n ENSURE(mt_list, "Something went wrong, the meeting list was not found.");
-     * @n ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "Something went wrong, The meeting was not added to the App");
-     * @n ENSURE(getMeeting(meeting->getId()) == meeting, "Something went wrong, the meeting was not added to the App");
      */
     void addMeeting(Meeting* meeting);
 
@@ -163,9 +132,6 @@ public:
      * @param meetingId of the meeting to retrieve
      * @param roomId of the room the meeting takes place in
      * @return a pointer to the correct meeting. Returns nullptr if the meeting was not found for that room.
-     *
-     * @contracts
-     * ENSURE(ms_it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting* getMeetingInRoom(const std::string& meetingId, const std::string& roomId);
 
@@ -174,9 +140,6 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found.
-     *
-     * @contracts
-     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting* getMeeting(const std::string& meetingId);
 
@@ -208,9 +171,6 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't canceled.
-     *
-     * @contracts
-     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting* getCanceledMeeting(const std::string& meetingId);
     /**
@@ -219,11 +179,6 @@ public:
      * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
      *
      * @param meetingId that's tied to meetings appropriate cancellation reason.
-     *
-     * @contracts
-     * REQUIRE(getCanceledMeeting(meetingId), "That meeting does not exist or it isn't cancelled");
-     * @n  ENSURE(it != canceled_meeting_reasons.end(), "Something went wrong, The meeting was found but the cancellation reason wasn't.");
-     * @n ENSURE(it->first == meetingId, "Something went wrong, The wrong cancellation reason was retrieved.");
      */
     const std::string& getCancellationReason(const std::string& meetingId);
 
@@ -232,9 +187,6 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't processed.
-     *
-     * @contracts
-     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting* getDoneMeeting(const std::string& meetingId);
 
@@ -243,9 +195,6 @@ public:
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found, or if it was already processed.
-     *
-     * @contracts
-     * ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
      */
     Meeting* getFutureMeeting(const std::string& meetingId);
 
@@ -254,13 +203,6 @@ public:
      *
      * @param meetingId of the meeting to cancel.
      * @param reason for the cancellation (may be left empty)
-     *
-     * @contracts
-     * REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
-     * @n REQUIRE(getCanceledMeeting(meetingId) == nullptr, "This meeting was already canceled.");
-     * @n REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
-     * @n REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
-     * @n ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not canceled.");
      */
     void cancelMeeting(const std::string& meetingId, const std::string& reason = "");
 
@@ -268,15 +210,7 @@ public:
      * @brief Uncancel a meeting.
      *
      * @param meetingId of the meeting to uncancel.
-     *
-     * @contracts
-     * REQUIRE((m = getMeeting(meetingId)), "This meeting does not exist.");
-     * @n REQUIRE(getCanceledMeeting(meetingId), "This meeting was not canceled.");
-     * @n REQUIRE(getDoneMeeting(meetingId) == nullptr, "This meeting was already done.");
-     * @n REQUIRE(getFutureMeeting(meetingId), "This meeting is not in the list of unprocessed meetings.");
-     * @n ENSURE(getDoneMeeting(meetingId) == nullptr, "Something went wrong. The meeting was not uncanceled.");
      */
-    //TODO continue from here
     void uncancelMeeting(const std::string& meetingId);
 
     /**
@@ -388,6 +322,8 @@ private:
     std::ostream* output;
 
     Rooms rooms;
+
+    std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;;
 
     Meetings all_meetings;
     //TODO: delete datastructures below and use class attributes instead

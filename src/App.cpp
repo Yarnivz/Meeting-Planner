@@ -140,6 +140,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
         meetingProcessed = true;
     }
+    participantsToRoomsSize.emplace_back(participations_by_meeting.find(meeting->getId())->second.size(), getRoom(meeting->getRoomId())->getCapacity());
 
     ENSURE(meetingProcessed, "Meeting hasn't been processed");
 }
