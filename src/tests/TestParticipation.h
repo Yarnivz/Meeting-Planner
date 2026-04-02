@@ -6,7 +6,7 @@
 #define MEETING_PLANNER_PARTICIPATIONTEST_H
 
 #include "gtest/gtest.h"
-#include "../Participation.h"
+#include "objects/Participation.h"
 
 class TestParticipation : public ::testing::Test
 {

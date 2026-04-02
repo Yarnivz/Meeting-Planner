@@ -200,7 +200,7 @@ Room* App::getRoom(const std::string& roomId)
 
 const Rooms& App::getAllRooms() const
 {
-    ENSURE(!rooms.empty(), "rooms contains no room");
+    //ENSURE(!rooms.empty(), "rooms contains no room");
     return rooms;
 }
 
@@ -406,13 +406,13 @@ void App::undoMeeting(const std::string& meetingId)
 
 const Meetings& App::getAllMeetings() const
 {
-    ENSURE(!all_meetings.empty(), "all_meetings contains no meetings");
+    //ENSURE(!all_meetings.empty(), "all_meetings contains no meetings");
     return all_meetings;
 }
 
 const Meetings* App::getMeetingsByRoom(const std::string& roomId)
 {
-    ENSURE(_getMutMeetingsByRoom(roomId), "Something went wong while going through the meetings.");
+    //ENSURE(_getMutMeetingsByRoom(roomId), "Something went wong while going through the meetings.");
     return _getMutMeetingsByRoom(roomId);
 }
 

@@ -4,7 +4,7 @@
 
 #include "./Participation.h"
 
-#include "../helper/DesignByContract.h"
+#include "helper/DesignByContract.h"
 
 Participation::Participation(const std::string& user, const std::string& meeting)
     : user(user), meeting(meeting)

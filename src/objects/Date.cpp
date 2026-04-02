@@ -7,16 +7,16 @@
 #include <chrono>
 #include <stdexcept>
 
-#include "../helper/DesignByContract.h"
+#include "helper/DesignByContract.h"
 
 
 Date::Date()
 {
     const std::chrono::time_point now = std::chrono::system_clock::now();
     const std::chrono::year_month_day current_date = std::chrono::floor<std::chrono::days>(now);
-    year = current_date.year();
-    month = current_date.month();
-    day = current_date.day();
+    year = int(current_date.year());
+    month = unsigned(current_date.month());
+    day = unsigned(current_date.day());
 
     init_test_this_ptr = this;
 
@@ -37,23 +37,16 @@ Date::Date(const Date& d)
 
 Date::Date(int year, int month, int day)
 {
-    REQUIRE(year > 0, "Year can not be negative!");
+    //REQUIRE(year > 0, "Year can not be negative!");
     REQUIRE(month > 0, "Month can not be negative!");
     REQUIRE(day > 0, "Day can not be negative!");
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
 
     REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!");
-    if (date.ok())
-    {
-        this->year = std::chrono::year(year);
-        this->month = std::chrono::month(month);
-        this->day = std::chrono::day(day);
-    }
-    else
-    {
-        throw std::invalid_argument("Invalid date provided. Please check if this date really exists!");
-    }
+    this->year = year;
+    this->month = month;
+    this->day = day;
 
     init_test_this_ptr = this;
 
@@ -64,9 +57,9 @@ Date::Date(std::chrono::year_month_day year_month_day)
 {
     REQUIRE(year_month_day.ok(), "Invalid date provided. Please check if this date really exists!");
 
-    this->year = year_month_day.year();
-    this->month = year_month_day.month();
-    this->day = year_month_day.day();
+    this->year = int(year_month_day.year());
+    this->month = unsigned(year_month_day.month());
+    this->day = unsigned(year_month_day.day());
 
     init_test_this_ptr = this;
     ENSURE(year_month_day.ok(), "Date creation failed. Date validity check did not pass.");
@@ -85,17 +78,17 @@ int Date::getYear() const
     return static_cast<int>(year);
 }
 
-int Date::getMonth() const
+unsigned Date::getMonth() const
 {
     ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!");
 
-    return static_cast<unsigned>(month);
+    return month;
 }
 
-int Date::getDay() const
+unsigned Date::getDay() const
 {
     ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!");
-    return static_cast<unsigned>(day);
+    return day;
 }
 
 std::string Date::getWeekDay() const

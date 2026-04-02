@@ -5,7 +5,7 @@
 
 #include "gtest/gtest.h"
 
-#include "../Meeting.h"
+#include "objects/Meeting.h"
 
 class TestMeeting : public ::testing::Test
 {
@@ -27,8 +27,8 @@ TEST_F(TestMeeting, HappyDay)
     EXPECT_TRUE(d.isProperlyInitialized());
 
     EXPECT_EQ(2025, d.getYear());
-    EXPECT_EQ(2, d.getMonth());
-    EXPECT_EQ(2, d.getDay());
+    EXPECT_EQ(2u, d.getMonth());
+    EXPECT_EQ(2u, d.getDay());
 }
 
 TEST_F(TestMeeting, ContractViolation)

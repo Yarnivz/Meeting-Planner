@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Werror -O2")
 set(CMAKE_EXE_LINKER_FLAGS -pthread)
 
 # Set include dir
-include_directories(./gtest/include ./xml_parser/include ./file_utils)
+include_directories(./gtest/include ./xml_parser/include ./file_utils ./src)
 
 # Set Library dir
 link_directories(gtest/lib)
@@ -41,15 +41,17 @@ else ()
     message(WARNING "Doxygen not found. Documentation will not be generated.")
 endif ()
 
-set(COMMON_SOURCE_FILES src/objects/Room.cpp src/objects/Meeting.cpp src/objects/Participation.cpp src/objects/Date.cpp src/App.cpp
-        src/parser/Parser.cpp
-        src/parser/Parser.h
-        src/parser/XmlParser.cpp
-        src/parser/XmlParser.h
+set(COMMON_SOURCE_FILES
+        src/objects/Room.cpp
+        src/objects/Meeting.cpp
+        src/objects/Participation.cpp
+        src/objects/Date.cpp
         src/objects/Campus.cpp
-        src/objects/Campus.h
         src/objects/Building.cpp
-        src/objects/Building.h)
+        src/objects/DateTime.cpp
+        src/parser/Parser.cpp
+        src/parser/XmlParser.cpp
+        src/App.cpp)
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
