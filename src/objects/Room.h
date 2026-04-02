@@ -4,8 +4,10 @@
 
 #ifndef MEETING_PLANNER_ROOM_H
 #define MEETING_PLANNER_ROOM_H
-#include <string>
 #include <iostream>
+#include <string>
+#include <vector>
+
 
 class Room
 {
@@ -73,6 +75,7 @@ private:
     std::string name;
     std::string id;
     unsigned capacity;
+    unsigned occupancy;
 
     void* init_check_this_ptr;
 };

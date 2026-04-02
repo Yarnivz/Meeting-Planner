@@ -52,14 +52,15 @@ const std::string& Meeting::toString() const
 //TODO: add contracts
 int Meeting::getOrder() const
 {
-    ENSURE(order < 0, "Order can not be negative");
+    ENSURE(order >= 0, "Order can not be negative");
     return order;
 }
 
 void Meeting::setOrder(const int orderAdded)
 {
-    REQUIRE(order < 0, "cannot set order to a negative value");
+    REQUIRE(orderAdded >= 0, "cannot set order to a negative value");
     order = orderAdded;
+    ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value");
 }
 
 void Meeting::process() { state = PROCESSED; }
