@@ -5,4 +5,5 @@ docs/
 gtest/lib/
 logs/*
 output.txt
-!.idea
+.idea
+!.idea/codeStyles
