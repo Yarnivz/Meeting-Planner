@@ -5,7 +5,6 @@
 #include "DateTime.h"
 #include <string>
 #include <chrono>
-#include <stdexcept>
 
 #include "helper/DesignByContract.h"
 
@@ -52,15 +51,19 @@ DateTime::DateTime(int year, int month, int day, int hour)
 
     REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!");
 
+    //Cast to unsigned
+    unsigned umonth = month;
+    unsigned uday = day;
+    unsigned uhour = hour;
 
     this->year = year;
-    this->month = month;
-    this->day = day;
-    this->hour = hour;
+    this->month = umonth;
+    this->day = uday;
+    this->hour = uhour;
 
     init_test_this_ptr = this;
 
-    ENSURE(year == getYear() && month == getMonth() && hour == getMonth(), "DateTime creation failed. Values were not correctly assigned.");
+    ENSURE(year == getYear() && umonth == getMonth() && uday == getDay() && uhour == getHour(), "DateTime creation failed. Values were not correctly assigned.");
 }
 
 // DateTime::DateTime(std::chrono::year_month_day year_month_day)

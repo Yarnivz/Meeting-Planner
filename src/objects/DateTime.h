@@ -152,9 +152,9 @@ public:
 
 private:
     int year{};
-    int month{};
-    int day{};
-    int hour{};
+    unsigned month{};
+    unsigned day{};
+    unsigned hour{};
 
     void* init_test_this_ptr;
 };
