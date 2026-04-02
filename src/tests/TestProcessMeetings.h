@@ -28,48 +28,37 @@ TEST_F(ProcessMeetingsTest, HappyDay) {
     p.addMeeting(m2);
     p.addMeeting(m3);
     p.addMeeting(m4);
+    ASSERT_EQ(m1, p.getMeeting("M1"));
+    ASSERT_EQ(m2, p.getMeeting("M2"));
+    ASSERT_EQ(m3, p.getMeeting("M3"));
+    ASSERT_EQ(m4, p.getMeeting("M4"));
 
     p.processSingleMeeting("M1", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M4"));
+    EXPECT_TRUE(m1->isProcessed());
+    EXPECT_TRUE(m2->isUnProcessed());
+    EXPECT_TRUE(m3->isUnProcessed());
+    EXPECT_TRUE(m4->isUnProcessed());
 
     p.processSingleMeeting("M2", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(m2     , p.getDoneMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M4"));
+    EXPECT_TRUE(m1->isProcessed());
+    EXPECT_TRUE(m2->isProcessed());
+    EXPECT_TRUE(m3->isUnProcessed());
+    EXPECT_TRUE(m4->isUnProcessed());
 
     p.processSingleMeeting("M3", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(m2     , p.getDoneMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M2"));
-    EXPECT_EQ(m3     , p.getCanceledMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M4"));
-    EXPECT_EQ("conflict with meeting M1", p.getCancellationReason("M3"));
+    EXPECT_TRUE(m1->isProcessed());
+    EXPECT_TRUE(m2->isProcessed());
+    EXPECT_TRUE(m3->isCancelled());
+    EXPECT_TRUE(m4->isUnProcessed());
+    EXPECT_EQ("conflict with meeting M1", m3->getCancellationReason());
 
     p.processSingleMeeting("M4", false);
-    EXPECT_EQ(m1     , p.getDoneMeeting("M1"));
-    EXPECT_EQ(m2     , p.getDoneMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M3"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M4"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M1"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M2"));
-    EXPECT_EQ(m3     , p.getCanceledMeeting("M3"));
-    EXPECT_EQ(m4     , p.getCanceledMeeting("M4"));
-    EXPECT_EQ("conflict with meeting M2", p.getCancellationReason("M4"));
+    EXPECT_TRUE(m1->isProcessed());
+    EXPECT_TRUE(m2->isProcessed());
+    EXPECT_TRUE(m3->isCancelled());
+    EXPECT_TRUE(m4->isCancelled());
+    EXPECT_EQ("conflict with meeting M1", m3->getCancellationReason());
+    EXPECT_EQ("conflict with meeting M2", m4->getCancellationReason());
 }
 
 TEST_F(ProcessMeetingsTest, Conflicts) {
@@ -110,43 +99,42 @@ TEST_F(ProcessMeetingsTest, Conflicts) {
 
     for (size_t i = 0; i < 30; ++i) {
         p.addMeeting(l1[i]);
+        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
         p.processSingleMeeting(l1[i]->getId(), false);
+
         p.addMeeting(l2[i]);
+        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
         p.processSingleMeeting(l2[i]->getId(), false);
+
         p.addMeeting(l3[i]);
+        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
         p.processSingleMeeting(l3[i]->getId(), false);
+
         p.addMeeting(l4[i]);
+        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
         p.processSingleMeeting(l4[i]->getId(), false);
     }
 
-    EXPECT_EQ(l1[0], p.getDoneMeeting(l1[0]->getId()));
-    EXPECT_EQ(l2[0], p.getDoneMeeting(l2[0]->getId()));
-    EXPECT_EQ(l3[0], p.getDoneMeeting(l3[0]->getId()));
-    EXPECT_EQ(l4[0], p.getDoneMeeting(l4[0]->getId()));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting(l1[0]->getId()));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting(l2[0]->getId()));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting(l3[0]->getId()));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting(l4[0]->getId()));
+    EXPECT_TRUE(l1[0]->isProcessed());
+    EXPECT_TRUE(l2[0]->isProcessed());
+    EXPECT_TRUE(l3[0]->isProcessed());
+    EXPECT_TRUE(l4[0]->isProcessed());
 
     for (size_t i = 1; i < 30; ++i) {
-        EXPECT_EQ(nullptr, p.getDoneMeeting(l1[i]->getId()));
-        EXPECT_EQ(nullptr, p.getDoneMeeting(l2[i]->getId()));
-        EXPECT_EQ(nullptr, p.getDoneMeeting(l3[i]->getId()));
-        EXPECT_EQ(nullptr, p.getDoneMeeting(l4[i]->getId()));
-        EXPECT_EQ(l1[i], p.getCanceledMeeting(l1[i]->getId()));
-        EXPECT_EQ(l2[i], p.getCanceledMeeting(l2[i]->getId()));
-        EXPECT_EQ(l3[i], p.getCanceledMeeting(l3[i]->getId()));
-        EXPECT_EQ(l4[i], p.getCanceledMeeting(l4[i]->getId()));
+        EXPECT_TRUE(l1[i]->isCancelled());
+        EXPECT_TRUE(l2[i]->isCancelled());
+        EXPECT_TRUE(l3[i]->isCancelled());
+        EXPECT_TRUE(l4[i]->isCancelled());
 
         static const std::string creason1 = "conflict with meeting " + l1[0]->getId();
         static const std::string creason2 = "conflict with meeting " + l2[0]->getId();
         static const std::string creason3 = "conflict with meeting " + l3[0]->getId();
         static const std::string creason4 = "conflict with meeting " + l4[0]->getId();
 
-        EXPECT_EQ(creason1, p.getCancellationReason(l1[i]->getId()));
-        EXPECT_EQ(creason2, p.getCancellationReason(l2[i]->getId()));
-        EXPECT_EQ(creason3, p.getCancellationReason(l3[i]->getId()));
-        EXPECT_EQ(creason4, p.getCancellationReason(l4[i]->getId()));
+        EXPECT_EQ(creason1, l1[i]->getCancellationReason());
+        EXPECT_EQ(creason2, l2[i]->getCancellationReason());
+        EXPECT_EQ(creason3, l3[i]->getCancellationReason());
+        EXPECT_EQ(creason4, l4[i]->getCancellationReason());
     }
 
 }
@@ -167,18 +155,20 @@ TEST_F(ProcessMeetingsTest, Order) {
     p.addMeeting(m3);
     p.addMeeting(m1);
     p.addMeeting(m2);
+    EXPECT_EQ(m1, p.getMeeting("M1"));
+    EXPECT_EQ(m2, p.getMeeting("M2"));
+    EXPECT_EQ(m3, p.getMeeting("M3"));
+    EXPECT_TRUE(m1->isUnProcessed());
+    EXPECT_TRUE(m2->isUnProcessed());
+    EXPECT_TRUE(m3->isUnProcessed());
 
     p.processAllMeetings(false);
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M1"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("M2"));
-    EXPECT_EQ(m3     , p.getDoneMeeting("M3"));
+    EXPECT_TRUE(m1->isCancelled());
+    EXPECT_TRUE(m2->isCancelled());
+    EXPECT_TRUE(m3->isProcessed());
 
-    EXPECT_EQ(m1     , p.getCanceledMeeting("M1"));
-    EXPECT_EQ(m2     , p.getCanceledMeeting("M2"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("M3"));
-
-    EXPECT_EQ("conflict with meeting M3", p.getCancellationReason("M1"));
-    EXPECT_EQ("conflict with meeting M3", p.getCancellationReason("M2"));
+    EXPECT_EQ("conflict with meeting M3", m1->getCancellationReason());
+    EXPECT_EQ("conflict with meeting M3", m2->getCancellationReason());
 }
 
 TEST_F(ProcessMeetingsTest, ParseOrder) {
@@ -187,33 +177,34 @@ TEST_F(ProcessMeetingsTest, ParseOrder) {
 
     p.parseFile("./test-files/ConflictMeetings2.xml");
 
+    Meeting* a1 = p.getMeeting("A1");
+    Meeting* a2 = p.getMeeting("A2");
+    Meeting* a3 = p.getMeeting("A3");
+    Meeting* b1 = p.getMeeting("B1");
+    Meeting* b2 = p.getMeeting("B2");
+    Meeting* b3 = p.getMeeting("B3");
+    ASSERT_NE(nullptr, a1);
+    ASSERT_NE(nullptr, a2);
+    ASSERT_NE(nullptr, a3);
+    ASSERT_NE(nullptr, b1);
+    ASSERT_NE(nullptr, b2);
+    ASSERT_NE(nullptr, b3);
+
     p.processAllMeetings(false);
 
-    EXPECT_NE(nullptr, p.getMeeting("A1"));
-    EXPECT_NE(nullptr, p.getMeeting("A2"));
-    EXPECT_NE(nullptr, p.getMeeting("A3"));
-    EXPECT_NE(nullptr, p.getMeeting("B1"));
-    EXPECT_NE(nullptr, p.getMeeting("B2"));
-    EXPECT_NE(nullptr, p.getMeeting("B3"));
 
-    EXPECT_EQ(p.getMeeting("A1"), p.getDoneMeeting("A1"));
-    EXPECT_EQ(p.getMeeting("B1"), p.getDoneMeeting("B1"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("A2"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("B2"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("A3"));
-    EXPECT_EQ(nullptr, p.getDoneMeeting("B3"));
+    EXPECT_TRUE(a1->isProcessed());
+    EXPECT_TRUE(b1->isProcessed());
 
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("A1"));
-    EXPECT_EQ(nullptr, p.getCanceledMeeting("B1"));
-    EXPECT_EQ(p.getMeeting("A2"), p.getCanceledMeeting("A2"));
-    EXPECT_EQ(p.getMeeting("B2"), p.getCanceledMeeting("B2"));
-    EXPECT_EQ(p.getMeeting("A3"), p.getCanceledMeeting("A3"));
-    EXPECT_EQ(p.getMeeting("B3"), p.getCanceledMeeting("B3"));
+    EXPECT_TRUE(a2->isCancelled());
+    EXPECT_TRUE(b3->isCancelled());
+    EXPECT_TRUE(b2->isCancelled());
+    EXPECT_TRUE(b3->isCancelled());
 
-    EXPECT_EQ("conflict with meeting A1", p.getCancellationReason("A2"));
-    EXPECT_EQ("conflict with meeting A1", p.getCancellationReason("A3"));
-    EXPECT_EQ("conflict with meeting B1", p.getCancellationReason("B2"));
-    EXPECT_EQ("conflict with meeting B1", p.getCancellationReason("B3"));
+    EXPECT_EQ("conflict with meeting A1", a2->getCancellationReason());
+    EXPECT_EQ("conflict with meeting A1", a3->getCancellationReason());
+    EXPECT_EQ("conflict with meeting B1", b2->getCancellationReason());
+    EXPECT_EQ("conflict with meeting B1", b3->getCancellationReason());
 }
 
 TEST_F(ProcessMeetingsTest, ContractViolation) {

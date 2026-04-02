@@ -14,7 +14,7 @@ Yarni:
 - output class
 
 Lucas:
-- refactor code (see TO DO's), (meeting status, etc.)
+X refactor code (see TO DO's), (meeting status, etc.)
     NOTE: SEPERATE BRANCH!
-- DateTime (per hour)
-- External participants
+O DateTime (per hour)
+O External participants
