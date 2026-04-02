@@ -6,7 +6,7 @@
 
 #include <stdexcept>
 
-#include "../helper/DesignByContract.h"
+#include "helper/DesignByContract.h"
 
 Room::Room(const std::string& name, const std::string& id, unsigned capacity) :
     name(name), id(id), capacity(capacity)

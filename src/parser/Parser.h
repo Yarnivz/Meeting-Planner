@@ -8,9 +8,9 @@
 #include <ostream>
 #include <string>
 
-#include "../objects/Meeting.h"
-#include "../objects/Participation.h"
-#include "../objects/Room.h"
+#include "objects/Meeting.h"
+#include "objects/Participation.h"
+#include "objects/Room.h"
 
 
 class Parser

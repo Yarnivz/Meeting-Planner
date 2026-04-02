@@ -6,7 +6,7 @@
 #define MEETING_PLANNER_PROCESSMEETINGSTESTS_H
 
 #include "gtest/gtest.h"
-#include "../App.h"
+#include "App.h"
 
 class ProcessMeetingsTest : public ::testing::Test
 {

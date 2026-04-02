@@ -4,7 +4,7 @@
 
 #include "./Meeting.h"
 
-#include "../helper/DesignByContract.h"
+#include "helper/DesignByContract.h"
 
 Meeting::Meeting(const std::string& label, const std::string& id, const std::string& roomId, const Date& date)
     : label(label), id(id), room(roomId), date(date)

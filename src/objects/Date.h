@@ -63,13 +63,13 @@ public:
      * @brief Month getter.
      * @return the date's month
      */
-    int getMonth() const;
+    unsigned getMonth() const;
 
     /**
      * @brief Day getter.
      * @return the date's day
      */
-    int getDay() const;
+    unsigned getDay() const;
 
     /**
      * @brief Weekday getter.
@@ -143,9 +143,9 @@ public:
     ~Date();
 
 private:
-    std::chrono::year year{};
-    std::chrono::month month{};
-    std::chrono::day day{};
+    int year{};
+    unsigned month{};
+    unsigned day{};
 
     void* init_test_this_ptr;
 };

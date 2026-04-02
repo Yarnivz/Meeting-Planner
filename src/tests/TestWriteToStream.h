@@ -7,7 +7,7 @@
 
 #include "gtest/gtest.h"
 #include "FileUtils.h"
-#include "../App.h"
+#include "App.h"
 #include <fstream>
 
 class TestWriteToStream : public ::testing::Test

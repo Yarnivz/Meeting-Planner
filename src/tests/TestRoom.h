@@ -5,7 +5,7 @@
 #ifndef MEETING_PLANNER_ROOMTEST_H
 #define MEETING_PLANNER_ROOMTEST_H
 
-#include "../Room.h"
+#include "objects/Room.h"
 #include "gtest/gtest.h"
 
 class TestRoom : public ::testing::Test
