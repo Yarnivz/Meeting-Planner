@@ -4,7 +4,7 @@
 
 #include "XmlParser.h"
 
-#include "../helper/DesignByContract.h"
+#include "helper/DesignByContract.h"
 #include "tinyxml.h"
 
 void XmlParser::parse(const std::string& filename, std::ostream& errorStream)

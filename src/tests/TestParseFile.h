@@ -8,8 +8,8 @@
 #include <gtest/gtest.h>
 
 #include "FileUtils.h"
-#include "../App.h"
-#include "../parser/XmlParser.h"
+#include "App.h"
+#include "parser/XmlParser.h"
 
 class TestParseFile : public ::testing::Test
 {

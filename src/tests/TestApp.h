@@ -5,7 +5,7 @@
 #ifndef MEETING_PLANNER_APPTESTS_H
 #define MEETING_PLANNER_APPTESTS_H
 #include <gtest/gtest.h>
-#include "../App.h"
+#include "App.h"
 
 class TestApp : public ::testing::Test
 {
