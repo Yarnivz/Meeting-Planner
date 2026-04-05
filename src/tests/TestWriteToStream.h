@@ -23,7 +23,7 @@ TEST_F(TestWriteToStream, HappyDay1)
     std::ofstream f = std::ofstream(actual);
 
     App p = App(nullptr, &f);
-    EXPECT_TRUE(p.isProperlyInitialized());
+    ASSERT_TRUE(p.isProperlyInitialized());
 
     Date date1 = Date(2026, 1, 2);
     Date date2 = Date(2026, 3, 4);

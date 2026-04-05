@@ -87,14 +87,15 @@ public:
 
 
     void process();
-
-    void cancel();
+    void cancel(const std::string& reason);
 
     bool isUnProcessed() const;
 
     bool isProcessed() const;
 
     bool isCancelled() const;
+
+    const std::string& getCancellationReason() const;
 
     /**
      * @brief writes the output of 'toString' to a stream
@@ -120,6 +121,8 @@ private:
     Date date;
     State state;
     int order;
+
+    std::string cancellation_reason;
 
     void* init_check_this_ptr;
 };
