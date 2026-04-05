@@ -6,6 +6,7 @@
 #define MEETING_PLANNER_MEETING_H
 #include <string>
 #include "Date.h"
+#include "Room.h"
 
 
 class Meeting
@@ -17,7 +18,7 @@ public:
      * A meeting can only be initialized using the label, id, room id and date parameters as these are required.
      * @param label title of the meeting
      * @param id identifier of the meeting
-     * @param roomId identifier of the room where the meeting takes place
+     * @param room identifier of the room where the meeting takes place
      * @param date of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
     *    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
@@ -25,7 +26,7 @@ public:
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
      */
-    Meeting(const std::string& label, const std::string& id, const std::string& roomId, const Date& date = Date());
+    Meeting(const std::string& label, const std::string& id, Room* room, const Date& date = Date());
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -45,7 +46,7 @@ public:
      *
      * @return the identifier of the room where this meeting takes place
      */
-    const std::string& getRoomId() const;
+    Room* getRoom() const;
 
     /**
      * @brief Date getter.
@@ -117,7 +118,7 @@ private:
     using State = enum { UNPROCESSED, PROCESSED, CANCELLED };
     std::string label;
     std::string id;
-    std::string room;
+    Room* room;
     Date date;
     State state;
     int order;

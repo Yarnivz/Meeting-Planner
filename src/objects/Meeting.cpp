@@ -6,11 +6,13 @@
 
 #include "helper/DesignByContract.h"
 
-Meeting::Meeting(const std::string& label, const std::string& id, const std::string& roomId, const Date& date)
-    : label(label), id(id), room(roomId), date(date)
+class Room;
+
+Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const Date& date)
+    : label(label), id(id), room(room), date(date)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
-    REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
+    REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
     this->state = UNPROCESSED;
@@ -30,9 +32,9 @@ const std::string& Meeting::getId() const
     return id;
 }
 
-const std::string& Meeting::getRoomId() const
+Room* Meeting::getRoom() const
 {
-    REQUIRE(isProperlyInitialized(), "Failed to get room id. Meeting has to be properly initialized with the constructor.");
+    REQUIRE(isProperlyInitialized(), "Failed to get room. Meeting has to be properly initialized with the constructor.");
     return room;
 }
 
