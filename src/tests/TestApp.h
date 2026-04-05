@@ -41,7 +41,7 @@ TEST_F(TestApp, HappyDay1)
 
     EXPECT_TRUE(p.getMeetingsByRoom("r4")->empty());
     EXPECT_EQ(int(p.getAllMeetings().size()), 4);
-    EXPECT_EQ(p.getMeeting("m1"), meeting1);
+    EXPECT_EQ(p.getMeetingById("m1"), meeting1);
     p.addMeeting(new Meeting("Meeting 5", "m5", "r4", date1));
     EXPECT_EQ(int(p.getAllMeetings().size()), 5);
     EXPECT_TRUE(!p.getMeetingsByRoom("r4")->empty());

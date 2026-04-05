@@ -40,7 +40,7 @@ TEST_F(TestParseFile, HappyDay1)
     EXPECT_EQ(10u, room->getCapacity());
 
     //Test meeting
-    Meeting* meeting = app->getMeeting(meeting_id);
+    Meeting* meeting = app->getMeetingById(meeting_id);
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Weekly meeting", meeting->toString());
     EXPECT_EQ("Room98732", meeting->getRoomId());
@@ -89,14 +89,14 @@ TEST_F(TestParseFile, HappyDay2)
     EXPECT_EQ(46u, room->getCapacity());
 
     //Test meeting #1
-    Meeting* meeting = app->getMeeting(meeting1);
+    Meeting* meeting = app->getMeetingById(meeting1);
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Weekly Meeting", meeting->toString());
     EXPECT_EQ("Aula23", meeting->getRoomId());
     EXPECT_EQ(Date(2026, 5, 22), meeting->getDate());
 
     //Test meeting #2
-    meeting = app->getMeeting(meeting2);
+    meeting = app->getMeetingById(meeting2);
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ(meeting->toString(), "Sales Report 2025");
     EXPECT_EQ(meeting->getRoomId(), "Room98732");
@@ -162,11 +162,11 @@ TEST_F(TestParseFile, InvalidData1)
     EXPECT_EQ(nullptr, room);
 
     //Test meeting #1
-    Meeting* meeting = app->getMeeting(meeting1);
+    Meeting* meeting = app->getMeetingById(meeting1);
     EXPECT_EQ(nullptr, meeting);
 
     //Test meeting #2
-    meeting = app->getMeeting(meeting2);
+    meeting = app->getMeetingById(meeting2);
     EXPECT_EQ(nullptr, meeting);
 
     //Test participation
@@ -216,21 +216,21 @@ TEST_F(TestParseFile, InvalidData2)
     EXPECT_EQ(2u, app->getAllRooms().size());
 
     //Test meeting #1
-    Meeting* meeting = app->getMeeting(meeting1);
+    Meeting* meeting = app->getMeetingById(meeting1);
     EXPECT_NE(nullptr, meeting);
     EXPECT_EQ("Movie Marathon", meeting->toString());
     EXPECT_EQ(room1, meeting->getRoomId());
     EXPECT_EQ(Date(2026, 6, 13), meeting->getDate());
 
     //Test meeting #2
-    meeting = app->getMeeting(meeting2);
+    meeting = app->getMeetingById(meeting2);
     EXPECT_NE(nullptr, meeting);
     EXPECT_EQ("Very important meeting", meeting->toString());
     EXPECT_EQ(room2, meeting->getRoomId());
     EXPECT_EQ(Date(2026, 6, 13), meeting->getDate());
 
     //Test meeting #3
-    meeting = app->getMeeting(meeting3);
+    meeting = app->getMeetingById(meeting3);
     EXPECT_EQ(nullptr, meeting);
     EXPECT_EQ(2u, app->getAllMeetings().size());
 

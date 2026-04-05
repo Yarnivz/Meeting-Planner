@@ -2,11 +2,9 @@
 // Created by Yarni on 2/26/2026.
 //
 
-#include "./Meeting.h"
-
+#include "Meeting.h"
 #include "helper/DesignByContract.h"
 
-class Room;
 
 Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const Date& date)
     : label(label), id(id), room(room), date(date)
@@ -99,3 +97,36 @@ std::ostream& operator<<(std::ostream& os, const Meeting& meeting)
 }
 
 Meeting::~Meeting() = default;
+
+
+
+
+void Meeting::addParticipant(User* user)
+{
+    REQUIRE(user != nullptr, "User can not be null");
+    REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+
+    participants.insert({user->getId(), user});
+
+    REQUIRE(getParticipant(user->getId()) == user, "Something went wrong. User was not added.");
+}
+
+User* Meeting::getParticipant(const std::string& userId)
+{
+    const Users::iterator it = participants.find(userId);
+
+    if (it == participants.end()) return nullptr;
+
+    ENSURE(it->second->getId() == userId, "Something went wrong, The user which was found did not have the correct id.");
+    return it->second;
+}
+
+size_t Meeting::getParticipantCount() const
+{
+    return participants.size();
+}
+
+const Users& Meeting::getParticipants() const
+{
+    return participants;
+}

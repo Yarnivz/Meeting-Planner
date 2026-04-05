@@ -4,7 +4,10 @@
 
 #ifndef MEETING_PLANNER_USER_H
 #define MEETING_PLANNER_USER_H
+
 #include <string>
+#include "containers/MeetingRegistry.h"
+#include "objects/Meeting.h"
 
 
 class User {
@@ -18,11 +21,18 @@ public:
      */
     bool isProperlyInitialized() const;
 
-    const std::string& getName() const;
+    const std::string& getId() const;
     bool isExternal() const;
+
+    void addMeeting(Meeting* m);
+    Meeting* getMeetingById(const std::string& meetingId);
+    Meeting* getMeetingByDate(const Date& meetingDate);
+
 private:
     std::string name;
     bool external;
+
+    MeetingRegistry meetings;
 
     void* init_check_this_ptr;
 };

@@ -4,23 +4,15 @@
 
 #ifndef MEETING_PLANNER_APP_H
 #define MEETING_PLANNER_APP_H
-#include <list>
-#include <string>
-#include <unordered_map>
 
+#include <string>
+
+#include "containers/MeetingRegistry.h"
 #include "objects/Room.h"
 #include "objects/Meeting.h"
 #include "parser/Parser.h"
-#include "objects/Participation.h"
-
-using Meetings = std::unordered_map<std::string, Meeting*>;
-using Rooms = std::unordered_map<std::string, Room*>;
-using Participations = std::list<Participation*>;
-
-
-using MeetingsByRoomMap = std::unordered_map<std::string, Meetings>;
-using ParticipationsByUserMap = std::unordered_map<std::string, Participations>;
-using ParticipationsByMeetingMap = std::unordered_map<std::string, Participations>;
+#include "objects/User.h"
+#include "containers/Containers.h"
 
 class App
 {
@@ -127,79 +119,20 @@ public:
     void addMeeting(Meeting* meeting);
 
     /**
-     * @brief Retrieve a meeting based on its id and the id of the room it takes place in.
-     *
-     * @param meetingId of the meeting to retrieve
-     * @param roomId of the room the meeting takes place in
-     * @return a pointer to the correct meeting. Returns nullptr if the meeting was not found for that room.
-     */
-    Meeting* getMeetingInRoom(const std::string& meetingId, const std::string& roomId);
-
-    /**
      * @brief Retrieve a meeting based on its id.
      *
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found.
      */
-    Meeting* getMeeting(const std::string& meetingId);
+    Meeting* getMeetingById(const std::string& meetingId);
+    Meeting* getMeetingByDate(const Date& meetingDate);
 
-    /**
-     * @brief Retrieve a map of all registered meetings
-     *
-     * Retrieves a map of all registered meetings.
-     * With key == meeting-id and value == meeting-pointer
-     *
-     * @return a map of all registered meetings
-     */
-    const Meetings& getAllMeetings() const;
+    const MeetingRegistry& getMeetingRegistry() const;
 
 
-    /**
-     * @brief Retrieve a map of all registered meetings in a given room
-     *
-     * Retrieves a map of all registered meetings that take place in the given room.
-     * With key == meeting-id and value == meeting-pointer.
-     *
-     * @param roomId of the room to search
-     * @return a map of all registered meetings
-     */
-    const Meetings* getMeetingsByRoom(const std::string& roomId);
-
-
-    /**
-     * @brief Register a participation.
-     *
-     * Register a new participation.
-     * The App expects ownership of the Participation* passed in.
-     *
-     * @param participation to register
-     */
-    void addParticipation(Participation* participation);
-
-
-    /**
-     * @brief Retrieve a list of all participations concerning the given user.
-     *
-     * @param userId of the user for which to return all participations
-     * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the user has no registered participations).
-     */
-    Participations* getParticipationsByUser(const std::string& userId);
-
-    /**
-     * @brief Retrieve a list of all participations concerning the given meeting.
-     *
-     * @param meetindId of the meeting for which to return all participations
-     * @return a const pointer to the requested list, if it exists; nullptr otherwise (if the meeting has no registered participations)
-     */
-    Participations* getParticipationsByMeeting(const std::string& meetindId);
-
-
-    /**
-     * @brief Retrieve a list of all registered participations
-     *
-     * @return a list of all registered participations
-     */
-    const Participations& getAllParticipations() const;
+    void addUser(User* user);
+    User* getUser(const std::string& userId);
+    const Users& getAllUsers() const;
 
 
     /**
@@ -251,26 +184,16 @@ private:
     void writeMeeting(std::ostream& onStream, const Meeting* meeting);
     void writeRoom(std::ostream& onStream, const Room* room);
 
-    Meetings *_getMutMeetingsByRoom(const std::string &roomId);
-    Participations *_getMutParticipationsByUser(const std::string &userId);
-    Participations *_getMutParticipationsByMeeting(const std::string &meetingId);
-
     Parser* parser;
     std::ostream* output;
 
     Rooms rooms;
+    MeetingRegistry meetings;
+    Users users;
 
-    std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;;
+    std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;
 
-    Meetings all_meetings;
 
-    //TODO: delete datastructure and implement in function in class/app
-    MeetingsByRoomMap meetings_by_room;
-
-    //TODO: delete datastructures and implement in function in class/app
-    Participations all_participations;
-    ParticipationsByUserMap participations_by_user;
-    ParticipationsByMeetingMap participations_by_meeting;
 
     void* init_check_this_ptr = nullptr;
 };

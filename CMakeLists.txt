@@ -44,11 +44,12 @@ endif ()
 set(COMMON_SOURCE_FILES
         src/objects/Room.cpp
         src/objects/Meeting.cpp
-        src/objects/Participation.cpp
         src/objects/Date.cpp
         src/objects/Campus.cpp
         src/objects/Building.cpp
         src/objects/DateTime.cpp
+        src/objects/User.cpp
+        src/containers/MeetingRegistry.cpp
         src/parser/Parser.cpp
         src/parser/XmlParser.cpp
         src/App.cpp)

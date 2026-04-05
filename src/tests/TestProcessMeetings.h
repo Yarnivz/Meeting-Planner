@@ -30,10 +30,10 @@ TEST_F(ProcessMeetingsTest, HappyDay)
     p.addMeeting(m2);
     p.addMeeting(m3);
     p.addMeeting(m4);
-    ASSERT_EQ(m1, p.getMeeting("M1"));
-    ASSERT_EQ(m2, p.getMeeting("M2"));
-    ASSERT_EQ(m3, p.getMeeting("M3"));
-    ASSERT_EQ(m4, p.getMeeting("M4"));
+    ASSERT_EQ(m1, p.getMeetingById("M1"));
+    ASSERT_EQ(m2, p.getMeetingById("M2"));
+    ASSERT_EQ(m3, p.getMeetingById("M3"));
+    ASSERT_EQ(m4, p.getMeetingById("M4"));
 
     p.processSingleMeeting("M1", false);
     EXPECT_TRUE(m1->isProcessed());
@@ -106,19 +106,19 @@ TEST_F(ProcessMeetingsTest, Conflicts)
     for (size_t i = 0; i < 30; ++i)
     {
         p.addMeeting(l1[i]);
-        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
+        ASSERT_EQ(l1[i], p.getMeetingById(l1[i]->getId()));
         p.processSingleMeeting(l1[i]->getId(), false);
 
         p.addMeeting(l2[i]);
-        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
+        ASSERT_EQ(l1[i], p.getMeetingById(l1[i]->getId()));
         p.processSingleMeeting(l2[i]->getId(), false);
 
         p.addMeeting(l3[i]);
-        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
+        ASSERT_EQ(l1[i], p.getMeetingById(l1[i]->getId()));
         p.processSingleMeeting(l3[i]->getId(), false);
 
         p.addMeeting(l4[i]);
-        ASSERT_EQ(l1[i], p.getMeeting(l1[i]->getId()));
+        ASSERT_EQ(l1[i], p.getMeetingById(l1[i]->getId()));
         p.processSingleMeeting(l4[i]->getId(), false);
     }
 
@@ -162,9 +162,9 @@ TEST_F(ProcessMeetingsTest, Order)
     p.addMeeting(m3);
     p.addMeeting(m1);
     p.addMeeting(m2);
-    EXPECT_EQ(m1, p.getMeeting("M1"));
-    EXPECT_EQ(m2, p.getMeeting("M2"));
-    EXPECT_EQ(m3, p.getMeeting("M3"));
+    EXPECT_EQ(m1, p.getMeetingById("M1"));
+    EXPECT_EQ(m2, p.getMeetingById("M2"));
+    EXPECT_EQ(m3, p.getMeetingById("M3"));
     EXPECT_TRUE(m1->isUnProcessed());
     EXPECT_TRUE(m2->isUnProcessed());
     EXPECT_TRUE(m3->isUnProcessed());
@@ -185,12 +185,12 @@ TEST_F(ProcessMeetingsTest, ParseOrder)
 
     p.parseFile("./test-files/ConflictMeetings2.xml");
 
-    Meeting* a1 = p.getMeeting("A1");
-    Meeting* a2 = p.getMeeting("A2");
-    Meeting* a3 = p.getMeeting("A3");
-    Meeting* b1 = p.getMeeting("B1");
-    Meeting* b2 = p.getMeeting("B2");
-    Meeting* b3 = p.getMeeting("B3");
+    Meeting* a1 = p.getMeetingById("A1");
+    Meeting* a2 = p.getMeetingById("A2");
+    Meeting* a3 = p.getMeetingById("A3");
+    Meeting* b1 = p.getMeetingById("B1");
+    Meeting* b2 = p.getMeetingById("B2");
+    Meeting* b3 = p.getMeetingById("B3");
     ASSERT_NE(nullptr, a1);
     ASSERT_NE(nullptr, a2);
     ASSERT_NE(nullptr, a3);

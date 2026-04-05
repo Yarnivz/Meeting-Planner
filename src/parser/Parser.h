@@ -8,10 +8,25 @@
 #include <ostream>
 #include <string>
 
-#include "objects/Meeting.h"
-#include "objects/Participation.h"
-#include "objects/Room.h"
+#include "objects/Date.h"
 
+struct MeetingElement
+{
+    std::string label, id, room_id;
+    Date date_time;
+    int order;
+};
+
+struct RoomElement
+{
+    std::string name, id;
+    int capacity;
+};
+
+struct ParticipationElement
+{
+    std::string meeting, user;
+};
 
 class Parser
 {
@@ -20,23 +35,23 @@ public:
 
     virtual void parse(const std::string& filename, std::ostream& errorStream) = 0;
 
-    const std::list<Room*>& parsedRooms() const;
+    const std::list<RoomElement>& parsedRooms() const;
 
     void clearRooms();
 
-    const std::list<Meeting*>& parsedMeetings() const;
+    const std::list<MeetingElement>& parsedMeetings() const;
 
     void clearMeetings();
 
-    const std::list<Participation*>& parsedParticipations() const;
+    const std::list<ParticipationElement>& parsedParticipations() const;
 
     void clearParticipations();
 
     virtual ~Parser() = default;
 
 protected:
-    std::list<Room*> parsed_rooms;
-    std::list<Meeting*> parsed_meetings;
-    std::list<Participation*> parsed_participations;
+    std::list<RoomElement> parsed_rooms;
+    std::list<MeetingElement> parsed_meetings;
+    std::list<ParticipationElement> parsed_participations;
 };
 #endif //PARSER_H

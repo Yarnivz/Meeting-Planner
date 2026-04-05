@@ -37,39 +37,64 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
     //> Add all elements in the correct order
     //  Final integrity checks
 
-    for (Room* r : parser->parsedRooms())
+    for (const RoomElement& r : parser->parsedRooms())
     {
-        if (getRoom(r->getId()) != nullptr)
+        if (getRoom(r.id) != nullptr)
         {
-            errStream << "Room ids must be unique: " << r->getId() << std::endl;
+            errStream << "Room ids must be unique: " << r.id << std::endl;
             continue;
         }
 
-        addRoom(r);
+        addRoom(new Room(r.name, r.id, r.capacity));
     }
 
-    for (Meeting* m : parser->parsedMeetings())
+    for (const MeetingElement& m : parser->parsedMeetings())
     {
-        if (getRoom(m->getRoomId()) == nullptr)
+        if (getMeetingById(m.id) != nullptr)
         {
-            errStream << "Meeting " << m->getId() << " takes place in a room \'" << m->getRoomId() <<
+            errStream << "Meeting ids must be unique: " << m.id << std::endl;
+            continue;
+        }
+
+        Room* mr = getRoom(m.room_id);
+        if (mr == nullptr)
+        {
+            errStream << "Meeting " << m.id << " takes place in a room \'" << m.room_id <<
                 "\' which doesnt exist." << std::endl;
             continue;
         }
 
-        addMeeting(m);
+        addMeeting(new Meeting(m.label, m.id, mr, m.date_time));
     }
 
-    for (Participation* p : parser->parsedParticipations())
+    for (const ParticipationElement& p : parser->parsedParticipations())
     {
-        if (getMeeting(p->getMeetingId()) == nullptr)
+        // Get meeting
+        Meeting* m = getMeetingById(p.meeting);
+        if (m == nullptr)
         {
-            errStream << "User \'" << p->getUser() << "\' participates in a meeting \'" << p->getMeetingId() <<
+            errStream << "User \'" << p.user << "\' participates in a meeting \'" << p.meeting <<
                 "\' which doesnt exist." << std::endl;
             continue;
         }
 
-        addParticipation(p);
+        // Get user
+        User* u = getUser(p.user);
+        // And create user if it doesn't exist yet
+        if (u == nullptr)
+        {
+            u = new User(p.user, false);
+            addUser(u);
+        }
+
+        m->addParticipant(u);
+        u->addMeeting(m);
+
+        ENSURE(getUser(p.user) == u, "Something went wrong. User does not exist and wasnt created");
+        ENSURE(getMeetingById(p.meeting) == m, "Something went wrong. Meeting wasnt added.");
+        ENSURE(m->getParticipant(p.user) == u, "Something went wrong. User was not added as participant of meeting");
+        ENSURE(u->getMeetingById(p.meeting) == m, "Something went wrong. Meeting was not added to user.");
+
     }
 
 
@@ -85,7 +110,7 @@ void App::writeToStream()
     std::list<const Meeting*> cancelled, processed, unprocessed;
 
     //Sort by state
-    for (const std::pair<const std::string, Meeting*>& item : getAllMeetings()) {
+    for (const std::pair<const std::string, Meeting*>& item : meetings.getRawIdMap()) {
         const Meeting* m = item.second;
         if (m->isUnProcessed()) {
             unprocessed.push_back(m);
@@ -127,7 +152,7 @@ void App::writeToStream()
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
 {
     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
-    Meeting* meeting = getMeeting(meetingId);
+    Meeting* meeting = getMeetingById(meetingId);
     REQUIRE(meeting, "This meeting doesn't exist.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
 
@@ -141,14 +166,14 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
     }
-    participantsToRoomsSize.push_back({participations_by_meeting.find(meeting->getId())->second.size(), getRoom(meeting->getRoomId())->getCapacity()});
+    participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
 
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting hasn't been processed");
 }
 void App::processAllMeetings(const bool verbose)
 {
     std::vector<Meeting*> sortedMeetings;
-    for (std::pair<std::string, Meeting*> m : all_meetings)
+    for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
         if (m.second->getDate() <= Date()) sortedMeetings.push_back(m.second);
     }
@@ -181,7 +206,6 @@ void App::addRoom(Room* room)
     REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
 
     rooms.insert({room->getId(), room}); // Add room
-    meetings_by_room.insert({room->getId(), {}}); // Add empty meetings map
 
     ENSURE(getRoom(room->getId()) == room, "The room was not added to the App");
 }
@@ -206,34 +230,24 @@ const Rooms& App::getAllRooms() const
 
 bool App::isRoomOccupied(const std::string& roomId, const Date& date)
 {
-    Meetings* mt_list = _getMutMeetingsByRoom(roomId);
-    REQUIRE(mt_list, "This room doesnt exist.");
+    const Room* r = getRoom(roomId);
+    REQUIRE(r, "This room does not exist.");
 
-    for (Meetings::iterator it = mt_list->begin(); it != mt_list->end(); ++it)
-    {
-        const Meeting* m = it->second;
+    const Meeting* possible_occupation = getMeetingByDate(date);
 
-        if (m->isProcessed() && m->getDate() == date)
-            return true;
-    }
+    if (possible_occupation != nullptr && possible_occupation->isProcessed() && possible_occupation->getRoom() == r) return true;
 
     return false;
 }
 
 Meeting* App::findConflictingMeeting(const std::string& meetingId)
 {
-    Meeting* m = getMeeting(meetingId);
+    Meeting* m = getMeetingById(meetingId);
     REQUIRE(m, "This meeting doesn't exist.");
-    Meetings* mt_list = _getMutMeetingsByRoom(m->getRoomId());
-    ENSURE(mt_list, "Encountered a meeting with a roomId which doesnt exist.");
 
-    for (Meetings::iterator it = mt_list->begin(); it != mt_list->end(); ++it)
-    {
-        Meeting* other_m = it->second;
+    Meeting* possible_conflict = meetings.getByDate(m->getDate());
 
-        if (other_m->isProcessed() && other_m->getDate() == m->getDate())
-            return other_m;
-    }
+    if (possible_conflict->isProcessed() && possible_conflict->getId() != m->getId()) return possible_conflict;
 
     return nullptr;
 }
@@ -241,180 +255,96 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
 
 void App::addMeeting(Meeting* meeting)
 {
-    REQUIRE(meeting, "Meeting can not be null.");
-    REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    REQUIRE(!all_meetings.contains(meeting->getId()), "Meetings Id needs to be unique!");
-
-    const Room* rm = getRoom(meeting->getRoomId());
-
-    REQUIRE(rm, "The meeting has to take place in a room which was already registered.");
-
-    // REQUIRE(
-    //     !isRoomOccupied(rm->getId(), meeting->getDate()),
-    //     "There is already a meeting planned in this room at that date."
-    //     );
-
-
-    Meetings* mt_list = _getMutMeetingsByRoom(meeting->getRoomId());
-    ENSURE(mt_list, "Something went wrong, the meeting list was not found.");
-
-    // If meeting order was not assigned, automatically assign the order using the count of the meetings already saved in the system.
-    if (meeting->getOrder() == 0)
-    {
-        meeting->setOrder(static_cast<int>(all_meetings.size() + 1));
-    }
-
-    all_meetings.insert({meeting->getId(), meeting});       // Insert into flat map by meetingId
-    mt_list->insert({meeting->getId(), meeting});           // Also into nested map by roomId => meetingId
-
-    participations_by_meeting.insert({meeting->getId(), {}}); // Insert empty participations list
-
-
-    ENSURE(getMeetingInRoom(meeting->getId(), meeting->getRoomId()) == meeting, "Something went wrong, The meeting was not added to the App");
-    ENSURE(getMeeting(meeting->getId()) == meeting, "Something went wrong, the meeting was not added to the App");
+    meetings.add(meeting);
 }
 
 
-Meeting* App::getMeetingInRoom(const std::string& meetingId, const std::string& roomId)
+Meeting* App::getMeetingById(const std::string& meetingId)
 {
-    Meetings* ms = _getMutMeetingsByRoom(roomId);
-    if (!ms) return nullptr;
+    return meetings.getById(meetingId);
+}
 
-    const Meetings::iterator ms_it = ms->find(meetingId);
+Meeting* App::getMeetingByDate(const Date& meetingDate)
+{
+    return meetings.getByDate(meetingDate);
+}
 
-    if (ms_it == ms->end()) return nullptr;
-
-    ENSURE(ms_it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
-    return ms_it->second;
+const MeetingRegistry& App::getMeetingRegistry() const
+{
+    return meetings;
 }
 
 
-Meeting* App::getMeeting(const std::string& meetingId)
+
+
+void App::addUser(User* user)
 {
-    const Meetings::iterator it = all_meetings.find(meetingId);
+    REQUIRE(user != nullptr, "User can not be null");
+    REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
 
-    if (it == all_meetings.end()) return nullptr;
+    users.insert({user->getId(), user});
 
-    ENSURE(it->second->getId() == meetingId, "Something went wrong, The meeting which was found did not have the correct id.");
+    REQUIRE(getUser(user->getId()) == user, "Something went wrong. User was not added.");
+}
+
+User* App::getUser(const std::string& userId)
+{
+    const Users::iterator it = users.find(userId);
+
+    if (it == users.end()) return nullptr;
+
+    ENSURE(it->second->getId() == userId, "Something went wrong, The user which was found did not have the correct id.");
     return it->second;
 }
 
-
-
-
-const Meetings & App::getAllMeetings() const {
-    //ENSURE(!all_meetings.empty(), "all_meetings contains no meetings");
-    return all_meetings;
-}
-
-const Meetings* App::getMeetingsByRoom(const std::string &roomId) {
-    //ENSURE(_getMutMeetingsByRoom(roomId),  "Something went wong while going through the meetings.");
-    return _getMutMeetingsByRoom(roomId);
-}
-
-
-void App::addParticipation(Participation* participation)
+const Users& App::getAllUsers() const
 {
-    REQUIRE(participation != nullptr, "Participation can not be null.");
-    REQUIRE(participation->isProperlyInitialized(), "Participation needs to be properly initialized.");
-
-
-    const Meeting* mt = getMeeting(participation->getMeetingId());
-    REQUIRE(mt, "Could not add participation: The requested meeting does not exist.");
-    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "Could not add participation: This user already participates in another meeting.");
-
-
-    const Room* rm = getRoom(mt->getRoomId());
-    ENSURE(rm, "Something went wrong. Encountered a meeting with invalid room id.");
-
-    const Room* mt_room = getRoom(mt->getRoomId());
-    ENSURE(mt_room, "Something went wrong. Found meeting in App but it did not have an assigned room.");
-
-    Participations* ps_by_meeting = _getMutParticipationsByMeeting(participation->getMeetingId());
-    ENSURE(ps_by_meeting, "Something went wrong. The list of participations by meeting went out of sync.");
-    REQUIRE(ps_by_meeting->size() <= rm->getCapacity(), "Could not add participation: The room the meeting takes place in was full.");
-
-    //REQUIRE(!isRoomOccupied(mt_room->getId(), mt->getDate()), "This rooms is already occupied.");
-    REQUIRE(!isUserOccupied(participation->getUser(), mt->getDate()), "This user already participates in another meeting.");
-
-
-    all_participations.push_back(participation); //Add it to a flat list of all participations
-
-
-    //Also insert into map by userId
-    Participations* ps_by_user = _getMutParticipationsByUser(participation->getUser());
-    if (ps_by_user)
-    {
-        ps_by_user->push_back(participation);
-    }
-    else
-    {
-        participations_by_user.insert({participation->getUser(), {participation}});
-    }
-
-
-    ps_by_meeting->push_back(participation);
-
-    ENSURE(all_participations.back() == participation, "Something went wrong. The participation was not added to the global list.");
-    ENSURE(_getMutParticipationsByUser(participation->getUser())->back() == participation, "Something went wrong. The participation was not added to the list by user.");
-    ENSURE(_getMutParticipationsByMeeting(participation->getMeetingId())->back() == participation, "Something went wrong. The participation was not added to the list by app.");
+    return users;
 }
 
 
-const Participations& App::getAllParticipations() const
-{
-    return all_participations;
-}
 
-Participations* App::getParticipationsByUser(const std::string& userId)
-{
-    return _getMutParticipationsByUser(userId);
-}
-
-Participations* App::getParticipationsByMeeting(const std::string& meetindId)
-{
-    return _getMutParticipationsByMeeting(meetindId);
-}
 
 
 bool App::isUserOccupied(const std::string& userId, const Date& date)
 {
-    Participations* prt_list = _getMutParticipationsByUser(userId);
+    const User* u = getUser(userId);
+    REQUIRE(u, "This user does not exist.");
 
-    if (prt_list == nullptr) return false;
+    Meeting* possible_occupation = getMeetingByDate(date);
 
-    for (Participations::iterator it = prt_list->begin(); it != prt_list->end(); ++it)
-    {
-        Participation* p = *it;
-        const Meeting* m = getMeeting(p->getMeetingId());
-        ENSURE(m, "Something went wrong. Encountered a participation without a valid meeting Id.");
+    if (possible_occupation == nullptr || !possible_occupation->isProcessed()) return false;
 
-        if (m->getDate() == date) return true;
-    }
+    const User* has_participant = possible_occupation->getParticipant(userId);
+    REQUIRE(has_participant == nullptr || has_participant == u, "Something went wrong. The user which was found was not correct.");
 
-    return false;
+    if (has_participant == nullptr) return false;
+
+    return true;
 }
 
 
 App::~App()
 {
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
-    for (const std::pair<const std::string, Meeting*>& m : all_meetings) delete m.second;
-    for (Participation* p : all_participations) delete p;
+    for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;
+    for (const std::pair<const std::string, User*>& u : users) delete u.second;
 }
 
 
 void App::writeMeeting(std::ostream& onStream, const Meeting* meeting)
 {
     const Date& date = meeting->getDate();
-    onStream << "- " << *getRoom(meeting->getRoomId()) << ", " << date.getWeekDay() << " " << date << std::endl;
+
+    onStream << "- " << *(meeting->getRoom()) << ", " << date.getWeekDay() << " " << date << std::endl;
     onStream << "  " << *meeting << std::endl;
-    const Participations* participations = getParticipationsByMeeting(meeting->getId());
+
     onStream << "  ";
-    for (Participation* participation : *participations)
+    for (Users::const_iterator it = meeting->getParticipants().begin(); it != meeting->getParticipants().end(); ++it)
     {
-        onStream << participation->getUser();
-        if (participation != participations->back()) onStream << ", ";
+        const User* participant = it->second;
+        onStream << participant;
+        if (std::next(it) != meeting->getParticipants().end()) onStream << ", ";
     }
     onStream << std::endl;
     onStream << "  Meeting ID: " << meeting->getId() << std::endl;
@@ -426,29 +356,11 @@ void App::writeRoom(std::ostream& onStream, const Room* room)
     onStream << "  Capacity: " << room->getCapacity() << " people" << std::endl;
 }
 
-Meetings* App::_getMutMeetingsByRoom(const std::string& roomId)
-{
-    const MeetingsByRoomMap::iterator it = meetings_by_room.find(roomId);
-
-    if (it == meetings_by_room.end()) return nullptr;
-
-    return &it->second;
-}
-
-Participations* App::_getMutParticipationsByUser(const std::string& userId)
-{
-    const ParticipationsByUserMap::iterator it = participations_by_user.find(userId);
-
-    if (it == participations_by_user.end()) return nullptr;
-
-    return &it->second;
-}
-
-Participations* App::_getMutParticipationsByMeeting(const std::string& meetingId)
-{
-    const ParticipationsByMeetingMap::iterator it = participations_by_meeting.find(meetingId);
-
-    if (it == participations_by_meeting.end()) return nullptr;
-
-    return &it->second;
-}
+// Meetings* App::_getMutMeetingsByRoom(const std::string& roomId)
+// {
+//     const MeetingsByRoomMap::iterator it = meetings_by_room.find(roomId);
+//
+//     if (it == meetings_by_room.end()) return nullptr;
+//
+//     return &it->second;
+// }

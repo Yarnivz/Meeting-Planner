@@ -4,9 +4,12 @@
 
 #ifndef MEETING_PLANNER_MEETING_H
 #define MEETING_PLANNER_MEETING_H
+
 #include <string>
-#include "Date.h"
-#include "Room.h"
+#include "objects/Date.h"
+#include "objects/Room.h"
+#include "objects/User.h"
+#include "containers/Containers.h"
 
 
 class Meeting
@@ -114,6 +117,11 @@ public:
      */
     ~Meeting();
 
+    void addParticipant(User* user);
+    User* getParticipant(const std::string& userId);
+    size_t getParticipantCount() const;
+    const Users& getParticipants() const;
+
 private:
     using State = enum { UNPROCESSED, PROCESSED, CANCELLED };
     std::string label;
@@ -122,6 +130,8 @@ private:
     Date date;
     State state;
     int order;
+
+    Users participants;
 
     std::string cancellation_reason;
 

@@ -6,6 +6,7 @@
 
 #include "helper/DesignByContract.h"
 #include "tinyxml.h"
+#include "objects/Room.h"
 
 void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
 {
@@ -32,7 +33,6 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
     }
 
 
-    int meetingOrder = 1;
 
     for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement =
          objectElement->NextSiblingElement())
@@ -43,7 +43,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
         if (objectElementType == "ROOM")
         {
             //== string properties from child XML elements
-            std::string name, identifier, capacity;
+            std::string name, identifier, capacity_str;
 
             //== booleans indicating whether the above properties were already found
             bool found_name = false;
@@ -103,7 +103,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     }
 
                     found_capacity = true;
-                    capacity = tempElementChildValue;
+                    capacity_str = tempElementChildValue;
                 }
                 else
                 {
@@ -132,12 +132,12 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
             //== 'capacity' string parsed into an int
-            int capacityInt = 0;
+            int capacity = 0;
 
             //> Try to parse 'capacity' to int.
             try
             {
-                capacityInt = std::stoi(capacity);
+                capacity = std::stoi(capacity_str);
             }
             catch (std::exception& except)
             {
@@ -147,7 +147,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
             //> Check if capacity is larger than 0
-            if (capacityInt <= 0)
+            if (capacity <= 0)
             {
                 errorStream << "Room capacity needs to be larger than 0. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
@@ -168,12 +168,12 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
             //> Add room if all the checks have passed
-            parsed_rooms.push_back(new Room(name, identifier, capacityInt));
+            parsed_rooms.push_back((RoomElement){.name = std::move(name), .id = std::move(identifier), .capacity = capacity});
         }
         else if (objectElementType == "MEETING")
         {
             //== string properties from child XML elements
-            std::string label, identifier, room, dateString;
+            std::string label, identifier, room, date_string;
 
             //== booleans indicating whether the above properties were already found
             bool found_label = false;
@@ -245,7 +245,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     }
 
                     found_datestring = true;
-                    dateString = propertyElementContents;
+                    date_string = propertyElementContents;
                 }
             }
 
@@ -294,15 +294,15 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 goto continue_to_next_object_element;
             }
 
-
+            //TODO: datetime
             int day, month, year;
 
             //> Try to parse date
             try
             {
-                day = std::stoi(dateString.substr(8, 2));
-                month = std::stoi(dateString.substr(5, 2));
-                year = std::stoi(dateString.substr(0, 4));
+                day = std::stoi(date_string.substr(8, 2));
+                month = std::stoi(date_string.substr(5, 2));
+                year = std::stoi(date_string.substr(0, 4));
             }
             catch (std::exception& except)
             {
@@ -317,18 +317,24 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             //> Check if date exists
             if (!chrono_date.ok())
             {
-                errorStream << "MEETING \'" << identifier << "\': Date " << dateString << " does not exist." <<
+                errorStream << "MEETING \'" << identifier << "\': Date " << date_string << " does not exist." <<
                     std::endl;
                 goto continue_to_next_object_element;;
             }
 
 
             //> Add meeting if all checks passed
-            Meeting* m = new Meeting(label, identifier, room, Date(chrono_date));
-            m->setOrder(meetingOrder);
-            parsed_meetings.push_back(m);
-            // Increment meeting order
-            meetingOrder += 1;
+            parsed_meetings.push_back(
+                (MeetingElement){
+                    .label = std::move(label),
+                    .id = std::move(identifier),
+                    .room_id = std::move(room),
+                    .date_time = Date(year, month, day),
+                    .order = (int)parsed_meetings.size() + 1
+                }
+            );
+
+
         }
         else if (objectElementType == "PARTICIPATION")
         {
@@ -408,7 +414,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
 
 
             //> Add participation if all checks passed
-            parsed_participations.push_back(new Participation(user, meeting));
+            parsed_participations.push_back((ParticipationElement){.meeting = std::move(meeting), .user = std::move(user)});
         }
         else
         {
