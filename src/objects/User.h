@@ -6,8 +6,10 @@
 #define MEETING_PLANNER_USER_H
 
 #include <string>
+
 #include "containers/MeetingRegistry.h"
-#include "objects/Meeting.h"
+class Meeting;
+class Date;
 
 
 class User {

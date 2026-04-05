@@ -6,10 +6,11 @@
 #define MEETING_PLANNER_MEETING_H
 
 #include <string>
-#include "objects/Date.h"
-#include "objects/Room.h"
-#include "objects/User.h"
 #include "containers/Containers.h"
+#include "objects/Date.h"
+
+class User;
+class Room;
 
 
 class Meeting

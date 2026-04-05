@@ -4,10 +4,9 @@
 
 #ifndef MEETING_PLANNER_CONTAINERS_H
 #define MEETING_PLANNER_CONTAINERS_H
+
 #include <string>
 #include <unordered_map>
-
-
 class User;
 class Room;
 
