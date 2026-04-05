@@ -167,68 +167,6 @@ public:
 
 
     /**
-     * @brief Retrieve a canceled meeting based on its id.
-     *
-     * @param meetingId of the meeting to retrieve
-     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't canceled.
-     */
-    Meeting* getCanceledMeeting(const std::string& meetingId);
-    /**
-     * @brief Retrieves the cancellation reason of the appropriate meeting.
-     *
-     * Uses the meeting Id to retrieve the cancellation reason from a map that stores all of them, tied to the meetingId key.
-     *
-     * @param meetingId that's tied to meetings appropriate cancellation reason.
-     */
-    const std::string& getCancellationReason(const std::string& meetingId);
-
-    /**
-     * @brief Retrieve a processed meeting based on its id.
-     *
-     * @param meetingId of the meeting to retrieve
-     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it wasn't processed.
-     */
-    Meeting* getDoneMeeting(const std::string& meetingId);
-
-    /**
-     * @brief Retrieve an unprocessed future meeting based on its id.
-     *
-     * @param meetingId of the meeting to retrieve
-     * @return a pointer to the meeting; nullptr if the meeting was not found, or if it was already processed.
-     */
-    Meeting* getFutureMeeting(const std::string& meetingId);
-
-    /**
-     * @brief Cancel a meeting.
-     *
-     * @param meetingId of the meeting to cancel.
-     * @param reason for the cancellation (may be left empty)
-     */
-    void cancelMeeting(const std::string& meetingId, const std::string& reason = "");
-
-    /**
-     * @brief Uncancel a meeting.
-     *
-     * @param meetingId of the meeting to uncancel.
-     */
-    void uncancelMeeting(const std::string& meetingId);
-
-    /**
-     * @brief 'Does' a meeting.
-     *
-     * @param meetingId of the meeting to do.
-     */
-    void doMeeting(const std::string& meetingId);
-
-    /**
-     * @brief 'Undoes' a meeting.
-     *
-     * @param meetingId of the meeting to undo.
-     */
-    void undoMeeting(const std::string& meetingId);
-
-
-    /**
      * @brief Register a participation.
      *
      * Register a new participation.
@@ -313,10 +251,9 @@ private:
     void writeMeeting(std::ostream& onStream, const Meeting* meeting);
     void writeRoom(std::ostream& onStream, const Room* room);
 
-    Meetings* _getMutMeetingsByRoom(const std::string& roomId);
-    Participations* _getMutParticipationsByUser(const std::string& userId);
-
-    Participations* _getMutParticipationsByMeeting(const std::string& meetingId);
+    Meetings *_getMutMeetingsByRoom(const std::string &roomId);
+    Participations *_getMutParticipationsByUser(const std::string &userId);
+    Participations *_getMutParticipationsByMeeting(const std::string &meetingId);
 
     Parser* parser;
     std::ostream* output;
@@ -326,12 +263,6 @@ private:
     std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;;
 
     Meetings all_meetings;
-    //TODO: delete datastructures below and use class attributes instead
-    Meetings future_meetings;
-    Meetings ongoing_meetings;
-    Meetings cancelling_meetings;
-    //TODO: delete and make attribute
-    std::unordered_map<std::string, std::string> canceled_meeting_reasons;
 
     //TODO: delete datastructure and implement in function in class/app
     MeetingsByRoomMap meetings_by_room;
