@@ -27,10 +27,10 @@ TEST_F(ProcessMeetingsTest, HappyDay)
     ASSERT_EQ(mg025, p.getRoom("MG025"));
     ASSERT_EQ(gt103, p.getRoom("GT103"));
 
-    Meeting* m1 = new Meeting("Important Meeting", "M1", mg025, Date(2026, 1, 1));
-    Meeting* m2 = new Meeting("Important Meeting 2", "M2", gt103, Date(2026, 1, 1));
-    Meeting* m3 = new Meeting("Conflict", "M3", mg025, Date(2026, 1, 1));
-    Meeting* m4 = new Meeting("Conflict 2", "M4", gt103, Date(2026, 1, 1));
+    Meeting* m1 = new Meeting("Important Meeting", "M1", mg025, DateTime(2026, 1, 1, 0));
+    Meeting* m2 = new Meeting("Important Meeting 2", "M2", gt103, DateTime(2026, 1, 1, 0));
+    Meeting* m3 = new Meeting("Conflict", "M3", mg025, DateTime(2026, 1, 1, 0));
+    Meeting* m4 = new Meeting("Conflict 2", "M4", gt103, DateTime(2026, 1, 1, 0));
     p.addMeeting(m1);
     p.addMeeting(m2);
     p.addMeeting(m3);
@@ -79,8 +79,8 @@ TEST_F(ProcessMeetingsTest, Conflicts)
     p.addRoom(r1);
     p.addRoom(r2);
 
-    const Date d1 = Date(2026, 1, 1);
-    const Date d2 = Date(2026, 3, 3);
+    const DateTime d1 = DateTime(2026, 1, 1, 0);
+    const DateTime d2 = DateTime(2026, 3, 3, 0);
 
     std::vector<Meeting*> l1 = {};
     std::vector<Meeting*> l2 = {};
@@ -160,9 +160,9 @@ TEST_F(ProcessMeetingsTest, Order)
     p.addRoom(r1);
     ASSERT_EQ(r1, p.getRoom("MG025"));
 
-    Meeting* m1 = new Meeting("Important Meeting", "M1", r1, Date(2026, 1, 1));
-    Meeting* m2 = new Meeting("Importanter Meeting", "M2", r1, Date(2026, 1, 1));
-    Meeting* m3 = new Meeting("Importantest Meeting", "M3", r1, Date(2026, 1, 1));
+    Meeting* m1 = new Meeting("Important Meeting", "M1", r1, DateTime(2026, 1, 1, 0));
+    Meeting* m2 = new Meeting("Importanter Meeting", "M2", r1, DateTime(2026, 1, 1, 0));
+    Meeting* m3 = new Meeting("Importantest Meeting", "M3", r1, DateTime(2026, 1, 1, 0));
     m1->setOrder(100);
     m2->setOrder(23);
     m3->setOrder(1);
@@ -237,7 +237,7 @@ TEST_F(ProcessMeetingsTest, ContractViolation)
     Room* r = new Room("r", "r", 20);
     p.addRoom(r); ASSERT_EQ(r, p.getRoom("r"));
 
-    p.addMeeting(new Meeting("m", "m", r, Date(2026, 1, 1)));
+    p.addMeeting(new Meeting("m", "m", r, DateTime(2026, 1, 1, 0)));
 
     //double use
     EXPECT_NO_FATAL_FAILURE(p.processSingleMeeting("m", false));

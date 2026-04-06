@@ -90,10 +90,10 @@ public:
      *   -The meeting was registered as 'done' by the meeting processor
      *
      * @param roomId of the room to check
-     * @param date to check
+     * @param date_time to check
      * @return bool indicating the result
      */
-    bool isRoomOccupied(const std::string& roomId, const Date& date);
+    bool isRoomOccupied(const std::string& roomId, const DateTime& date_time);
 
     /**
      * @brief Find a meeting which would conflict with the given meeting.
@@ -125,7 +125,7 @@ public:
      * @return a pointer to the meeting; nullptr if the meeting was not found.
      */
     Meeting* getMeetingById(const std::string& meetingId);
-    std::list<Meeting*>& getMeetingsByDate(const Date& meetingDate);
+    std::list<Meeting*>& getMeetingsByDateTime(const DateTime& meetingDateTime);
 
     const MeetingRegistry& getMeetingRegistry() const;
 
@@ -149,10 +149,10 @@ public:
      *
      *
      * @param userId of the user to check
-     * @param date to check
+     * @param date_time to check
      * @return bool indicating the result
      */
-    bool isUserOccupied(const std::string& userId, const Date& date);
+    bool isUserOccupied(const std::string& userId, const DateTime& date_time);
 
     /**
      *@brief Check this planned meeting for conflicting rooms/dates.

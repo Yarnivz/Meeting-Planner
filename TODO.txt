@@ -17,4 +17,5 @@ Yarni:
 - output class
 
 Lucas:
+- Hourly meetings
 - External participants

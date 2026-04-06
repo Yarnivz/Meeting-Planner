@@ -17,14 +17,14 @@ protected:
 TEST_F(TestMeeting, HappyDay)
 {
     Room r = Room("label", "some_room", 123);
-    Meeting meeting = Meeting("My Meeting", "meeting0", &r, Date(2025, 2, 2));
+    Meeting meeting = Meeting("My Meeting", "meeting0", &r, DateTime(2025, 2, 2, 0));
 
     EXPECT_TRUE(meeting.isProperlyInitialized());
     EXPECT_EQ("My Meeting", meeting.toString());
     EXPECT_EQ("meeting0", meeting.getId());
     EXPECT_EQ(&r, meeting.getRoom());
 
-    Date d = meeting.getDate();
+    DateTime d = meeting.getDateTime();
 
     EXPECT_TRUE(d.isProperlyInitialized());
 
@@ -35,6 +35,6 @@ TEST_F(TestMeeting, HappyDay)
 
 TEST_F(TestMeeting, ContractViolation)
 {
-    EXPECT_DEATH(Meeting("hello", "", nullptr, Date()), "");
-    EXPECT_DEATH(Meeting("world", "some_id", nullptr, Date()), "");
+    EXPECT_DEATH(Meeting("hello", "", nullptr, DateTime()), "");
+    EXPECT_DEATH(Meeting("world", "some_id", nullptr, DateTime()), "");
 }

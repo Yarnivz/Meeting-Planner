@@ -1,5 +1,8 @@
 ROOM must have a NAME property
-MEETING 'm999': Date 2026-02-29 does not exist.
+MEETING must have an HOUR property
+MEETING must have an HOUR property
+MEETING must have an HOUR property
 PARTICIPATION must have a MEETING property
 Property USER needs to contain text.
 PARTICIPATION must have a USER property
+User 'Peter Selie' participates in a meeting 'm656' which doesnt exist.

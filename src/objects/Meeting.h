@@ -6,8 +6,9 @@
 #define MEETING_PLANNER_MEETING_H
 
 #include <string>
+
+#include "objects/DateTime.h"
 #include "containers/Containers.h"
-#include "objects/Date.h"
 
 class User;
 class Room;
@@ -32,7 +33,7 @@ public:
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const Date& date = Date());
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date = DateTime());
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -59,7 +60,7 @@ public:
      *
      * @return the date of when this meeting takes place
      */
-    const Date& getDate() const;
+    const DateTime& getDateTime() const;
 
     /**
      * @brief Converts the meeting class to a readable string format.
@@ -132,7 +133,7 @@ private:
     std::string label;
     std::string id;
     Room* room;
-    Date date;
+    DateTime date_time;
     State state;
     int order;
 

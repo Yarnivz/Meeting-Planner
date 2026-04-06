@@ -180,14 +180,14 @@ void App::processAllMeetings(const bool verbose)
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
-        if (m.second->getDate() <= Date()) sortedMeetings.push_back(m.second);
+        if (m.second->getDateTime() <= DateTime()) sortedMeetings.push_back(m.second);
     }
     std::sort(sortedMeetings.begin(), sortedMeetings.end(),
               [](const Meeting* comparedMeeting1, const Meeting* comparedMeeting2)
               {
-                  if (comparedMeeting1->getDate() != comparedMeeting2->getDate())
+                  if (comparedMeeting1->getDateTime() != comparedMeeting2->getDateTime())
                   {
-                      return comparedMeeting1->getDate() < comparedMeeting2->getDate();
+                      return comparedMeeting1->getDateTime() < comparedMeeting2->getDateTime();
                   }
                   return comparedMeeting1->getOrder() < comparedMeeting2->getOrder();
               });
@@ -233,12 +233,12 @@ const Rooms& App::getAllRooms() const
 }
 
 
-bool App::isRoomOccupied(const std::string& roomId, const Date& date)
+bool App::isRoomOccupied(const std::string& roomId, const DateTime& date_time)
 {
     const Room* r = getRoom(roomId);
     REQUIRE(r, "This room does not exist.");
 
-    std::list<Meeting*>& possible_occupations = getMeetingsByDate(date);
+    std::list<Meeting*>& possible_occupations = getMeetingsByDateTime(date_time);
 
     for (Meeting* possible_occupation : possible_occupations)
     {
@@ -253,11 +253,11 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
     Meeting* m = getMeetingById(meetingId);
     REQUIRE(m, "This meeting doesn't exist.");
 
-    std::list<Meeting*>& possible_conflicts = meetings.getByDate(m->getDate());
+    std::list<Meeting*>& possible_conflicts = meetings.getByDateTime(m->getDateTime());
 
     for (Meeting* possible_conflict : possible_conflicts)
     {
-        ENSURE(possible_conflict->getDate() == m->getDate(), "Something went wrong. Looking meetings up by date failed.");
+        ENSURE(possible_conflict->getDateTime() == m->getDateTime(), "Something went wrong. Looking meetings up by date failed.");
         if (possible_conflict != m &&
             possible_conflict->isProcessed() &&
             possible_conflict->getRoom() == m->getRoom()
@@ -285,9 +285,9 @@ Meeting* App::getMeetingById(const std::string& meetingId)
     return meetings.getById(meetingId);
 }
 
-std::list<Meeting*>& App::getMeetingsByDate(const Date& meetingDate)
+std::list<Meeting*>& App::getMeetingsByDateTime(const DateTime& meetingDateTime)
 {
-    return meetings.getByDate(meetingDate);
+    return meetings.getByDateTime(meetingDateTime);
 }
 
 const MeetingRegistry& App::getMeetingRegistry() const
@@ -337,12 +337,12 @@ void App::addUserToMeeting(const std::string& userId, const std::string& meeting
 }
 
 
-bool App::isUserOccupied(const std::string& userId, const Date& date)
+bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
 {
     const User* u = getUser(userId);
     REQUIRE(u, "This user does not exist.");
 
-    std::list<Meeting*>& possible_occupations = getMeetingsByDate(date);
+    std::list<Meeting*>& possible_occupations = getMeetingsByDateTime(date_time);
 
     for (Meeting* possible_occupation : possible_occupations)
     {
@@ -371,9 +371,9 @@ App::~App()
 
 void App::writeMeeting(std::ostream& onStream, const Meeting* meeting)
 {
-    const Date& date = meeting->getDate();
+    const DateTime& date_time = meeting->getDateTime();
 
-    onStream << "- " << *(meeting->getRoom()) << ", " << date.getWeekDay() << " " << date << std::endl;
+    onStream << "- " << *(meeting->getRoom()) << ", " << date_time.getWeekDay() << " " << date_time << std::endl;
     onStream << "  " << *meeting << std::endl;
 
     onStream << "  ";

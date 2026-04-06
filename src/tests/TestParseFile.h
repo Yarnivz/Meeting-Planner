@@ -4,6 +4,7 @@
 
 #ifndef MEETING_PLANNER_PARSEFILETESTS_H
 #define MEETING_PLANNER_PARSEFILETESTS_H
+#include <complex>
 #include <fstream>
 #include <gtest/gtest.h>
 
@@ -44,7 +45,7 @@ TEST_F(TestParseFile, HappyDay1)
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Weekly meeting", meeting->toString());
     EXPECT_EQ("Room98732", meeting->getRoom()->getId());
-    EXPECT_EQ(Date(2026, 5, 22), meeting->getDate());
+    EXPECT_EQ(DateTime(2026, 5, 22, 0), meeting->getDateTime());
 
     //Test participation
     const User* peter = app->getUser("Peter Selie");
@@ -91,14 +92,14 @@ TEST_F(TestParseFile, HappyDay2)
     EXPECT_EQ("Weekly Meeting", meeting->toString());
     ASSERT_NE(nullptr, meeting->getRoom());
     EXPECT_EQ("Aula23", meeting->getRoom()->getId());
-    EXPECT_EQ(Date(2026, 5, 22), meeting->getDate());
+    EXPECT_EQ(DateTime(2026, 5, 22, 0), meeting->getDateTime());
 
     //Test meeting #2
     meeting = app->getMeetingById(meeting2);
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Sales Report 2025", meeting->toString());
     EXPECT_EQ("Room98732", meeting->getRoom()->getId());
-    EXPECT_EQ(Date(2026, 1, 3), meeting->getDate());
+    EXPECT_EQ(DateTime(2026, 1, 3, 0), meeting->getDateTime());
 
     //Test participations meeting #1
     ASSERT_NE(nullptr, app->getUser("Peter Selie"));
@@ -127,7 +128,7 @@ TEST_F(TestParseFile, InvalidData1)
 
 
     App* app = new App(new XmlParser(), nullptr);
-    EXPECT_TRUE(app->isProperlyInitialized());
+    ASSERT_TRUE(app->isProperlyInitialized());
     app->parseFile("./test-files/InvalidData1.xml", errLog);
 
     //Test room #1
@@ -181,13 +182,13 @@ TEST_F(TestParseFile, InvalidData2)
 
     //Test room #1
     Room* room = app->getRoom(room1);
-    EXPECT_NE(nullptr, room);
+    ASSERT_NE(nullptr, room);
     EXPECT_EQ("M.G.025", room->toString());
     EXPECT_EQ(25u, room->getCapacity());
 
     //Test room #2
     room = app->getRoom(room2);
-    EXPECT_NE(nullptr, room);
+    ASSERT_NE(nullptr, room);
     EXPECT_EQ("G.T.123", room->toString());
     EXPECT_EQ(100u, room->getCapacity());
 
@@ -196,17 +197,17 @@ TEST_F(TestParseFile, InvalidData2)
 
     //Test meeting #1
     Meeting* meeting = app->getMeetingById(meeting1);
-    EXPECT_NE(nullptr, meeting);
+    ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Movie Marathon", meeting->toString());
     EXPECT_EQ(room1, meeting->getRoom()->getId());
-    EXPECT_EQ(Date(2026, 6, 13), meeting->getDate());
+    EXPECT_EQ(DateTime(2026, 6, 13, 0), meeting->getDateTime());
 
     //Test meeting #2
     meeting = app->getMeetingById(meeting2);
-    EXPECT_NE(nullptr, meeting);
+    ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Very important meeting", meeting->toString());
     EXPECT_EQ(room2, meeting->getRoom()->getId());
-    EXPECT_EQ(Date(2026, 6, 13), meeting->getDate());
+    EXPECT_EQ(DateTime(2026, 6, 13, 0), meeting->getDateTime());
 
     //Test meeting #3
     meeting = app->getMeetingById(meeting3);
@@ -214,6 +215,8 @@ TEST_F(TestParseFile, InvalidData2)
     EXPECT_EQ(size_t(2), app->getMeetingRegistry().getRawIdMap().size());
 
     //Test errors
+    ASSERT_TRUE(file_exists(actual));
+    ASSERT_TRUE(file_exists(expected));
     EXPECT_TRUE(file_compare(actual, expected));
 
     delete app;

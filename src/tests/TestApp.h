@@ -17,8 +17,8 @@ TEST_F(TestApp, HappyDay1)
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    Date date1 = Date(2026, 1, 2);
-    Date date2 = Date(2026, 3, 4);
+    DateTime date1 = DateTime(2026, 1, 2, 0);
+    DateTime date2 = DateTime(2026, 3, 4, 0);
 
     Room* room1 = new Room("Room 1", "r1", 20);
     Room* room2 = new Room("Room 2", "r2", 20);

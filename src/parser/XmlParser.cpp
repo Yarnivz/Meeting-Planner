@@ -173,13 +173,14 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
         else if (objectElementType == "MEETING")
         {
             //== string properties from child XML elements
-            std::string label, identifier, room, date_string;
+            std::string label, identifier, room, date_string, hour_string;
 
             //== booleans indicating whether the above properties were already found
             bool found_label = false;
             bool found_id = false;
             bool found_room = false;
             bool found_datestring = false;
+            bool found_hourstring = false;
 
 
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
@@ -247,6 +248,19 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     found_datestring = true;
                     date_string = propertyElementContents;
                 }
+                else if (propertyElementType == "HOUR")
+                {
+                    //> Check if we already encountered another <HOUR> tag.
+                    //  Which would mean multiple <HOUR> tags are present => ERROR
+                    if (found_hourstring)
+                    {
+                        errorStream << "MEETING element cant have more than one HOUR property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_hourstring = true;
+                    hour_string = propertyElementContents;
+                }
             }
 
 
@@ -269,6 +283,11 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             if (!found_datestring)
             {
                 errorStream << "MEETING must have a DATE property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_hourstring)
+            {
+                errorStream << "MEETING must have an HOUR property" << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -294,8 +313,8 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 goto continue_to_next_object_element;
             }
 
-            //TODO: datetime
-            int day, month, year;
+
+            int day, month, year, hour;
 
             //> Try to parse date
             try
@@ -322,6 +341,24 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 goto continue_to_next_object_element;;
             }
 
+            try
+            {
+                hour = std::stoi(hour_string);
+            }
+            catch (std::exception& except)
+            {
+                errorStream << "MEETING \'" << identifier << "\': "
+                    "Hour value could not be converted to an integer: \n\t- " << except.what() << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+            if (hour < 0 || hour > 23)
+            {
+                errorStream << "MEETING \'" << identifier << "\': Hour must be non-negative and smaller than 24, not " << hour << "." << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+
 
             //> Add meeting if all checks passed
             parsed_meetings.push_back(
@@ -329,7 +366,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     .label = std::move(label),
                     .id = std::move(identifier),
                     .room_id = std::move(room),
-                    .date_time = Date(year, month, day),
+                    .date_time = DateTime(year, month, day, hour),
                 }
             );
 

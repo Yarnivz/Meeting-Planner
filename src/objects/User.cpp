@@ -38,9 +38,9 @@ Meeting* User::getMeetingById(const std::string& meetingId)
     return meetings.getById(meetingId);
 }
 
-std::list<Meeting*>& User::getMeetingByDate(const Date& meetingDate)
+std::list<Meeting*>& User::getMeetingByDateTime(const DateTime& meetingDateTime)
 {
-    return meetings.getByDate(meetingDate);
+    return meetings.getByDateTime(meetingDateTime);
 }
 
 

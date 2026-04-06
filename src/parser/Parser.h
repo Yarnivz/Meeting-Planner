@@ -8,12 +8,12 @@
 #include <ostream>
 #include <string>
 
-#include "objects/Date.h"
+#include "objects/DateTime.h"
 
 struct MeetingElement
 {
     std::string label, id, room_id;
-    Date date_time;
+    DateTime date_time;
 };
 
 struct RoomElement

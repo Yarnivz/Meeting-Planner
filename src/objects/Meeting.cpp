@@ -7,12 +7,12 @@
 #include "objects/User.h"
 
 
-Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const Date& date)
-    : label(label), id(id), room(room), date(date)
+Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time)
+    : label(label), id(id), room(room), date_time(date_time)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
-    REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
+    REQUIRE(date_time.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
     this->state = UNPROCESSED;
     this->order = 0;
@@ -37,10 +37,10 @@ Room* Meeting::getRoom() const
     return room;
 }
 
-const Date& Meeting::getDate() const
+const DateTime& Meeting::getDateTime() const
 {
     REQUIRE(isProperlyInitialized(), "Failed to get date. Meeting has to be properly initialized with the constructor.");
-    return date;
+    return date_time;
 }
 
 

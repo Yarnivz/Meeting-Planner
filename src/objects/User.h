@@ -31,7 +31,7 @@ public:
 
     void addMeeting(Meeting* m);
     Meeting* getMeetingById(const std::string& meetingId);
-    std::list<Meeting*>& getMeetingByDate(const Date& meetingDate);
+    std::list<Meeting*>& getMeetingByDateTime(const DateTime& meetingDateTime);
 
 private:
     void _addMeeting(Meeting* meeting);
