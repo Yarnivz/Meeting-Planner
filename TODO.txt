@@ -2,19 +2,31 @@ Ishaak:
 - more ENSURES (in setters)
 - make sure all functions have contracts
 - copy contracts to documentation
+=> Almost Finished
 
-- tracken kamerbezitneming
-- online meetings implementeren + simulere
+- online meetings implementeren + simuleren
+- create tests for Campus & Building classes
+- update test for Room (TestRoom.h) to include Campus & Building attributes
 
 Yarni:
-- buildings
+- buildings (in progress)
 - renovations
 - simulate renovations
+- update Parser Test to implement new classes
 
 - output class
 
 Lucas:
-O refactor code (see TO DO's), (meeting status, etc.)
+- refactor code (see TO DO's), (meeting status, etc.)
     NOTE: SEPERATE BRANCH!
-O DateTime (per hour)
-O External participants
+    REFACTOR TASKS:
+    - Change ids to pointers instead (Note: change function names)
+    - Replace Participations class into User class
+    - Add participations vector to User and Meeting objects
+    - Refactor data objects in Parser (Use Structs)
+    AFTER MERGE:
+    - Refactor getMeetingsByRoom
+    - Adjust isRoomOccupied to include time checks
+(in progress)
+
+- External participants
