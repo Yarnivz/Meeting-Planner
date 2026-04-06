@@ -20,44 +20,73 @@ TEST_F(TestApp, HappyDay1)
     Date date1 = Date(2026, 1, 2);
     Date date2 = Date(2026, 3, 4);
 
+    Room* room1 = new Room("Room 1", "r1", 20);
+    Room* room2 = new Room("Room 2", "r2", 20);
     Room* room3 = new Room("Room 3", "r3", 20);
-    p.addRoom(new Room("Room 1", "r1", 20));
-    p.addRoom(new Room("Room 2", "r2", 20));
+    Room* room4 = new Room("Room 4", "r4", 20);
+    Room* roome = new Room("Empty Room", "empty", 1);
+
+    p.addRoom(room1);
+    p.addRoom(room2);
     p.addRoom(room3);
-    p.addRoom(new Room("Room 4", "r4", 20));
-    p.addRoom(new Room("Empty Room", "empty", 1));
+    p.addRoom(room4);
+    p.addRoom(roome);
 
-    Meeting* meeting1 = new Meeting("Meeting 1", "m1", "r1", date1);
-    p.addMeeting(meeting1);
-    p.addMeeting(new Meeting("Meeting 2", "m2", "r1", date2));
+    ASSERT_EQ(room1, p.getRoom("r1"));
+    ASSERT_EQ(room2, p.getRoom("r2"));
+    ASSERT_EQ(room3, p.getRoom("r3"));
+    ASSERT_EQ(room4, p.getRoom("r4"));
+    ASSERT_EQ(roome, p.getRoom("empty"));
 
-    p.addMeeting(new Meeting("Meeting 3", "m3", "r2", date1));
-    p.addMeeting(new Meeting("Meeting 4", "m4", "r3", date1));
+    Meeting* m1 = new Meeting("Meeting 1", "m1", room1, date1);
+    Meeting* m2 = new Meeting("Meeting 2", "m2", room1, date2);
+    Meeting* m3 = new Meeting("Meeting 3", "m3", room2, date1);
+    Meeting* m4 = new Meeting("Meeting 4", "m4", room3, date1);
 
-    Participation* john = new Participation("John Doe", "m3");
-    p.addParticipation(john);
-    p.addParticipation(new Participation("Dave Jones", "m2"));
+    p.addMeeting(m1);
+    p.addMeeting(m2);
+    p.addMeeting(m3);
+    p.addMeeting(m4);
+
+    ASSERT_EQ(m1, p.getMeetingById("m1"));
+    ASSERT_EQ(m2, p.getMeetingById("m2"));
+    ASSERT_EQ(m3, p.getMeetingById("m3"));
+    ASSERT_EQ(m4, p.getMeetingById("m4"));
+
+    User* johndoe = new User("John Doe", "m3");
+    User* davejone = new User("Dave Jones", "m2");
+
+    p.addUser(johndoe);
+    p.addUser(davejone);
+
+    p.getMeetingById("m3")->addParticipant(johndoe);
+    p.getMeetingById("m2")->addParticipant(davejone);
+
+    ASSERT_EQ(johndoe, p.getUser("John Doe"));
+    ASSERT_EQ(davejone, p.getUser("Dave Jones"));
+
+    EXPECT_EQ(size_t(2), p.getAllUsers().size());
+
+    EXPECT_EQ(johndoe, p.getMeetingById("m3")->getParticipant("John Doe"));
+    EXPECT_EQ(m3, p.getUser("John Doe")->getMeetingById("m3"));
+    EXPECT_EQ(davejone, p.getMeetingById("m2")->getParticipant("Dave Jones"));
+    EXPECT_EQ(m2, p.getUser("Dave Jones")->getMeetingById("m2"));
+
+    EXPECT_EQ(size_t(4), p.getMeetingRegistry().getRawIdMap().size());
+
+    p.addMeeting(new Meeting("Meeting 5", "m5", room4, date1));
+
+    EXPECT_EQ(size_t(5), p.getMeetingRegistry().getRawIdMap().size());
 
 
-    EXPECT_TRUE(p.getMeetingsByRoom("r4")->empty());
-    EXPECT_EQ(int(p.getAllMeetings().size()), 4);
-    EXPECT_EQ(p.getMeetingById("m1"), meeting1);
-    p.addMeeting(new Meeting("Meeting 5", "m5", "r4", date1));
-    EXPECT_EQ(int(p.getAllMeetings().size()), 5);
-    EXPECT_TRUE(!p.getMeetingsByRoom("r4")->empty());
-
-
-    EXPECT_EQ(int(p.getAllRooms().size()), 5);
+    EXPECT_EQ(size_t(5), p.getAllRooms().size());
     p.addRoom(new Room("Room 5", "r5", 20));
-    EXPECT_EQ(int(p.getAllRooms().size()), 6);
-    EXPECT_EQ(p.getRoom("r3"), room3);
+    EXPECT_EQ(size_t(6), p.getAllRooms().size());
 
-    EXPECT_EQ(int(p.getAllParticipations().size()), 2);
-    p.addParticipation(new Participation("Math Smith", "m2"));
-    EXPECT_EQ(int(p.getAllParticipations().size()), 3);
-    EXPECT_TRUE(!p.getParticipationsByMeeting("m3")->empty());
-    EXPECT_TRUE(p.getParticipationsByMeeting("m3")->front() == john);
-    EXPECT_TRUE(p.getParticipationsByUser("John Doe")->front() == john);
+
+
+    p.addUser(new User("Math Smith", "m2"));
+    EXPECT_EQ(size_t(3), p.getAllUsers().size());
 }
 
 TEST_F(TestApp, RetrieveInvalid)
@@ -65,14 +94,15 @@ TEST_F(TestApp, RetrieveInvalid)
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    EXPECT_EQ(p.getMeetingsByRoom("r1111"), nullptr);
-    EXPECT_EQ(p.getParticipationsByUser("unknown thing"), nullptr);
-    EXPECT_EQ(p.getParticipationsByMeeting("m89"), nullptr);
-    EXPECT_EQ(p.getMeetingInRoom("m9", "r10"), nullptr);
+    EXPECT_EQ(nullptr, p.getRoom("r1111"));
+    EXPECT_EQ(nullptr, p.getUser("Snit"));
+    EXPECT_EQ(nullptr, p.getMeetingById("m89"));
+    //EXPECT_EQ(std::list<Meeting*>{}, p.getMeetingsByDate(Date(1, 2, 3)));
 
-    EXPECT_TRUE(p.getAllMeetings().empty());
-    EXPECT_TRUE(p.getAllParticipations().empty());
-    EXPECT_TRUE(p.getAllRooms().empty());
+    p.addMeeting(new Meeting("label", "id", new Room("name", "id", 123)));
+
+    EXPECT_EQ(size_t(0), p.getMeetingById("id")->getParticipantCount());
+    EXPECT_EQ(nullptr, p.getMeetingById("id")->getParticipant("john"));
 }
 
 

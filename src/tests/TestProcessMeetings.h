@@ -19,13 +19,18 @@ TEST_F(ProcessMeetingsTest, HappyDay)
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    p.addRoom(new Room("M.G.025", "MG025", 40));
-    p.addRoom(new Room("G.T.103", "GT103", 100));
+    Room* mg025 = new Room("M.G.025", "MG025", 40);
+    Room* gt103 = new Room("G.T.103", "GT103", 40);
 
-    Meeting* m1 = new Meeting("Important Meeting", "M1", "MG025", Date(2026, 1, 1));
-    Meeting* m2 = new Meeting("Important Meeting 2", "M2", "GT103", Date(2026, 1, 1));
-    Meeting* m3 = new Meeting("Conflict", "M3", "MG025", Date(2026, 1, 1));
-    Meeting* m4 = new Meeting("Conflict 2", "M4", "GT103", Date(2026, 1, 1));
+    p.addRoom(mg025);
+    p.addRoom(gt103);
+    ASSERT_EQ(mg025, p.getRoom("MG025"));
+    ASSERT_EQ(gt103, p.getRoom("GT103"));
+
+    Meeting* m1 = new Meeting("Important Meeting", "M1", mg025, Date(2026, 1, 1));
+    Meeting* m2 = new Meeting("Important Meeting 2", "M2", gt103, Date(2026, 1, 1));
+    Meeting* m3 = new Meeting("Conflict", "M3", mg025, Date(2026, 1, 1));
+    Meeting* m4 = new Meeting("Conflict 2", "M4", gt103, Date(2026, 1, 1));
     p.addMeeting(m1);
     p.addMeeting(m2);
     p.addMeeting(m3);
@@ -68,11 +73,11 @@ TEST_F(ProcessMeetingsTest, Conflicts)
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    const std::string r1 = "MG025";
-    const std::string r2 = "GT103";
+    Room* r1 = new Room("M.G.025", "MG025", 40);
+    Room* r2 = new Room("G.T.103", "GT103", 100);
 
-    p.addRoom(new Room("M.G.025", r1, 40));
-    p.addRoom(new Room("G.T.103", r2, 100));
+    p.addRoom(r1);
+    p.addRoom(r2);
 
     const Date d1 = Date(2026, 1, 1);
     const Date d2 = Date(2026, 3, 3);
@@ -150,14 +155,17 @@ TEST_F(ProcessMeetingsTest, Order)
     App p = App(nullptr, nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    p.addRoom(new Room("M.G.025", "MG025", 40));
+    Room* r1 = new Room("M.G.025", "MG025", 40);
 
-    Meeting* m1 = new Meeting("Important Meeting", "M1", "MG025", Date(2026, 1, 1));
-    Meeting* m2 = new Meeting("Importanter Meeting", "M2", "MG025", Date(2026, 1, 1));
-    Meeting* m3 = new Meeting("Importantest Meeting", "M3", "MG025", Date(2026, 1, 1));
+    p.addRoom(r1);
+    ASSERT_EQ(r1, p.getRoom("MG025"));
+
+    Meeting* m1 = new Meeting("Important Meeting", "M1", r1, Date(2026, 1, 1));
+    Meeting* m2 = new Meeting("Importanter Meeting", "M2", r1, Date(2026, 1, 1));
+    Meeting* m3 = new Meeting("Importantest Meeting", "M3", r1, Date(2026, 1, 1));
     m1->setOrder(100);
-    m2->setOrder(0);
-    m3->setOrder(-2);
+    m2->setOrder(23);
+    m3->setOrder(1);
 
     p.addMeeting(m3);
     p.addMeeting(m1);
@@ -198,6 +206,13 @@ TEST_F(ProcessMeetingsTest, ParseOrder)
     ASSERT_NE(nullptr, b2);
     ASSERT_NE(nullptr, b3);
 
+    ASSERT_EQ(a1->getOrder(), 1);
+    ASSERT_EQ(a2->getOrder(), 2);
+    ASSERT_EQ(a3->getOrder(), 3);
+    ASSERT_EQ(b1->getOrder(), 4);
+    ASSERT_EQ(b2->getOrder(), 5);
+    ASSERT_EQ(b3->getOrder(), 6);
+
     p.processAllMeetings(false);
 
 
@@ -219,9 +234,10 @@ TEST_F(ProcessMeetingsTest, ContractViolation)
 {
     App p = App(nullptr, nullptr);
 
-    p.addRoom(new Room("r", "r", 20));
+    Room* r = new Room("r", "r", 20);
+    p.addRoom(r); ASSERT_EQ(r, p.getRoom("r"));
 
-    p.addMeeting(new Meeting("m", "m", "r", Date(2026, 1, 1)));
+    p.addMeeting(new Meeting("m", "m", r, Date(2026, 1, 1)));
 
     //double use
     EXPECT_NO_FATAL_FAILURE(p.processSingleMeeting("m", false));

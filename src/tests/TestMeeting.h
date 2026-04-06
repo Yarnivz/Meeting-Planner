@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 
 #include "objects/Meeting.h"
+#include "objects/Room.h"
 
 class TestMeeting : public ::testing::Test
 {
@@ -15,12 +16,13 @@ protected:
 
 TEST_F(TestMeeting, HappyDay)
 {
-    Meeting meeting = Meeting("My Meeting", "meeting0", "some_room", Date(2025, 2, 2));
+    Room r = Room("label", "some_room", 123);
+    Meeting meeting = Meeting("My Meeting", "meeting0", &r, Date(2025, 2, 2));
 
     EXPECT_TRUE(meeting.isProperlyInitialized());
     EXPECT_EQ("My Meeting", meeting.toString());
     EXPECT_EQ("meeting0", meeting.getId());
-    EXPECT_EQ("some_room", meeting.getRoomId());
+    EXPECT_EQ(&r, meeting.getRoom());
 
     Date d = meeting.getDate();
 
@@ -33,6 +35,6 @@ TEST_F(TestMeeting, HappyDay)
 
 TEST_F(TestMeeting, ContractViolation)
 {
-    EXPECT_DEATH(Meeting("hello", "", "my_room", Date()), "");
-    EXPECT_DEATH(Meeting("world", "some_id", "", Date()), "");
+    EXPECT_DEATH(Meeting("hello", "", nullptr, Date()), "");
+    EXPECT_DEATH(Meeting("world", "some_id", nullptr, Date()), "");
 }

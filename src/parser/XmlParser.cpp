@@ -330,7 +330,6 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     .id = std::move(identifier),
                     .room_id = std::move(room),
                     .date_time = Date(year, month, day),
-                    .order = (int)parsed_meetings.size() + 1
                 }
             );
 

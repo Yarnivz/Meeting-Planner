@@ -14,7 +14,6 @@ struct MeetingElement
 {
     std::string label, id, room_id;
     Date date_time;
-    int order;
 };
 
 struct RoomElement

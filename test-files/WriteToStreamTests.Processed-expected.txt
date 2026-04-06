@@ -6,7 +6,7 @@ Past meetings:
   Meeting ID: m2
 - M.G.025, Friday 12/12/2025
   Important Meeting 1
-  John Doe, Peter Selie, Jane Doe
+  Jane Doe, John Doe, Peter Selie
   Meeting ID: m1
 
 Conflicts:

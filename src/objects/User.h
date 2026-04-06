@@ -13,7 +13,10 @@ class Date;
 
 
 class User {
+    friend class Meeting;
+
 public:
+
     User(const std::string& name, bool external = false);
     ~User() = default;
 
@@ -28,9 +31,11 @@ public:
 
     void addMeeting(Meeting* m);
     Meeting* getMeetingById(const std::string& meetingId);
-    Meeting* getMeetingByDate(const Date& meetingDate);
+    std::list<Meeting*>& getMeetingByDate(const Date& meetingDate);
 
 private:
+    void _addMeeting(Meeting* meeting);
+
     std::string name;
     bool external;
 

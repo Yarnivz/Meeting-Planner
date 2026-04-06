@@ -15,6 +15,8 @@ class Room;
 
 class Meeting
 {
+    friend class User;
+
 public:
     /**
      * @brief Creates the Meeting class.
@@ -124,6 +126,8 @@ public:
     const Users& getParticipants() const;
 
 private:
+    void _addParticipant(User* user);
+
     using State = enum { UNPROCESSED, PROCESSED, CANCELLED };
     std::string label;
     std::string id;

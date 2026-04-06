@@ -2,7 +2,6 @@
 #include "tests/TestDate.h"
 #include "tests/TestDateTime.h"
 #include "tests/TestMeeting.h"
-#include "tests/TestParticipation.h"
 #include "tests/TestRoom.h"
 #include "tests/TestParseFile.h"
 #include "tests/TestWriteToStream.h"

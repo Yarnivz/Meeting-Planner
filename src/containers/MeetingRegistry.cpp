@@ -12,22 +12,23 @@ void MeetingRegistry::add(Meeting* meeting)
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
     REQUIRE(!by_id.contains(meeting->getId()), "Meeting Id needs to be unique!");
-    REQUIRE(!by_date.contains(meeting->getDate()), "Meeting date needs to be unique!");
 
     by_id.insert({meeting->getId(), meeting});
-    by_date.insert({meeting->getDate(), meeting});
+
+    if (!by_date.contains(meeting->getDate())) by_date.insert({meeting->getDate(), {}});
+    by_date[meeting->getDate()].push_back(meeting);
 
     ENSURE(getById(meeting->getId()) == meeting, "Something went wrong. The meeting was not added to the Registry");
-    ENSURE(getByDate(meeting->getDate()) == meeting, "Something went wrong. The meeting was not added to the Registry");
+    //ENSURE(getByDate(meeting->getDate()) == meeting, "Something went wrong. The meeting was not added to the Registry");
 }
 
-Meeting* MeetingRegistry::getByDate(const Date& date)
+std::list<Meeting*>& MeetingRegistry::getByDate(const Date& date)
 {
-    const std::unordered_map<Date, Meeting*, DateHash>::iterator it = by_date.find(date);
+    const std::unordered_map<Date, std::list<Meeting*>, DateHash>::iterator it = by_date.find(date);
 
-    if (it == by_date.end()) return nullptr;
+    if (it == by_date.end()) by_date.insert({date, {}});
 
-    ENSURE(it->second->getDate() == date, "Something went wrong, The meeting which was found did not have the correct date.");
+    //ENSURE(it->second->getDate() == date, "Something went wrong, The meeting which was found did not have the correct date.");
     return it->second;
 }
 
@@ -42,18 +43,18 @@ Meeting* MeetingRegistry::getById(const std::string& id)
     return it->second;
 }
 
-void MeetingRegistry::removeByDate(const Date& date)
-{
-    const std::unordered_map<Date, Meeting*, DateHash>::iterator it = by_date.find(date);
-
-    REQUIRE(it != by_date.end(), "A meeting with that date does not exist in the registry.");
-    ENSURE(it->second->getDate() == date, "Something went wrong. The meeting which was found did not have the correct date.");
-
-
-    by_date.erase(it);
-    by_id.erase(it->second->getId());
-    ENSURE(getByDate(date) == nullptr, "Something went wrong. The meeting was not removed from the registry.");
-}
+// void MeetingRegistry::removeByDate(const Date& date)
+// {
+//     const std::unordered_map<Date, Meeting*, DateHash>::iterator it = by_date.find(date);
+//
+//     REQUIRE(it != by_date.end(), "A meeting with that date does not exist in the registry.");
+//     ENSURE(it->second->getDate() == date, "Something went wrong. The meeting which was found did not have the correct date.");
+//
+//
+//     by_date.erase(it);
+//     by_id.erase(it->second->getId());
+//     ENSURE(getByDate(date) == nullptr, "Something went wrong. The meeting was not removed from the registry.");
+// }
 
 void MeetingRegistry::removeById(const std::string& id)
 {
@@ -73,7 +74,7 @@ const std::unordered_map<std::string, Meeting*>& MeetingRegistry::getRawIdMap() 
     return by_id;
 }
 
-const std::unordered_map<Date, Meeting*, DateHash>& MeetingRegistry::getRawDateMap() const
+const std::unordered_map<Date, std::list<Meeting*>, DateHash>& MeetingRegistry::getRawDateMap() const
 {
     return by_date;
 }

@@ -43,16 +43,13 @@ TEST_F(TestParseFile, HappyDay1)
     Meeting* meeting = app->getMeetingById(meeting_id);
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Weekly meeting", meeting->toString());
-    EXPECT_EQ("Room98732", meeting->getRoomId());
+    EXPECT_EQ("Room98732", meeting->getRoom()->getId());
     EXPECT_EQ(Date(2026, 5, 22), meeting->getDate());
 
     //Test participation
-    const Participations* participationsByMeeting = app->getParticipationsByMeeting(meeting_id);
-    const Participations* participationsByUser = app->getParticipationsByUser("Peter Selie");
-    ASSERT_NE(nullptr, participationsByMeeting);
-    ASSERT_NE(nullptr, participationsByUser);
-    EXPECT_EQ(1u, participationsByMeeting->size());
-    EXPECT_EQ(1u, participationsByUser->size());
+    const User* peter = app->getUser("Peter Selie");
+    ASSERT_NE(nullptr, peter);
+    EXPECT_EQ("Peter Selie", peter->getId());
 
     delete app;
 }
@@ -92,45 +89,27 @@ TEST_F(TestParseFile, HappyDay2)
     Meeting* meeting = app->getMeetingById(meeting1);
     ASSERT_NE(nullptr, meeting);
     EXPECT_EQ("Weekly Meeting", meeting->toString());
-    EXPECT_EQ("Aula23", meeting->getRoomId());
+    ASSERT_NE(nullptr, meeting->getRoom());
+    EXPECT_EQ("Aula23", meeting->getRoom()->getId());
     EXPECT_EQ(Date(2026, 5, 22), meeting->getDate());
 
     //Test meeting #2
     meeting = app->getMeetingById(meeting2);
     ASSERT_NE(nullptr, meeting);
-    EXPECT_EQ(meeting->toString(), "Sales Report 2025");
-    EXPECT_EQ(meeting->getRoomId(), "Room98732");
+    EXPECT_EQ("Sales Report 2025", meeting->toString());
+    EXPECT_EQ("Room98732", meeting->getRoom()->getId());
     EXPECT_EQ(Date(2026, 1, 3), meeting->getDate());
 
     //Test participations meeting #1
-    Participations* p = app->getParticipationsByMeeting(meeting1);
-    ASSERT_NE(nullptr, p);
-    EXPECT_EQ(3u, p->size());
+    ASSERT_NE(nullptr, app->getUser("Peter Selie"));
+    ASSERT_NE(nullptr, app->getUser("John Cena"));
+    ASSERT_NE(nullptr, app->getUser("Arnold Schwarzenegger"));
+    ASSERT_NE(nullptr, app->getUser("Mick Turner"));
 
-    //Length Test participations meeting #2
-    p = app->getParticipationsByMeeting(meeting2);
-    ASSERT_NE(nullptr, p);
-    EXPECT_EQ(1u, p->size());
-
-    //Value Test participations user #1
-    p = app->getParticipationsByUser("Peter Selie");
-    ASSERT_NE(nullptr, p);
-    EXPECT_EQ(meeting1, p->back()->getMeetingId());
-
-    //Value Test participations user #2
-    p = app->getParticipationsByUser("John Cena");
-    ASSERT_NE(nullptr, p);
-    EXPECT_EQ(meeting1, p->back()->getMeetingId());
-
-    //Value Test participations user #3
-    p = app->getParticipationsByUser("Arnold Schwarzenegger");
-    ASSERT_NE(nullptr, p);
-    EXPECT_EQ(meeting1, p->back()->getMeetingId());
-
-    //Value Test participations user #4
-    p = app->getParticipationsByUser("Mick Turner");
-    ASSERT_NE(nullptr, p);
-    EXPECT_EQ(meeting2, p->back()->getMeetingId());
+    EXPECT_NE(nullptr, app->getMeetingById("Meeting_478463")->getParticipant("Peter Selie"));
+    EXPECT_NE(nullptr, app->getMeetingById("Meeting_478463")->getParticipant("John Cena"));
+    EXPECT_NE(nullptr, app->getMeetingById("Meeting_478463")->getParticipant("Arnold Schwarzenegger"));
+    EXPECT_NE(nullptr, app->getMeetingById("Meeting_465831")->getParticipant("Mick Turner"));
 
     delete app;
 }
@@ -170,7 +149,7 @@ TEST_F(TestParseFile, InvalidData1)
     EXPECT_EQ(nullptr, meeting);
 
     //Test participation
-    Participations* p = app->getParticipationsByUser(user);
+    User* p = app->getUser(user);
     EXPECT_EQ(nullptr, p);
 
     //Test errors
@@ -219,26 +198,20 @@ TEST_F(TestParseFile, InvalidData2)
     Meeting* meeting = app->getMeetingById(meeting1);
     EXPECT_NE(nullptr, meeting);
     EXPECT_EQ("Movie Marathon", meeting->toString());
-    EXPECT_EQ(room1, meeting->getRoomId());
+    EXPECT_EQ(room1, meeting->getRoom()->getId());
     EXPECT_EQ(Date(2026, 6, 13), meeting->getDate());
 
     //Test meeting #2
     meeting = app->getMeetingById(meeting2);
     EXPECT_NE(nullptr, meeting);
     EXPECT_EQ("Very important meeting", meeting->toString());
-    EXPECT_EQ(room2, meeting->getRoomId());
+    EXPECT_EQ(room2, meeting->getRoom()->getId());
     EXPECT_EQ(Date(2026, 6, 13), meeting->getDate());
 
     //Test meeting #3
     meeting = app->getMeetingById(meeting3);
     EXPECT_EQ(nullptr, meeting);
-    EXPECT_EQ(2u, app->getAllMeetings().size());
-
-    //Test participations
-    Participations p = app->getAllParticipations();
-    EXPECT_EQ(1u, p.size());
-    EXPECT_EQ(meeting1, p.back()->getMeetingId());
-    EXPECT_EQ(user1, p.back()->getUser());
+    EXPECT_EQ(size_t(2), app->getMeetingRegistry().getRawIdMap().size());
 
     //Test errors
     EXPECT_TRUE(file_compare(actual, expected));

@@ -125,7 +125,7 @@ public:
      * @return a pointer to the meeting; nullptr if the meeting was not found.
      */
     Meeting* getMeetingById(const std::string& meetingId);
-    Meeting* getMeetingByDate(const Date& meetingDate);
+    std::list<Meeting*>& getMeetingsByDate(const Date& meetingDate);
 
     const MeetingRegistry& getMeetingRegistry() const;
 
@@ -134,6 +134,8 @@ public:
     User* getUser(const std::string& userId);
     const Users& getAllUsers() const;
 
+
+    void addUserToMeeting(const std::string& userId, const std::string& meetingId);
 
     /**
      * @brief Check if the user with given id is occupied by another meeting, on the given date.
@@ -166,6 +168,7 @@ public:
      * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
      */
     void processSingleMeeting(const std::string& meetingId, bool verbose = true);
+
     /**
      * @brief Checks all planned meeting entries for conflicting rooms/dates.
      *

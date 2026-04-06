@@ -59,7 +59,7 @@ int Meeting::getOrder() const
 
 void Meeting::setOrder(const int orderAdded)
 {
-    REQUIRE(orderAdded >= 0, "cannot set order to a negative value");
+    REQUIRE(orderAdded >= 0, "cannot set order to a negative value %d", orderAdded);
     order = orderAdded;
     ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value");
 }
@@ -104,12 +104,8 @@ Meeting::~Meeting() = default;
 
 void Meeting::addParticipant(User* user)
 {
-    REQUIRE(user != nullptr, "User can not be null");
-    REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
-
-    participants.insert({user->getId(), user});
-
-    REQUIRE(getParticipant(user->getId()) == user, "Something went wrong. User was not added.");
+    this->_addParticipant(user);
+    user->_addMeeting(this);
 }
 
 User* Meeting::getParticipant(const std::string& userId)
@@ -130,4 +126,14 @@ size_t Meeting::getParticipantCount() const
 const Users& Meeting::getParticipants() const
 {
     return participants;
+}
+
+void Meeting::_addParticipant(User* user)
+{
+    REQUIRE(user != nullptr, "User can not be null");
+    REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+
+    participants.insert({user->getId(), user});
+
+    REQUIRE(getParticipant(user->getId()) == user, "Something went wrong. User was not added.");
 }

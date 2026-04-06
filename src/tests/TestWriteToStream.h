@@ -28,23 +28,40 @@ TEST_F(TestWriteToStream, HappyDay1)
     Date date1 = Date(2026, 1, 2);
     Date date2 = Date(2026, 3, 4);
 
-    p.addRoom(new Room("Room 1", "r1", 20));
-    p.addRoom(new Room("Room 2", "r2", 20));
-    p.addRoom(new Room("Empty Room", "empty", 1));
+    Room* r1,*r2,*r3;
+    p.addRoom(r1 = new Room("Room 1", "r1", 20));
+    p.addRoom(r2 = new Room("Room 2", "r2", 20));
+    p.addRoom(r3 = new Room("Empty Room", "empty", 1));
 
-    p.addMeeting(new Meeting("Meeting 1", "m1", "r1", date1));
-    p.addMeeting(new Meeting("Meeting 2", "m2", "r1", date2));
+    ASSERT_EQ(r1, p.getRoom("r1"));
+    ASSERT_EQ(r2, p.getRoom("r2"));
+    ASSERT_EQ(r3, p.getRoom("empty"));
 
-    p.addMeeting(new Meeting("Meeting 3", "m3", "r2", date1));
-    p.addMeeting(new Meeting("Meeting 4", "m4", "r2", date1));
+    Meeting* m1,*m2,*m3,*m4;
+    p.addMeeting(m1 = new Meeting("Meeting 1", "m1", r1, date1));
+    p.addMeeting(m2 = new Meeting("Meeting 2", "m2", r1, date2));
+    p.addMeeting(m3 = new Meeting("Meeting 3", "m3", r2, date1));
+    p.addMeeting(m4 = new Meeting("Meeting 4", "m4", r2, date1));
 
-    p.addParticipation(new Participation("John Doe", "m3"));
-    p.addParticipation(new Participation("Peter Selie", "m1"));
+    ASSERT_EQ(m1, p.getMeetingById("m1"));
+    ASSERT_EQ(m2, p.getMeetingById("m2"));
+    ASSERT_EQ(m3, p.getMeetingById("m3"));
+    ASSERT_EQ(m4, p.getMeetingById("m4"));
+
+    User* u1 = new User("John Doe");
+    User* u2 = new User("Peter Selie");
+    p.addUser(u1);
+    p.addUser(u2);
+    ASSERT_EQ(u1, p.getUser("John Doe"));
+    ASSERT_EQ(u2, p.getUser("Peter Selie"));
+
+    m3->addParticipant(u1);
+    m1->addParticipant(u2);
 
     p.writeToStream();
 
-    EXPECT_TRUE(file_exists(actual));
-    EXPECT_TRUE(file_exists(expected));
+    ASSERT_TRUE(file_exists(actual));
+    ASSERT_TRUE(file_exists(expected));
 
     EXPECT_TRUE(file_compare(actual, expected));
 }
@@ -61,20 +78,33 @@ TEST_F(TestWriteToStream, HappyDay2)
     Date date1 = Date(2025, 12, 12);
     Date date2 = Date(2026, 1, 1);
 
-    p.addRoom(new Room("M.G.025", "MG025", 20));
-    p.addRoom(new Room("G.T.103", "GT103", 20));
+    Room *r1, *r2;
+    p.addRoom(r1= new Room("M.G.025", "MG025", 20));
+    p.addRoom(r2= new Room("G.T.103", "GT103", 20));
 
-    p.addMeeting(new Meeting("Important Meeting 1", "m1", "MG025", date1));
-    p.addMeeting(new Meeting("Important Meeting 2", "m2", "MG025", date2));
+    p.addMeeting(new Meeting("Important Meeting 1", "m1", r1, date1));
+    p.addMeeting(new Meeting("Important Meeting 2", "m2", r1, date2));
 
-    p.addParticipation(new Participation("John Doe", "m1"));
-    p.addParticipation(new Participation("Peter Selie", "m1"));
-    p.addParticipation(new Participation("Jane Doe", "m1"));
+    User *jod, *ps, *jad, *a, *b, *c, *d;
+    jod = new User("John Doe");
+    ps = new User("Peter Selie");
+    jad = new User("Jane Doe");
 
-    p.addParticipation(new Participation("Alice", "m2"));
-    p.addParticipation(new Participation("Bob", "m2"));
-    p.addParticipation(new Participation("Charlie", "m2"));
-    p.addParticipation(new Participation("David", "m2"));
+    a = new User("Alice");
+    b = new User("Bob");
+    c = new User("Charlie");
+    d = new User("David");
+
+    p.addUser(jod); p.addUser(ps); p.addUser(jad); p.addUser(a); p.addUser(b); p.addUser(c); p.addUser(d);
+
+    p.addUserToMeeting("John Doe", "m1");
+    p.addUserToMeeting("Peter Selie", "m1");
+    p.addUserToMeeting("Jane Doe", "m1");
+
+    p.addUserToMeeting("Alice", "m2");
+    p.addUserToMeeting("Bob", "m2");
+    p.addUserToMeeting("Charlie", "m2");
+    p.addUserToMeeting("David", "m2");
 
     p.writeToStream();
 
@@ -110,27 +140,37 @@ TEST_F(TestWriteToStream, Processed)
     Date date1 = Date(2025, 12, 12);
     Date date2 = Date(2026, 1, 1);
 
-    p.addRoom(new Room("M.G.025", "MG025", 20));
-    p.addRoom(new Room("G.T.103", "GT103", 20));
+    Room *r1, *r2;
+    p.addRoom(r1 = new Room("M.G.025", "MG025", 20));
+    p.addRoom(r2 = new Room("G.T.103", "GT103", 20));
 
-    Meeting* m1 = new Meeting("Important Meeting 1", "m1", "MG025", date1);
-    Meeting* m2 = new Meeting("Important Meeting 2", "m2", "MG025", date2);
-    Meeting* m3 = new Meeting("Conflict", "m3", "MG025", date1);
+    Meeting* m1 = new Meeting("Important Meeting 1", "m1", r1, date1);
+    Meeting* m2 = new Meeting("Important Meeting 2", "m2", r1, date2);
+    Meeting* m3 = new Meeting("Conflict", "m3", r1, date1);
 
     // Meetings added first get priority
     p.addMeeting(m1);
     p.addMeeting(m2);
     p.addMeeting(m3);
 
-    p.addParticipation(new Participation("John Doe", "m1"));
-    p.addParticipation(new Participation("Peter Selie", "m1"));
-    p.addParticipation(new Participation("Jane Doe", "m1"));
+    User* u1,*u2,*u3,*ua,*ub,*uc,*ud;
+    p.addUser(u1 = new User("John Doe"));
+    p.addUser(u2 = new User("Peter Selie"));
+    p.addUser(u3 = new User("Jane Doe"));
+    p.addUser(ua = new User("Alice"));
+    p.addUser(ub = new User("Bob"));
+    p.addUser(uc = new User("Charlie"));
+    p.addUser(ud = new User("David"));
 
-    p.addParticipation(new Participation("Alice", "m2"));
-    p.addParticipation(new Participation("Bob", "m2"));
+    u1->addMeeting(m1);
+    u2->addMeeting(m1);
+    u3->addMeeting(m1);
 
-    p.addParticipation(new Participation("Charlie", "m3"));
-    p.addParticipation(new Participation("David", "m3"));
+    ua->addMeeting(m2);
+    ub->addMeeting(m2);
+
+    uc->addMeeting(m3);
+    ud->addMeeting(m3);
 
     p.processAllMeetings(false);
 

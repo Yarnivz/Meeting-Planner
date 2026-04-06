@@ -87,8 +87,13 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             addUser(u);
         }
 
+        // Add user to meeting
         m->addParticipant(u);
-        u->addMeeting(m);
+
+        // Vice versa is fine too, but not both.
+        // Either way each object will recieve a pointer to the other
+        // u->addMeeting(m)
+
 
         ENSURE(getUser(p.user) == u, "Something went wrong. User does not exist and wasnt created");
         ENSURE(getMeetingById(p.meeting) == m, "Something went wrong. Meeting wasnt added.");
@@ -233,9 +238,12 @@ bool App::isRoomOccupied(const std::string& roomId, const Date& date)
     const Room* r = getRoom(roomId);
     REQUIRE(r, "This room does not exist.");
 
-    const Meeting* possible_occupation = getMeetingByDate(date);
+    std::list<Meeting*>& possible_occupations = getMeetingsByDate(date);
 
-    if (possible_occupation != nullptr && possible_occupation->isProcessed() && possible_occupation->getRoom() == r) return true;
+    for (Meeting* possible_occupation : possible_occupations)
+    {
+        if (possible_occupation != nullptr && possible_occupation->isProcessed() && possible_occupation->getRoom() == r) return true;
+    }
 
     return false;
 }
@@ -245,9 +253,16 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
     Meeting* m = getMeetingById(meetingId);
     REQUIRE(m, "This meeting doesn't exist.");
 
-    Meeting* possible_conflict = meetings.getByDate(m->getDate());
+    std::list<Meeting*>& possible_conflicts = meetings.getByDate(m->getDate());
 
-    if (possible_conflict->isProcessed() && possible_conflict->getId() != m->getId()) return possible_conflict;
+    for (Meeting* possible_conflict : possible_conflicts)
+    {
+        ENSURE(possible_conflict->getDate() == m->getDate(), "Something went wrong. Looking meetings up by date failed.");
+        if (possible_conflict != m &&
+            possible_conflict->isProcessed() &&
+            possible_conflict->getRoom() == m->getRoom()
+            ) return possible_conflict;
+    }
 
     return nullptr;
 }
@@ -255,6 +270,12 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
 
 void App::addMeeting(Meeting* meeting)
 {
+    if (meeting->getOrder() == 0)
+    {
+        int order = meetings.getRawIdMap().size() + 1;
+        meeting->setOrder(order);
+        //std::cout << "Set order of meeting " << meeting->getId() << "  to " << order << std::endl;
+    }
     meetings.add(meeting);
 }
 
@@ -264,7 +285,7 @@ Meeting* App::getMeetingById(const std::string& meetingId)
     return meetings.getById(meetingId);
 }
 
-Meeting* App::getMeetingByDate(const Date& meetingDate)
+std::list<Meeting*>& App::getMeetingsByDate(const Date& meetingDate)
 {
     return meetings.getByDate(meetingDate);
 }
@@ -302,8 +323,18 @@ const Users& App::getAllUsers() const
     return users;
 }
 
+void App::addUserToMeeting(const std::string& userId, const std::string& meetingId)
+{
+    Meeting* m = getMeetingById(meetingId);
+    User* u = getUser(userId);
+    REQUIRE(m, "This meeting doesn't exist: '%s'", meetingId.c_str());
+    REQUIRE(u, "This user doesn't exist: '%s'", userId.c_str());
 
+    m->addParticipant(u);
 
+    ENSURE(m->getParticipant(userId) == u, "Something went wrong. The participant '%s' was not added to meeting '%s'.", userId.c_str(), meetingId.c_str());
+    ENSURE(u->getMeetingById(meetingId) == m, "Something went wrong. The meeting '%s' was not added to user '%s'.", meetingId.c_str(), userId.c_str());
+}
 
 
 bool App::isUserOccupied(const std::string& userId, const Date& date)
@@ -311,16 +342,22 @@ bool App::isUserOccupied(const std::string& userId, const Date& date)
     const User* u = getUser(userId);
     REQUIRE(u, "This user does not exist.");
 
-    Meeting* possible_occupation = getMeetingByDate(date);
+    std::list<Meeting*>& possible_occupations = getMeetingsByDate(date);
 
-    if (possible_occupation == nullptr || !possible_occupation->isProcessed()) return false;
+    for (Meeting* possible_occupation : possible_occupations)
+    {
+        if (possible_occupation == nullptr || !possible_occupation->isProcessed()) continue;
 
-    const User* has_participant = possible_occupation->getParticipant(userId);
-    REQUIRE(has_participant == nullptr || has_participant == u, "Something went wrong. The user which was found was not correct.");
+        const User* has_participant = possible_occupation->getParticipant(userId);
+        REQUIRE(has_participant == nullptr || has_participant == u, "Something went wrong. The user which was found was not correct.");
 
-    if (has_participant == nullptr) return false;
+        if (has_participant == nullptr) continue;
 
-    return true;
+        return true;
+    }
+
+    return false;
+
 }
 
 
@@ -343,7 +380,7 @@ void App::writeMeeting(std::ostream& onStream, const Meeting* meeting)
     for (Users::const_iterator it = meeting->getParticipants().begin(); it != meeting->getParticipants().end(); ++it)
     {
         const User* participant = it->second;
-        onStream << participant;
+        onStream << participant->getId();
         if (std::next(it) != meeting->getParticipants().end()) onStream << ", ";
     }
     onStream << std::endl;

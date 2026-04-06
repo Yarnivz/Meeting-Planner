@@ -29,7 +29,8 @@ bool User::isExternal() const
 
 void User::addMeeting(Meeting* meeting)
 {
-    meetings.add(meeting);
+    this->_addMeeting(meeting);
+    meeting->_addParticipant(this);
 }
 
 Meeting* User::getMeetingById(const std::string& meetingId)
@@ -37,7 +38,13 @@ Meeting* User::getMeetingById(const std::string& meetingId)
     return meetings.getById(meetingId);
 }
 
-Meeting* User::getMeetingByDate(const Date& meetingDate)
+std::list<Meeting*>& User::getMeetingByDate(const Date& meetingDate)
 {
     return meetings.getByDate(meetingDate);
+}
+
+
+void User::_addMeeting(Meeting* meeting)
+{
+    meetings.add(meeting);
 }
