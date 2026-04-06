@@ -15,18 +15,21 @@
         <IDENTIFIER>A1</IDENTIFIER>
         <ROOM>MG025</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>CSA info session</LABEL>
         <IDENTIFIER>A2</IDENTIFIER>
         <ROOM>MG025</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>Mathematics for dummies</LABEL>
         <IDENTIFIER>A3</IDENTIFIER>
         <ROOM>MG025</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
 
 
@@ -35,17 +38,20 @@
         <IDENTIFIER>B1</IDENTIFIER>
         <ROOM>GT103</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>Generic Meeting 2</LABEL>
         <IDENTIFIER>B2</IDENTIFIER>
         <ROOM>GT103</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>Generic Meeting 3</LABEL>
         <IDENTIFIER>B3</IDENTIFIER>
         <ROOM>GT103</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
 </SYSTEM>

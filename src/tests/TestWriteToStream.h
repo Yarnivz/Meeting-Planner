@@ -25,10 +25,10 @@ TEST_F(TestWriteToStream, HappyDay1)
     App p = App(nullptr, &f);
     ASSERT_TRUE(p.isProperlyInitialized());
 
-    DateTime date1 = DateTime(2026, 1, 2, 0);
-    DateTime date2 = DateTime(2026, 3, 4, 0);
+    DateTime date1 = DateTime(2026, 1, 2, 13);
+    DateTime date2 = DateTime(2026, 3, 4, 14);
 
-    Room* r1,*r2,*r3;
+    Room *r1,*r2,*r3;
     p.addRoom(r1 = new Room("Room 1", "r1", 20));
     p.addRoom(r2 = new Room("Room 2", "r2", 20));
     p.addRoom(r3 = new Room("Empty Room", "empty", 1));
@@ -75,8 +75,8 @@ TEST_F(TestWriteToStream, HappyDay2)
     App p = App(nullptr, &f);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    DateTime date1 = DateTime(2025, 12, 12, 0);
-    DateTime date2 = DateTime(2026, 1, 1, 0);
+    DateTime date1 = DateTime(2025, 12, 12, 20);
+    DateTime date2 = DateTime(2026, 1, 1, 21);
 
     Room *r1, *r2;
     p.addRoom(r1= new Room("M.G.025", "MG025", 20));
@@ -138,7 +138,7 @@ TEST_F(TestWriteToStream, Processed)
     EXPECT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2025, 12, 12,0);
-    DateTime date2 = DateTime(2026, 1, 1,0);
+    DateTime date2 = DateTime(2026, 1, 1,11);
 
     Room *r1, *r2;
     p.addRoom(r1 = new Room("M.G.025", "MG025", 20));

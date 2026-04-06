@@ -26,14 +26,14 @@ public:
      * @param label title of the meeting
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
-     * @param date of when the meeting takes/took place
+     * @param date_time of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
     *    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date = DateTime());
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime());
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
