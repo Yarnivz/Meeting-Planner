@@ -17,16 +17,4 @@ Yarni:
 - output class
 
 Lucas:
-- refactor code (see TO DO's), (meeting status, etc.)
-    NOTE: SEPERATE BRANCH!
-    REFACTOR TASKS:
-    - Change ids to pointers instead (Note: change function names)
-    - Replace Participations class into User class
-    - Add participations vector to User and Meeting objects
-    - Refactor data objects in Parser (Use Structs)
-    AFTER MERGE:
-    - Refactor getMeetingsByRoom
-    - Adjust isRoomOccupied to include time checks
-(in progress)
-
 - External participants
