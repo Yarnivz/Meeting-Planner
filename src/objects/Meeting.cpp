@@ -3,6 +3,7 @@
 //
 
 #include "Meeting.h"
+
 #include "helper/DesignByContract.h"
 #include "objects/User.h"
 

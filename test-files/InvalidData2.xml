@@ -15,19 +15,30 @@
         <IDENTIFIER>m656</IDENTIFIER>
         <ROOM>mg025</ROOM>
         <DATE>2026-06-13</DATE>
+        <HOUR>12</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>Very important meeting</LABEL>
         <IDENTIFIER>m720</IDENTIFIER>
         <ROOM>gt123</ROOM>
         <DATE>2026-06-13</DATE>
+        <HOUR>12</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>Meeting that probably won't happen</LABEL>
         <IDENTIFIER>m999</IDENTIFIER>
         <ROOM>r009</ROOM>
         <DATE>2026-02-29</DATE>
+        <HOUR>13</HOUR>
     </MEETING>
+    <MEETING>
+        <LABEL>Way too late</LABEL>
+        <IDENTIFIER>m314</IDENTIFIER>
+        <ROOM>r009</ROOM>
+        <DATE>2026-02-01</DATE>
+        <HOUR>39</HOUR>
+    </MEETING>
+
     <PARTICIPATION>
         <MEETING>m656</MEETING>
         <USER>Peter Selie</USER>

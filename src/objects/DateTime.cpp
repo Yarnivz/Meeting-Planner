@@ -34,6 +34,7 @@ DateTime::DateTime(const DateTime& d)
     year = d.year;
     month = d.month;
     day = d.day;
+    hour = d.hour;
 
     init_test_this_ptr = this; //Reset this pointer, do not copy it from the other DateTime.
 }
@@ -120,7 +121,10 @@ std::string DateTime::toString() const
     ENSURE(isProperlyInitialized(), "Failed to convert DateTime to string. DateTime must be properly initialized with the constructor!");
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
-    return std::format("{:%d/%m/%Y}", date);
+    std::stringstream ss;
+    ss << std::format("{:%d/%m/%Y}", date);
+    ss << ", " << hour << "h00";
+    return ss.str();
 }
 
 

@@ -14,18 +14,21 @@
         <IDENTIFIER>Meeting_00001</IDENTIFIER>
         <ROOM>m045022</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>CSA info session</LABEL>
         <IDENTIFIER>Meeting_00002</IDENTIFIER>
         <ROOM>m027482</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <MEETING>
         <LABEL>Mathematics for dummies</LABEL>
         <IDENTIFIER>Meeting_00003</IDENTIFIER>
         <ROOM>m045022</ROOM>
         <DATE>2026-03-12</DATE>
+        <HOUR>0</HOUR>
     </MEETING>
     <PARTICIPATION>
         <MEETING>Meeting_00001</MEETING>

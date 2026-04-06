@@ -1,18 +1,18 @@
 
 Future meetings:
-- Room 2, Friday 02/01/2026
+- Room 2, Friday 02/01/2026, 13h00
   Meeting 4
   
   Meeting ID: m4
-- Room 2, Friday 02/01/2026
+- Room 2, Friday 02/01/2026, 13h00
   Meeting 3
   John Doe
   Meeting ID: m3
-- Room 1, Wednesday 04/03/2026
+- Room 1, Wednesday 04/03/2026, 14h00
   Meeting 2
   
   Meeting ID: m2
-- Room 1, Friday 02/01/2026
+- Room 1, Friday 02/01/2026, 13h00
   Meeting 1
   Peter Selie
   Meeting ID: m1
