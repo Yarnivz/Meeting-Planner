@@ -19,7 +19,9 @@ bool User::isProperlyInitialized() const
 
 const std::string& User::getId() const
 {
+    REQUIRE(!name.empty(), "name/Id cannot be empty");
     return name;
+
 }
 
 bool User::isExternal() const
