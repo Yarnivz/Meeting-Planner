@@ -105,12 +105,14 @@ Meeting::~Meeting() = default;
 
 void Meeting::addParticipant(User* user)
 {
+    REQUIRE(user != nullptr, "User can not be null");
     this->_addParticipant(user);
     user->_addMeeting(this);
 }
 
 User* Meeting::getParticipant(const std::string& userId)
 {
+    REQUIRE(!userId.empty(), "UserId cannot be empty");
     const Users::iterator it = participants.find(userId);
 
     if (it == participants.end()) return nullptr;

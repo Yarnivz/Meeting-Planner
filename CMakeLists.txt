@@ -29,7 +29,7 @@ find_package(Doxygen OPTIONAL_COMPONENTS)
 set(DOCS_TOOLS_SOURCES tools/ContractsDocumentationGenerator.cpp)
 if (DOXYGEN_FOUND)
     # add doxygen docs every time the project is build
-    add_executable(docs_tools_target ${DOCS_TOOLS_SOURCES})
+    add_executable(docs_tools ${DOCS_TOOLS_SOURCES})
     doxygen_add_docs(
             generate_docs
             ${CMAKE_CURRENT_SOURCE_DIR}/src  # Folder containing the code to document

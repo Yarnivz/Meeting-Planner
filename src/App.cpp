@@ -225,10 +225,8 @@ Room* App::getRoom(const std::string& roomId)
     return it->second;
 }
 
-
 const Rooms& App::getAllRooms() const
 {
-    //ENSURE(!rooms.empty(), "rooms contains no room");
     return rooms;
 }
 
