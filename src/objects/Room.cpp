@@ -21,7 +21,7 @@ Room::Room(const std::string& name, const std::string& id, unsigned capacity, Bu
         throw std::invalid_argument("Capacity must be strict greater than 0");
     }
 
-    campus = building->getCampusId();
+    campus = building->getCampus();
 
     init_check_this_ptr = this;
     // IDEE: ENSURE(isProperlyInitialized)
