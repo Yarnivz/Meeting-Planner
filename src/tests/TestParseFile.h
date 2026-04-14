@@ -233,5 +233,7 @@ TEST_F(TestParseFile, FileNotFound)
     EXPECT_DEATH(app.parseFile("./test-files/FileThatDoesntExist.xml"), "");
 }
 
+//TODO: Add duplicate attribute scenario
+
 
 #endif //MEETING_PLANNER_PARSEFILETESTS_H
