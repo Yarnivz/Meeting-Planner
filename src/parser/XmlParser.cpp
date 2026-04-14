@@ -43,12 +43,14 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
         if (objectElementType == "ROOM")
         {
             //== string properties from child XML elements
-            std::string name, identifier, capacity_str;
+            std::string name, identifier, capacity_str, campus_id, building_id;
 
             //== booleans indicating whether the above properties were already found
             bool found_name = false;
             bool found_id = false;
             bool found_capacity = false;
+            bool found_campus = false;
+            bool found_building = false;
 
 
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
@@ -105,6 +107,32 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     found_capacity = true;
                     capacity_str = tempElementChildValue;
                 }
+                else if (propertyElementType == "CAMPUS")
+                {
+                    //> Check if we already encountered another <CAMPUS> tag.
+                    //  Which would mean multiple <CAMPUS> tags are present => ERROR
+                    if (found_campus)
+                    {
+                        errorStream << "ROOM element cant have more than one CAMPUS property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_campus = true;
+                    campus_id = tempElementChildValue;
+                }
+                else if (propertyElementType == "BUILDING")
+                {
+                    //> Check if we already encountered another <BUILDING> tag.
+                    //  Which would mean multiple <BUILDING> tags are present => ERROR
+                    if (found_building)
+                    {
+                        errorStream << "ROOM element cant have more than one BUILDING property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_building = true;
+                    building_id = tempElementChildValue;
+                }
                 else
                 {
                     //> Filter out any other unrecognized tags
@@ -128,6 +156,16 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             if (!found_capacity)
             {
                 errorStream << "ROOM must have a CAPACITY property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_campus)
+            {
+                errorStream << "ROOM must have a CAMPUS property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_building)
+            {
+                errorStream << "ROOM must have a BUILDING property" << std::endl;
                 goto continue_to_next_object_element;
             }
 
@@ -164,6 +202,20 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             if (name.empty())
             {
                 errorStream << "Room name cannot be empty. Room will not be added." << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+            //> Check if Campus is not empty
+            if (campus_id.empty())
+            {
+                errorStream << "Room campus cannot be empty. Room will not be added." << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+            //> Check if Building is not empty
+            if (building_id.empty())
+            {
+                errorStream << "Room building cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
             }
 

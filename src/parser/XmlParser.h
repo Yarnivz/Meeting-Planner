@@ -6,6 +6,7 @@
 #define XMLPARSER_H
 #include "Parser.h"
 
+//TODO: add documentation
 
 class XmlParser : public Parser
 {
