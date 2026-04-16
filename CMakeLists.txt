@@ -49,7 +49,7 @@ set(COMMON_SOURCE_FILES
         src/objects/Building.cpp
         src/objects/DateTime.cpp
         src/objects/User.cpp
-        src/containers/MeetingRegistry.cpp
+        src/objects/MeetingRegistry.cpp
         src/parser/Parser.cpp
         src/parser/XmlParser.cpp
         src/App.cpp)

@@ -2,8 +2,8 @@
 // Created by lucas on 4/5/26.
 //
 
-#ifndef MEETING_PLANNER_CONTAINERS_H
-#define MEETING_PLANNER_CONTAINERS_H
+#ifndef MEETING_PLANNER_TYPEDEFS_H
+#define MEETING_PLANNER_TYPEDEFS_H
 
 #include <map>
 #include <string>
@@ -14,4 +14,4 @@ class Room;
 using Rooms = std::unordered_map<std::string, Room*>;
 using Users = std::map<std::string, User*>;
 
-#endif //MEETING_PLANNER_CONTAINERS_H
+#endif //MEETING_PLANNER_TYPEDEFS_H
