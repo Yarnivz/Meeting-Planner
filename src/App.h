@@ -7,12 +7,12 @@
 
 #include <string>
 
-#include "containers/MeetingRegistry.h"
+#include "objects/MeetingRegistry.h"
 #include "objects/Room.h"
 #include "objects/Meeting.h"
 #include "parser/Parser.h"
 #include "objects/User.h"
-#include "containers/Containers.h"
+#include "TypeDefs.h"
 
 class App
 {

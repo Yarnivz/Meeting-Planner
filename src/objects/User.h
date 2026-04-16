@@ -7,7 +7,7 @@
 
 #include <string>
 
-#include "containers/MeetingRegistry.h"
+#include "MeetingRegistry.h"
 class Meeting;
 class Date;
 

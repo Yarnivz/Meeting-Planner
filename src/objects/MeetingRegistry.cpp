@@ -2,7 +2,7 @@
 // Created by lucas on 4/5/26.
 //
 
-#include "MeetingRegistry.h"
+#include "../containers/MeetingRegistry.h"
 
 #include "helper/DesignByContract.h"
 
