@@ -4,8 +4,8 @@ Ishaak:
 - copy contracts to documentation
 => Almost Finished
 
-- online meetings implementeren + simuleren
-- create tests for Campus & Building classes
+- online meetings implementeren + simuleren (read 2 different sections in spec 2.0 doc)
+- create tests for Campus & Building classes (2 new test files)
 - update test for Room (TestRoom.h) to include Campus & Building attributes
 
 Yarni:
@@ -18,3 +18,5 @@ Yarni:
 
 Lucas:
 - External participants
+- Lezen van catering providers
+- Catering planning & kosten
