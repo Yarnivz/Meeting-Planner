@@ -8,18 +8,23 @@
 
 #include "helper/DesignByContract.h"
 
-Room::Room(const std::string& name, const std::string& id, unsigned capacity) :
-    name(name), id(id), capacity(capacity)
+Room::Room(const std::string& name, const std::string& id, unsigned capacity, Building* building) :
+    name(name), id(id), capacity(capacity), building(building)
 {
     REQUIRE(!name.empty(), "name must not be empty");
     REQUIRE(!id.empty(), "id must not be empty");
     REQUIRE(capacity > 0, "capacity must be greater than 0");
+    REQUIRE(building != nullptr, "The given building must exist");
+    REQUIRE(building->isProperlyInitialized(), "The given building must be properly initialized");
     if (capacity == 0)
     {
         throw std::invalid_argument("Capacity must be strict greater than 0");
     }
 
+    campus = building->getCampus();
+
     init_check_this_ptr = this;
+    // IDEE: ENSURE(isProperlyInitialized)
 }
 
 Room::Room(const Room& r)
@@ -29,6 +34,9 @@ Room::Room(const Room& r)
     name = r.name;
     id = r.id;
     capacity = r.capacity;
+    occupancy = r.occupancy;
+    campus = r.campus;
+    building = r.building;
 
     init_check_this_ptr = this;
 }

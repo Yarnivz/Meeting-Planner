@@ -6,7 +6,8 @@
 #define MEETING_PLANNER_ROOM_H
 #include <iostream>
 #include <string>
-#include <vector>
+#include "Building.h"
+#include "Campus.h"
 
 
 class Room
@@ -25,8 +26,9 @@ public:
      * @param name the name of this room
      * @param id the identifier of this room
      * @param capacity the amount of people that fit in this room
+     * @param building the building in which this room can be found
      */
-    Room(const std::string& name, const std::string& id, unsigned capacity);
+    Room(const std::string& name, const std::string& id, unsigned capacity, Building* building);
 
     /**
      * @brief Copies a Room object.
@@ -93,7 +95,8 @@ private:
     std::string id;
     unsigned capacity;
     unsigned occupancy;
-
+    Campus* campus;
+    Building* building;
     void* init_check_this_ptr;
 };
 

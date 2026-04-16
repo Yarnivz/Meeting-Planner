@@ -7,8 +7,9 @@
 #include <list>
 #include <ostream>
 #include <string>
+#include "./objects/DateTime.h"
 
-#include "objects/DateTime.h"
+//TODO: add documentation
 
 struct MeetingElement
 {

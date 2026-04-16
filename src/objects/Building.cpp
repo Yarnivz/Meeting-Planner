@@ -5,18 +5,19 @@
 #include "Building.h"
 #include "helper/DesignByContract.h"
 
-Building::Building(const std::string& name, const std::string& id, const std::string& campus) :
+Building::Building(const std::string& name, const std::string& id, Campus* campus) :
     name(name), id(id), campus(campus)
 {
     REQUIRE(!name.empty(), "Name cannot be empty");
     REQUIRE(!id.empty(), "Id cannot be empty");
-    REQUIRE(!campus.empty(), "CampusId cannot be empty");
+    REQUIRE(campus != nullptr, "Campus cannot be a null pointer");
+    REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized");
 
     init_check_this_ptr = this;
 
     ENSURE(this->name == name, "Name was not added to this Building object");
     ENSURE(this->id == id, "Id was not added to this Building object");
-    ENSURE(this->id == id, "CampusId was not added to this Building object");
+    ENSURE(this->campus == campus, "Campus was not added to this Building object");
 }
 
 bool Building::isProperlyInitialized() const
@@ -30,15 +31,16 @@ const std::string& Building::getId() const
     return id;
 }
 
-const std::string& Building::getCampusId() const
+Campus* Building::getCampus() const
 {
-    REQUIRE(!name.empty(), "Name cannot be empty");
+    REQUIRE(campus != nullptr, "Campus cannot be a null pointer");
+    REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized");
     return campus;
 }
 
 const std::string& Building::toString() const
 {
-    REQUIRE(!campus.empty(), "CampusId cannot be empty");
+    REQUIRE(!name.empty(), "Name cannot be empty");
     return name;
 }
 
