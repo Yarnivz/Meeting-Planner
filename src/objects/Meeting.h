@@ -44,12 +44,18 @@ public:
     /**
      * @brief Id getter.
      *
+     *
+     * @pre Failed to get id. Meeting has to be properly initialized with the constructor.
+     *
      * @return the identifier of this meeting
      */
     const std::string& getId() const;
 
     /**
      * @brief Room id getter.
+     *
+     *
+     * @pre Failed to get room. Meeting has to be properly initialized with the constructor.
      *
      * @return the identifier of the room where this meeting takes place
      */
@@ -58,6 +64,9 @@ public:
     /**
      * @brief Date getter.
      *
+     *
+     * @pre Failed to get date. Meeting has to be properly initialized with the constructor.
+     *
      * @return the date of when this meeting takes place
      */
     const DateTime& getDateTime() const;
@@ -65,20 +74,18 @@ public:
     /**
      * @brief Converts the meeting class to a readable string format.
      *
+     *
+     * @pre Failed to convert to string. Meeting has to be properly initialized with the constructor.
+     *
      * @return the meeting in string format
      */
     const std::string& toString() const;
 
     /**
-     * @brief Standard stream operator using the toString function to append the meeting to the stream.
-     * @param os stream to write on
-     * @param meeting object to write on the stream
-     * @return the stream
-     */
-
-    /**
      * @brief The orders getter
      * @return The Meetings 'order' variable
+     *
+     * @post Order can not be negative
      */
     int getOrder() const;
 
@@ -94,6 +101,13 @@ public:
     void setOrder(int orderAdded);
 
 
+    /**
+     *
+     *@pre Something went wrong. Meeting was not processed.
+     *
+     *
+     *@post Meeting was already processed or canceled.
+     */
     void process();
     void cancel(const std::string& reason);
 
@@ -108,9 +122,14 @@ public:
     /**
      * @brief writes the output of 'toString' to a stream
      *
+     *
+     * @pre meeting must be properly initialized
+     *
      * @param os stream to write to
      * @param meeting to print out
      * @return modified ostream
+     *
+     * @post ostream variable is not usable
      */
     friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
 
@@ -118,15 +137,37 @@ public:
      * @brief Destroys the Meeting class.
      *
      * ((default constructor))
+     *
+     * @pre User can not be null
+     *
      */
     ~Meeting();
 
+    /**
+     *
+     *@pre User can not be null
+     *
+     */
     void addParticipant(User* user);
+    /**
+     *
+     *@pre UserId cannot be empty
+     *
+     *
+     *@post Something went wrong, The user which was found did not have the correct id.
+     */
     User* getParticipant(const std::string& userId);
     size_t getParticipantCount() const;
     const Users& getParticipants() const;
 
 private:
+    /**
+     *
+     *@pre User can not be null
+     *@pre User needs to be properly initialized.
+     *@pre Something went wrong. User was not added.
+     *
+     */
     void _addParticipant(User* user);
 
     using State = enum { UNPROCESSED, PROCESSED, CANCELLED };

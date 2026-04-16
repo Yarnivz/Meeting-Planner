@@ -26,6 +26,11 @@ public:
      */
     bool isProperlyInitialized() const;
 
+    /**
+     *
+     *@pre name/Id cannot be empty
+     *
+     */
     const std::string& getId() const;
     bool isExternal() const;
 

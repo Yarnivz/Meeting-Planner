@@ -21,8 +21,8 @@ public:
      * @param name the name of this campus
      * @param id the unique identifier of this campus that can be used to call this object from the app.
      *
-     * @post Name was added to this Campus object
-     * @post Id was added to this Campus object
+     * @post Name was not added to this Campus object
+     * @post Id was not added to this Campus object
      */
     Campus(const std::string& name, const std::string& id);
 
@@ -54,7 +54,6 @@ public:
     /**
      * @brief Standard stream operator using the toString function to append the campus to the stream.
      *
-     * @pre Campus must be properly initialized
      *
      * @param os stream to write on
      * @param campus object to write on the stream

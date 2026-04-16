@@ -48,6 +48,9 @@ public:
      * @brief Print all meetings and rooms to a stream.
      *
      * Prints all registered meetings and rooms to the app's output.
+     *
+     * @pre App doesnt have an output attached.
+     *
      */
     void writeToStream();
 
@@ -57,7 +60,14 @@ public:
      * Registers a new 'Room' object.
      * The App class expects ownership of the Room pointer passed in.
      *
+     *
+     * @pre The provided room cannot be null.
+     * @pre Room needs to be properly initialized by the constructor.
+     * @pre Room id has to be unique.
+     *
      * @param room to register
+     *
+     * @post The room was not added to the App
      */
     void addRoom(Room* room);
 
@@ -66,6 +76,8 @@ public:
      *
      * @param roomId of the room to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
+     *
+     * @post Something went wrong. The room which was found did not have the right id.
      */
     Room* getRoom(const std::string& roomId);
 
@@ -89,6 +101,9 @@ public:
      *   -That meeting takes place on the given date
      *   -The meeting was registered as 'done' by the meeting processor
      *
+     *
+     * @pre This room does not exist.
+     *
      * @param roomId of the room to check
      * @param date_time to check
      * @return bool indicating the result
@@ -102,8 +117,13 @@ public:
      *    -Another meeting takes place on the same date, in the same room
      *    -That meeting was registered as 'done"
      *
+     *
+     * @pre This meeting doesn't exist.
+     *
      * @param meetingId of the meeting to check
      * @return pointer to the conflicting meeting; nullptr if no conflict exists
+     *
+     * @post Something went wrong. Looking meetings up by date failed.
      */
     Meeting* findConflictingMeeting(const std::string& meetingId);
 
@@ -130,11 +150,31 @@ public:
     const MeetingRegistry& getMeetingRegistry() const;
 
 
+    /**
+     *
+     *@pre User can not be null
+     *@pre User needs to be properly initialized.
+     *@pre Something went wrong. User was not added.
+     *
+     */
     void addUser(User* user);
+    /**
+     *
+     *@post Something went wrong, The user which was found did not have the correct id.
+     */
     User* getUser(const std::string& userId);
     const Users& getAllUsers() const;
 
 
+    /**
+     *
+     *@pre This meeting doesn't exist: '%s'
+     *@pre This user doesn't exist: '%s'
+     *
+     *
+     *@post Something went wrong. The participant '%s' was not added to meeting '%s'.
+     *@post Something went wrong. The meeting '%s' was not added to user '%s'.
+     */
     void addUserToMeeting(const std::string& userId, const std::string& meetingId);
 
     /**
@@ -147,6 +187,10 @@ public:
      *   -That meeting takes place on the given date
      *   -The meeting was registered as 'done' by the meeting processor
      *
+     *
+     *
+     * @pre This user does not exist.
+     * @pre Something went wrong. The user which was found was not correct.
      *
      * @param userId of the user to check
      * @param date_time to check

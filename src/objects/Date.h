@@ -16,12 +16,17 @@ public:
      * @brief Creates the date class.
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called without parameters, the date that gets created will be the current date.
+     *
+     * @post Date creation failed. Date validity check did not pass.
      */
     Date();
 
     /**
      * @brief Copies a Date object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
+     *
+     * @pre Tried to copy a date which was not properly initialized by the constructor.
+     *
      * @param d The Date to be copied.
      *
      * @contracts
@@ -32,9 +37,17 @@ public:
      * @brief Creates the date class.
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called with parameters, all parameters are required and the date will be initialized with the given data.
+     *
+     * @pre Year can not be negative!
+     * @pre Month can not be negative!
+     * @pre Day can not be negative!
+     * @pre Invalid date provided. Please check if this date really exists!
+     *
      * @param year
      * @param month
      * @param day
+     *
+     * @post Date creation failed. Date validity check did not pass.
      */
     Date(int year, int month, int day);
 
@@ -43,9 +56,11 @@ public:
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called with parameters, all parameters are required and the date will be initialized with the given data.
      *
-     * @pre test
+     * @pre Invalid date provided. Please check if this date really exists!
      *
      * @param year_month_day date to initialize the Date class with.
+     *
+     * @post Date creation failed. Date validity check did not pass.
      */
     Date(std::chrono::year_month_day year_month_day);
 
@@ -58,18 +73,24 @@ public:
     /**
      * @brief Year getter.
      * @return the date's year
+     *
+     * @post Failed to get Year. Date must be properly initialized with the constructor!
      */
     int getYear() const;
 
     /**
      * @brief Month getter.
      * @return the date's month
+     *
+     * @post Failed to get Month. Date must be properly initialized with the constructor!
      */
     unsigned getMonth() const;
 
     /**
      * @brief Day getter.
      * @return the date's day
+     *
+     * @post Failed to get Day. Date must be properly initialized with the constructor!
      */
     unsigned getDay() const;
 
@@ -82,6 +103,8 @@ public:
     /**
      * @brief Converts the date class to a readable string format.
      * @return the date represented as a string.
+     *
+     * @post Failed to convert date to string. Date must be properly initialized with the constructor!
      * The date's string format is "YYYY-MM-DD"
      */
     std::string toString() const;

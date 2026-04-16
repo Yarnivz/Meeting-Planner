@@ -3,7 +3,7 @@
 //
 #include "ContractsDocumentationGenerator.h"
 #include <iostream>
-#include <filesystem> //reminder to put std before its own namespace since it seems to be part of iostream(i think?)
+#include <filesystem>
 #include <vector>
 #include <fstream>
 
@@ -334,11 +334,11 @@ void ContractsDocumentationGenerator::findHeaderDocumentationAndContractsStuff(c
             }
             postDocumentationLastLine = j;
         }
-        else if (headerFileLines[j].find("@return") != std::string::npos && documentationFound && postDocumentationLastLine == 0)
+        else if (headerFileLines[j].find("@return") != std::string::npos && documentationFound && postDocumentationFirstLine == 0)
         {
-            postDocumentationFirstLine = j + 1;
+            postDocumentationFirstLine = j;
         }
-        else if (headerFileLines[j].find("*/") != std::string::npos && documentationFound && postDocumentationLastLine == 0)
+        else if (headerFileLines[j].find("*/") != std::string::npos && documentationFound && postDocumentationFirstLine == 0)
         {
             postDocumentationFirstLine = j;
         }

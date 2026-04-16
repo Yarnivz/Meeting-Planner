@@ -24,8 +24,8 @@ public:
   * @param id the unique identifier of this building that can be used to call this object from the app.
   * @param campus the campus that houses this building
   *
-  * @post Name was added to this Building object
-  * @post Id was added to this Building object
+  * @post Name was not added to this Building object
+  * @post Id was not added to this Building object
   * @post CampusId was not added to this Building object
   */
  Building(const std::string& name, const std::string& id, const std::string& campus);
@@ -49,7 +49,7 @@ public:
  /**
   * @brief Campus id getter.
   *
-  * @pre CampusId cannot be empty
+  * @pre Name cannot be empty
   *
   * @return the identifier of the campus this building is located on
   */
@@ -59,7 +59,7 @@ public:
   * @brief Converts this building object into a readable string format.
   * This is represented by its name.
   *
-  * @pre Name cannot be empty
+  * @pre CampusId cannot be empty
   *
   * @return the building in string format
   */
@@ -68,7 +68,6 @@ public:
  /**
   * @brief Standard stream operator using the toString function to append the building to the stream.
   *
-  * @pre Building must be properly initialized
   *
   * @param os stream to write on
   * @param building object to write on the stream

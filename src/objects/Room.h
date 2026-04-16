@@ -17,6 +17,11 @@ public:
      * This is the place where a meeting can take place.
      * A room can only be initialized using the name, id and capacity parameters as these are required.
      *
+     *
+     * @pre name must not be empty
+     * @pre id must not be empty
+     * @pre capacity must be greater than 0
+     *
      * @param name the name of this room
      * @param id the identifier of this room
      * @param capacity the amount of people that fit in this room
@@ -26,6 +31,9 @@ public:
     /**
      * @brief Copies a Room object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
+     *
+     * @pre Tried to copy a room which was not properly initialized by the constructor.
+     *
      * @param r Room to be copied
      */
     Room(const Room& r);
@@ -41,6 +49,9 @@ public:
     /**
      * @brief Id getter.
      *
+     *
+     * @pre id must not be empty
+     *
      * @return the identifier of the room
      */
     const std::string& getId() const;
@@ -48,12 +59,18 @@ public:
     /**
      * @brief Converts the room class to a readable string format.
      *
+     *
+     * @pre name must not be empty
+     *
      * @return the room in string format
      */
     const std::string& toString() const;
 
     /**
      * @brief Capacity getter.
+     *
+     * @pre Capacity must be greater than 0
+     *
      * @return the maximum capacity of this room
      */
     unsigned getCapacity() const;
