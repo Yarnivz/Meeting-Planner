@@ -12,11 +12,11 @@ class Meeting;
 class Date;
 
 
-class User {
+class User
+{
     friend class Meeting;
 
 public:
-
     User(const std::string& name, bool external = false);
     ~User() = default;
 
@@ -48,7 +48,6 @@ private:
 
     void* init_check_this_ptr;
 };
-
 
 
 #endif //MEETING_PLANNER_USER_H

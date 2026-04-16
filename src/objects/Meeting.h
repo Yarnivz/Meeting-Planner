@@ -83,8 +83,6 @@ public:
 
     /**
      * @brief The orders getter
-     * @return The Meetings 'order' variable
-     *
      * @post Order can not be negative
      */
     int getOrder() const;
@@ -103,12 +101,19 @@ public:
 
     /**
      *
-     *@pre Something went wrong. Meeting was not processed.
+     * @pre Something went wrong. Meeting was not processed.
      *
      *
-     *@post Meeting was already processed or canceled.
+     * @post Meeting was already processed or canceled.
      */
     void process();
+    /**
+     *
+     *@pre Something went wrong. Meeting was not cancelled.
+     *
+     *
+     *@post Meeting was already processed or canceled
+     */
     void cancel(const std::string& reason);
 
     bool isUnProcessed() const;
@@ -117,6 +122,10 @@ public:
 
     bool isCancelled() const;
 
+    /**
+     *
+     *@post Meeting was not cancelled.
+     */
     const std::string& getCancellationReason() const;
 
     /**
@@ -127,8 +136,6 @@ public:
      *
      * @param os stream to write to
      * @param meeting to print out
-     * @return modified ostream
-     *
      * @post ostream variable is not usable
      */
     friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
@@ -145,16 +152,16 @@ public:
 
     /**
      *
-     *@pre User can not be null
+     * @pre User can not be null
      *
      */
     void addParticipant(User* user);
     /**
      *
-     *@pre UserId cannot be empty
+     * @pre UserId cannot be empty
      *
      *
-     *@post Something went wrong, The user which was found did not have the correct id.
+     * @post Something went wrong, The user which was found did not have the correct id.
      */
     User* getParticipant(const std::string& userId);
     size_t getParticipantCount() const;
@@ -163,9 +170,9 @@ public:
 private:
     /**
      *
-     *@pre User can not be null
-     *@pre User needs to be properly initialized.
-     *@pre Something went wrong. User was not added.
+     * @pre User can not be null
+     * @pre User needs to be properly initialized.
+     * @pre Something went wrong. User was not added.
      *
      */
     void _addParticipant(User* user);

@@ -15,7 +15,12 @@ protected:
 
 TEST_F(TestDate, HappyDay)
 {
-    using YMD = struct {int y; unsigned m; unsigned d;};
+    using YMD = struct
+    {
+        int y;
+        unsigned m;
+        unsigned d;
+    };
 
     YMD data[] = {
         {2025, 10, 2}, {2027, 1, 12},

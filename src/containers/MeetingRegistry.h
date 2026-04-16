@@ -11,11 +11,13 @@
 #include "objects/DateTime.h"
 #include "objects/Meeting.h"
 
-struct DateTimeHash {
+struct DateTimeHash
+{
     std::size_t operator()(const DateTime& d) const;
 };
 
-class MeetingRegistry {
+class MeetingRegistry
+{
 public:
     void add(Meeting* meeting);
 
@@ -28,12 +30,9 @@ public:
     //void removeByDate(const Date& date);
 
 private:
-
     std::unordered_map<std::string, Meeting*> by_id;
     std::unordered_map<DateTime, std::list<Meeting*>, DateTimeHash> by_date;
-
 };
-
 
 
 #endif //MEETING_PLANNER_MEETINGREGISTRY_H

@@ -55,12 +55,15 @@ public:
      * @brief Standard stream operator using the toString function to append the campus to the stream.
      *
      *
+     *
+     * @pre Campus must be properly initialized
+     *
      * @param os stream to write on
      * @param campus object to write on the stream
      *
      * @return the stream
      */
-    friend std::ostream& operator <<(std::ostream& os, const Campus& campus);
+    friend std::ostream& operator<<(std::ostream& os, const Campus& campus);
 
     /**
      * @brief Default destructor.

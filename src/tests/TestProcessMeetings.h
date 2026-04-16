@@ -132,7 +132,8 @@ TEST_F(ProcessMeetingsTest, Conflicts)
     EXPECT_TRUE(l3[0]->isProcessed());
     EXPECT_TRUE(l4[0]->isProcessed());
 
-    for (size_t i = 1; i < 30; ++i) {
+    for (size_t i = 1; i < 30; ++i)
+    {
         EXPECT_TRUE(l1[i]->isCancelled());
         EXPECT_TRUE(l2[i]->isCancelled());
         EXPECT_TRUE(l3[i]->isCancelled());
@@ -235,7 +236,8 @@ TEST_F(ProcessMeetingsTest, ContractViolation)
     App p = App(nullptr, nullptr);
 
     Room* r = new Room("r", "r", 20);
-    p.addRoom(r); ASSERT_EQ(r, p.getRoom("r"));
+    p.addRoom(r);
+    ASSERT_EQ(r, p.getRoom("r"));
 
     p.addMeeting(new Meeting("m", "m", r, DateTime(2026, 1, 1, 0)));
 

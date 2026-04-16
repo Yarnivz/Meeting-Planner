@@ -80,9 +80,8 @@ const std::unordered_map<DateTime, std::list<Meeting*>, DateTimeHash>& MeetingRe
 }
 
 
-
-
-inline void hash_combine(std::size_t& acc, std::size_t value) {
+inline void hash_combine(std::size_t& acc, std::size_t value)
+{
     acc ^= value + 0x9e3779b9 + (acc << 6) + (acc >> 2);
 }
 

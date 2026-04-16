@@ -99,7 +99,6 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         ENSURE(getMeetingById(p.meeting) == m, "Something went wrong. Meeting wasnt added.");
         ENSURE(m->getParticipant(p.user) == u, "Something went wrong. User was not added as participant of meeting");
         ENSURE(u->getMeetingById(p.meeting) == m, "Something went wrong. Meeting was not added to user.");
-
     }
 
 
@@ -115,32 +114,41 @@ void App::writeToStream()
     std::list<const Meeting*> cancelled, processed, unprocessed;
 
     //Sort by state
-    for (const std::pair<const std::string, Meeting*>& item : meetings.getRawIdMap()) {
+    for (const std::pair<const std::string, Meeting*>& item : meetings.getRawIdMap())
+    {
         const Meeting* m = item.second;
-        if (m->isUnProcessed()) {
+        if (m->isUnProcessed())
+        {
             unprocessed.push_back(m);
-        } else if (m->isProcessed()) {
+        }
+        else if (m->isProcessed())
+        {
             processed.push_back(m);
-        } else if (m->isCancelled()) {
+        }
+        else if (m->isCancelled())
+        {
             cancelled.push_back(m);
         }
     }
 
     //Write all past meetings
     if (!processed.empty()) *output << std::endl << "Past meetings:" << std::endl;
-    for (const Meeting* m : processed) {
+    for (const Meeting* m : processed)
+    {
         writeMeeting(*output, m);
     }
 
     //Write all future meetings
     if (!unprocessed.empty()) *output << std::endl << "Future meetings:" << std::endl;
-    for (const Meeting* m : unprocessed) {
+    for (const Meeting* m : unprocessed)
+    {
         writeMeeting(*output, m);
     }
 
     //Write all conflicts
     if (!cancelled.empty()) *output << std::endl << "Conflicts:" << std::endl;
-    for (const Meeting* m : cancelled) {
+    for (const Meeting* m : cancelled)
+    {
         writeMeeting(*output, m);
         *output << "  Reason: " << m->getCancellationReason() << std::endl;
     }
@@ -166,7 +174,8 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
     {
         meeting->cancel("conflict with meeting " + conflict->getId());
         if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
-    } else
+    }
+    else
     {
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
@@ -175,6 +184,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
 
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting hasn't been processed");
 }
+
 void App::processAllMeetings(const bool verbose)
 {
     std::vector<Meeting*> sortedMeetings;
@@ -259,7 +269,8 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
         if (possible_conflict != m &&
             possible_conflict->isProcessed() &&
             possible_conflict->getRoom() == m->getRoom()
-            ) return possible_conflict;
+        )
+            return possible_conflict;
     }
 
     return nullptr;
@@ -292,8 +303,6 @@ const MeetingRegistry& App::getMeetingRegistry() const
 {
     return meetings;
 }
-
-
 
 
 void App::addUser(User* user)
@@ -355,7 +364,6 @@ bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
     }
 
     return false;
-
 }
 
 

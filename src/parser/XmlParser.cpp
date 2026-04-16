@@ -33,7 +33,6 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
     }
 
 
-
     for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement =
          objectElement->NextSiblingElement())
     {
@@ -220,7 +219,17 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
             //> Add room if all the checks have passed
-            parsed_rooms.push_back((RoomElement){.name = std::move(name), .id = std::move(identifier), .capacity = capacity});
+            parsed_rooms.push_back((RoomElement)
+            {
+                .
+                name = std::move(name),
+                .
+                id = std::move(identifier),
+                .
+                capacity = capacity
+            }
+            )
+            ;
         }
         else if (objectElementType == "MEETING")
         {
@@ -411,18 +420,21 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
 
-
             //> Add meeting if all checks passed
             parsed_meetings.push_back(
-                (MeetingElement){
-                    .label = std::move(label),
-                    .id = std::move(identifier),
-                    .room_id = std::move(room),
-                    .date_time = DateTime(year, month, day, hour),
-                }
-            );
-
-
+                (MeetingElement)
+            {
+                .
+                label = std::move(label),
+                .
+                id = std::move(identifier),
+                .
+                room_id = std::move(room),
+                .
+                date_time = DateTime(year, month, day, hour),
+            }
+            )
+            ;
         }
         else if (objectElementType == "PARTICIPATION")
         {
@@ -502,7 +514,15 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
 
 
             //> Add participation if all checks passed
-            parsed_participations.push_back((ParticipationElement){.meeting = std::move(meeting), .user = std::move(user)});
+            parsed_participations.push_back((ParticipationElement)
+            {
+                .
+                meeting = std::move(meeting),
+                .
+                user = std::move(user)
+            }
+            )
+            ;
         }
         else
         {

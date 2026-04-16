@@ -65,13 +65,15 @@ void Meeting::setOrder(const int orderAdded)
     ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value");
 }
 
-void Meeting::process() {
+void Meeting::process()
+{
     ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled.");
     state = PROCESSED;
     REQUIRE(isProcessed(), "Something went wrong. Meeting was not processed.");
 }
 
-void Meeting::cancel(const std::string &reason) {
+void Meeting::cancel(const std::string& reason)
+{
     ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled");
     state = CANCELLED;
     cancellation_reason = reason;
@@ -84,7 +86,8 @@ bool Meeting::isProcessed() const { return state == PROCESSED; }
 
 bool Meeting::isCancelled() const { return state == CANCELLED; }
 
-const std::string & Meeting::getCancellationReason() const {
+const std::string& Meeting::getCancellationReason() const
+{
     ENSURE(isCancelled(), "Meeting was not cancelled.");
     return cancellation_reason;
 }
@@ -99,8 +102,6 @@ std::ostream& operator<<(std::ostream& os, const Meeting& meeting)
 }
 
 Meeting::~Meeting() = default;
-
-
 
 
 void Meeting::addParticipant(User* user)

@@ -7,7 +7,7 @@
 #include "helper/DesignByContract.h"
 
 User::User(const std::string& name, bool external)
-: name(name), external(external)
+    : name(name), external(external)
 {
     init_check_this_ptr = this;
 }
@@ -21,7 +21,6 @@ const std::string& User::getId() const
 {
     REQUIRE(!name.empty(), "name/Id cannot be empty");
     return name;
-
 }
 
 bool User::isExternal() const

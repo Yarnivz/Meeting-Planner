@@ -84,7 +84,6 @@ TEST_F(TestApp, HappyDay1)
     EXPECT_EQ(size_t(6), p.getAllRooms().size());
 
 
-
     p.addUser(new User("Math Smith", "m2"));
     EXPECT_EQ(size_t(3), p.getAllUsers().size());
 }

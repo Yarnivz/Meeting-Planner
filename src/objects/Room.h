@@ -22,11 +22,15 @@ public:
      * @pre name must not be empty
      * @pre id must not be empty
      * @pre capacity must be greater than 0
+     * @pre The given building must exist
+     * @pre The given building must be properly initialized
      *
      * @param name the name of this room
      * @param id the identifier of this room
      * @param capacity the amount of people that fit in this room
      * @param building the building in which this room can be found
+     *
+     * @post     // IDEE: ENSURE(isProperlyInitialized)
      */
     Room(const std::string& name, const std::string& id, unsigned capacity, Building* building);
 
@@ -79,11 +83,16 @@ public:
 
     /**
      * @brief Standard stream operator using the toString function to append the room to the stream.
+     *
+     * @pre room must be properly initialized
+     *
      * @param os stream to write on
      * @param room to write on the stream
+     *
+     * @post ostream variable is not usable
      * @return the stream
      */
-    friend std::ostream& operator <<(std::ostream& os, const Room& room);
+    friend std::ostream& operator<<(std::ostream& os, const Room& room);
 
     /**
      * @brief Default destructor

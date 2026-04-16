@@ -241,7 +241,6 @@ private:
     std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;
 
 
-
     void* init_check_this_ptr = nullptr;
 };
 

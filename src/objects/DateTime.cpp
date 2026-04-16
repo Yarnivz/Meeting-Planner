@@ -128,7 +128,6 @@ std::string DateTime::toString() const
 }
 
 
-
 std::ostream& operator<<(std::ostream& os, const DateTime& DateTime)
 {
     os << DateTime.toString();

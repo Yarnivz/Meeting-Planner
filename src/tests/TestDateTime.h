@@ -15,7 +15,13 @@ protected:
 
 TEST_F(TestDateTime, HappyDay)
 {
-    using YMDH = struct {int y; unsigned m; unsigned d; unsigned h;};
+    using YMDH = struct
+    {
+        int y;
+        unsigned m;
+        unsigned d;
+        unsigned h;
+    };
 
     YMDH data[] = {
         {2025, 10, 2, 10}, {2027, 1, 12, 13},
