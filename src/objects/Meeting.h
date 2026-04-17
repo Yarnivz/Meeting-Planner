@@ -27,13 +27,14 @@ public:
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
      * @param date_time of when the meeting takes/took place
-     * @param order order in which the meeting is added to the system
+     * @param externals_allowed boolean indicating whether external users are allowed to participate in this meeting
+     *
     *    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
     REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
 
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime());
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), bool externals_allowed = false);
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -122,6 +123,8 @@ public:
 
     bool isCancelled() const;
 
+    bool externalsAllowed() const;
+
     /**
      *
      *@post Meeting was not cancelled.
@@ -186,6 +189,7 @@ private:
     int order;
 
     Users participants;
+    bool externals_allowed;
 
     std::string cancellation_reason;
 

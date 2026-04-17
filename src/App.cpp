@@ -45,6 +45,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
+        //TODO add buildings to app?
         addRoom(new Room(r.name, r.id, r.capacity));
     }
 
@@ -64,7 +65,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
-        addMeeting(new Meeting(m.label, m.id, mr, m.date_time));
+        addMeeting(new Meeting(m.label, m.id, mr, m.date_time, m.externals_allowed));
     }
 
     for (const ParticipationElement& p : parser->parsedParticipations())
@@ -78,12 +79,18 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
+        if ( p.external && !m->externalsAllowed())
+        {
+            errStream << "External user \'" << p.user << "\' can't participate in meeting \'" << p.meeting <<
+                "\' which doesn't allow externals";
+        }
+
         // Get user
         User* u = getUser(p.user);
         // And create user if it doesn't exist yet
         if (u == nullptr)
         {
-            u = new User(p.user, false);
+            u = new User(p.user, p.external);
             addUser(u);
         }
 

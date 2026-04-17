@@ -8,8 +8,8 @@
 #include "objects/User.h"
 
 
-Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time)
-    : label(label), id(id), room(room), date_time(date_time)
+Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, bool externals_allowed)
+    : label(label), id(id), room(room), date_time(date_time), externals_allowed(externals_allowed)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
@@ -86,6 +86,8 @@ bool Meeting::isProcessed() const { return state == PROCESSED; }
 
 bool Meeting::isCancelled() const { return state == CANCELLED; }
 
+bool Meeting::externalsAllowed() const { return externals_allowed; }
+
 const std::string& Meeting::getCancellationReason() const
 {
     ENSURE(isCancelled(), "Meeting was not cancelled.");
@@ -136,6 +138,7 @@ void Meeting::_addParticipant(User* user)
 {
     REQUIRE(user != nullptr, "User can not be null");
     REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+    REQUIRE(!user->isExternal() || this->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", user->getId().c_str(), this->getId().c_str());
 
     participants.insert({user->getId(), user});
 

@@ -15,6 +15,7 @@ struct MeetingElement
 {
     std::string label, id, room_id;
     DateTime date_time;
+    bool externals_allowed;
 };
 
 struct RoomElement
@@ -26,6 +27,7 @@ struct RoomElement
 struct ParticipationElement
 {
     std::string meeting, user;
+    bool external;
 };
 
 class Parser
