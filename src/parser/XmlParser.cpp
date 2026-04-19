@@ -39,6 +39,172 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
         //== The type of the element 'ROOM'/'MEETING'/...
         std::string objectElementType = objectElement->Value();
 
+        if (objectElementType == "CAMPUS")
+        {
+            //== string properties from child XML elements
+            std::string name, identifier;
+
+            //== booleans indicating whether the above properties were already found
+            bool found_name = false;
+            bool found_id = false;
+
+            for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
+                 propertyElement = propertyElement->NextSiblingElement())
+            {
+                std::string propertyElementType = propertyElement->Value();
+
+                if (propertyElement->FirstChild() == nullptr)
+                {
+                    //TODO o.emptyElement();
+                    errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+
+                if (propertyElementType == "NAME")
+                {
+                    //> Check if we already encountered another <NAME> tag.
+                    //  Which would mean multiple <NAME> tags are present => ERROR
+                    if (found_name)
+                    {
+                        errorStream << "BUILDING element cant have more than one NAME property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_name = true;
+                    name = tempElementChildValue;
+                }
+                else if (propertyElementType == "IDENTIFIER")
+                {
+                    //> Check if we already encountered another <IDENTIFIER> tag.
+                    //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
+                    if (found_id)
+                    {
+                        errorStream << "BUILDING element cant have more than one IDENTIFIER property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_id = true;
+                    identifier = tempElementChildValue;
+                }
+                else
+                {
+                    //> Filter out any other unrecognized tags
+                    errorStream << "Unrecognized property for CAMPUS: \"" << propertyElementType << "\"" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+                //> Check if all required properties were provided
+                if (!found_name)
+                {
+                    errorStream << "CAMPUS must have a NAME property" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+                if (!found_id)
+                {
+                    errorStream << "CAMPUS must have a IDENTIFIER property" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+                //> Add campus if all the checks have passed
+                parsed_campuses.push_back((CampusElement){.name = name, .id = identifier});
+            }
+        }
+
+        if (objectElementType == "BUILDING")
+        {
+            //== string properties from child XML elements
+            std::string name, identifier, campus_id;
+
+            //== booleans indicating whether the above properties were already found
+            bool found_name = false;
+            bool found_id = false;
+            bool found_campus = false;
+
+            for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
+                 propertyElement = propertyElement->NextSiblingElement())
+            {
+                std::string propertyElementType = propertyElement->Value();
+
+                if (propertyElement->FirstChild() == nullptr)
+                {
+                    //TODO o.emptyElement();
+                    errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+
+                if (propertyElementType == "NAME")
+                {
+                    //> Check if we already encountered another <NAME> tag.
+                    //  Which would mean multiple <NAME> tags are present => ERROR
+                    if (found_name)
+                    {
+                        errorStream << "BUILDING element cant have more than one NAME property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_name = true;
+                    name = tempElementChildValue;
+                }
+                else if (propertyElementType == "IDENTIFIER")
+                {
+                    //> Check if we already encountered another <IDENTIFIER> tag.
+                    //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
+                    if (found_id)
+                    {
+                        errorStream << "BUILDING element cant have more than one IDENTIFIER property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_id = true;
+                    identifier = tempElementChildValue;
+                }
+                else if (propertyElementType == "CAMPUS")
+                {
+                    //> Check if we already encountered another <CAMPUS> tag.
+                    // Which would mean multiple <CAMPUS> tags are present => ERROR
+                    if (found_campus)
+                    {
+                        errorStream << "BUILDING element cant have more than one CAMPUS property" << std::endl;
+                    }
+
+                    found_campus = true;
+                    campus_id = tempElementChildValue;
+                }
+                else
+                {
+                    //> Filter out any other unrecognized tags
+                    errorStream << "Unrecognized property for BUILDING: \"" << propertyElementType << "\"" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+                //> Check if all required properties were provided
+                if (!found_name)
+                {
+                    errorStream << "BUILDING must have a NAME property" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+                if (!found_id)
+                {
+                    errorStream << "BUILDING must have a IDENTIFIER property" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+                if (!found_campus)
+                {
+                    errorStream << "BUILDING must have a CAMPUS property" << std::endl;
+                    goto continue_to_next_object_element;
+                }
+
+
+                //> Add building if all the checks have passed
+                parsed_buildings.push_back((BuildingElement){.name = name, .id = identifier, .campus_id = campus_id});
+            }
+        }
+
         if (objectElementType == "ROOM")
         {
             //== string properties from child XML elements
@@ -61,7 +227,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 {
                     //TODO o.emptyElement();
                     errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-                    goto continue_to_next_object_element;;
+                    goto continue_to_next_object_element;
                 }
 
 
