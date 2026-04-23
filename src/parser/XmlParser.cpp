@@ -4,9 +4,20 @@
 
 #include "XmlParser.h"
 
+#include <unordered_map>
+
 #include "helper/DesignByContract.h"
 #include "tinyxml.h"
 #include "objects/Room.h"
+
+static inline bool parse_boolean(const std::string& s)
+{
+    if (s == "true") return true;
+    return false;
+}
+
+
+
 
 void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
 {
@@ -323,7 +334,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 errorStream << "ROOM must have a CAPACITY property" << std::endl;
                 goto continue_to_next_object_element;
             }
-            if (!found_campus)
+            /*if (!found_campus)
             {
                 errorStream << "ROOM must have a CAMPUS property" << std::endl;
                 goto continue_to_next_object_element;
@@ -332,7 +343,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             {
                 errorStream << "ROOM must have a BUILDING property" << std::endl;
                 goto continue_to_next_object_element;
-            }
+            }*/
 
             //== 'capacity' string parsed into an int
             int capacity = 0;
@@ -370,7 +381,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 goto continue_to_next_object_element;
             }
 
-            //> Check if Campus is not empty
+            /*//> Check if Campus is not empty
             if (campus_id.empty())
             {
                 errorStream << "Room campus cannot be empty. Room will not be added." << std::endl;
@@ -382,7 +393,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             {
                 errorStream << "Room building cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
-            }
+            }*/
 
             //> Add room if all the checks have passed
             parsed_rooms.push_back((RoomElement)
@@ -400,7 +411,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
         else if (objectElementType == "MEETING")
         {
             //== string properties from child XML elements
-            std::string label, identifier, room, date_string, hour_string;
+            std::string label, identifier, room, date_string, hour_string, externals_allowed_string;
 
             //== booleans indicating whether the above properties were already found
             bool found_label = false;
@@ -408,6 +419,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             bool found_room = false;
             bool found_datestring = false;
             bool found_hourstring = false;
+            bool found_externals_allowed = false;
 
 
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
@@ -488,6 +500,23 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     found_hourstring = true;
                     hour_string = propertyElementContents;
                 }
+                else if (propertyElementType == "EXTERNALS")
+                {
+                    if (found_externals_allowed)
+                    {
+                        errorStream << "MEETING element cant have more than one EXTERNALS property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_externals_allowed = true;
+                    externals_allowed_string = propertyElementContents;
+                }
+                else
+                {
+                    //> Filter out any other unrecognized tags
+                    errorStream << "Unrecognized property for MEETING: \"" << propertyElementType << "\"" << std::endl;
+                    goto continue_to_next_object_element;
+                }
             }
 
 
@@ -517,6 +546,9 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 errorStream << "MEETING must have an HOUR property" << std::endl;
                 goto continue_to_next_object_element;
             }
+
+            if (!found_externals_allowed)
+            { /* Is allowed, optional property for now */ }
 
 
             //> Check if id is not empty
@@ -586,30 +618,31 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
 
+            // Parse boolean or give default value
+            bool externals_allowed = found_externals_allowed ? parse_boolean(externals_allowed_string) : false;
+
+
             //> Add meeting if all checks passed
             parsed_meetings.push_back(
                 (MeetingElement)
             {
-                .
-                label = std::move(label),
-                .
-                id = std::move(identifier),
-                .
-                room_id = std::move(room),
-                .
-                date_time = DateTime(year, month, day, hour),
+                .label = std::move(label),
+                .id = std::move(identifier),
+                .room_id = std::move(room),
+                .date_time = DateTime(year, month, day, hour),
+                .externals_allowed = externals_allowed
             }
-            )
-            ;
+            );
         }
         else if (objectElementType == "PARTICIPATION")
         {
             //== string properties from child XML elements
-            std::string meeting, user;
+            std::string meeting, user, external_string;
 
             //== booleans indicating whether the above properties were already found
             bool found_meeting = false;
             bool found_user = false;
+            bool found_external_string = false;
 
 
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
@@ -648,6 +681,23 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                     found_user = true;
                     user = tempElementChildValue;
                 }
+                else if (propertyElementType == "EXTERNAL")
+                {
+                    if (found_external_string)
+                    {
+                        errorStream << "PARTICIPATION element cant have more than one EXTERNAL property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_external_string = true;
+                    external_string = tempElementChildValue;
+                }
+                else
+                {
+                    //> Filter out any other unrecognized tags
+                    errorStream << "Unrecognized property for PARTICIPATION: \"" << propertyElementType << "\"" << std::endl;
+                    goto continue_to_next_object_element;
+                }
             }
 
 
@@ -661,6 +711,11 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             {
                 errorStream << "PARTICIPATION must have a MEETING property" << std::endl;
                 goto continue_to_next_object_element;
+            }
+
+            if (!found_external_string)
+            {
+                /* Is allowed, optional property */
             }
 
 
@@ -679,16 +734,17 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             }
 
 
+            bool external = found_external_string ? parse_boolean(external_string) : false;
+
+
             //> Add participation if all checks passed
             parsed_participations.push_back((ParticipationElement)
             {
-                .
-                meeting = std::move(meeting),
-                .
-                user = std::move(user)
+                .meeting = std::move(meeting),
+                .user = std::move(user),
+                .external = external
             }
-            )
-            ;
+            );
         }
         else
         {
@@ -698,4 +754,31 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
 
     continue_to_next_object_element:;
     }
+}
+
+void XmlParser::parseElement(std::string element)
+{
+    std::unordered_map<std::string, unsigned int> stringValues = {
+        {"CAMPUS", 0},
+        {"BUILDING", 1},
+        {"ROOM", 2},
+        {"MEETING", 3},
+        {"PARTICIPATION", 4}
+    };
+
+    switch (stringValues.at(element))
+    {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        default:
+            break;
+    }
+}
+
+bool XmlParser::parseProperty(std::string prop)
+{
+    return false;
 }
