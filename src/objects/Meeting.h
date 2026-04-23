@@ -27,14 +27,9 @@ public:
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
      * @param date_time of when the meeting takes/took place
-     * @param externals_allowed boolean indicating whether external users are allowed to participate in this meeting
-     *
-    *    REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
-    REQUIRE(!roomId.empty(), "Failed to construct meeting. 'room' can not be empty.");
-    REQUIRE(date.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
-
+     * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), bool externals_allowed = false);
+    Meeting(const std::string& label, const std::string& id, Room* room, const bool& online, const DateTime& date_time = DateTime(), bool externals_allowed = false);
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -63,6 +58,15 @@ public:
     Room* getRoom() const;
 
     /**
+     * @brief online bool getter.
+     *
+     *
+     * @pre Failed to get online status. Meeting has to be properly initialized with the constructor.
+     *
+     * @return online status of meeting
+     */
+     const bool& getOnline() const;
+    /**
      * @brief Date getter.
      *
      *
@@ -70,6 +74,7 @@ public:
      *
      * @return the date of when this meeting takes place
      */
+
     const DateTime& getDateTime() const;
 
     /**
@@ -97,7 +102,7 @@ public:
      *
      * @param orderAdded of the meeting
      */
-    void setOrder(int orderAdded);
+    void setOrder(const int orderAdded);
 
 
     /**
@@ -187,6 +192,7 @@ private:
     DateTime date_time;
     State state;
     int order;
+    bool online;
 
     Users participants;
     bool externals_allowed;

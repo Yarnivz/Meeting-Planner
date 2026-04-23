@@ -17,9 +17,9 @@ static inline bool parse_boolean(const std::string& s)
 }
 
 
+XmlParser::XmlParser(std::ostream& errorStream): Parser(errorStream) {}
 
-
-void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
+void XmlParser::parse(const std::string& filename)
 {
     TiXmlDocument doc;
     REQUIRE(!filename.empty(), "The file cannot be empty");
@@ -404,9 +404,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 id = std::move(identifier),
                 .
                 capacity = capacity
-            }
-            )
-            ;
+            });
         }
         else if (objectElementType == "MEETING")
         {
@@ -766,15 +764,38 @@ void XmlParser::parseElement(std::string element)
         {"PARTICIPATION", 4}
     };
 
+    std::vector<std::string> props;
+
     switch (stringValues.at(element))
     {
+        //CAMPUS
         case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        default:
+            props = {"NAME", "IDENTIFIER"};
             break;
+        //BUILDING
+        case 1:
+            props = {"NAME", "IDENTIFIER", "CAMPUS"};
+            break;
+        //ROOM
+        case 2:
+            props = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
+            break;
+        //MEETING
+        case 3:
+            props = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
+            break;
+        //PARTICIPATION
+        case 4:
+            props = {"USER", "EXTERNAL", "MEETING"};
+            break;
+        default:
+            errorStream << "Unrecognized object element:  " << element << std::endl;
+            break;
+    }
+
+    for (std::string prop : props)
+    {
+        parseProperty(prop);
     }
 }
 

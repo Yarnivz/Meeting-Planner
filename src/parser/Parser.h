@@ -5,7 +5,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 #include <list>
-#include <ostream>
+#include <iostream>
 #include <string>
 #include "./objects/DateTime.h"
 
@@ -43,9 +43,9 @@ struct ParticipationElement
 class Parser
 {
 public:
-    explicit Parser() = default;
+    explicit Parser(std::ostream& errorStream = std::cerr);
 
-    virtual void parse(const std::string& filename, std::ostream& errorStream) = 0;
+    virtual void parse(const std::string& filename) = 0;
 
     const std::list<RoomElement>& parsedRooms() const;
 
@@ -67,5 +67,6 @@ protected:
     std::list<RoomElement> parsed_rooms;
     std::list<MeetingElement> parsed_meetings;
     std::list<ParticipationElement> parsed_participations;
+    std::ostream& errorStream;
 };
 #endif //PARSER_H

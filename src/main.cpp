@@ -8,6 +8,7 @@
 
 int main()
 {
+
     XmlParser* parser = new XmlParser();
     StreamOutput* output = new StreamOutput();
 
