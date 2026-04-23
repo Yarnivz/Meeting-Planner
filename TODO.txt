@@ -10,6 +10,7 @@ Ishaak:
 
 Yarni:
 - buildings (in progress)
+- rework parser to use one function instead of the same code
 - renovations
 - simulate renovations
 - update Parser Test to implement new classes

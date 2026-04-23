@@ -11,6 +11,16 @@
 
 //TODO: add documentation
 
+struct CampusElement
+{
+    std::string name, id;
+};
+
+struct BuildingElement
+{
+    std::string name, id, campus_id;
+};
+
 struct MeetingElement
 {
     std::string label, id, room_id;
@@ -52,6 +62,8 @@ public:
     virtual ~Parser() = default;
 
 protected:
+    std::list<CampusElement> parsed_campuses;
+    std::list<BuildingElement> parsed_buildings;
     std::list<RoomElement> parsed_rooms;
     std::list<MeetingElement> parsed_meetings;
     std::list<ParticipationElement> parsed_participations;
