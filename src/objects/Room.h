@@ -32,7 +32,7 @@ public:
      *
      * @post     // IDEE: ENSURE(isProperlyInitialized)
      */
-    Room(const std::string& name, const std::string& id, unsigned capacity, Building* building);
+    Room(const std::string& name, const std::string& id, unsigned capacity, Building* building = nullptr);
 
     /**
      * @brief Copies a Room object.

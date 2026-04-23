@@ -334,7 +334,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 errorStream << "ROOM must have a CAPACITY property" << std::endl;
                 goto continue_to_next_object_element;
             }
-            if (!found_campus)
+            /*if (!found_campus)
             {
                 errorStream << "ROOM must have a CAMPUS property" << std::endl;
                 goto continue_to_next_object_element;
@@ -343,7 +343,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             {
                 errorStream << "ROOM must have a BUILDING property" << std::endl;
                 goto continue_to_next_object_element;
-            }
+            }*/
 
             //== 'capacity' string parsed into an int
             int capacity = 0;
@@ -381,7 +381,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
                 goto continue_to_next_object_element;
             }
 
-            //> Check if Campus is not empty
+            /*//> Check if Campus is not empty
             if (campus_id.empty())
             {
                 errorStream << "Room campus cannot be empty. Room will not be added." << std::endl;
@@ -393,7 +393,7 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
             {
                 errorStream << "Room building cannot be empty. Room will not be added." << std::endl;
                 goto continue_to_next_object_element;
-            }
+            }*/
 
             //> Add room if all the checks have passed
             parsed_rooms.push_back((RoomElement)
