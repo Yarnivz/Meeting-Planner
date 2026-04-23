@@ -27,11 +27,14 @@ TEST_F(TestWriteToStream, HappyDay1)
 
     DateTime date1 = DateTime(2026, 1, 2, 13);
     DateTime date2 = DateTime(2026, 3, 4, 14);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
 
     Room *r1, *r2, *r3;
-    p.addRoom(r1 = new Room("Room 1", "r1", 20));
-    p.addRoom(r2 = new Room("Room 2", "r2", 20));
-    p.addRoom(r3 = new Room("Empty Room", "empty", 1));
+    p.addRoom(r1 = new Room("Room 1", "r1", 20, building1));
+    p.addRoom(r2 = new Room("Room 2", "r2", 20, building1));
+    p.addRoom(r3 = new Room("Empty Room", "empty", 1, building1));
 
     ASSERT_EQ(r1, p.getRoom("r1"));
     ASSERT_EQ(r2, p.getRoom("r2"));
@@ -78,9 +81,13 @@ TEST_F(TestWriteToStream, HappyDay2)
     DateTime date1 = DateTime(2025, 12, 12, 20);
     DateTime date2 = DateTime(2026, 1, 1, 21);
 
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
     Room *r1, *r2;
-    p.addRoom(r1 = new Room("M.G.025", "MG025", 20));
-    p.addRoom(r2 = new Room("G.T.103", "GT103", 20));
+    p.addRoom(r1 = new Room("M.G.025", "MG025", 20, building1));
+    p.addRoom(r2 = new Room("G.T.103", "GT103", 15, building1));
 
     p.addMeeting(new Meeting("Important Meeting 1", "m1", r1, date1));
     p.addMeeting(new Meeting("Important Meeting 2", "m2", r1, date2));
@@ -146,9 +153,13 @@ TEST_F(TestWriteToStream, Processed)
     DateTime date1 = DateTime(2025, 12, 12, 0);
     DateTime date2 = DateTime(2026, 1, 1, 11);
 
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
     Room *r1, *r2;
-    p.addRoom(r1 = new Room("M.G.025", "MG025", 20));
-    p.addRoom(r2 = new Room("G.T.103", "GT103", 20));
+    p.addRoom(r1 = new Room("M.G.025", "MG025", 20, building1));
+    p.addRoom(r2 = new Room("G.T.103", "GT103", 20, building1));
 
     Meeting* m1 = new Meeting("Important Meeting 1", "m1", r1, date1);
     Meeting* m2 = new Meeting("Important Meeting 2", "m2", r1, date2);

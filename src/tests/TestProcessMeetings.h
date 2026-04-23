@@ -17,10 +17,14 @@ protected:
 TEST_F(ProcessMeetingsTest, HappyDay)
 {
     App p = App(nullptr, nullptr);
+
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    Room* mg025 = new Room("M.G.025", "MG025", 40);
-    Room* gt103 = new Room("G.T.103", "GT103", 40);
+    Room* mg025 = new Room("M.G.025", "MG025", 40, building1);
+    Room* gt103 = new Room("G.T.103", "GT103", 40, building1);
 
     p.addRoom(mg025);
     p.addRoom(gt103);
@@ -71,10 +75,15 @@ TEST_F(ProcessMeetingsTest, HappyDay)
 TEST_F(ProcessMeetingsTest, Conflicts)
 {
     App p = App(nullptr, nullptr);
+
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    Room* r1 = new Room("M.G.025", "MG025", 40);
-    Room* r2 = new Room("G.T.103", "GT103", 100);
+    Room* r1 = new Room("M.G.025", "MG025", 40, building1);
+    Room* r2 = new Room("G.T.103", "GT103", 100, building1);
 
     p.addRoom(r1);
     p.addRoom(r2);
@@ -154,9 +163,14 @@ TEST_F(ProcessMeetingsTest, Conflicts)
 TEST_F(ProcessMeetingsTest, Order)
 {
     App p = App(nullptr, nullptr);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
+
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    Room* r1 = new Room("M.G.025", "MG025", 40);
+    Room* r1 = new Room("M.G.025", "MG025", 40, building1);
 
     p.addRoom(r1);
     ASSERT_EQ(r1, p.getRoom("MG025"));
@@ -234,8 +248,11 @@ TEST_F(ProcessMeetingsTest, ParseOrder)
 TEST_F(ProcessMeetingsTest, ContractViolation)
 {
     App p = App(nullptr, nullptr);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
 
-    Room* r = new Room("r", "r", 20);
+    Room* r = new Room("r", "r", 20, building1);
     p.addRoom(r);
     ASSERT_EQ(r, p.getRoom("r"));
 

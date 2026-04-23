@@ -15,7 +15,11 @@ protected:
 
 TEST_F(TestRoom, HappyDay)
 {
-    Room r("A Room", "a_room_id", 20);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
+    Room r("A Room", "a_room_id", 20, building1);
 
     EXPECT_TRUE(r.isProperlyInitialized());
     EXPECT_EQ(20u, r.getCapacity());
@@ -25,13 +29,22 @@ TEST_F(TestRoom, HappyDay)
 
 TEST_F(TestRoom, ContractViolation)
 {
-    EXPECT_DEATH(Room("Room With Empty Id", "", 20), "");
-    EXPECT_DEATH(Room("Room With No Capacity", "a_id", 0), "");
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
+    EXPECT_DEATH(Room("Room With Empty Id", "", 20, building1), "");
+    EXPECT_DEATH(Room("Room With No Capacity", "a_id", 0, building1), "");
+    EXPECT_DEATH(Room("Room With No Building", "a_id", 20, nullptr), "");
 }
 
 TEST_F(TestRoom, CopyConstructor)
 {
-    Room r1("A Room", "room20", 13);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
+    Room r1("A Room", "room20", 13, building1);
     Room r2 = r1;
 
     EXPECT_TRUE(r1.isProperlyInitialized());

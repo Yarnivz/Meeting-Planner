@@ -16,7 +16,11 @@ protected:
 
 TEST_F(TestMeeting, HappyDay)
 {
-    Room r = Room("label", "some_room", 123);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+
+    Room r = Room("label", "some_room", 123, building1);
     Meeting meeting = Meeting("My Meeting", "meeting0", &r, DateTime(2025, 2, 2, 0));
 
     EXPECT_TRUE(meeting.isProperlyInitialized());
