@@ -4,6 +4,8 @@
 
 #include "XmlParser.h"
 
+#include <unordered_map>
+
 #include "helper/DesignByContract.h"
 #include "tinyxml.h"
 #include "objects/Room.h"
@@ -752,4 +754,31 @@ void XmlParser::parse(const std::string& filename, std::ostream& errorStream)
 
     continue_to_next_object_element:;
     }
+}
+
+void XmlParser::parseElement(std::string element)
+{
+    std::unordered_map<std::string, unsigned int> stringValues = {
+        {"CAMPUS", 0},
+        {"BUILDING", 1},
+        {"ROOM", 2},
+        {"MEETING", 3},
+        {"PARTICIPATION", 4}
+    };
+
+    switch (stringValues.at(element))
+    {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        default:
+            break;
+    }
+}
+
+bool XmlParser::parseProperty(std::string prop)
+{
+    return false;
 }
