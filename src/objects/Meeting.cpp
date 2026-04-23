@@ -8,8 +8,8 @@
 #include "objects/User.h"
 
 
-Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, bool externals_allowed)
-    : label(label), id(id), room(room), date_time(date_time), externals_allowed(externals_allowed)
+Meeting::Meeting(const std::string& label, const std::string& id, Room* room,const bool& online, const DateTime& date_time, bool externals_allowed)
+    : label(label), id(id), room(room), online(online), date_time(date_time), externals_allowed(externals_allowed)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
@@ -36,6 +36,12 @@ Room* Meeting::getRoom() const
 {
     REQUIRE(isProperlyInitialized(), "Failed to get room. Meeting has to be properly initialized with the constructor.");
     return room;
+}
+
+const bool& Meeting::getOnline() const
+{
+    REQUIRE(isProperlyInitialized(), "Failed to get online status. Meeting has to be properly initialized with the constructor.");
+    return online;
 }
 
 const DateTime& Meeting::getDateTime() const
