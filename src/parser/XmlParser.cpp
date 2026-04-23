@@ -793,7 +793,7 @@ void XmlParser::parseElement(std::string element)
             break;
     }
 
-    for (std::string prop : props)
+    for (const std::string& prop : props)
     {
         parseProperty(prop);
     }
