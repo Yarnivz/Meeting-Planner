@@ -20,11 +20,14 @@ TEST_F(TestApp, HappyDay1)
     DateTime date1 = DateTime(2026, 1, 2, 0);
     DateTime date2 = DateTime(2026, 3, 4, 0);
 
-    Room* room1 = new Room("Room 1", "r1", 20);
-    Room* room2 = new Room("Room 2", "r2", 20);
-    Room* room3 = new Room("Room 3", "r3", 20);
-    Room* room4 = new Room("Room 4", "r4", 20);
-    Room* roome = new Room("Empty Room", "empty", 1);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
+    Room* room1 = new Room("Room 1", "r1", 20, building1);
+    Room* room2 = new Room("Room 2", "r2", 20, building1);
+    Room* room3 = new Room("Room 3", "r3", 20, building1);
+    Room* room4 = new Room("Room 4", "r4", 20, building1);
+    Room* roome = new Room("Empty Room", "empty", 1, building1);
 
     p.addRoom(room1);
     p.addRoom(room2);
@@ -80,7 +83,7 @@ TEST_F(TestApp, HappyDay1)
 
 
     EXPECT_EQ(size_t(5), p.getAllRooms().size());
-    p.addRoom(new Room("Room 5", "r5", 20));
+    p.addRoom(new Room("Room 5", "r5", 20, building1));
     EXPECT_EQ(size_t(6), p.getAllRooms().size());
 
 
@@ -91,6 +94,9 @@ TEST_F(TestApp, HappyDay1)
 TEST_F(TestApp, RetrieveInvalid)
 {
     App p = App(nullptr, nullptr);
+    //possibly diversify bulding and campus later for extra tests
+    Campus* campus1 = new Campus ("Middelheim", "M");
+    Building* building1 = new Building("Bib", "G", campus1);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     EXPECT_EQ(nullptr, p.getRoom("r1111"));
@@ -98,7 +104,7 @@ TEST_F(TestApp, RetrieveInvalid)
     EXPECT_EQ(nullptr, p.getMeetingById("m89"));
     //EXPECT_EQ(std::list<Meeting*>{}, p.getMeetingsByDate(Date(1, 2, 3)));
 
-    p.addMeeting(new Meeting("label", "id", new Room("name", "id", 123)));
+    p.addMeeting(new Meeting("label", "id", new Room("name", "id", 123, building1)));
 
     EXPECT_EQ(size_t(0), p.getMeetingById("id")->getParticipantCount());
     EXPECT_EQ(nullptr, p.getMeetingById("id")->getParticipant("john"));

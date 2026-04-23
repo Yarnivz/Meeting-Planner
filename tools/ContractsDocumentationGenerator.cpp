@@ -36,6 +36,8 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
     std::ifstream codeFile(fileDirectory + baseFilename + ".cpp");
     std::ifstream headerFile(fileDirectory + baseFilename + ".h");
 
+    bool multicomment = false;
+
     std::string line;
     if (!codeFile.is_open())
     {
@@ -91,7 +93,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             currentFunction.pop_back();
             std::cout << "currentfunctionbase is " << currentFunction << std::endl;
             // finds all contracts in the functions cpp file
-            getCodeContracts(baseFilename, currentFunction, codeFileLines, preContracts, postContracts);
+            getCodeContracts(baseFilename,  multicomment, currentFunction, codeFileLines, preContracts, postContracts);
 
             /*preContracts.push_back("test" + currentFunction);
             preContracts.push_back("test1");
@@ -223,7 +225,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
     writableHeaderFile.close(); // hold off and use experimentfile until tested properly enough
 }
 
-void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFilename, const std::string& currentFunction, std::vector<std::string>& codeFileLines, std::vector<std::string>& preContracts, std::vector<std::string>& postContracts)
+void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFilename, bool& multicomment, const std::string& currentFunction, std::vector<std::string>& codeFileLines, std::vector<std::string>& preContracts, std::vector<std::string>& postContracts)
 {
     int layer = 0;
     bool functionFound = false;
@@ -231,6 +233,19 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
     for (size_t k = 0; k < codeFileLines.size(); ++k)
 
     {
+        if (codeFileLines[k].find("/*") != std::string::npos)
+        {
+            multicomment = true;
+        } else if (codeFileLines[k].find("*/") != std::string::npos)
+        {
+            multicomment = false;
+        }
+        
+        if (multicomment)
+        {
+            continue;
+        }
+
         std::string tempFunctionLine = codeFileLines[k];
         std::string stringToRemove = baseFilename + "::";
         size_t removeStringIndex = tempFunctionLine.find(stringToRemove);
