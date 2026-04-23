@@ -31,7 +31,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
     }
 
 
-    parser->parse(filename, errStream);
+    parser->parse(filename);
 
 
     //> Add all elements in the correct order

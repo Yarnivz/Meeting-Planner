@@ -7,6 +7,7 @@
 
 int main()
 {
+
     XmlParser* parser = new XmlParser();
     std::ostream* scout = &std::cout;
     std::ofstream* fout = new std::ofstream("output.txt");

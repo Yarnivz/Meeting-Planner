@@ -11,8 +11,8 @@
 class XmlParser : public Parser
 {
 public:
-    explicit XmlParser() = default;
-    void parse(const std::string& filename, std::ostream& errorStream) override;
+    explicit XmlParser(std::ostream& errorStream = std::cerr);
+    void parse(const std::string& filename) override;
 private:
     void parseElement(std::string element);
     bool parseProperty(std::string prop);
