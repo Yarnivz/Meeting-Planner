@@ -18,6 +18,10 @@ Meeting::Meeting(const std::string& label, const std::string& id, Room* room,con
     this->state = UNPROCESSED;
     this->order = 0;
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "Meeting creation failed. Object was not properly initialized.");
+    ENSURE(getOrder() == this->order, "Meeting creation failed. Order was not correctly set.");
+    ENSURE(isUnProcessed() && !isProcessed() && !isCancelled(), "Meeting creation failed, state was not correctly set.");
 }
 
 bool Meeting::isProperlyInitialized() const

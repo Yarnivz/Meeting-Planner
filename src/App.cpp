@@ -8,12 +8,13 @@
 #include <queue>
 #include <tinyxml.h>
 #include "helper/DesignByContract.h"
-#include "parser/Parser.h"
 
 
-App::App(Parser* parser, std::ostream* output) : parser(parser), output(output)
+App::App(Parser* parser, Output* output) : parser(parser), output(output)
 {
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "App creation failed. Object was not properly intialized.");
 }
 
 bool App::isProperlyInitialized() const
@@ -118,55 +119,8 @@ void App::writeToStream()
 {
     REQUIRE(output, "App doesnt have an output attached.");
 
-    std::list<const Meeting*> cancelled, processed, unprocessed;
-
-    //Sort by state
-    for (const std::pair<const std::string, Meeting*>& item : meetings.getRawIdMap())
-    {
-        const Meeting* m = item.second;
-        if (m->isUnProcessed())
-        {
-            unprocessed.push_back(m);
-        }
-        else if (m->isProcessed())
-        {
-            processed.push_back(m);
-        }
-        else if (m->isCancelled())
-        {
-            cancelled.push_back(m);
-        }
-    }
-
-    //Write all past meetings
-    if (!processed.empty()) *output << std::endl << "Past meetings:" << std::endl;
-    for (const Meeting* m : processed)
-    {
-        writeMeeting(*output, m);
-    }
-
-    //Write all future meetings
-    if (!unprocessed.empty()) *output << std::endl << "Future meetings:" << std::endl;
-    for (const Meeting* m : unprocessed)
-    {
-        writeMeeting(*output, m);
-    }
-
-    //Write all conflicts
-    if (!cancelled.empty()) *output << std::endl << "Conflicts:" << std::endl;
-    for (const Meeting* m : cancelled)
-    {
-        writeMeeting(*output, m);
-        *output << "  Reason: " << m->getCancellationReason() << std::endl;
-    }
-
-    //Write all rooms
-    if (!rooms.empty()) *output << std::endl << "Rooms:" << std::endl;
-    for (const std::pair<std::string, Room*> item : rooms)
-    {
-        const Room* room = item.second;
-        writeRoom(*output, room);
-    }
+    output->printMeetings(meetings);
+    output->printRooms(rooms);
 }
 
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
@@ -382,31 +336,6 @@ App::~App()
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
     for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;
     for (const std::pair<const std::string, User*>& u : users) delete u.second;
-}
-
-
-void App::writeMeeting(std::ostream& onStream, const Meeting* meeting)
-{
-    const DateTime& date_time = meeting->getDateTime();
-
-    onStream << "- " << *(meeting->getRoom()) << ", " << date_time.getWeekDay() << " " << date_time << std::endl;
-    onStream << "  " << *meeting << std::endl;
-
-    onStream << "  ";
-    for (Users::const_iterator it = meeting->getParticipants().begin(); it != meeting->getParticipants().end(); ++it)
-    {
-        const User* participant = it->second;
-        onStream << participant->getId();
-        if (std::next(it) != meeting->getParticipants().end()) onStream << ", ";
-    }
-    onStream << std::endl;
-    onStream << "  Meeting ID: " << meeting->getId() << std::endl;
-}
-
-void App::writeRoom(std::ostream& onStream, const Room* room)
-{
-    onStream << "- " << *room << std::endl;
-    onStream << "  Capacity: " << room->getCapacity() << " people" << std::endl;
 }
 
 // Meetings* App::_getMutMeetingsByRoom(const std::string& roomId)

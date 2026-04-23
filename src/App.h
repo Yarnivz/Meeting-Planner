@@ -11,6 +11,7 @@
 #include "objects/Room.h"
 #include "objects/Meeting.h"
 #include "parser/Parser.h"
+#include "output/Output.h"
 #include "objects/User.h"
 #include "TypeDefs.h"
 
@@ -20,7 +21,7 @@ public:
     /**
      * @brief Constructor of the App class.
      */
-    App(Parser* parser = nullptr, std::ostream* output = nullptr);
+    App(Parser* parser = nullptr, Output* output = nullptr);
 
     /**
      * @brief Checks whether the App was properly initialized by the constructor.
@@ -228,11 +229,9 @@ public:
     ~App();
 
 private:
-    void writeMeeting(std::ostream& onStream, const Meeting* meeting);
-    void writeRoom(std::ostream& onStream, const Room* room);
 
     Parser* parser;
-    std::ostream* output;
+    Output* output;
 
     Rooms rooms;
     MeetingRegistry meetings;

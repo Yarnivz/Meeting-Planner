@@ -52,6 +52,8 @@ set(COMMON_SOURCE_FILES
         src/objects/MeetingRegistry.cpp
         src/parser/Parser.cpp
         src/parser/XmlParser.cpp
+        src/output/Output.cpp
+        src/output/StreamOutput.cpp
         src/App.cpp)
 
 # Set source files for RELEASE target

@@ -11,6 +11,6 @@ Future meetings:
 
 Rooms:
 - G.T.103
-  Capacity: 20 people
+  Capacity: 15 people
 - M.G.025
   Capacity: 20 people
