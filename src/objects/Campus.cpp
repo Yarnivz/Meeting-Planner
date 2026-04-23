@@ -13,8 +13,9 @@ Campus::Campus(const std::string& name, const std::string& id) :
 
     init_check_this_ptr = this;
 
+    ENSURE(isProperlyInitialized(), "Campus was not properly initialized.");
     ENSURE(this->name == name, "Name was not added to this Campus object");
-    ENSURE(this->id == id, "Id was not added to this Campus object");
+    ENSURE(getId() == id, "Id was not added to this Campus object");
 }
 
 bool Campus::isProperlyInitialized() const
@@ -24,13 +25,13 @@ bool Campus::isProperlyInitialized() const
 
 const std::string& Campus::getId() const
 {
-    REQUIRE(!id.empty(), "Id cannot be empty");
+    //REQUIRE(!id.empty(), "Id cannot be empty");
     return id;
 }
 
 const std::string& Campus::toString() const
 {
-    REQUIRE(!id.empty(), "Name cannot be empty");
+    //REQUIRE(!id.empty(), "Name cannot be empty");
     return name;
 }
 

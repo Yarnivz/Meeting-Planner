@@ -14,6 +14,8 @@
 App::App(Parser* parser, std::ostream* output) : parser(parser), output(output)
 {
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "App creation failed. Object was not properly intialized.");
 }
 
 bool App::isProperlyInitialized() const

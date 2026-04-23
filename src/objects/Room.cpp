@@ -30,7 +30,11 @@ Room::Room(const std::string& name, const std::string& id, unsigned capacity, Bu
     }
 
     init_check_this_ptr = this;
-    // IDEE: ENSURE(isProperlyInitialized)
+
+    ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.");
+    ENSURE(getCapacity() == capacity, "Room creation failed. Capacity was not set correctly.");
+    ENSURE(getId() == id, "Room creation failed. Id was not set correctly.");
+    //ENSURE(getBuilding() == building, "Room creation failed. Building was not set correctly")
 }
 
 Room::Room(const Room& r)
@@ -45,6 +49,11 @@ Room::Room(const Room& r)
     building = r.building;
 
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.");
+    ENSURE(getCapacity() == r.capacity, "Room creation failed. Capacity was not set correctly.");
+    ENSURE(getId() == r.id, "Room creation failed. Id was not set correctly.");
+    //ENSURE(getBuilding() == building, "Room creation failed. Building was not set correctly")
 }
 
 bool Room::isProperlyInitialized() const
@@ -55,19 +64,19 @@ bool Room::isProperlyInitialized() const
 
 const std::string& Room::getId() const
 {
-    REQUIRE(!id.empty(), "id must not be empty");
+    ENSURE(!id.empty(), "id must not be empty");
     return id;
 }
 
 const std::string& Room::toString() const
 {
-    REQUIRE(!name.empty(), "name must not be empty");
+    ENSURE(!name.empty(), "name must not be empty");
     return name;
 }
 
 unsigned Room::getCapacity() const
 {
-    REQUIRE(capacity > 0, "Capacity must be greater than 0");
+    ENSURE(capacity > 0, "Capacity must be greater than 0");
     return capacity;
 }
 
