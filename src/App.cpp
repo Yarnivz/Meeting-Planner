@@ -44,7 +44,6 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             errStream << "Room ids must be unique: " << r.id << std::endl;
             continue;
         }
-
         addRoom(new Room(r.name, r.id, r.capacity));
     }
 
@@ -63,8 +62,8 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
                 "\' which doesnt exist." << std::endl;
             continue;
         }
-
-        addMeeting(new Meeting(m.label, m.id, mr, m.date_time));
+        //add temporary false status to meeting online status for now as workaround
+        addMeeting(new Meeting(m.label, m.id, mr, "false", m.date_time));
     }
 
     for (const ParticipationElement& p : parser->parsedParticipations())
@@ -180,7 +179,10 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
     }
-    participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
+    if (!meeting->getOnline())
+    {
+        participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
+    }
 
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting hasn't been processed");
 }
@@ -268,7 +270,7 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
         ENSURE(possible_conflict->getDateTime() == m->getDateTime(), "Something went wrong. Looking meetings up by date failed.");
         if (possible_conflict != m &&
             possible_conflict->isProcessed() &&
-            possible_conflict->getRoom() == m->getRoom()
+            (!m->getOnline() && possible_conflict->getRoom() == m->getRoom())
         )
             return possible_conflict;
     }

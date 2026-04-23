@@ -233,12 +233,17 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
     for (size_t k = 0; k < codeFileLines.size(); ++k)
 
     {
+
+
+        // multiline comment detection may be little bugged, might have to look further into it
         if (codeFileLines[k].find("/*") != std::string::npos)
         {
             multicomment = true;
+            std::cout << "starthalt--------" << std::endl;
         } else if (codeFileLines[k].find("*/") != std::string::npos)
         {
             multicomment = false;
+            std::cout << "stophalt---------" << std::endl;
         }
         
         if (multicomment)
@@ -262,6 +267,11 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
         {
             if (codeFileLines[k].find("REQUIRE") != std::string::npos)
             {
+                if (codeFileLines[k].find("//") != std::string::npos && codeFileLines[k].find("REQUIRE") > codeFileLines[k].find("//"))
+                {
+                    continue;
+                }
+
                 std::cout << "REQUIRE contract detected for " << currentFunction << std::endl;
                 size_t startIndex = codeFileLines[k].find('"') + 1;
                 size_t endIndex = codeFileLines[k].find_last_of('"');
@@ -271,6 +281,11 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
             }
             else if (codeFileLines[k].find("ENSURE") != std::string::npos)
             {
+                if (codeFileLines[k].find("//") != std::string::npos && codeFileLines[k].find("ENSURE") > codeFileLines[k].find("//"))
+                {
+                    continue;
+                }
+
                 std::cout << "ENSURE contract detected for " << currentFunction << std::endl;
                 size_t startIndex = codeFileLines[k].find('"') + 1;
                 size_t endIndex = codeFileLines[k].find_last_of('"');

@@ -8,7 +8,7 @@
 #include "objects/User.h"
 
 
-Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time)
+Meeting::Meeting(const std::string& label, const std::string& id, Room* room,const bool& online, const DateTime& date_time)
     : label(label), id(id), room(room), date_time(date_time)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
@@ -38,6 +38,12 @@ Room* Meeting::getRoom() const
     return room;
 }
 
+const bool& Meeting::getOnline() const
+{
+    REQUIRE(isProperlyInitialized(), "Failed to get online status. Meeting has to be properly initialized with the constructor.");
+    return online;
+}
+
 const DateTime& Meeting::getDateTime() const
 {
     REQUIRE(isProperlyInitialized(), "Failed to get date. Meeting has to be properly initialized with the constructor.");
@@ -60,9 +66,9 @@ int Meeting::getOrder() const
 
 void Meeting::setOrder(const int orderAdded)
 {
-    REQUIRE(orderAdded >= 0, "cannot set order to a negative value %d", orderAdded);
+    /*REQUIRE(orderAdded >= 0, "cannot set order to as negative value %d", orderAdded);
     order = orderAdded;
-    ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value");
+    ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value"); */
 }
 
 void Meeting::process()
