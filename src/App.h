@@ -61,15 +61,25 @@ public:
      * Registers a new 'Campus' object.
      * The App class expects ownership of the Campus pointer passed in
      *
+     * @pre The provided campus cannot be null.
+     * @pre Campus needs to be properly initialized by the constructor.
+     * @pre Campus id has to be unique.
+     *
      * @param campus to register
+     *
+     * @post The campus was added to the App.
      */
     void addCampus(Campus* campus);
 
     /**
      * @brief Retrieve a registered Campus based on its id.
      *
+     * @pre The provided campus id cannot be empty.
+     *
      * @param campusId Identifier of the campus to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
+     *
+     * @post The found campus must have the right id.
      */
     Campus* getCampus(const std::string& campusId);
 
@@ -79,15 +89,25 @@ public:
      * Registers a new 'Building' object.
      * The App class expects ownership of the Building pointer passed in
      *
+     * @pre The provided building cannot be null.
+     * @pre Building needs to be properly initialized by the constructor.
+     * @pre Room id has to be unique.
+     *
      * @param building to register
+     *
+     * @post The building was added to the App.
      */
     void addBuilding(Building* building);
 
     /**
      * @brief Retrieve a registered Building based on its id.
      *
+     * @pre The provided building id cannot be empty.
+     *
      * @param buildingId Identifier of the building to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
+     *
+     * @post The found building must have the right id.
      */
     Building* getBuilding(const std::string& buildingId);
 
