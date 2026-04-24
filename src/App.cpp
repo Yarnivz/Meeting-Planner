@@ -178,6 +178,50 @@ void App::processAllMeetings(const bool verbose)
     ENSURE(true, "Not all meetings have been processed");
 }
 
+void App::addCampus(Campus* campus)
+{
+    REQUIRE(campus, "The provided campus cannot be null.");
+    REQUIRE(campus->isProperlyInitialized(), "Campus needs to be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(campus->getId()), "Campus id has to be unique.");
+
+    campuses.insert({campus->getId(), campus});
+
+    ENSURE(getCampus(campus->getId()) == campus, "The campus was not added to the App.");
+}
+
+Campus* App::getCampus(const std::string& campusId)
+{
+    REQUIRE(!campusId.empty(), "The provided campus id cannot be empty");
+    const Campuses::iterator& it = campuses.find(campusId);
+
+    if (it == campuses.end()) return nullptr;
+
+    ENSURE(it->second->getId() == campusId, "Something went wrong. The campus which was found did not have the right id.");
+    return it->second;
+}
+
+void App::addBuilding(Building* building)
+{
+    REQUIRE(building, "The provided building cannot be null.");
+    REQUIRE(building->isProperlyInitialized(), "Building needs to be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(building->getId()), "Room id has to be unique.");
+
+    buildings.insert({building->getId(), building});
+
+    ENSURE(getBuilding(building->getId()) == building, "The building was not added to the App");
+}
+
+Building* App::getBuilding(const std::string& buildingId)
+{
+    REQUIRE(!buildingId.empty(), "The provided building id cannot be empty");
+    const Buildings::iterator& it = buildings.find(buildingId);
+
+    if (it == buildings.end()) return nullptr;
+
+    ENSURE(it->second->getId() == buildingId, "The building which was found did not have the right id.");
+    return it->second;
+}
+
 void App::addRoom(Room* room)
 {
     REQUIRE(room, "The provided room cannot be null.");
@@ -191,7 +235,7 @@ void App::addRoom(Room* room)
 
 Room* App::getRoom(const std::string& roomId)
 {
-    const Rooms::iterator it = rooms.find(roomId);
+    const Rooms::iterator& it = rooms.find(roomId);
 
     if (it == rooms.end()) return nullptr;
 
@@ -281,7 +325,7 @@ void App::addUser(User* user)
 
 User* App::getUser(const std::string& userId)
 {
-    const Users::iterator it = users.find(userId);
+    const Users::iterator& it = users.find(userId);
 
     if (it == users.end()) return nullptr;
 

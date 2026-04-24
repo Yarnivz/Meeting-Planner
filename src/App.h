@@ -50,10 +50,46 @@ public:
      *
      * Prints all registered meetings and rooms to the app's output.
      *
-     * @pre App doesnt have an output attached.
+     * @pre App needs to have an output attached.
      *
      */
     void writeToStream();
+
+    /**
+     * @brief Registers a Campus to the app.
+     *
+     * Registers a new 'Campus' object.
+     * The App class expects ownership of the Campus pointer passed in
+     *
+     * @param campus to register
+     */
+    void addCampus(Campus* campus);
+
+    /**
+     * @brief Retrieve a registered Campus based on its id.
+     *
+     * @param campusId Identifier of the campus to retrieve
+     * @return a pointer to the room with given id if it exists, nullptr otherwise
+     */
+    Campus* getCampus(const std::string& campusId);
+
+    /**
+     * @brief Registers a Building to the app.
+     *
+     * Registers a new 'Building' object.
+     * The App class expects ownership of the Building pointer passed in
+     *
+     * @param building to register
+     */
+    void addBuilding(Building* building);
+
+    /**
+     * @brief Retrieve a registered Building based on its id.
+     *
+     * @param buildingId Identifier of the building to retrieve
+     * @return a pointer to the room with given id if it exists, nullptr otherwise
+     */
+    Building* getBuilding(const std::string& buildingId);
 
     /**
      * @brief Register a room.
@@ -68,14 +104,14 @@ public:
      *
      * @param room to register
      *
-     * @post The room was not added to the App
+     * @post The room was added to the App
      */
     void addRoom(Room* room);
 
     /**
      * @brief Retrieve a registered room based on its id.
      *
-     * @param roomId of the room to retrieve
+     * @param roomId Identifier of the room to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
      *
      * @post Something went wrong. The room which was found did not have the right id.
@@ -97,7 +133,7 @@ public:
      *
      * Checks if the room with given id is occupied by another meeting, on the given date.
      *
-     * A room is occupied iff:
+     * A room is occupied if:
      *   -A meeting takes place in that room.
      *   -That meeting takes place on the given date
      *   -The meeting was registered as 'done' by the meeting processor
@@ -105,8 +141,8 @@ public:
      *
      * @pre This room does not exist.
      *
-     * @param roomId of the room to check
-     * @param date_time to check
+     * @param roomId Identifier of the room to check
+     * @param date_time Date to check
      * @return bool indicating the result
      */
     bool isRoomOccupied(const std::string& roomId, const DateTime& date_time);
@@ -121,7 +157,7 @@ public:
      *
      * @pre This meeting doesn't exist.
      *
-     * @param meetingId of the meeting to check
+     * @param meetingId Identifier of the meeting to check
      * @return pointer to the conflicting meeting; nullptr if no conflict exists
      *
      * @post Something went wrong. Looking meetings up by date failed.
@@ -135,7 +171,7 @@ public:
      * Register and plan a new meeting.
      * The App expects ownership of the Meeting* passed in.
      *
-     * @param meeting to plan and register
+     * @param meeting The meeting to plan and register
      */
     void addMeeting(Meeting* meeting);
 
@@ -193,8 +229,8 @@ public:
      * @pre This user does not exist.
      * @pre Something went wrong. The user which was found was not correct.
      *
-     * @param userId of the user to check
-     * @param date_time to check
+     * @param userId Identifier of the user to check
+     * @param date_time Date to check
      * @return bool indicating the result
      */
     bool isUserOccupied(const std::string& userId, const DateTime& date_time);
@@ -204,7 +240,7 @@ public:
      *
      * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
      *
-     * @param meetingId Id of the meeting to retrieve.
+     * @param meetingId Identifier of the meeting to retrieve.
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      *
      * @contracts
@@ -233,6 +269,8 @@ private:
     Parser* parser;
     Output* output;
 
+    Campuses campuses;
+    Buildings buildings;
     Rooms rooms;
     MeetingRegistry meetings;
     Users users;
