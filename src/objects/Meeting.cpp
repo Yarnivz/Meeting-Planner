@@ -9,7 +9,7 @@
 
 
 Meeting::Meeting(const std::string& label, const std::string& id, Room* room,const bool& online, const DateTime& date_time, bool externals_allowed)
-    : label(label), id(id), room(room), online(online), date_time(date_time), externals_allowed(externals_allowed)
+    : label(label), id(id), room(room),  date_time(date_time), online(online), externals_allowed(externals_allowed)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
