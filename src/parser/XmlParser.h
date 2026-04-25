@@ -15,7 +15,7 @@ public:
     void parse(const std::string& filename) override;
 private:
     void parseElement(std::string element);
-    bool parseProperty(std::string prop);
+    //bool parseProperty(std::string prop);
 };
 
 

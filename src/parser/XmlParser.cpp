@@ -5,9 +5,11 @@
 #include "XmlParser.h"
 
 #include <unordered_map>
+#include <unordered_set>
 
 #include "helper/DesignByContract.h"
 #include "tinyxml.h"
+#include "objects/Date.h"
 #include "objects/Room.h"
 
 static inline bool parse_boolean(const std::string& s)
@@ -754,52 +756,265 @@ void XmlParser::parse(const std::string& filename)
     }
 }
 
-void XmlParser::parseElement(std::string element)
+
+
+static bool parseProperty(void* out_element, const std::string& string, PropertyType type)
 {
-    std::unordered_map<std::string, unsigned int> stringValues = {
-        {"CAMPUS", 0},
-        {"BUILDING", 1},
-        {"ROOM", 2},
-        {"MEETING", 3},
-        {"PARTICIPATION", 4}
+    switch (type)
+    {
+    case PROPERTYTYPE_STRING:
+        {
+            *(std::string*)out_element = string;
+            return true;
+        }
+
+    case PROPERTYTYPE_INT:
+        {
+            try {
+                *(int*)out_element = std::stoi(string);
+            } catch (std::exception& e) {
+                return false;
+            }
+            return true;
+        }
+
+    case PROPERTYTYPE_BOOL:
+        {
+            if (string == "true")
+            {
+                *(bool*)out_element = false;
+                return true;
+            }
+            if (string == "false")
+            {
+                *(bool*)out_element = true;
+                return true;
+            }
+            return false;
+        }
+
+    case PROPERTYTYPE_DATE:
+        {
+            int day, month, year;
+
+            try
+            {
+                day = std::stoi(string.substr(8, 2));
+                month = std::stoi(string.substr(5, 2));
+                year = std::stoi(string.substr(0, 4));
+            }
+            catch (std::exception& except)
+            {
+                return false;
+            }
+
+            std::chrono::year_month_day chrono_date = {
+                std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
+            };
+            //> Check if date exists
+            if (!chrono_date.ok()) return false;
+
+            *(Date*)out_element = Date(year, month, day);
+            return true;
+        }
+
+    case PROPERTYTYPE_HOUR:
+        {
+            int hour;
+            try
+            {
+                hour = std::stoi(string);
+            }
+            catch (std::exception& except)
+            {
+                return false;
+            }
+
+            if (hour < 0 || hour > 23) return false;
+
+            *(int*)out_element = hour;
+            return true;
+        }
+    }
+}
+
+
+
+ElementType XmlParser::parseElement(const TiXmlElement* element, ElementUnion* out_element)
+{
+    const std::string objectType = element->Value();
+
+    // const static std::unordered_map<std::string, ElementType> properties = {
+    //     {"CAMPUS", {
+    //         "NAME",
+    //         "IDENTIFIER"
+    //     }},
+    //     {"BUILDING", {
+    //         "NAME",
+    //         "IDENTIFIER",
+    //         "CAMPUS"
+    //     }},
+    //     {"ROOM", {
+    //         "NAME",
+    //         "IDENTIFIER",
+    //         "CAPACITY",
+    //         "CAMPUS",
+    //         "BUILDING"
+    //     }},
+    //     {"MEETING", {
+    //         "LABEL",
+    //         "IDENTIFIER",
+    //         "ROOM",
+    //         "DATE",
+    //         "HOUR",
+    //         "EXTERNALS"
+    //     }},
+    //     {"PARTICIPATION", {
+    //         "USER",
+    //         "EXTERNAL",
+    //         "MEETING"
+    //     }}
+    // };
+
+    const static std::unordered_map<std::string, ElementType> element_name_to_type = {
+        {"CAMPUS", ELEMENTTYPE_CAMPUS},
+        {"BUILDING", ELEMENTTYPE_BUILDING},
+        {"ROOM", ELEMENTTYPE_ROOM},
+        {"MEETING", ELEMENTTYPE_MEETING},
+        {"PARTICIPATION", ELEMENTTYPE_PARTICIPATION}
     };
 
-    std::vector<std::string> props;
+    using PropertyList = std::unordered_map<std::string, PropertyType>;
+    const static std::unordered_map<ElementType, PropertyList> element_type_to_properties = {
+        {ELEMENTTYPE_CAMPUS, {
+            {"NAME", PROPERTYTYPE_STRING},
+            {"IDENTIFIER", PROPERTYTYPE_STRING}
+        }},
+        {ELEMENTTYPE_BUILDING, {
+            {"NAME", PROPERTYTYPE_STRING},
+            {"IDENTIFIER", PROPERTYTYPE_STRING},
+            {"CAMPUS", PROPERTYTYPE_STRING}
+        }},
+        {ELEMENTTYPE_ROOM, {
+            {"NAME", PROPERTYTYPE_STRING},
+            {"IDENTIFIER", PROPERTYTYPE_STRING},
+            {"BUILDING", PROPERTYTYPE_STRING},
+            {"CAMPUS", PROPERTYTYPE_STRING}
+        }},
+        {ELEMENTTYPE_MEETING, {
+            {"LABEL", PROPERTYTYPE_STRING},
+            {"IDENTIFIER", PROPERTYTYPE_STRING},
+            {"ROOM", PROPERTYTYPE_STRING},
+            {"DATE", PROPERTYTYPE_DATE},
+            {"HOUR", PROPERTYTYPE_HOUR},
+            {"EXTERNALS", PROPERTYTYPE_BOOL}
+        }},
+        {ELEMENTTYPE_PARTICIPATION, {
+            {"USER", PROPERTYTYPE_STRING},
+            {"EXTERNAL", PROPERTYTYPE_BOOL},
+            {"MEETING", PROPERTYTYPE_STRING}
+        }}
+    };
 
-    switch (stringValues.at(element))
+    std::unordered_map<std::string, ElementType>::const_iterator it = element_name_to_type.find(objectType);
+
+    if (it == element_name_to_type.end())
     {
-        //CAMPUS
-        case 0:
-            props = {"NAME", "IDENTIFIER"};
-            break;
-        //BUILDING
-        case 1:
-            props = {"NAME", "IDENTIFIER", "CAMPUS"};
-            break;
-        //ROOM
-        case 2:
-            props = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
-            break;
-        //MEETING
-        case 3:
-            props = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
-            break;
-        //PARTICIPATION
-        case 4:
-            props = {"USER", "EXTERNAL", "MEETING"};
-            break;
-        default:
-            errorStream << "Unrecognized object element:  " << element << std::endl;
-            break;
+        errorStream << "Unrecognized object element: " << element << std::endl;
+        return ELEMENTTYPE_FAILED;
     }
 
-    for (const std::string& prop : props)
+    const ElementType type = it->second;
+    assert(element_type_to_properties.contains(type));
+
+    const PropertyList& expected_props = element_type_to_properties.at(type);
+
+    std::unordered_map<std::string, std::string> found_props = {};
+
+    for (const TiXmlElement* propertyElement = element->FirstChildElement(); propertyElement != nullptr;
+                 propertyElement = propertyElement->NextSiblingElement())
     {
-        parseProperty(prop);
+        const std::string propertyType = propertyElement->Value();
+
+        if (!expected_props.contains(propertyType))
+        {
+            errorStream << "Unknown property " << propertyType << " of object " << objectType << std::endl;
+            return ELEMENTTYPE_FAILED;
+        }
+
+        if (propertyElement->FirstChild() == nullptr)
+        {
+            errorStream << "Property " << propertyType << " needs to contain text." << std::endl;
+            return ELEMENTTYPE_FAILED;
+        }
+
+        const std::string propertyValue = propertyElement->FirstChild()->Value();
+
+        found_props.insert({propertyType, propertyValue});
+    }
+
+    for (
+        PropertyList::const_iterator it = expected_props.begin();
+        it != expected_props.end(); ++it
+        )
+    {
+        if (!found_props.contains(it->first))
+        {
+            errorStream << "Required property " << it->first << " of object " << objectType << " not found." << std::endl;
+            return ELEMENTTYPE_FAILED;
+        }
+    }
+
+    switch (type)
+    {
+        case ELEMENTTYPE_CAMPUS:
+            parseProperty(
+                &out_element->campus.id,
+                found_props.at("IDENTIFIER"),
+                PROPERTYTYPE_STRING
+                );
+            parseProperty(
+                &out_element->campus.name,
+                found_props.at("NAME"),
+                PROPERTYTYPE_STRING
+                );
+            return ELEMENTTYPE_CAMPUS;
+        case ELEMENTTYPE_BUILDING:
+            parseProperty(
+                &out_element->building.id,
+                found_props.at("IDENTIFIER"),
+                PROPERTYTYPE_STRING
+                );
+            parseProperty(
+                &out_element->building.name,
+                found_props.at("NAME"),
+                PROPERTYTYPE_STRING
+                );
+            parseProperty(
+                &out_element->building.campus_id,
+                found_props.at("CAMPUS"),
+                PROPERTYTYPE_STRING
+                );
+            return ELEMENTTYPE_BUILDING;
+        case ELEMENTTYPE_ROOM:
+            parseProperty(
+                &out_element->room.,
+                found_props.at("IDENTIFIER"),
+                PROPERTYTYPE_STRING
+                );
+            parseProperty(
+                &out_element->building.name,
+                found_props.at("NAME"),
+                PROPERTYTYPE_STRING
+                );
+            parseProperty(
+                &out_element->building.campus_id,
+                found_props.at("CAMPUS"),
+                PROPERTYTYPE_STRING
+                );
+        case ELEMENTTYPE_MEETING:
+        case ELEMENTTYPE_PARTICIPATION:
+        case ELEMENTTYPE_FAILED:
     }
 }
 
-bool XmlParser::parseProperty(std::string prop)
-{
-    return false;
-}
