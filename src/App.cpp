@@ -52,15 +52,15 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
     for (const CateringElement& c : parser->parsedCaterings())
     {
-        // Campus* campus = getCampus(c.campus_id);
-        // if (campus == nullptr)
-        // {
-        //     errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
-        //     continue;
-        // }
+        Campus* campus = getCampus(c.campus_id);
+        if (campus == nullptr)
+        {
+            errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
+            continue;
+        }
 
-        errStream << "Adding catering for campus " << c.campus_id << " with emissions " << c.co2_count << std::endl;
-        //addCatering(new Catering(campus, c.co2_count));
+        // This will automatically add the catering to the correct campus
+        new Catering(campus, c.co2_count);
     }
 
     for (const MeetingElement& m : parser->parsedMeetings())

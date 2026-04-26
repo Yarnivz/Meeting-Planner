@@ -50,6 +50,7 @@ set(COMMON_SOURCE_FILES
         src/objects/DateTime.cpp
         src/objects/User.cpp
         src/objects/MeetingRegistry.cpp
+        src/objects/Catering.cpp
         src/parser/Parser.cpp
         src/parser/XmlParser.cpp
         src/output/Output.cpp

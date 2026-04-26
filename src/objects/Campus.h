@@ -4,11 +4,15 @@
 
 #ifndef MEETING_PLANNER_CAMPUS_H
 #define MEETING_PLANNER_CAMPUS_H
+#include <list>
 #include <string>
 
 
+class Catering;
+
 class Campus
 {
+    friend Catering;
 public:
     /**
      * @brief Creates the Campus class.
@@ -31,6 +35,7 @@ public:
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
+
 
     /**
      * @brief Id getter.
@@ -65,14 +70,20 @@ public:
      */
     friend std::ostream& operator<<(std::ostream& os, const Campus& campus);
 
+    const std::list<Catering*>& getCaterings() const;
+
     /**
      * @brief Default destructor.
      */
     ~Campus();
 
 private:
+    void _addCatering(Catering* c);
+
     std::string name;
     std::string id;
+
+    std::list<Catering*> caterings;
 
     void* init_check_this_ptr;
 };

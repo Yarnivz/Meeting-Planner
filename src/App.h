@@ -13,7 +13,10 @@
 #include "parser/Parser.h"
 #include "output/Output.h"
 #include "objects/User.h"
+#include "objects/Catering.h"
 #include "TypeDefs.h"
+
+class Catering;
 
 class App
 {
@@ -294,6 +297,7 @@ private:
     Rooms rooms;
     MeetingRegistry meetings;
     Users users;
+    std::list<Catering*> caterings;
 
     std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;
 
