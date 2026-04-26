@@ -15,14 +15,15 @@ Catering::Catering(Campus* campus, float co2)
     this->campus = campus;
     this->emission = co2;
 
-    campus->_addCatering(this);
-
     this->init_check_this_ptr = this;
 
-    ENSURE(campus->getCaterings().back() == this, "Something went wrong. This catering was not added to the campus");
+
     ENSURE(getCampus() == campus, "Something went wrong. Campus was not set correctly.");
     ENSURE(getEmissions() == co2, "Something went wrong. Emissions were not set correctly.");
     ENSURE(isProperlyInitialized(), "Something went wrong. Catering was not properly initialized.");
+
+    campus->_addCatering(this);
+    ENSURE(campus->getCaterings().back() == this, "Something went wrong. This catering was not added to the campus");
 }
 
 bool Catering::isProperlyInitialized() const
