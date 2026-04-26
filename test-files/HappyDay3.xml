@@ -1,0 +1,160 @@
+<SYSTEM>
+    <CATERING>
+        <CAMPUS>cm</CAMPUS>
+        <CO2>3.1415</CO2>
+    </CATERING>
+    <CATERING>
+        <CAMPUS>cm</CAMPUS>
+        <CO2>1.2345</CO2>
+    </CATERING>
+    <CATERING>
+        <CAMPUS>cg</CAMPUS>
+        <CO2>42</CO2>
+    </CATERING>
+
+
+    <CAMPUS>
+        <NAME>Campus Middelheim</NAME>
+        <IDENTIFIER>cm</IDENTIFIER>
+    </CAMPUS>
+    <CAMPUS>
+        <NAME>Campus Groenenborger</NAME>
+        <IDENTIFIER>cg</IDENTIFIER>
+    </CAMPUS>
+
+
+    <BUILDING>
+        <NAME>Gebouw G</NAME>
+        <IDENTIFIER>gg</IDENTIFIER>
+        <CAMPUS>cm</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Gebouw A</NAME>
+        <IDENTIFIER>ga</IDENTIFIER>
+        <CAMPUS>cm</CAMPUS>
+    </BUILDING>
+
+    <BUILDING>
+        <NAME>Gebouw T</NAME>
+        <IDENTIFIER>gt</IDENTIFIER>
+        <CAMPUS>cg</CAMPUS>
+    </BUILDING>
+
+
+    <ROOM>
+        <NAME>M.G.025</NAME>
+        <IDENTIFIER>mg025</IDENTIFIER>
+        <CAMPUS>cm</CAMPUS>
+        <BUILDING>gg</BUILDING>
+        <CAPACITY>55</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>M.G.023</NAME>
+        <IDENTIFIER>mg023</IDENTIFIER>
+        <CAMPUS>cm</CAMPUS>
+        <BUILDING>gg</BUILDING>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+
+    <ROOM>
+        <NAME>G.T.105</NAME>
+        <IDENTIFIER>gt105</IDENTIFIER>
+        <CAMPUS>cg</CAMPUS>
+        <BUILDING>gt</BUILDING>
+        <CAPACITY>149</CAPACITY>
+    </ROOM>
+
+
+    <MEETING>
+        <LABEL>Weekly meeting</LABEL>
+        <IDENTIFIER>m1</IDENTIFIER>
+        <ROOM>mg025</ROOM>
+        <DATE>2026-05-22</DATE>
+        <HOUR>13</HOUR>
+        <EXTERNALS>true</EXTERNALS>
+        <CATERING>true</CATERING>
+    </MEETING>
+    <MEETING>
+        <LABEL>Other meeting</LABEL>
+        <IDENTIFIER>m3</IDENTIFIER>
+        <ROOM>mg023</ROOM>
+        <DATE>2026-05-22</DATE>
+        <HOUR>13</HOUR>
+        <EXTERNALS>false</EXTERNALS>µ
+        <CATERING>true</CATERING>
+    </MEETING>
+    <MEETING>
+        <LABEL>Weekly meeting 2</LABEL>
+        <IDENTIFIER>m2</IDENTIFIER>
+        <ROOM>mg025</ROOM>
+        <DATE>2026-05-23</DATE>
+        <HOUR>12</HOUR>
+        <CATERING>false</CATERING>
+    </MEETING>
+
+    <MEETING>
+        <LABEL>Future meeting</LABEL>
+        <IDENTIFIER>m105</IDENTIFIER>
+        <ROOM>gt105</ROOM>
+        <DATE>2027-01-01</DATE>
+        <HOUR>18</HOUR>
+        <EXTERNALS>true</EXTERNALS>
+        <CATERING>true</CATERING>
+    </MEETING>
+
+
+    <PARTICIPATION>
+        <MEETING>m1</MEETING>
+        <USER>Peter Selie</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m1</MEETING>
+        <USER>User2</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m1</MEETING>
+        <USER>User3</USER>
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m1</MEETING>
+        <USER>User4</USER>
+        <EXTERNAL>true</EXTERNAL>
+    </PARTICIPATION>
+
+    <PARTICIPATION>
+        <MEETING>m2</MEETING>
+        <USER>User2</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m2</MEETING>
+        <USER>John Doe</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m2</MEETING>
+        <USER>Jane Doe</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m2</MEETING>
+        <USER>Jeff Doe</USER>
+    </PARTICIPATION>
+
+    <PARTICIPATION>
+        <MEETING>m3</MEETING>
+        <USER>Jane Doe</USER>
+    </PARTICIPATION>
+
+    <PARTICIPATION>
+        <MEETING>m105</MEETING>
+        <USER>Jane Doe</USER>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m105</MEETING>
+        <USER>External User 234</USER>
+        <EXTERNAL>true</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m105</MEETING>
+        <USER>Peter Selie</USER>
+    </PARTICIPATION>
+</SYSTEM>
