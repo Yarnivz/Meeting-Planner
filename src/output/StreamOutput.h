@@ -17,6 +17,7 @@ public:
     void printMeetings(const MeetingRegistry& registry) override;
     void printRoom(const Room* room) override;
     void printRooms(const Rooms& rooms) override;
+    void printCampus(const Campus* campus) override;
 
 private:
     std::ostream* stream;

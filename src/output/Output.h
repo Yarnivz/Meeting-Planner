@@ -12,6 +12,7 @@
 class MeetingRegistry;
 class Meeting;
 class Room;
+class Catering;
 
 class Output {
 public:
@@ -22,6 +23,7 @@ public:
     virtual void printRoom( const Room* room ) = 0;
     virtual void printMeetings( const MeetingRegistry& registry ) = 0;
     virtual void printRooms( const Rooms& rooms ) = 0;
+    virtual void printCampus( const Campus* campus ) = 0;
 };
 
 
