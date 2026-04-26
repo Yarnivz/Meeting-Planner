@@ -52,12 +52,12 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
     for (const CateringElement& c : parser->parsedCaterings())
     {
-        Campus* campus = getCampus(c.campus_id);
-        if (campus == nullptr)
-        {
-            errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
-            continue;
-        }
+        // Campus* campus = getCampus(c.campus_id);
+        // if (campus == nullptr)
+        // {
+        //     errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
+        //     continue;
+        // }
 
         errStream << "Adding catering for campus " << c.campus_id << " with emissions " << c.co2_count << std::endl;
         //addCatering(new Catering(campus, c.co2_count));
@@ -79,7 +79,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
         //add temporary false status to meeting online status for now as workaround
-        addMeeting(new Meeting(m.label, m.id, mr, "false", m.date_time));
+        addMeeting(new Meeting(m.label, m.id, mr, m.date_time, false, m.externals_allowed));
     }
 
     for (const ParticipationElement& p : parser->parsedParticipations())
@@ -96,7 +96,8 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         if ( p.external && !m->externalsAllowed())
         {
             errStream << "External user \'" << p.user << "\' can't participate in meeting \'" << p.meeting <<
-                "\' which doesn't allow externals";
+                "\' which doesn't allow externals" << std::endl;
+            continue;
         }
 
         // Get user
@@ -154,7 +155,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
     }
-    if (!meeting->getOnline())
+    if (!meeting->isOnline())
     {
         participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
     }
@@ -289,7 +290,7 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
         ENSURE(possible_conflict->getDateTime() == m->getDateTime(), "Something went wrong. Looking meetings up by date failed.");
         if (possible_conflict != m &&
             possible_conflict->isProcessed() &&
-            (!m->getOnline() && possible_conflict->getRoom() == m->getRoom())
+            (!m->isOnline() && possible_conflict->getRoom() == m->getRoom())
         )
             return possible_conflict;
     }

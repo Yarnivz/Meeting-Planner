@@ -29,7 +29,7 @@ public:
      * @param date_time of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const bool& online, const DateTime& date_time = DateTime(), bool externals_allowed = false);
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), bool online = false, bool externals_allowed = false);
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -57,15 +57,7 @@ public:
      */
     Room* getRoom() const;
 
-    /**
-     * @brief online bool getter.
-     *
-     *
-     * @pre Failed to get online status. Meeting has to be properly initialized with the constructor.
-     *
-     * @return online status of meeting
-     */
-     const bool& getOnline() const;
+
     /**
      * @brief Date getter.
      *
@@ -131,6 +123,16 @@ public:
     bool externalsAllowed() const;
 
     /**
+     * @brief online bool getter.
+     *
+     *
+     * @pre Failed to get online status. Meeting has to be properly initialized with the constructor.
+     *
+     * @return online status of meeting
+     */
+    const bool& isOnline() const;
+
+    /**
      *
      *@post Meeting was not cancelled.
      */
@@ -192,10 +194,11 @@ private:
     DateTime date_time;
     State state;
     int order;
-    bool online;
+
 
     Users participants;
     bool externals_allowed;
+    bool online;
 
     std::string cancellation_reason;
 
