@@ -40,6 +40,13 @@ struct ParticipationElement
     bool external;
 };
 
+
+struct CateringElement
+{
+    std::string campus_id;
+    float co2_count;
+};
+
 class Parser
 {
 public:
@@ -59,6 +66,10 @@ public:
 
     void clearParticipations();
 
+    const std::list<CateringElement>& parsedCaterings() const;
+
+    void clearCaterings();
+
     virtual ~Parser() = default;
 
 protected:
@@ -67,6 +78,7 @@ protected:
     std::list<RoomElement> parsed_rooms;
     std::list<MeetingElement> parsed_meetings;
     std::list<ParticipationElement> parsed_participations;
+    std::list<CateringElement> parsed_caterings;
     std::ostream& errorStream;
 };
 #endif //PARSER_H

@@ -743,6 +743,77 @@ void XmlParser::parse(const std::string& filename)
                 .external = external
             }
             );
+        } else if (objectElementType == "CATERING")
+        {
+            std::string campus_id, co2_string;
+            bool found_campus_id = false;
+            bool found_co2_string = false;
+
+            for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
+                 propertyElement = propertyElement->NextSiblingElement())
+            {
+                std::string propertyElementType = propertyElement->Value();
+
+                if (propertyElement->FirstChild() == nullptr)
+                {
+                    errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
+                    goto continue_to_next_object_element;;
+                }
+
+
+                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+
+                if (propertyElementType == "CAMPUS")
+                {
+                    if (found_campus_id)
+                    {
+                        errorStream << "CATERING element cant have more than one CAMPUS property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_campus_id = true;
+                    campus_id = tempElementChildValue;
+                }
+                else if (propertyElementType == "CO2")
+                {
+                    if (found_co2_string)
+                    {
+                        errorStream << "CATERING element cant have more than one CO2 property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_co2_string = true;
+                    co2_string = tempElementChildValue;
+                }
+            }
+
+
+            if (!found_campus_id)
+            {
+                errorStream << "CATERING must have a CAMPUS property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_co2_string)
+            {
+                errorStream << "CATERING must have a CO2 property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+            float co2;
+            try
+            {
+                co2 = std::stof(co2_string);
+            } catch (std::exception& e)
+            {
+                errorStream << "Failed to parse " << co2_string << " as float: " << e.what() << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+            parsed_caterings.push_back((CateringElement){
+                .campus_id = campus_id,
+                .co2_count = co2
+            });
+
         }
         else
         {
@@ -754,52 +825,52 @@ void XmlParser::parse(const std::string& filename)
     }
 }
 
-void XmlParser::parseElement(std::string element)
-{
-    std::unordered_map<std::string, unsigned int> stringValues = {
-        {"CAMPUS", 0},
-        {"BUILDING", 1},
-        {"ROOM", 2},
-        {"MEETING", 3},
-        {"PARTICIPATION", 4}
-    };
-
-    std::vector<std::string> props;
-
-    switch (stringValues.at(element))
-    {
-        //CAMPUS
-        case 0:
-            props = {"NAME", "IDENTIFIER"};
-            break;
-        //BUILDING
-        case 1:
-            props = {"NAME", "IDENTIFIER", "CAMPUS"};
-            break;
-        //ROOM
-        case 2:
-            props = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
-            break;
-        //MEETING
-        case 3:
-            props = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
-            break;
-        //PARTICIPATION
-        case 4:
-            props = {"USER", "EXTERNAL", "MEETING"};
-            break;
-        default:
-            errorStream << "Unrecognized object element:  " << element << std::endl;
-            break;
-    }
-
-    for (const std::string& prop : props)
-    {
-        parseProperty(prop);
-    }
-}
-
-bool XmlParser::parseProperty(std::string prop)
-{
-    return false;
-}
+// void XmlParser::parseElement(std::string element)
+// {
+//     std::unordered_map<std::string, unsigned int> stringValues = {
+//         {"CAMPUS", 0},
+//         {"BUILDING", 1},
+//         {"ROOM", 2},
+//         {"MEETING", 3},
+//         {"PARTICIPATION", 4}
+//     };
+//
+//     std::vector<std::string> props;
+//
+//     switch (stringValues.at(element))
+//     {
+//         //CAMPUS
+//         case 0:
+//             props = {"NAME", "IDENTIFIER"};
+//             break;
+//         //BUILDING
+//         case 1:
+//             props = {"NAME", "IDENTIFIER", "CAMPUS"};
+//             break;
+//         //ROOM
+//         case 2:
+//             props = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
+//             break;
+//         //MEETING
+//         case 3:
+//             props = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
+//             break;
+//         //PARTICIPATION
+//         case 4:
+//             props = {"USER", "EXTERNAL", "MEETING"};
+//             break;
+//         default:
+//             errorStream << "Unrecognized object element:  " << element << std::endl;
+//             break;
+//     }
+//
+//     for (const std::string& prop : props)
+//     {
+//         parseProperty(prop);
+//     }
+// }
+//
+// bool XmlParser::parseProperty(std::string prop)
+// {
+//     return false;
+// }
