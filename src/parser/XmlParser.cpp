@@ -1015,6 +1015,104 @@ ElementType XmlParser::parseElement(const TiXmlElement* element, ElementUnion* o
         case ELEMENTTYPE_MEETING:
         case ELEMENTTYPE_PARTICIPATION:
         case ELEMENTTYPE_FAILED:
+            break;
     }
 }
 
+
+
+
+
+
+
+union ElementUnion
+{
+    CampusElement campus;
+    BuildingElement building;
+    RoomElement room;
+    MeetingElement meeting;
+    ParticipationElement participation;
+};
+
+enum ElementType
+{
+    ELEMENTTYPE_FAILED = 0,
+    ELEMENTTYPE_CAMPUS,
+    ELEMENTTYPE_BUILDING,
+    ELEMENTTYPE_ROOM,
+    ELEMENTTYPE_MEETING,
+    ELEMENTTYPE_PARTICIPATION
+};
+
+union PropertyUnion
+{
+    std::string as_string;
+    int as_int;
+    float as_float;
+    bool as_bool;
+    Date as_date;
+    int as_hour;
+};
+
+enum PropertyType
+{
+    PROPERTYTYPE_FAILED = 0,
+    PROPERTYTYPE_STRING,
+    PROPERTYTYPE_INT,
+    PROPERTYTYPE_FLOAT,
+    PROPERTYTYPE_BOOL,
+    PROPERTYTYPE_DATE,
+    PROPERTYTYPE_HOUR
+};
+
+/*
+ * Other idea:
+ */
+
+static ElementType get_element_type(const std::string& name)
+{
+    using ElementTypeMap = std::unordered_map<std::string, ElementType>;
+    const static ElementTypeMap element_type_map = {
+        {"CAMPUS", ELEMENTTYPE_CAMPUS},
+        {"BUILDING", ELEMENTTYPE_BUILDING},
+        {"ROOM", ELEMENTTYPE_ROOM},
+        {"MEETING", ELEMENTTYPE_MEETING},
+        {"PARTICIPATION", ELEMENTTYPE_PARTICIPATION}
+    };
+
+    if (!element_type_map.contains(name)) return ELEMENTTYPE_FAILED;
+    return element_type_map.at(name);
+}
+
+struct PropertyInfo {const PropertyType type; PropertyUnion* storage;};
+using PropertyInfoMap = std::unordered_map<std::string, PropertyInfo>;
+using ElementPropertiesMap = std::unordered_map<ElementType, PropertyInfoMap>;
+
+static ElementPropertiesMap property_map = {
+    {ELEMENTTYPE_CAMPUS, {
+        {"NAME", {PROPERTYTYPE_STRING, nullptr}}
+    }}
+};
+
+static PropertyType get_property_type(ElementType element, const std::string& name)
+{
+    assert(property_map.contains(element));
+    if (!property_map.at(element).contains(name)) return PROPERTYTYPE_FAILED;
+    return property_map.at(element).at(name).type;
+}
+
+
+
+static void reset_property_map()
+{
+    for (ElementPropertiesMap::iterator it = property_map.begin(); it != property_map.end(); ++it)
+    {
+        //const std::string& element_type = it->first;
+        PropertyInfoMap& property_info_map = it->second;
+        for (PropertyInfoMap::iterator jt = property_info_map.begin(); jt != property_info_map.end(); ++jt)
+        {
+            PropertyInfo& prop = jt->second;
+            prop.storage = nullptr;
+        }
+    }
+}

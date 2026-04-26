@@ -40,34 +40,6 @@ struct ParticipationElement
     bool external;
 };
 
-union ElementUnion
-{
-    CampusElement campus;
-    BuildingElement building;
-    RoomElement room;
-    MeetingElement meeting;
-    ParticipationElement participation;
-};
-
-enum ElementType
-{
-    ELEMENTTYPE_FAILED = 0,
-    ELEMENTTYPE_CAMPUS,
-    ELEMENTTYPE_BUILDING,
-    ELEMENTTYPE_ROOM,
-    ELEMENTTYPE_MEETING,
-    ELEMENTTYPE_PARTICIPATION
-};
-
-enum PropertyType
-{
-    PROPERTYTYPE_STRING,
-    PROPERTYTYPE_INT,
-    PROPERTYTYPE_DATE,
-    PROPERTYTYPE_HOUR,
-    PROPERTYTYPE_BOOL
-};
-
 
 class Parser
 {
