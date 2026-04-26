@@ -48,7 +48,7 @@ void XmlParser::parse(const std::string& filename)
          objectElement->NextSiblingElement())
     {
         //== The type of the element 'ROOM'/'MEETING'/...
-        std::string objectElementType = objectElement->Value();
+        const std::string objectElementType = objectElement->Value();
 
         if (objectElementType == "CAMPUS")
         {
@@ -62,7 +62,7 @@ void XmlParser::parse(const std::string& filename)
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
                  propertyElement = propertyElement->NextSiblingElement())
             {
-                std::string propertyElementType = propertyElement->Value();
+                const std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr)
                 {
@@ -71,7 +71,7 @@ void XmlParser::parse(const std::string& filename)
                     goto continue_to_next_object_element;
                 }
 
-                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+                const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
 
                 if (propertyElementType == "NAME")
                 {
@@ -79,7 +79,7 @@ void XmlParser::parse(const std::string& filename)
                     //  Which would mean multiple <NAME> tags are present => ERROR
                     if (found_name)
                     {
-                        errorStream << "BUILDING element cant have more than one NAME property." << std::endl;
+                        errorStream << "CAMPUS element " << name << " cant have more than one NAME property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -92,7 +92,7 @@ void XmlParser::parse(const std::string& filename)
                     //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
                     if (found_id)
                     {
-                        errorStream << "BUILDING element cant have more than one IDENTIFIER property." << std::endl;
+                        errorStream << "CAMPUS element " << identifier << " cant have more than one IDENTIFIER property." << std::endl;
                         goto continue_to_next_object_element;
                     }
 
@@ -105,25 +105,26 @@ void XmlParser::parse(const std::string& filename)
                     errorStream << "Unrecognized property for CAMPUS: \"" << propertyElementType << "\"" << std::endl;
                     goto continue_to_next_object_element;
                 }
-
-                //> Check if all required properties were provided
-                if (!found_name)
-                {
-                    errorStream << "CAMPUS must have a NAME property" << std::endl;
-                    goto continue_to_next_object_element;
-                }
-                if (!found_id)
-                {
-                    errorStream << "CAMPUS must have a IDENTIFIER property" << std::endl;
-                    goto continue_to_next_object_element;
-                }
-
-                //> Add campus if all the checks have passed
-                parsed_campuses.push_back((CampusElement){.name = name, .id = identifier});
             }
-        }
 
-        if (objectElementType == "BUILDING")
+            //> Check if all required properties were provided
+            if (!found_id)
+            {
+                if (found_name) errorStream << "CAMPUS \'"<< name << "\' must have a IDENTIFIER property" << std::endl;
+                else errorStream << "CAMPUS must have a IDENTIFIER property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_name)
+            {
+                errorStream << "CAMPUS \'" << identifier << "\' must have a NAME property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+
+            //> Add campus if all the checks have passed
+            parsed_campuses.push_back((CampusElement){.name = name, .id = identifier});
+        }
+        else if (objectElementType == "BUILDING")
         {
             //== string properties from child XML elements
             std::string name, identifier, campus_id;
@@ -180,6 +181,7 @@ void XmlParser::parse(const std::string& filename)
                     if (found_campus)
                     {
                         errorStream << "BUILDING element cant have more than one CAMPUS property" << std::endl;
+                        goto continue_to_next_object_element;
                     }
 
                     found_campus = true;
@@ -191,32 +193,31 @@ void XmlParser::parse(const std::string& filename)
                     errorStream << "Unrecognized property for BUILDING: \"" << propertyElementType << "\"" << std::endl;
                     goto continue_to_next_object_element;
                 }
-
-                //> Check if all required properties were provided
-                if (!found_name)
-                {
-                    errorStream << "BUILDING must have a NAME property" << std::endl;
-                    goto continue_to_next_object_element;
-                }
-                if (!found_id)
-                {
-                    errorStream << "BUILDING must have a IDENTIFIER property" << std::endl;
-                    goto continue_to_next_object_element;
-                }
-
-                if (!found_campus)
-                {
-                    errorStream << "BUILDING must have a CAMPUS property" << std::endl;
-                    goto continue_to_next_object_element;
-                }
-
-
-                //> Add building if all the checks have passed
-                parsed_buildings.push_back((BuildingElement){.name = name, .id = identifier, .campus_id = campus_id});
             }
+
+            //> Check if all required properties were provided
+            if (!found_name)
+            {
+                errorStream << "BUILDING must have a NAME property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_id)
+            {
+                errorStream << "BUILDING must have a IDENTIFIER property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+            if (!found_campus)
+            {
+                errorStream << "BUILDING must have a CAMPUS property" << std::endl;
+                goto continue_to_next_object_element;
+            }
+
+
+            //> Add building if all the checks have passed
+            parsed_buildings.push_back((BuildingElement){.name = name, .id = identifier, .campus_id = campus_id});
         }
 
-        if (objectElementType == "ROOM")
+        else if (objectElementType == "ROOM")
         {
             //== string properties from child XML elements
             std::string name, identifier, capacity_str, campus_id, building_id;
@@ -232,7 +233,7 @@ void XmlParser::parse(const std::string& filename)
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
                  propertyElement = propertyElement->NextSiblingElement())
             {
-                std::string propertyElementType = propertyElement->Value();
+                const std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr)
                 {
@@ -242,7 +243,7 @@ void XmlParser::parse(const std::string& filename)
                 }
 
 
-                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+                const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
 
                 if (propertyElementType == "NAME")
                 {
@@ -367,33 +368,6 @@ void XmlParser::parse(const std::string& filename)
                 goto continue_to_next_object_element;
             }
 
-            //> Check if id is not empty
-            if (identifier.empty())
-            {
-                errorStream << "Room identifier cannot be empty. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if Name is not empty
-            if (name.empty())
-            {
-                errorStream << "Room name cannot be empty. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            /*//> Check if Campus is not empty
-            if (campus_id.empty())
-            {
-                errorStream << "Room campus cannot be empty. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if Building is not empty
-            if (building_id.empty())
-            {
-                errorStream << "Room building cannot be empty. Room will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }*/
 
             //> Add room if all the checks have passed
             parsed_rooms.push_back((RoomElement)
@@ -409,7 +383,7 @@ void XmlParser::parse(const std::string& filename)
         else if (objectElementType == "MEETING")
         {
             //== string properties from child XML elements
-            std::string label, identifier, room, date_string, hour_string, externals_allowed_string;
+            std::string label, identifier, room, date_string, hour_string, externals_allowed_string, catering_string;
 
             //== booleans indicating whether the above properties were already found
             bool found_label = false;
@@ -418,12 +392,13 @@ void XmlParser::parse(const std::string& filename)
             bool found_datestring = false;
             bool found_hourstring = false;
             bool found_externals_allowed = false;
+            bool found_cateringstring = false;
 
 
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
                  propertyElement = propertyElement->NextSiblingElement())
             {
-                std::string propertyElementType = propertyElement->Value();
+                const std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr)
                 {
@@ -431,7 +406,7 @@ void XmlParser::parse(const std::string& filename)
                     goto continue_to_next_object_element;;
                 }
 
-                std::string propertyElementContents = propertyElement->FirstChild()->Value();
+                const std::string propertyElementContents = propertyElement->FirstChild()->Value();
 
                 if (propertyElementType == "LABEL")
                 {
@@ -509,6 +484,17 @@ void XmlParser::parse(const std::string& filename)
                     found_externals_allowed = true;
                     externals_allowed_string = propertyElementContents;
                 }
+                else if (propertyElementType == "CATERING")
+                {
+                    if (found_cateringstring)
+                    {
+                        errorStream << "MEETING element cant have more than one CATERING property." << std::endl;
+                        goto continue_to_next_object_element;
+                    }
+
+                    found_cateringstring = true;
+                    catering_string = propertyElementContents;
+                }
                 else
                 {
                     //> Filter out any other unrecognized tags
@@ -548,27 +534,8 @@ void XmlParser::parse(const std::string& filename)
             if (!found_externals_allowed)
             { /* Is allowed, optional property for now */ }
 
-
-            //> Check if id is not empty
-            if (identifier.empty())
-            {
-                errorStream << "Meeting identifier cannot be empty. Meeting will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if label is not empty
-            if (label.empty())
-            {
-                errorStream << "Meeting label cannot be empty. Meeting will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if room is not empty
-            if (room.empty())
-            {
-                errorStream << "Meeting room cannot be empty. Meeting will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
+            if (!found_cateringstring)
+            { /* Is allowed, optional property for now */ }
 
 
             int day, month, year, hour;
@@ -618,6 +585,7 @@ void XmlParser::parse(const std::string& filename)
 
             // Parse boolean or give default value
             bool externals_allowed = found_externals_allowed ? parse_boolean(externals_allowed_string) : false;
+            bool catering_needed = found_cateringstring ? parse_boolean(catering_string) : false;
 
 
             //> Add meeting if all checks passed
@@ -628,9 +596,9 @@ void XmlParser::parse(const std::string& filename)
                 .id = std::move(identifier),
                 .room_id = std::move(room),
                 .date_time = DateTime(year, month, day, hour),
-                .externals_allowed = externals_allowed
-            }
-            );
+                .externals_allowed = externals_allowed,
+                .catering_needed = catering_needed
+            });
         }
         else if (objectElementType == "PARTICIPATION")
         {
@@ -646,7 +614,7 @@ void XmlParser::parse(const std::string& filename)
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
                  propertyElement = propertyElement->NextSiblingElement())
             {
-                std::string propertyElementType = propertyElement->Value();
+                const std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr)
                 {
@@ -655,7 +623,7 @@ void XmlParser::parse(const std::string& filename)
                 }
 
 
-                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+                const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
 
                 if (propertyElementType == "MEETING")
                 {
@@ -717,20 +685,6 @@ void XmlParser::parse(const std::string& filename)
             }
 
 
-            //> Check if meeting is not empty
-            if (meeting.empty())
-            {
-                errorStream << "Meeting cannot be empty. Participation will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
-            //> Check if user is not empty
-            if (user.empty())
-            {
-                errorStream << "User cannot be empty. Participation will not be added." << std::endl;
-                goto continue_to_next_object_element;
-            }
-
 
             bool external = found_external_string ? parse_boolean(external_string) : false;
 
@@ -741,8 +695,7 @@ void XmlParser::parse(const std::string& filename)
                 .meeting = std::move(meeting),
                 .user = std::move(user),
                 .external = external
-            }
-            );
+            });
         } else if (objectElementType == "CATERING")
         {
             std::string campus_id, co2_string;
@@ -752,7 +705,7 @@ void XmlParser::parse(const std::string& filename)
             for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
                  propertyElement = propertyElement->NextSiblingElement())
             {
-                std::string propertyElementType = propertyElement->Value();
+                const std::string propertyElementType = propertyElement->Value();
 
                 if (propertyElement->FirstChild() == nullptr)
                 {
@@ -761,7 +714,7 @@ void XmlParser::parse(const std::string& filename)
                 }
 
 
-                std::string tempElementChildValue = propertyElement->FirstChild()->Value();
+                const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
 
                 if (propertyElementType == "CAMPUS")
                 {
@@ -799,7 +752,7 @@ void XmlParser::parse(const std::string& filename)
                 goto continue_to_next_object_element;
             }
 
-            float co2;
+            float co2 = -1.0;
             try
             {
                 co2 = std::stof(co2_string);
@@ -809,11 +762,16 @@ void XmlParser::parse(const std::string& filename)
                 goto continue_to_next_object_element;
             }
 
+            if (co2 < 0.0)
+            {
+                errorStream << "CATERING for campus " << campus_id << " can't have negative emissions: " << co2_string << std::endl;
+                goto continue_to_next_object_element;
+            }
+
             parsed_caterings.push_back((CateringElement){
                 .campus_id = campus_id,
                 .co2_count = co2
             });
-
         }
         else
         {

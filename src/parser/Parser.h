@@ -26,6 +26,7 @@ struct MeetingElement
     std::string label, id, room_id;
     DateTime date_time;
     bool externals_allowed;
+    bool catering_needed;
 };
 
 struct RoomElement
