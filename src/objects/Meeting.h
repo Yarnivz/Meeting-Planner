@@ -29,7 +29,7 @@ public:
      * @param date_time of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), bool online = false, bool externals_allowed = false);
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), bool online = false, bool externals_allowed = false, bool catering_needed = false);
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -121,6 +121,7 @@ public:
     bool isCancelled() const;
 
     bool externalsAllowed() const;
+    bool cateringNeeded() const;
 
     /**
      * @brief online bool getter.
@@ -130,13 +131,17 @@ public:
      *
      * @return online status of meeting
      */
-    const bool& isOnline() const;
+    bool isOnline() const;
+
+
 
     /**
      *
      *@post Meeting was not cancelled.
      */
     const std::string& getCancellationReason() const;
+
+    float getCateringCosts() const;
 
     /**
      * @brief writes the output of 'toString' to a stream
@@ -199,6 +204,7 @@ private:
     Users participants;
     bool externals_allowed;
     bool online;
+    bool catering_needed;
 
     std::string cancellation_reason;
 

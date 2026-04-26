@@ -79,7 +79,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
         //add temporary false status to meeting online status for now as workaround
-        addMeeting(new Meeting(m.label, m.id, mr, m.date_time, false, m.externals_allowed));
+        addMeeting(new Meeting(m.label, m.id, mr, m.date_time, false, m.externals_allowed, m.catering_needed));
     }
 
     for (const ParticipationElement& p : parser->parsedParticipations())
