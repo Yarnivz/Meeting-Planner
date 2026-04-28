@@ -48,6 +48,8 @@ struct CateringElement
     float co2_count;
 };
 
+using Element = std::variant<CampusElement, BuildingElement, MeetingElement, RoomElement, ParticipationElement, CateringElement>;
+
 class Parser
 {
 public:

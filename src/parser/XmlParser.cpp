@@ -4,10 +4,11 @@
 
 #include "XmlParser.h"
 
+#include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
 
 #include "helper/DesignByContract.h"
-#include "tinyxml.h"
 #include "objects/Room.h"
 
 static inline bool parse_boolean(const std::string& s)
@@ -783,52 +784,136 @@ void XmlParser::parse(const std::string& filename)
     }
 }
 
-// void XmlParser::parseElement(std::string element)
-// {
-//     std::unordered_map<std::string, unsigned int> stringValues = {
-//         {"CAMPUS", 0},
-//         {"BUILDING", 1},
-//         {"ROOM", 2},
-//         {"MEETING", 3},
-//         {"PARTICIPATION", 4}
-//     };
-//
-//     std::vector<std::string> props;
-//
-//     switch (stringValues.at(element))
-//     {
-//         //CAMPUS
-//         case 0:
-//             props = {"NAME", "IDENTIFIER"};
-//             break;
-//         //BUILDING
-//         case 1:
-//             props = {"NAME", "IDENTIFIER", "CAMPUS"};
-//             break;
-//         //ROOM
-//         case 2:
-//             props = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
-//             break;
-//         //MEETING
-//         case 3:
-//             props = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
-//             break;
-//         //PARTICIPATION
-//         case 4:
-//             props = {"USER", "EXTERNAL", "MEETING"};
-//             break;
-//         default:
-//             errorStream << "Unrecognized object element:  " << element << std::endl;
-//             break;
-//     }
-//
-//     for (const std::string& prop : props)
-//     {
-//         parseProperty(prop);
-//     }
-// }
-//
-// bool XmlParser::parseProperty(std::string prop)
-// {
-//     return false;
-// }
+void XmlParser::parseElement(TiXmlElement* elementObject)
+{
+    const std::unordered_map<std::string, ElementType> elementValues = {
+        {"CAMPUS", ElementType::CAMPUS},
+        {"BUILDING", ElementType::BUILDING},
+        {"ROOM", ElementType::ROOM},
+        {"MEETING", ElementType::MEETING},
+        {"PARTICIPATION", ElementType::PARTICIPATION}
+    };
+
+    const std::string elementType = elementObject->Value();
+    std::unordered_set<std::string> requiredProps;
+    std::unordered_set<std::string> foundProps;
+    Element parseObject;
+
+    switch (elementValues.at(elementType))
+    {
+        //CAMPUS
+        case ElementType::CAMPUS:
+            requiredProps = {"NAME", "IDENTIFIER"};
+            parseObject = CampusElement{};
+            break;
+        //BUILDING
+        case ElementType::BUILDING:
+            requiredProps = {"NAME", "IDENTIFIER", "CAMPUS"};
+            parseObject = BuildingElement{};
+            break;
+        //ROOM
+        case ElementType::ROOM:
+            requiredProps = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
+            parseObject = RoomElement{};
+            break;
+        //MEETING
+        case ElementType::MEETING:
+            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
+            parseObject = MeetingElement{};
+            break;
+        //PARTICIPATION
+        case ElementType::PARTICIPATION:
+            requiredProps = {"USER", "EXTERNAL", "MEETING"};
+            parseObject = ParticipationElement{};
+            break;
+        default:
+            errorStream << "Unrecognized object element:  " << elementObject << std::endl;
+            break;
+    }
+
+    for (TiXmlElement* propertyObject = elementObject->FirstChildElement(); propertyObject != nullptr;
+    propertyObject = propertyObject->NextSiblingElement())
+    {
+        std::string propType = propertyObject->Value();
+        std::string propError;
+
+        //UNKNOWN PROPERTY FOUND
+        if (!requiredProps.contains(propType))
+        {
+            errorStream << "Unrecognized property for " << elementType << ": \"" << propType << "\"" << std::endl;
+            break;
+        }
+        //DUPLICATE PROPERTY FOUND
+        if (!foundProps.insert(propType).second)
+        {
+            errorStream << elementType << "element can't have more than one " << propType << "property." << std::endl;
+            break;
+        }
+        //PARSE PROPERTY
+        if (parseProperty(propType, parseObject, propError))
+        {
+
+        }
+        else
+        {
+            errorStream << "Failed to parse " << elementObject << " element: " << std::endl;
+            errorStream << "\t" << propError << std::endl;
+        }
+
+
+        //CHECK IF ANY REQUIRED PROPERTIES ARE MISSING
+        if (foundProps.size() != requiredProps.size())
+        {
+            for (const std::string& prop : requiredProps)
+            {
+                if (!foundProps.contains(prop))
+                {
+                    errorStream << elementType << " must have a " << propType << "property" << std::endl;
+                }
+            }
+        }
+
+    }
+}
+
+bool XmlParser::parseProperty(const std::string& prop, Element& parseObject , std::string& parseError)
+{
+    const std::unordered_map<std::string, PropType> propValues = {
+        {"IDENTIFIER", PropType::IDENTIFIER},
+        {"NAME", PropType::NAME},
+        {"LABEL", PropType::LABEL},
+        {"CAMPUS", PropType::CAMPUS},
+        {"BUILDING", PropType::BUILDING},
+        {"CAPACITY", PropType::CAPACITY},
+        {"ROOM", PropType::ROOM},
+        {"DATE", PropType::DATE},
+        {"HOUR", PropType::HOUR},
+        {"EXTERNALS", PropType::EXTERNALS},
+        {"USER", PropType::USER},
+        {"EXTERNAL", PropType::EXTERNAL},
+        {"MEETING", PropType::MEETING},
+
+
+    };
+
+    switch (propValues.at(prop))
+    {
+        case PropType::IDENTIFIER:
+            parseObject.id = prop;
+        case PropType::NAME:
+        case PropType::LABEL:
+        case PropType::CAMPUS:
+        case PropType::BUILDING:
+        case PropType::CAPACITY:
+        case PropType::ROOM:
+        case PropType::DATE:
+        case PropType::HOUR:
+        case PropType::EXTERNALS:
+        case PropType::USER:
+        case PropType::EXTERNAL:
+        case PropType::MEETING:
+        default:
+            parseError = "Unrecognized property: " + prop;
+            return false;
+    }
+}
