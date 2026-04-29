@@ -6,8 +6,7 @@
 
 #include <unordered_set>
 #include <unordered_map>
-#include <algorithm>
-
+#include <functional>
 #include "helper/DesignByContract.h"
 #include "objects/Room.h"
 
@@ -797,34 +796,69 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
     const std::string elementType = elementObject->Value();
     std::unordered_set<std::string> requiredProps;
     std::unordered_set<std::string> foundProps;
-    Element parseObject;
+    std::function<void()> parse;
 
     switch (elementValues.at(elementType))
     {
         //CAMPUS
         case ElementType::CAMPUS:
             requiredProps = {"NAME", "IDENTIFIER"};
-            parseObject = CampusElement{};
+            parse = [&]() {
+                parsed_campuses.push_back((CampusElement){
+                    .name = parseObject.name,
+                    .id = parseObject.identifier
+                });
+            };
             break;
         //BUILDING
         case ElementType::BUILDING:
             requiredProps = {"NAME", "IDENTIFIER", "CAMPUS"};
-            parseObject = BuildingElement{};
+            parse = [&]() {
+                parsed_buildings.push_back((BuildingElement){
+                    .name = parseObject.name,
+                    .id = parseObject.identifier,
+                    .campus_id = parseObject.campus_id
+                });
+            };
             break;
         //ROOM
         case ElementType::ROOM:
             requiredProps = {"NAME", "IDENTIFIER", "CAPACITY", "CAMPUS", "BUILDING"};
-            parseObject = RoomElement{};
+            parse = [&]() {
+                parsed_rooms.push_back((RoomElement){
+                    .name = parseObject.name,
+                    .id = parseObject.identifier,
+                    .campus_id = parseObject.campus_id,
+                    .building_id = parseObject.building_id,
+                    .capacity = parseObject.capacity
+                });
+            };
             break;
         //MEETING
         case ElementType::MEETING:
             requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
-            parseObject = MeetingElement{};
+            parse = [&]()
+            {
+                parsed_meetings.push_back((MeetingElement){
+                    .label = parseObject.label,
+                    .id = parseObject.identifier,
+                    .room_id = parseObject.room_id,
+                    .date_time = parseObject.date_time,
+                    .externals_allowed = parseObject.externals
+                });
+            };
             break;
         //PARTICIPATION
         case ElementType::PARTICIPATION:
             requiredProps = {"USER", "EXTERNAL", "MEETING"};
-            parseObject = ParticipationElement{};
+            parse = [&]()
+            {
+                parsed_participations.push_back((ParticipationElement){
+                    .meeting = parseObject.meeting_id,
+                    .user = parseObject.user_id,
+                    .external = parseObject.external
+                });
+            };
             break;
         default:
             errorStream << "Unrecognized object element:  " << elementObject << std::endl;
@@ -850,9 +884,9 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
         }
         //PARSE PROPERTY
-        if (parseProperty(propType, parseObject, propError))
+        if (parseProperty(propType, propError))
         {
-
+            parse();
         }
         else
         {
@@ -876,7 +910,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
     }
 }
 
-bool XmlParser::parseProperty(const std::string& prop, Element& parseObject , std::string& parseError)
+bool XmlParser::parseProperty(const std::string& prop, std::string& parseError)
 {
     const std::unordered_map<std::string, PropType> propValues = {
         {"IDENTIFIER", PropType::IDENTIFIER},
@@ -892,28 +926,122 @@ bool XmlParser::parseProperty(const std::string& prop, Element& parseObject , st
         {"USER", PropType::USER},
         {"EXTERNAL", PropType::EXTERNAL},
         {"MEETING", PropType::MEETING},
-
-
     };
 
     switch (propValues.at(prop))
     {
         case PropType::IDENTIFIER:
-            parseObject.id = prop;
+            {
+                parseObject.identifier = prop;
+                break;
+            }
         case PropType::NAME:
+            {
+                parseObject.name = prop;
+                break;
+            }
         case PropType::LABEL:
+            {
+                parseObject.label = prop;
+                break;
+            }
         case PropType::CAMPUS:
+            {
+                parseObject.campus_id = prop;
+                break;
+            }
         case PropType::BUILDING:
+            {
+                parseObject.building_id = prop;
+                break;
+            }
         case PropType::CAPACITY:
+            {
+                //Try to convert to int check
+                try
+                {
+                    parseObject.capacity = std::stoi(prop);
+                }
+                catch (std::exception& except)
+                {
+                    parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
+                    return false;
+                }
+                break;
+            }
         case PropType::ROOM:
+            {
+                parseObject.room_id = prop;
+                break;
+            }
         case PropType::DATE:
+            {
+                //Try to convert to DateTime check
+                int day, month, year, hour = 0;
+                try
+                {
+                    day = std::stoi(prop.substr(8, 2));
+                    month = std::stoi(prop.substr(5, 2));
+                    year = std::stoi(prop.substr(0, 4));
+                }
+                catch (std::exception& except)
+                {
+                    parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
+                    return false;
+                }
+                //Check if date exists
+                std::chrono::year_month_day chrono_date = {
+                    std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
+                };
+                if (!chrono_date.ok())
+                {
+                    parseError = "Date " + prop + " does not exist.";
+                    return false;
+                }
+                if (parseObject.date_time.isProperlyInitialized() && parseObject.date_time.getHour() != 0)
+                {
+                    hour = parseObject.date_time.getHour();
+                }
+                parseObject.date_time = DateTime(year, month, day, hour);
+                break;
+            }
         case PropType::HOUR:
+            {
+                //Try to convert to int < 24
+                //Check if parseObject.date_time is assigned a DateTime object:
+                //if True: then add hour to object
+                //if False: then create new DateTime using empty Date constructor's day, month and year, then add the hour to constructor afterwards.
+                break;
+            }
         case PropType::EXTERNALS:
+            {
+                //Try to convert to bool
+
+                //parseObject.externals = prop;
+                break;
+            }
         case PropType::USER:
+            {
+                parseObject.user_id = prop;
+                break;
+            }
         case PropType::EXTERNAL:
+            {
+                //Try to convert to bool
+
+                //parseObject.externals = prop;
+                break;
+            }
         case PropType::MEETING:
+            {
+                parseObject.meeting_id = prop;
+                break;
+            }
         default:
-            parseError = "Unrecognized property: " + prop;
-            return false;
+            {
+                parseError = "Unrecognized property: " + prop;
+                return false;
+            }
     }
+    return true;
 }

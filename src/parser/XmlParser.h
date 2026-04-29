@@ -10,32 +10,6 @@
 
 //TODO: add documentation
 
-enum class ElementType
-{
-    CAMPUS,
-    BUILDING,
-    ROOM,
-    MEETING,
-    PARTICIPATION
-};
-
-enum class PropType
-{
-    IDENTIFIER,
-    NAME,
-    LABEL,
-    CAMPUS,
-    BUILDING,
-    CAPACITY,
-    ROOM,
-    DATE,
-    HOUR,
-    EXTERNALS,
-    USER,
-    EXTERNAL,
-    MEETING
-};
-
 class XmlParser : public Parser
 {
 public:
@@ -43,7 +17,7 @@ public:
     void parse(const std::string& filename) override;
 private:
     void parseElement(TiXmlElement* elementObject);
-    bool parseProperty(const std::string& prop, Element& parseObject, std::string& propError);
+    bool parseProperty(const std::string& prop, std::string& propError);
 };
 
 

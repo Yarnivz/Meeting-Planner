@@ -36,7 +36,7 @@ public:
      * @param day
      * @param hour
      */
-    DateTime(int year, int month, int day, int hour);
+    DateTime(int year, int month, int day, int hour = 0);
 
     // /**
     //  * @brief Creates the DateTime class.

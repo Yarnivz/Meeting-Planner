@@ -11,6 +11,32 @@
 
 //TODO: add documentation
 
+enum class ElementType
+{
+    CAMPUS,
+    BUILDING,
+    ROOM,
+    MEETING,
+    PARTICIPATION
+};
+
+enum class PropType
+{
+    IDENTIFIER,
+    NAME,
+    LABEL,
+    CAMPUS,
+    BUILDING,
+    CAPACITY,
+    ROOM,
+    DATE,
+    HOUR,
+    EXTERNALS,
+    MEETING,
+    USER,
+    EXTERNAL
+};
+
 struct CampusElement
 {
     std::string name, id;
@@ -31,7 +57,7 @@ struct MeetingElement
 
 struct RoomElement
 {
-    std::string name, id;
+    std::string name, id, campus_id, building_id;
     int capacity;
 };
 
@@ -49,6 +75,14 @@ struct CateringElement
 };
 
 using Element = std::variant<CampusElement, BuildingElement, MeetingElement, RoomElement, ParticipationElement, CateringElement>;
+
+struct ParseObject
+{
+    std::string identifier, name, label, campus_id, building_id, room_id, user_id, meeting_id;
+    int capacity;
+    DateTime date_time;
+    bool externals, external;
+};
 
 class Parser
 {
@@ -82,6 +116,7 @@ protected:
     std::list<MeetingElement> parsed_meetings;
     std::list<ParticipationElement> parsed_participations;
     std::list<CateringElement> parsed_caterings;
+    ParseObject parseObject;
     std::ostream& errorStream;
 };
 #endif //PARSER_H
