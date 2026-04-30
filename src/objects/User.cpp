@@ -56,5 +56,5 @@ void User::_addMeeting(Meeting* meeting)
 
     meetings.add(meeting);
 
-    REQUIRE(getMeetingById(meeting->getId()) == meeting, "Something went wrong. User %s was not added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
+    REQUIRE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
 }

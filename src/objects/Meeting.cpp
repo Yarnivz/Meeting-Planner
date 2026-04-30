@@ -79,7 +79,7 @@ void Meeting::process()
 {
     ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled.");
     state = PROCESSED;
-    REQUIRE(isProcessed(), "Something went wrong. Meeting was not processed.");
+    REQUIRE(isProcessed(), "Meeting must be processed.");
 }
 
 void Meeting::cancel(const std::string& reason)
@@ -87,7 +87,7 @@ void Meeting::cancel(const std::string& reason)
     ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled");
     state = CANCELLED;
     cancellation_reason = reason;
-    REQUIRE(isCancelled(), "Something went wrong. Meeting was not cancelled.");
+    REQUIRE(isCancelled(), "Meeting must be cancelled.");
 }
 
 bool Meeting::isUnProcessed() const { return state == UNPROCESSED; }
@@ -147,7 +147,7 @@ User* Meeting::getParticipant(const std::string& userId)
 
     if (it == participants.end()) return nullptr;
 
-    ENSURE(it->second->getId() == userId, "Something went wrong, The user which was found did not have the correct id.");
+    ENSURE(it->second->getId() == userId, "User must have a correct id.");
     return it->second;
 }
 
@@ -169,5 +169,5 @@ void Meeting::_addParticipant(User* user)
 
     participants.insert({user->getId(), user});
 
-    REQUIRE(getParticipant(user->getId()) == user, "Something went wrong. User was not added.");
+    REQUIRE(getParticipant(user->getId()) == user, "User must be added.");
 }

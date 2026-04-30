@@ -117,10 +117,10 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         // u->addMeeting(m)
 
 
-        ENSURE(getUser(p.user) == u, "Something went wrong. User does not exist and wasnt created");
-        ENSURE(getMeetingById(p.meeting) == m, "Something went wrong. Meeting wasnt added.");
-        ENSURE(m->getParticipant(p.user) == u, "Something went wrong. User was not added as participant of meeting");
-        ENSURE(u->getMeetingById(p.meeting) == m, "Something went wrong. Meeting was not added to user.");
+        ENSURE(getUser(p.user) == u, "User must exist");
+        ENSURE(getMeetingById(p.meeting) == m, "Meeting must exist");
+        ENSURE(m->getParticipant(p.user) == u, "User must be added as participant of meeting");
+        ENSURE(u->getMeetingById(p.meeting) == m, "Meeting must be added to user.");
     }
 
 
@@ -141,8 +141,8 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
 {
     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
     Meeting* meeting = getMeetingById(meetingId);
-    REQUIRE(meeting, "This meeting doesn't exist.");
-    REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    REQUIRE(meeting, "Meeting must exist.");
+    REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
 
     Meeting* conflict;
     if ((conflict = findConflictingMeeting(meetingId)))
@@ -157,14 +157,15 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
     }
     if (!meeting->isOnline())
     {
-        participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
+        meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
     }
 
-    ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting hasn't been processed");
+    ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
 }
 
 void App::processAllMeetings(const bool verbose)
 {
+    int processCount = 0;
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
@@ -184,23 +185,24 @@ void App::processAllMeetings(const bool verbose)
     {
         const Meeting* currentMeeting = sortedMeetings[i];
         REQUIRE(currentMeeting, "Meeting can not be null.");
-        REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+        REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
         processSingleMeeting(currentMeeting->getId(), verbose);
+        processCount++;
     }
 
     //TODO: fix this
-    ENSURE(true, "Not all meetings have been processed");
+    ENSURE(processCount == meetings.getRawIdMap().size(), "All meetings must be processed");
 }
 
 void App::addCampus(Campus* campus)
 {
     REQUIRE(campus, "The provided campus cannot be null.");
-    REQUIRE(campus->isProperlyInitialized(), "Campus needs to be properly initialized by the constructor.");
-    REQUIRE(!rooms.contains(campus->getId()), "Campus id has to be unique.");
+    REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(campus->getId()), "Campus id must be unique.");
 
     campuses.insert({campus->getId(), campus});
 
-    ENSURE(getCampus(campus->getId()) == campus, "The campus was not added to the App.");
+    ENSURE(getCampus(campus->getId()) == campus, "The campus must be added to the App.");
 }
 
 Campus* App::getCampus(const std::string& campusId)
@@ -210,19 +212,19 @@ Campus* App::getCampus(const std::string& campusId)
 
     if (it == campuses.end()) return nullptr;
 
-    ENSURE(it->second->getId() == campusId, "Something went wrong. The campus which was found did not have the right id.");
+    ENSURE(it->second->getId() == campusId, "Campus must have the right Id.");
     return it->second;
 }
 
 void App::addBuilding(Building* building)
 {
     REQUIRE(building, "The provided building cannot be null.");
-    REQUIRE(building->isProperlyInitialized(), "Building needs to be properly initialized by the constructor.");
-    REQUIRE(!rooms.contains(building->getId()), "Room id has to be unique.");
+    REQUIRE(building->isProperlyInitialized(), "Building must be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(building->getId()), "Room id must be unique.");
 
     buildings.insert({building->getId(), building});
 
-    ENSURE(getBuilding(building->getId()) == building, "The building was not added to the App");
+    ENSURE(getBuilding(building->getId()) == building, "The building must be added to the App");
 }
 
 Building* App::getBuilding(const std::string& buildingId)
@@ -232,19 +234,19 @@ Building* App::getBuilding(const std::string& buildingId)
 
     if (it == buildings.end()) return nullptr;
 
-    ENSURE(it->second->getId() == buildingId, "The building which was found did not have the right id.");
+    ENSURE(it->second->getId() == buildingId, "The building must have the right id.");
     return it->second;
 }
 
 void App::addRoom(Room* room)
 {
     REQUIRE(room, "The provided room cannot be null.");
-    REQUIRE(room->isProperlyInitialized(), "Room needs to be properly initialized by the constructor.");
-    REQUIRE(!rooms.contains(room->getId()), "Room id has to be unique.");
+    REQUIRE(room->isProperlyInitialized(), "Room must be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(room->getId()), "Room id must be unique.");
 
     rooms.insert({room->getId(), room}); // Add room
 
-    ENSURE(getRoom(room->getId()) == room, "The room was not added to the App");
+    ENSURE(getRoom(room->getId()) == room, "The room must be added to the App");
 }
 
 Room* App::getRoom(const std::string& roomId)
@@ -253,7 +255,7 @@ Room* App::getRoom(const std::string& roomId)
 
     if (it == rooms.end()) return nullptr;
 
-    ENSURE(it->second->getId() == roomId, "Something went wrong. The room which was found did not have the right id.");
+    ENSURE(it->second->getId() == roomId, "Room must have the right id.");
     return it->second;
 }
 
@@ -266,7 +268,7 @@ const Rooms& App::getAllRooms() const
 bool App::isRoomOccupied(const std::string& roomId, const DateTime& date_time)
 {
     const Room* r = getRoom(roomId);
-    REQUIRE(r, "This room does not exist.");
+    REQUIRE(r, "Rhis room must exist.");
 
     std::list<Meeting*>& possible_occupations = getMeetingsByDateTime(date_time);
 
@@ -281,13 +283,13 @@ bool App::isRoomOccupied(const std::string& roomId, const DateTime& date_time)
 Meeting* App::findConflictingMeeting(const std::string& meetingId)
 {
     Meeting* m = getMeetingById(meetingId);
-    REQUIRE(m, "This meeting doesn't exist.");
+    REQUIRE(m, "This meeting must exist.");
 
     std::list<Meeting*>& possible_conflicts = meetings.getByDateTime(m->getDateTime());
 
     for (Meeting* possible_conflict : possible_conflicts)
     {
-        ENSURE(possible_conflict->getDateTime() == m->getDateTime(), "Something went wrong. Looking meetings up by date failed.");
+        ENSURE(possible_conflict->getDateTime() == m->getDateTime(), "Meetings must properly be found by date");
         if (possible_conflict != m &&
             possible_conflict->isProcessed() &&
             (!m->isOnline() && possible_conflict->getRoom() == m->getRoom())
@@ -329,12 +331,12 @@ const MeetingRegistry& App::getMeetingRegistry() const
 
 void App::addUser(User* user)
 {
-    REQUIRE(user != nullptr, "User can not be null");
-    REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+    REQUIRE(user != nullptr, "User can not be null.");
+    REQUIRE(user->isProperlyInitialized(), "User must be properly initialized.");
 
     users.insert({user->getId(), user});
 
-    REQUIRE(getUser(user->getId()) == user, "Something went wrong. User was not added.");
+    REQUIRE(getUser(user->getId()) == user, "User must be added.");
 }
 
 User* App::getUser(const std::string& userId)
@@ -343,7 +345,7 @@ User* App::getUser(const std::string& userId)
 
     if (it == users.end()) return nullptr;
 
-    ENSURE(it->second->getId() == userId, "Something went wrong, The user which was found did not have the correct id.");
+    ENSURE(it->second->getId() == userId, "User must have the correct id.");
     return it->second;
 }
 
@@ -356,13 +358,13 @@ void App::addUserToMeeting(const std::string& userId, const std::string& meeting
 {
     Meeting* m = getMeetingById(meetingId);
     User* u = getUser(userId);
-    REQUIRE(m, "This meeting doesn't exist: '%s'", meetingId.c_str());
-    REQUIRE(u, "This user doesn't exist: '%s'", userId.c_str());
+    REQUIRE(m, "This meeting must exist: '%s'", meetingId.c_str());
+    REQUIRE(u, "This user must exist: '%s'", userId.c_str());
 
     m->addParticipant(u);
 
-    ENSURE(m->getParticipant(userId) == u, "Something went wrong. The participant '%s' was not added to meeting '%s'.", userId.c_str(), meetingId.c_str());
-    ENSURE(u->getMeetingById(meetingId) == m, "Something went wrong. The meeting '%s' was not added to user '%s'.", meetingId.c_str(), userId.c_str());
+    ENSURE(m->getParticipant(userId) == u, "Participant '%s' must be added to meeting '%s'.", userId.c_str(), meetingId.c_str());
+    ENSURE(u->getMeetingById(meetingId) == m, "Meeting '%s' must be added to user '%s'.", meetingId.c_str(), userId.c_str());
 }
 
 
@@ -378,7 +380,7 @@ bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
         if (possible_occupation == nullptr || !possible_occupation->isProcessed()) continue;
 
         const User* has_participant = possible_occupation->getParticipant(userId);
-        REQUIRE(has_participant == nullptr || has_participant == u, "Something went wrong. The user which was found was not correct.");
+        REQUIRE(has_participant == nullptr || has_participant == u, "User found must be the correct one");
 
         if (has_participant == nullptr) continue;
 

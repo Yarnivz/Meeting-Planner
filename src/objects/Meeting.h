@@ -19,6 +19,9 @@ class Meeting
     friend class User;
 
 public:
+    //put here for now as fill in for later
+    std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;
+
     /**
      * @brief Creates the Meeting class.
      * The process of users gathering in a specific room for a specific purpose for a certain amount of time on a set date.
@@ -206,8 +209,6 @@ private:
     bool catering_needed;
 
     std::string cancellation_reason;
-
-    std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;
 
     void* init_check_this_ptr;
 };
