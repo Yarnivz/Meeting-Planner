@@ -1,16 +1,16 @@
                                                                              <SYSTEM>
-<!--    <CATERING>-->
-<!--        <CAMPUS>cm</CAMPUS>-->
-<!--        <CO2>3.1415</CO2>-->
-<!--    </CATERING>-->
-<!--    <CATERING>-->
-<!--        <CAMPUS>cm</CAMPUS>-->
-<!--        <CO2>1.2345</CO2>-->
-<!--    </CATERING>-->
-<!--    <CATERING>-->
-<!--        <CAMPUS>cg</CAMPUS>-->
-<!--        <CO2>42</CO2>-->
-<!--    </CATERING>-->
+    <CATERING>
+        <CAMPUS>cm</CAMPUS>
+        <CO2>3.1415</CO2>
+    </CATERING>
+    <CATERING>
+        <CAMPUS>cm</CAMPUS>
+        <CO2>1.2345</CO2>
+    </CATERING>
+    <CATERING>
+        <CAMPUS>cg</CAMPUS>
+        <CO2>42</CO2>
+    </CATERING>
 
 
     <CAMPUS>
@@ -72,7 +72,8 @@
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
         <EXTERNALS>true</EXTERNALS>
-<!--        <CATERING>true</CATERING>-->
+        <CATERING>true</CATERING>
+        <ONLINE>false</ONLINE>
     </MEETING>
     <MEETING>
         <LABEL>Other meeting</LABEL>
@@ -80,8 +81,9 @@
         <ROOM>mg023</ROOM>
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
-        <EXTERNALS>false</EXTERNALS>µ
-<!--        <CATERING>true</CATERING>-->
+        <EXTERNALS>false</EXTERNALS>
+        <CATERING>true</CATERING>
+        <ONLINE>false</ONLINE>
     </MEETING>
     <MEETING>
         <LABEL>Weekly meeting 2</LABEL>
@@ -90,7 +92,8 @@
         <DATE>2026-05-23</DATE>
         <HOUR>12</HOUR>
         <EXTERNALS>false</EXTERNALS>
-<!--        <CATERING>false</CATERING>-->
+        <CATERING>false</CATERING>
+        <ONLINE>false</ONLINE>
     </MEETING>
 
     <MEETING>
@@ -100,7 +103,8 @@
         <DATE>2027-01-01</DATE>
         <HOUR>18</HOUR>
         <EXTERNALS>true</EXTERNALS>
-        <!--<CATERING>true</CATERING>-->
+        <CATERING>true</CATERING>
+        <ONLINE>false</ONLINE>
     </MEETING>
 
 
