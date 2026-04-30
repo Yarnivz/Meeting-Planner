@@ -857,9 +857,9 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                     .label = parseObject.label,
                     .id = parseObject.identifier,
                     .room_id = parseObject.room_id,
-                    .date_time = parseObject.date_time,
+                    .date_time = DateTime(parseObject.year, parseObject.month, parseObject.day, parseObject.hour),
                     .externals_allowed = parseObject.externals,
-                    .online = parseObject.online,
+                    .online = parseObject.online
                 });
             };
             break;
@@ -890,32 +890,25 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
         if (!requiredProps.contains(propType))
         {
             errorStream << "Unrecognized property for " << elementType << ": \"" << propType << "\"" << std::endl;
-            break;
+            return;
         }
         //DUPLICATE PROPERTY FOUND
         if (!foundProps.insert(propType).second)
         {
             errorStream << elementType << "element can't have more than one " << propType << " property." << std::endl;
-            break;
+            return;
         }
 
-        //PARSE PROPERTY
-        if (parseProperty(propertyObject, propError))
-        {
-            parseHandler();
-        }
-        else
+
+        if (!parseProperty(propertyObject, propError))
         {
             errorStream << "Failed to parse " << elementType << " element: " << std::endl;
             errorStream << "\t" << propError << std::endl;
+            return;
         }
 
     }
 
-    //DEBUG:
-    std::cout << "NAME: " << parseObject.name << std::endl;
-    std::cout << "ID: " << parseObject.identifier << std::endl;
-    std::cout << "CAPACITY: " << parseObject.capacity << std::endl;
 
     //CHECK IF ANY REQUIRED PROPERTIES ARE MISSING
     if (foundProps.size() != requiredProps.size())
@@ -928,6 +921,8 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             }
         }
     }
+
+    parseHandler();
 
 }
 
@@ -1047,12 +1042,14 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::DATE:
             {
                 //Try to convert to DateTime check
-                int day, month, year, hour = 0;
+                int day = 0;
+                int month = 0;
+                int year = 0;
+
                 try
                 {
                     day = std::stoi(prop.substr(8, 2));
                     month = std::stoi(prop.substr(5, 2));
-                    std::cout << "i say " <<  month << std::flush <<std::endl;
                     year = std::stoi(prop.substr(0, 4));
                 }
                 catch (std::exception& except)
@@ -1064,17 +1061,15 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                     std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
                 };
                 //Check if date exists
-                if (!chrono_date.ok())
+                if (!chrono_date.ok() || year <= 0)
                 {
                     parseError = "Date " + prop + " does not exist.";
                     return false;
                 }
-                //Check if parseObject.date_time is initialized and assigned a DateTime object with an hour > 0
-                if (parseObject.date_time.isProperlyInitialized() && parseObject.date_time.getHour() != 0)
-                {
-                    hour = parseObject.date_time.getHour();
-                }
-                parseObject.date_time = DateTime(year, month, day, hour);
+
+                parseObject.year = year;
+                parseObject.month = month;
+                parseObject.day = day;
                 break;
             }
         case PropType::HOUR:
@@ -1097,8 +1092,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                     return false;
                 }
                 
-                DateTime& current = parseObject.date_time;
-                parseObject.date_time = DateTime(current.getYear(), current.getMonth(), current.getDay(), hour);
+                parseObject.hour = hour;
                 break;
             }
         case PropType::EXTERNALS:

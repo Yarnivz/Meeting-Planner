@@ -42,7 +42,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
-        addCampus(new Campus(c.id, c.name));
+        addCampus(new Campus(c.name, c.id));
     }
 
     for (const BuildingElement& b : parser->parsedBuildings())

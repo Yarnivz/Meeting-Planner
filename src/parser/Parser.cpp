@@ -5,7 +5,7 @@
 #include "Parser.h"
 
 
-Parser::Parser(std::ostream& errorStream): errorStream(errorStream) {}
+Parser::Parser(std::ostream& errorStream) : parseObject(), errorStream(errorStream) {}
 
 const std::list<CampusElement>& Parser::parsedCampuses() const { return parsed_campuses; }
 void Parser::clearCampuses() { parsed_campuses = {}; }
