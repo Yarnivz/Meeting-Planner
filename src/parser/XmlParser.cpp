@@ -790,7 +790,7 @@ void XmlParser::parse(const std::string& filename)
 void XmlParser::parseElement(TiXmlElement* elementObject)
 {
     parseObject = ParseObject();
-    const std::unordered_map<std::string, ElementType> elementValues = {
+    const static std::unordered_map<std::string, ElementType> elementValues = {
         {"CAMPUS", ElementType::CAMPUS},
         {"BUILDING", ElementType::BUILDING},
         {"ROOM", ElementType::ROOM},
@@ -798,7 +798,16 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
         {"PARTICIPATION", ElementType::PARTICIPATION}
     };
 
+
+
     const std::string elementType = elementObject->Value();
+
+    if (!elementValues.contains(elementType))
+    {
+        errorStream << "Unrecognized object element:  " << elementType << std::endl;
+        return;
+    }
+
     std::unordered_set<std::string> requiredProps;
     std::unordered_set<std::string> foundProps;
     std::function<void()> parseHandler;
@@ -866,7 +875,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             };
             break;
         default:
-            errorStream << "Unrecognized object element:  " << elementObject << std::endl;
+            errorStream << "Object element exists in elementValues map but not in switch case:  " << elementType << std::endl;
             break;
     }
 
@@ -935,7 +944,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         prop = c_str;
     }
 
-    const std::unordered_map<std::string, PropType> propValues = {
+    const static std::unordered_map<std::string, PropType> propValues = {
         {"IDENTIFIER", PropType::IDENTIFIER},
         {"NAME", PropType::NAME},
         {"LABEL", PropType::LABEL},
@@ -950,6 +959,12 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"EXTERNAL", PropType::EXTERNAL},
         {"MEETING", PropType::MEETING},
     };
+
+    if (!propValues.contains(propType))
+    {
+        parseError = "Unrecognized property: " + prop;
+        return false;
+    }
 
     switch (propValues.at(propType))
     {
@@ -1089,7 +1104,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
             }
         default:
             {
-                parseError = "Unrecognized property: " + prop;
+                parseError = "Property exists in property_map but isnt defined in switch case: " + prop;
                 return false;
             }
     }
