@@ -1051,20 +1051,9 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                     parseError = std::string("Hour must be non-negative and smaller than 24, not ") + prop + ".";
                     return false;
                 }
-
-                //Check if parseObject.date_time is initialized
-                //If it is, then we keep the assigned date along with the given hour
-                if (parseObject.date_time.isProperlyInitialized())
-                {
-                    DateTime& current = parseObject.date_time;
-                    parseObject.date_time = DateTime(current.getYear(), current.getMonth(), current.getDay(), hour);
-                }
-                //Else, we add today's date along with the given hour to the date_time
-                else
-                {
-                    Date today = Date();
-                    parseObject.date_time = DateTime(today.getYear(), today.getMonth(), today.getDay(), hour);
-                }
+                
+                DateTime& current = parseObject.date_time;
+                parseObject.date_time = DateTime(current.getYear(), current.getMonth(), current.getDay(), hour);
                 break;
             }
         case PropType::EXTERNALS:
