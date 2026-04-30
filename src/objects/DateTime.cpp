@@ -53,11 +53,11 @@ DateTime::DateTime(const DateTime& d)
 
 DateTime::DateTime(int year, int month, int day, int hour)
 {
-    REQUIRE(year > 0, "Year can not be negative!");
-    REQUIRE(month > 0, "Month can not be negative!");
-    REQUIRE(day > 0, "Day can not be negative!");
-    REQUIRE(hour >= 0, "Hour can't be negative");
-    REQUIRE(hour < 24, "Hour must be less than 24");
+    REQUIRE(year > 0, "Year can not be negative! %i", year);
+    REQUIRE(month > 0, "Month can not be negative! %i", month);
+    REQUIRE(day > 0, "Day can not be negative! %i", day);
+    REQUIRE(hour >= 0, "Hour can't be negative! %i", hour);
+    REQUIRE(hour < 24, "Hour must be less than 24! %i", hour);
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
 
