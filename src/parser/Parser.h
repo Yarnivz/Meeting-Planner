@@ -74,8 +74,6 @@ struct CateringElement
     float co2_count;
 };
 
-using Element = std::variant<CampusElement, BuildingElement, MeetingElement, RoomElement, ParticipationElement, CateringElement>;
-
 struct ParseObject
 {
     std::string identifier, name, label, campus_id, building_id, room_id, user_id, meeting_id;
@@ -90,6 +88,14 @@ public:
     explicit Parser(std::ostream& errorStream = std::cerr);
 
     virtual void parse(const std::string& filename) = 0;
+
+    const std::list<CampusElement>& parsedCampuses() const;
+
+    void clearCampuses();
+
+    const std::list<BuildingElement>& parsedBuildings() const;
+
+    void clearBuildings();
 
     const std::list<RoomElement>& parsedRooms() const;
 

@@ -7,6 +7,12 @@
 
 Parser::Parser(std::ostream& errorStream): errorStream(errorStream) {}
 
+const std::list<CampusElement>& Parser::parsedCampuses() const { return parsed_campuses; }
+void Parser::clearCampuses() { parsed_campuses = {}; }
+
+const std::list<BuildingElement>& Parser::parsedBuildings() const { return parsed_buildings; }
+void Parser::clearBuildings() { parsed_buildings = {}; }
+
 const std::list<RoomElement>& Parser::parsedRooms() const { return parsed_rooms; }
 void Parser::clearRooms() { parsed_rooms = {}; }
 
