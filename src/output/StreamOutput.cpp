@@ -49,7 +49,9 @@ void StreamOutput::printMeeting(const Meeting* meeting)
         *stream << "  - Participants: \n";
         for (const std::pair<const std::string, User*>& u : meeting->getParticipants())
         {
-            *stream << "      * " << u.second->getId() << "\n";
+            *stream << "      * " << u.second->getId();
+            if (u.second->isExternal()) *stream << " (external)";
+            *stream << "\n";
         }
     }
 

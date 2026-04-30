@@ -34,6 +34,33 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
     parser->parse(filename);
 
+    for (const CampusElement& c : parser->parsedCampuses())
+    {
+        if (getCampus(c.id) != nullptr)
+        {
+            errStream << "Campus ids must be unique: " << c.id << std::endl;
+            continue;
+        }
+
+        addCampus(new Campus(c.id, c.name));
+    }
+
+    for (const BuildingElement& b : parser->parsedBuildings())
+    {
+        if (getBuilding(b.id) != nullptr)
+        {
+            errStream << "Building ids must be unique: " << b.id << std::endl;
+            continue;
+        }
+
+        Campus* c = getCampus(b.campus_id);
+        if (c == nullptr)
+        {
+            errStream << "Building \'" << b.id << "\' is in a campus \'" << b.campus_id << "\', which doesn't exist." << std::endl;
+            continue;
+        }
+        addBuilding(new Building(b.name, b.id, c));
+    }
 
     //> Add all elements in the correct order
     //  Final integrity checks
@@ -46,8 +73,28 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
-        //TODO add buildings to app?
-        addRoom(new Room(r.name, r.id, r.capacity));
+        Building* building = getBuilding(r.building_id);
+        if (building == nullptr)
+        {
+            errStream << "Room \'" << r.id << "\' is in a building \'" << r.building_id << "\', which doesn't exist." << std::endl;
+            continue;
+        }
+
+        Campus* campus = getCampus(r.campus_id);
+        if (campus == nullptr)
+        {
+            errStream << "Room \'" << r.id << "\' is in a campus \'" << r.campus_id << "\', which doesn't exist." << std::endl;
+            continue;
+        }
+
+        if (campus != building->getCampus())
+        {
+            errStream << "Room \'" << r.id << "\' is in a campus \'" << r.campus_id << "\', but it's building \'" << r.building_id
+            << "\' is in a different campus \'" << building->getCampus()->getId() << "\'." << std::endl;
+            continue;
+        }
+
+        addRoom(new Room(r.name, r.id, r.capacity, building));
     }
 
     for (const CateringElement& c : parser->parsedCaterings())
