@@ -217,7 +217,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
     if (!meeting->isOnline())
     {
         meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
-        emission = static_cast<float>(meeting->getParticipantCount()) * meeting->getRoom()->getCampus()->getCaterings().front()->getEmissions();
+
 
         if (meeting->cateringNeeded())
         {
@@ -229,6 +229,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
             }
         }
     }
+    emission += meeting->getEmissions();
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
 }
 

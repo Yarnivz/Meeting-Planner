@@ -180,6 +180,7 @@ public:
      *
      * @post Something went wrong, The user which was found did not have the correct id.
      */
+    float getEmissions() const;
     User* getParticipant(const std::string& userId);
     size_t getParticipantCount() const;
     const Users& getParticipants() const;

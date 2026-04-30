@@ -4,6 +4,8 @@
 
 #include "Meeting.h"
 
+#include "Catering.h"
+#include "Room.h"
 #include "helper/DesignByContract.h"
 #include "objects/User.h"
 
@@ -170,4 +172,16 @@ void Meeting::_addParticipant(User* user)
     participants.insert({user->getId(), user});
 
     REQUIRE(getParticipant(user->getId()) == user, "User must be added.");
+}
+
+float Meeting::getEmissions() const
+{
+    REQUIRE(room != nullptr, "Room cannot be null");
+    REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
+    float addedEmissions = 0;
+    if (room->getCampus()->getCaterings().size() > 0)
+    {
+        addedEmissions = getParticipantCount() * room->getCampus()->getCaterings().front()->getEmissions();
+    }
+    return addedEmissions;
 }
