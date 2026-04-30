@@ -1,16 +1,16 @@
                                                                              <SYSTEM>
-    <CATERING>
-        <CAMPUS>cm</CAMPUS>
-        <CO2>3.1415</CO2>
-    </CATERING>
-    <CATERING>
-        <CAMPUS>cm</CAMPUS>
-        <CO2>1.2345</CO2>
-    </CATERING>
-    <CATERING>
-        <CAMPUS>cg</CAMPUS>
-        <CO2>42</CO2>
-    </CATERING>
+<!--    <CATERING>-->
+<!--        <CAMPUS>cm</CAMPUS>-->
+<!--        <CO2>3.1415</CO2>-->
+<!--    </CATERING>-->
+<!--    <CATERING>-->
+<!--        <CAMPUS>cm</CAMPUS>-->
+<!--        <CO2>1.2345</CO2>-->
+<!--    </CATERING>-->
+<!--    <CATERING>-->
+<!--        <CAMPUS>cg</CAMPUS>-->
+<!--        <CO2>42</CO2>-->
+<!--    </CATERING>-->
 
 
     <CAMPUS>
@@ -72,7 +72,7 @@
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
         <EXTERNALS>true</EXTERNALS>
-        <CATERING>true</CATERING>
+<!--        <CATERING>true</CATERING>-->
     </MEETING>
     <MEETING>
         <LABEL>Other meeting</LABEL>
@@ -81,7 +81,7 @@
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
         <EXTERNALS>false</EXTERNALS>µ
-        <CATERING>true</CATERING>
+<!--        <CATERING>true</CATERING>-->
     </MEETING>
     <MEETING>
         <LABEL>Weekly meeting 2</LABEL>
@@ -89,7 +89,8 @@
         <ROOM>mg025</ROOM>
         <DATE>2026-05-23</DATE>
         <HOUR>12</HOUR>
-        <CATERING>false</CATERING>
+        <EXTERNALS>false</EXTERNALS>
+<!--        <CATERING>false</CATERING>-->
     </MEETING>
 
     <MEETING>
@@ -99,17 +100,19 @@
         <DATE>2027-01-01</DATE>
         <HOUR>18</HOUR>
         <EXTERNALS>true</EXTERNALS>
-        <CATERING>true</CATERING>
+        <!--<CATERING>true</CATERING>-->
     </MEETING>
 
 
     <PARTICIPATION>
         <MEETING>m1</MEETING>
         <USER>Peter Selie</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m1</MEETING>
         <USER>User2</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m1</MEETING>
@@ -125,28 +128,34 @@
     <PARTICIPATION>
         <MEETING>m2</MEETING>
         <USER>User2</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m2</MEETING>
         <USER>John Doe</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m2</MEETING>
         <USER>Jane Doe</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m2</MEETING>
         <USER>Jeff Doe</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
 
     <PARTICIPATION>
         <MEETING>m3</MEETING>
         <USER>Jane Doe</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
 
     <PARTICIPATION>
         <MEETING>m105</MEETING>
         <USER>Jane Doe</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m105</MEETING>
@@ -156,5 +165,6 @@
     <PARTICIPATION>
         <MEETING>m105</MEETING>
         <USER>Peter Selie</USER>
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
 </SYSTEM>
