@@ -205,11 +205,6 @@ public:
      *
      * @param meetingId Id of the meeting to retrieve.
      * @param verbose Prints text to console when enabled. This option is enabled by default.
-     *
-     * @contracts
-     * REQUIRE(meeting, "This meeting doesn't exist.");
-     * @n REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-     * @n ENSURE(meetingProcessed, "Meeting hasn't been processed");
      */
     void processSingleMeeting(const std::string& meetingId, bool verbose = true);
 
@@ -219,10 +214,6 @@ public:
      * Temporarily sorts all meetings by date (or order if the dates are the same) then runs @ref processSingleMeeting for each meeting.
      *
      * @param verbose Prints text to console when enabled. This option is enabled by default.
-     * @contracts
-     * REQUIRE(currentMeeting, "Meeting can not be null.");
-     * @n REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-     * @n ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
      */
     void processAllMeetings(bool verbose = true);
     ~App();
@@ -237,8 +228,6 @@ private:
     Rooms rooms;
     MeetingRegistry meetings;
     Users users;
-
-    std::vector<std::pair<unsigned int, unsigned int>> participantsToRoomsSize;
 
 
     void* init_check_this_ptr = nullptr;
