@@ -276,6 +276,7 @@ public:
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      */
     void processAllMeetings(bool verbose = true);
+
     ~App();
 
 private:
@@ -289,6 +290,7 @@ private:
     MeetingRegistry meetings;
     Users users;
     std::list<Catering*> caterings;
+    float emission;
 
 
     void* init_check_this_ptr = nullptr;

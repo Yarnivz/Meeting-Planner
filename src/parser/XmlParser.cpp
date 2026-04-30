@@ -850,7 +850,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
         //MEETING
         case ElementType::MEETING:
-            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS"};
+            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS", "CO2"};
             parseHandler = [&]()
             {
                 parsed_meetings.push_back((MeetingElement){
@@ -955,6 +955,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"USER", PropType::USER},
         {"EXTERNAL", PropType::EXTERNAL},
         {"MEETING", PropType::MEETING},
+        {"CO2", PropType::CO2},
     };
 
     if (!propValues.contains(propType))
@@ -997,13 +998,18 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 try
                 {
                     capacity = std::stoi(prop);
+                    //Check if capacity is < 0
+                    if (capacity < 0)
+                    {
+                        parseError = std::string("Capacity could not be converted to an integer (value is negative)");
+                        return false;
+                    }
                 }
                 catch (std::exception& except)
                 {
                     parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
                     return false;
                 }
-                //Check if capacity is < 0
                 parseObject.capacity = capacity;
                 break;
             }
@@ -1038,6 +1044,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                     return false;
                 }
                 parseObject.online = online;
+                break;
             }
         case PropType::DATE:
             {
@@ -1113,6 +1120,28 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::MEETING:
             {
                 parseObject.meeting_id = prop;
+                break;
+            }
+    case PropType::CO2:
+            {
+                float co2;
+                //Try to convert to int check
+                try
+                {
+                    co2 = std::stof(prop);
+                    //Check if co2 is < 0
+                    if (co2 < 0)
+                    {
+                        parseError = std::string("CO2 could not be converted to a float (value is negative)");
+                        return false;
+                    }
+                }
+                catch (std::exception& except)
+                {
+                    parseError = std::string("CO2 could not be converted to a float\n\t- ") + except.what();
+                    return false;
+                }
+                parseObject.co2_count = co2;
                 break;
             }
         default:

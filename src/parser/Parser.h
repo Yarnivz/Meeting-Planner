@@ -36,6 +36,7 @@ enum class PropType
     MEETING,
     USER,
     EXTERNAL,
+    CO2,
 };
 
 struct CampusElement
@@ -84,6 +85,7 @@ struct ParseObject
     int month = -1;
     int day = -1;
     int hour = -1;
+    float co2_count;
     bool externals, external, online;
 };
 
