@@ -156,6 +156,18 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             addUser(u);
         }
 
+        if (!u->isExternal() && p.external)
+        {
+            errStream << "User \'" << p.user << "\' was marked as external for meeting \'" << p.meeting
+            << "\' but was registered as not-external earlier" << std::endl;
+            continue;
+        } else if (u->isExternal() && !p.external)
+        {
+            errStream << "User \'" << p.user << "\' was marked as not-external for meeting \'" << p.meeting
+            << "\' but was registered as external earlier" << std::endl;
+            continue;
+        }
+
         // Add user to meeting
         m->addParticipant(u);
 
