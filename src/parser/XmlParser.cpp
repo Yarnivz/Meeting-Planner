@@ -1018,7 +1018,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::DATE:
             {
                 //Try to convert to DateTime check
-                int day, month, year, hour = 0;
+                int day, month, year = 0;
                 try
                 {
                     day = std::stoi(prop.substr(8, 2));
@@ -1039,12 +1039,8 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                     parseError = "Date " + prop + " does not exist.";
                     return false;
                 }
-                //Check if parseObject.date_time is initialized and assigned a DateTime object with an hour > 0
-                if (parseObject.date_time.isProperlyInitialized() && parseObject.date_time.getHour() != 0)
-                {
-                    hour = parseObject.date_time.getHour();
-                }
-                parseObject.date_time = DateTime(year, month, day, hour);
+
+                parseObject.date_time = DateTime(year, month, day, parseObject.date_time.getHour());
                 break;
             }
         case PropType::HOUR:

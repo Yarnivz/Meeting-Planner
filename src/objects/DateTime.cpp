@@ -76,9 +76,9 @@ DateTime::DateTime(int year, int month, int day, int hour)
     init_test_this_ptr = this;
 
     ENSURE(getYear() == year, "DateTime creation failed. Year was not set correctly.");
-    ENSURE(getMonth() == month, "DateTime creation failed. Month was not set correctly.");
-    ENSURE(getDay() == day, "DateTime creation failed. Day was not set correctly.");
-    ENSURE(getHour() == hour, "DateTime creation failed. Hour was not set correctly.");
+    ENSURE(getMonth() == umonth, "DateTime creation failed. Month was not set correctly.");
+    ENSURE(getDay() == uday, "DateTime creation failed. Day was not set correctly.");
+    ENSURE(getHour() == uhour, "DateTime creation failed. Hour was not set correctly.");
     ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.");
 }
 
