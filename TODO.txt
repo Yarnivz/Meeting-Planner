@@ -11,7 +11,4 @@ Yarni:
 - update Parser Test to implement new classes
 
 Lucas:
-- rework parser
-- External participants (in progress)
-- Lezen van catering providers
 - Catering planning & kosten
