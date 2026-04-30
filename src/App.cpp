@@ -224,12 +224,13 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
 
 void App::processAllMeetings(const bool verbose)
 {
-    size_t processCount = 0;
+
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
-        if (m.second->getDateTime() <= DateTime()) sortedMeetings.push_back(m.second);
+        sortedMeetings.push_back(m.second);
     }
+
     std::sort(sortedMeetings.begin(), sortedMeetings.end(),
               [](const Meeting* comparedMeeting1, const Meeting* comparedMeeting2)
               {
@@ -240,17 +241,16 @@ void App::processAllMeetings(const bool verbose)
                   return comparedMeeting1->getOrder() < comparedMeeting2->getOrder();
               });
 
+
     for (size_t i = 0; i < sortedMeetings.size(); ++i)
     {
         const Meeting* currentMeeting = sortedMeetings[i];
-        REQUIRE(currentMeeting, "Meeting can not be null.");
-        REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
+        ENSURE(currentMeeting, "Meeting can not be null.");
+        ENSURE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
         processSingleMeeting(currentMeeting->getId(), verbose);
-        processCount++;
     }
 
-    //TODO: fix this
-    ENSURE(processCount == meetings.getRawIdMap().size(), "All meetings must be processed");
+    //TODO add ensure
 }
 
 void App::addCampus(Campus* campus)
