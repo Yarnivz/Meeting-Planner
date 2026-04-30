@@ -61,6 +61,16 @@ bool Room::isProperlyInitialized() const
     return init_check_this_ptr == this;
 }
 
+Building* Room::getBuilding() const
+{
+    return building;
+}
+
+Campus* Room::getCampus() const
+{
+    return campus;
+}
+
 
 const std::string& Room::getId() const
 {
