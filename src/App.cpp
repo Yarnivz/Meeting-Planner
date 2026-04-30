@@ -14,7 +14,7 @@ App::App(Parser* parser, Output* output) : parser(parser), output(output)
 {
     init_check_this_ptr = this;
 
-    ENSURE(isProperlyInitialized(), "App creation failed. Object was not properly intialized.");
+    ENSURE(isProperlyInitialized(), "object must be propermy initialized in order to create App.");
 }
 
 bool App::isProperlyInitialized() const
@@ -213,11 +213,11 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
     {
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
-
-        if (!meeting->isOnline())
-        {
-            meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
-        }
+    }
+    if (!meeting->isOnline())
+    {
+        meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
+        emission = static_cast<float>(meeting->getParticipantCount()) * meeting->getRoom()->getCampus()->getCaterings().front()->getEmissions();
 
         if (meeting->cateringNeeded())
         {
@@ -229,9 +229,6 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
             }
         }
     }
-
-
-
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
 }
 

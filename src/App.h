@@ -289,6 +289,7 @@ private:
     MeetingRegistry meetings;
     Users users;
     std::list<Catering*> caterings;
+    float emission;
 
 
     void* init_check_this_ptr = nullptr;

@@ -1,13 +1,26 @@
 <SYSTEM>
+    <CAMPUS>
+        <NAME>Campus Middelheim</NAME>
+        <IDENTIFIER>M</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>Gebouw G</NAME>
+        <IDENTIFIER>M.G</IDENTIFIER>
+        <CAMPUS>M</CAMPUS>
+    </BUILDING>
     <ROOM>
         <NAME>M.G.025</NAME>
         <IDENTIFIER>M.G.025</IDENTIFIER>
         <CAPACITY>55</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.G</BUILDING>
     </ROOM>
     <ROOM>
         <NAME>M.G.023</NAME>
         <IDENTIFIER>Room98732</IDENTIFIER>
         <CAPACITY>10</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.G</BUILDING>
     </ROOM>
     <MEETING>
         <LABEL>Weekly meeting</LABEL>
@@ -15,10 +28,13 @@
         <ROOM>Room98732</ROOM>
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
-        <ONLINE>True</ONLINE>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <PARTICIPATION>
         <MEETING>Meeting_478463</MEETING>
         <USER>Peter Selie</USER>
+        <EXTERNAL>False</EXTERNAL>
     </PARTICIPATION>
 </SYSTEM>
