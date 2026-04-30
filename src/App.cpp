@@ -235,7 +235,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
 }
 
-void App::processAllMeetings(const bool verbose)
+void App::processAllMeetings(const bool verbose, std::ostream* catering_planning_output)
 {
 
     std::vector<Meeting*> sortedMeetings;
@@ -260,7 +260,7 @@ void App::processAllMeetings(const bool verbose)
         const Meeting* currentMeeting = sortedMeetings[i];
         ENSURE(currentMeeting, "Meeting can not be null.");
         ENSURE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
-        processSingleMeeting(currentMeeting->getId(), verbose);
+        processSingleMeeting(currentMeeting->getId(), verbose, catering_planning_output);
     }
 
     //TODO add ensure
