@@ -861,7 +861,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
         //MEETING
         case ElementType::MEETING:
-            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS", "CO2", "CATERING"};
+            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS", "CATERING"};
             parseHandler = [&]()
             {
                 parsed_meetings.push_back((MeetingElement){
@@ -934,16 +934,17 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
 
 
     //CHECK IF ANY REQUIRED PROPERTIES ARE MISSING
-    if (foundProps.size() != requiredProps.size())
+
+    bool missing_props = false;
+    for (const std::string& prop : requiredProps)
     {
-        for (const std::string& prop : requiredProps)
+        if (!foundProps.contains(prop))
         {
-            if (!foundProps.contains(prop))
-            {
-                errorStream << elementType << " must have a " << prop << " property" << std::endl;
-            }
+            errorStream << elementType << " must have a " << prop << " property" << std::endl;
+            missing_props = true;
         }
     }
+    if (missing_props) return;
 
     parseHandler();
 
@@ -957,7 +958,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         const char* c_str = propertyObject->GetText();
         if (c_str == nullptr)
         {
-            parseError = std::string("Property") + propType + " needs to contain text.";
+            parseError = std::string("Property ") + propType + " needs to contain text.";
             return false;
         }
         prop = c_str;
@@ -1153,7 +1154,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 parseObject.meeting_id = prop;
                 break;
             }
-    case PropType::CO2:
+        case PropType::CO2:
             {
                 float co2;
                 //Try to convert to int check

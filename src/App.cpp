@@ -259,7 +259,7 @@ void App::processAllMeetings(const bool verbose, std::ostream* catering_planning
         ENSURE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
         processSingleMeeting(currentMeeting->getId(), verbose, catering_planning_output);
     }
-
+    std::cout << "total emission is " << emission << std::endl << std::flush;
     //TODO add ensure
 }
 
