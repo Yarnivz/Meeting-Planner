@@ -25,6 +25,11 @@ DateTime::DateTime()
 
     ENSURE(ymd.ok(), "DateTime creation failed. Date validity check did not pass.");
     ENSURE(hour < 24, "DateTime creation failed. Hour needs to be >= 0 and < 24");
+    ENSURE(getYear() == year, "DateTime creation failed. Year was not set correctly.");
+    ENSURE(getMonth() == month, "DateTime creation failed. Month was not set correctly.");
+    ENSURE(getDay() == day, "DateTime creation failed. Day was not set correctly.");
+    ENSURE(getHour() == hour, "DateTime creation failed. Hour was not set correctly.");
+    ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.");
 }
 
 DateTime::DateTime(const DateTime& d)
@@ -37,6 +42,12 @@ DateTime::DateTime(const DateTime& d)
     hour = d.hour;
 
     init_test_this_ptr = this; //Reset this pointer, do not copy it from the other DateTime.
+
+    ENSURE(getYear() == d.year, "DateTime creation failed. Year was not set correctly.");
+    ENSURE(getMonth() == d.month, "DateTime creation failed. Month was not set correctly.");
+    ENSURE(getDay() == d.day, "DateTime creation failed. Day was not set correctly.");
+    ENSURE(getHour() == d.hour, "DateTime creation failed. Hour was not set correctly.");
+    ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.");
 }
 
 
@@ -64,7 +75,11 @@ DateTime::DateTime(int year, int month, int day, int hour)
 
     init_test_this_ptr = this;
 
-    ENSURE(isProperlyInitialized() && year == getYear() && umonth == getMonth() && uday == getDay() && uhour == getHour(), "DateTime creation failed. Values were not correctly assigned.");
+    ENSURE(getYear() == year, "DateTime creation failed. Year was not set correctly.");
+    ENSURE(getMonth() == month, "DateTime creation failed. Month was not set correctly.");
+    ENSURE(getDay() == day, "DateTime creation failed. Day was not set correctly.");
+    ENSURE(getHour() == hour, "DateTime creation failed. Hour was not set correctly.");
+    ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.");
 }
 
 // DateTime::DateTime(std::chrono::year_month_day year_month_day)
