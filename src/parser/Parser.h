@@ -17,7 +17,8 @@ enum class ElementType
     BUILDING,
     ROOM,
     MEETING,
-    PARTICIPATION
+    PARTICIPATION,
+    CATERING
 };
 
 enum class PropType
@@ -36,6 +37,8 @@ enum class PropType
     MEETING,
     USER,
     EXTERNAL,
+    CO2,
+    CATERINGNEEDED,
 };
 
 struct CampusElement
@@ -85,6 +88,8 @@ struct ParseObject
     int day = -1;
     int hour = -1;
     bool externals, external, online;
+    float co2;
+    bool catering_needed;
 };
 
 class Parser

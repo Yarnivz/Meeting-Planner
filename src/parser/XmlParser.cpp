@@ -12,10 +12,20 @@
 #include "helper/DesignByContract.h"
 #include "objects/Room.h"
 
-static inline bool parse_boolean(const std::string& s)
+static inline bool parse_boolean(std::string s)
 {
-    if (s == "true") return true;
-    return false;
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    if (s == "true")
+    {
+        return true;
+    }
+
+    if (s == "false")
+    {
+        return false;
+    }
+
+    throw std::exception();
 }
 
 
@@ -795,7 +805,8 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
         {"BUILDING", ElementType::BUILDING},
         {"ROOM", ElementType::ROOM},
         {"MEETING", ElementType::MEETING},
-        {"PARTICIPATION", ElementType::PARTICIPATION}
+        {"PARTICIPATION", ElementType::PARTICIPATION},
+        {"CATERING", ElementType::CATERING}
     };
 
 
@@ -850,7 +861,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
         //MEETING
         case ElementType::MEETING:
-            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS"};
+            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS", "CATERING"};
             parseHandler = [&]()
             {
                 parsed_meetings.push_back((MeetingElement){
@@ -859,6 +870,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                     .room_id = parseObject.room_id,
                     .date_time = DateTime(parseObject.year, parseObject.month, parseObject.day, parseObject.hour),
                     .externals_allowed = parseObject.externals,
+                    .catering_needed = parseObject.catering_needed,
                     .online = parseObject.online
                 });
             };
@@ -875,6 +887,17 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                 });
             };
             break;
+        case ElementType::CATERING:
+            requiredProps = {"CAMPUS", "CO2"};
+            parseHandler = [&]()
+            {
+                parsed_caterings.push_back((CateringElement){
+                    .campus_id = parseObject.campus_id,
+                    .co2_count = parseObject.co2
+                });
+            };
+            break;
+
         default:
             errorStream << "Object element exists in elementValues map but not in switch case:  " << elementType << std::endl;
             break;
@@ -955,6 +978,8 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"USER", PropType::USER},
         {"EXTERNAL", PropType::EXTERNAL},
         {"MEETING", PropType::MEETING},
+        {"CO2", PropType::CO2},
+        {"CATERING", PropType::CATERINGNEEDED}
     };
 
     if (!propValues.contains(propType))
@@ -1017,27 +1042,15 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 bool online;
                 try
                 {
-                    //unclear wether the xml ONLINE prop has uppercases so converting all to lowercase for good measure
-                    std::transform(prop.begin(), prop.end(), prop.begin(), ::tolower);
-                    if (prop == "true")
-                    {
-                        online = true;
-                    } else if (prop == "false")
-                    {
-                        online = false;
-                    } else
-                    {
-                        parseError = std::string("ONLINE could not be converted to a bool (string is not a valid bool keyword)");
-                        return false;
-                    }
-                    online = prop.data();
+                    online = parse_boolean(prop);
                 }
                 catch (std::exception& except)
                 {
-                    parseError = std::string("ONLINE could not be converted to a bool\n\t- ") + except.what();
+                    parseError = std::string("ONLINE: ") + prop + std::string(" could not be converted to a bool");
                     return false;
                 }
                 parseObject.online = online;
+                break;
             }
         case PropType::DATE:
             {
@@ -1097,7 +1110,17 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
             }
         case PropType::EXTERNALS:
             {
-                parseObject.externals = parse_boolean(prop);
+                bool externals;
+                try
+                {
+                    externals = parse_boolean(prop);
+                }
+                catch (std::exception& except)
+                {
+                    parseError = prop + std::string(" could not be converted to a bool");
+                    return false;
+                }
+                parseObject.externals = externals;
                 break;
             }
         case PropType::USER:
@@ -1107,7 +1130,17 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
             }
         case PropType::EXTERNAL:
             {
-                parseObject.external = parse_boolean(prop);
+                bool external;
+                try
+                {
+                    external = parse_boolean(prop);
+                }
+                catch (std::exception& except)
+                {
+                    parseError = prop + std::string(" could not be converted to a bool");
+                    return false;
+                }
+                parseObject.external = external;
                 break;
             }
         case PropType::MEETING:
@@ -1115,9 +1148,38 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 parseObject.meeting_id = prop;
                 break;
             }
+        case PropType::CO2:
+            {
+                float co2;
+                try
+                {
+                    co2 = std::stof(prop);
+                } catch (std::exception& e)
+                {
+                    parseError = std::string("Failed to parse CO2 as float: ") + prop;
+                    return false;
+                }
+                parseObject.co2 = co2;
+                break;
+            }
+    case PropType::CATERINGNEEDED:
+            {
+                bool catering;
+                try
+                {
+                    catering = parse_boolean(prop);
+                }
+                catch (std::exception& except)
+                {
+                    parseError = prop + std::string(" could not be converted to a bool");
+                    return false;
+                }
+                parseObject.catering_needed = catering;
+                break;
+            }
         default:
             {
-                parseError = "Property exists in property_map but isnt defined in switch case: " + prop;
+                parseError = std::string("Property exists in property_map but isn't defined in switch case: ") + prop;
                 return false;
             }
     }
