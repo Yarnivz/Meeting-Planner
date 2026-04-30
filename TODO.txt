@@ -4,7 +4,15 @@ Ishaak:
 - update test for Room (TestRoom.h) to include Campus & Building attributes
 
 Yarni:
-- renovations + simulate
+- renovations + simulate + testen schrijven
+- Testen aanpassen HappyDay & ConflicMeetings scenarios
 
 Lucas:
 - update Parser Test to implement new classes
+- Testen aanpassen InvalidData & InvalidXml scenarios
+- Testen klassen (Catering, User, MeetingRegistry)
+
+
+Over:
+
+Elke nieuwe feature testen in apart scenario: zie PlanTmpl20.xls naar niet groen gemarkeerde specs
