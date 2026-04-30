@@ -196,7 +196,7 @@ void App::writeToStream()
     output->printRooms(rooms);
 }
 
-void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
+void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)
 {
     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
     Meeting* meeting = getMeetingById(meetingId);
@@ -213,16 +213,29 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
     {
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
+
+        if (!meeting->isOnline())
+        {
+            meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
+        }
+
+        if (meeting->cateringNeeded())
+        {
+            if (catering_planning_output)
+            {
+                *catering_planning_output << "Catering for meeting \'" << meeting->toString() << "\' at " << meeting->getDateTime() <<
+                " in " << meeting->getRoom()->getCampus()->toString() << ", " << meeting->getRoom()->getBuilding()->toString() << ", "
+                << meeting->getRoom()->toString() << "." << std::endl;
+            }
+        }
     }
-    if (!meeting->isOnline())
-    {
-        meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
-    }
+
+
 
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
 }
 
-void App::processAllMeetings(const bool verbose)
+void App::processAllMeetings(const bool verbose, std::ostream* catering_planning_output)
 {
 
     std::vector<Meeting*> sortedMeetings;
@@ -247,7 +260,7 @@ void App::processAllMeetings(const bool verbose)
         const Meeting* currentMeeting = sortedMeetings[i];
         ENSURE(currentMeeting, "Meeting can not be null.");
         ENSURE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
-        processSingleMeeting(currentMeeting->getId(), verbose);
+        processSingleMeeting(currentMeeting->getId(), verbose, catering_planning_output);
     }
 
     //TODO add ensure
