@@ -124,38 +124,40 @@ TEST_F(TestParseFile, InvalidData1)
 
     std::ofstream errLog(actual);
 
-    const std::string meeting1 = "Meeting_478463";
-    const std::string meeting2 = "Meeting_514203";
-    const std::string user = "Peter Selie";
+    XmlParser x = XmlParser();
+    App app = App(&x, nullptr);
 
-
-    App app = App(new XmlParser(), nullptr);
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parseFile("./test-files/InvalidData1.xml", errLog);
 
-    //Test room #1
-    Room* room = app.getRoom("M.G.025");
+    // Correctly parsed
+    Campus* c = app.getCampus("c");
+    ASSERT_NE(nullptr, c);
+    EXPECT_EQ("campus", c->toString());
+
+    Building* b = app.getBuilding("b");
+    ASSERT_NE(nullptr, b);
+    EXPECT_EQ("building", b->toString());
+    EXPECT_EQ(c, b->getCampus());
+
+
+    Room* room = app.getRoom("mg025");
     ASSERT_NE(nullptr, room);
     EXPECT_EQ("M.G.025", room->toString());
     EXPECT_EQ(55u, room->getCapacity());
+    EXPECT_EQ(b, room->getBuilding());
+    EXPECT_EQ(c, room->getCampus());
 
-    //Test room #2
-    room = app.getRoom("Room98732");
-    EXPECT_EQ(nullptr, room);
 
-    //Test meeting #1
-    Meeting* meeting = app.getMeetingById(meeting1);
-    EXPECT_EQ(nullptr, meeting);
-
-    //Test meeting #2
-    meeting = app.getMeetingById(meeting2);
-    EXPECT_EQ(nullptr, meeting);
-
-    //Test participation
-    User* p = app.getUser(user);
-    EXPECT_EQ(nullptr, p);
+    // Failed
+    EXPECT_EQ(nullptr, app.getRoom("Room98732"));
+    EXPECT_EQ(nullptr, app.getMeetingById("Meeting_478463"));
+    EXPECT_EQ(nullptr, app.getMeetingById("Meeting_514203"));
+    EXPECT_EQ(nullptr, app.getUser("Peter Selie"));
 
     //Test errors
+    ASSERT_TRUE(file_exists(actual));
+    ASSERT_TRUE(file_exists(expected));
     EXPECT_TRUE(file_compare(actual, expected));
 }
 
@@ -166,51 +168,59 @@ TEST_F(TestParseFile, InvalidData2)
 
     std::ofstream errLog(actual);
 
-    std::string room1 = "mg025";
-    std::string room2 = "gt123";
-    std::string meeting1 = "m656";
-    std::string meeting2 = "m720";
-    std::string meeting3 = "m999";
     std::string user1 = "Peter Selie";
     std::string user2 = "Freddy Gonzalez";
 
 
-    App app = App(new XmlParser(), nullptr);
+    XmlParser x = XmlParser();
+    App app = App(&x, nullptr);
     EXPECT_TRUE(app.isProperlyInitialized());
     app.parseFile("./test-files/InvalidData2.xml", errLog);
 
-    //Test room #1
-    Room* room = app.getRoom(room1);
-    ASSERT_NE(nullptr, room);
-    EXPECT_EQ("M.G.025", room->toString());
-    EXPECT_EQ(25u, room->getCapacity());
+    // Campus
+    Campus* c = app.getCampus("c");
+    EXPECT_NE(nullptr, c);
+    Building* b = app.getBuilding("b");
+    EXPECT_NE(nullptr, b);
 
-    //Test room #2
-    room = app.getRoom(room2);
-    ASSERT_NE(nullptr, room);
-    EXPECT_EQ("G.T.123", room->toString());
-    EXPECT_EQ(100u, room->getCapacity());
+    // Test room #1
+    Room* r1 = app.getRoom("mg025");
+    ASSERT_NE(nullptr, r1);
+    EXPECT_EQ("M.G.025", r1->toString());
+    EXPECT_EQ(25u, r1->getCapacity());
+    EXPECT_EQ(b, r1->getBuilding());
+    EXPECT_EQ(c, r1->getCampus());
 
-    //Test room #3
+    // Test room #2
+    Room* r2 = app.getRoom("gt123");
+    ASSERT_NE(nullptr, r2);
+    EXPECT_EQ("G.T.123", r2->toString());
+    EXPECT_EQ(100u, r2->getCapacity());
+    EXPECT_EQ(b, r1->getBuilding());
+    EXPECT_EQ(c, r1->getCampus());
+
+    // No other rooms
     EXPECT_EQ(2u, app.getAllRooms().size());
 
     //Test meeting #1
-    Meeting* meeting = app.getMeetingById(meeting1);
-    ASSERT_NE(nullptr, meeting);
-    EXPECT_EQ("Movie Marathon", meeting->toString());
-    EXPECT_EQ(room1, meeting->getRoom()->getId());
-    EXPECT_EQ(DateTime(2026, 6, 13, 12), meeting->getDateTime());
+    Meeting* m1 = app.getMeetingById("m656");
+    ASSERT_NE(nullptr, m1);
+    EXPECT_EQ("Movie Marathon", m1->toString());
+    EXPECT_EQ(r1, m1->getRoom());
+    EXPECT_EQ(DateTime(2026, 6, 13, 12), m1->getDateTime());
 
     //Test meeting #2
-    meeting = app.getMeetingById(meeting2);
-    ASSERT_NE(nullptr, meeting);
-    EXPECT_EQ("Very important meeting", meeting->toString());
-    EXPECT_EQ(room2, meeting->getRoom()->getId());
-    EXPECT_EQ(DateTime(2026, 6, 13, 12), meeting->getDateTime());
+    Meeting* m2 = app.getMeetingById("m720");
+    ASSERT_NE(nullptr, m2);
+    EXPECT_EQ("Very important meeting", m2->toString());
+    EXPECT_EQ(r2, m2->getRoom());
+    EXPECT_EQ(DateTime(2026, 6, 13, 12), m2->getDateTime());
 
     //Test meeting #3
-    meeting = app.getMeetingById(meeting3);
-    EXPECT_EQ(nullptr, meeting);
+    Meeting* m3 = app.getMeetingById("m999");
+    EXPECT_EQ(nullptr, m3);
+
+    // No other meetings
     EXPECT_EQ(size_t(2), app.getMeetingRegistry().getRawIdMap().size());
 
     //Test errors
@@ -221,14 +231,14 @@ TEST_F(TestParseFile, InvalidData2)
 
 TEST_F(TestParseFile, InvalidXml)
 {
-    App app = App(new XmlParser(), &std::cout);
+    App app = App(new XmlParser(), nullptr);
     EXPECT_TRUE(app.isProperlyInitialized());
     EXPECT_DEATH(app.parseFile("./test-files/InvalidXml.xml"), "");
 }
 
 TEST_F(TestParseFile, FileNotFound)
 {
-    App app = App(new XmlParser(), &std::cout);
+    App app = App(new XmlParser(), nullptr);
     ASSERT_TRUE(app.isProperlyInitialized());
     EXPECT_DEATH(app.parseFile("./test-files/FileThatDoesntExist.xml"), "");
 }
