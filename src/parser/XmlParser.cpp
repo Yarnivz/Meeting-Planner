@@ -850,7 +850,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
         //MEETING
         case ElementType::MEETING:
-            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "DATE", "HOUR", "EXTERNALS"};
+            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS"};
             parseHandler = [&]()
             {
                 parsed_meetings.push_back((MeetingElement){
@@ -858,7 +858,8 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                     .id = parseObject.identifier,
                     .room_id = parseObject.room_id,
                     .date_time = parseObject.date_time,
-                    .externals_allowed = parseObject.externals
+                    .externals_allowed = parseObject.externals,
+                    .online = parseObject.online,
                 });
             };
             break;
@@ -952,6 +953,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"BUILDING", PropType::BUILDING},
         {"CAPACITY", PropType::CAPACITY},
         {"ROOM", PropType::ROOM},
+        {"ONLINE", PropType::ONLINE},
         {"DATE", PropType::DATE},
         {"HOUR", PropType::HOUR},
         {"EXTERNALS", PropType::EXTERNALS},
@@ -1015,6 +1017,33 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 parseObject.room_id = prop;
                 break;
             }
+        case PropType::ONLINE:
+            {
+                bool online;
+                try
+                {
+                    //unclear wether the xml ONLINE prop has uppercases so converting all to lowercase for good measure
+                    std::transform(prop.begin(), prop.end(), prop.begin(), ::tolower);
+                    if (prop == "true")
+                    {
+                        online = true;
+                    } else if (prop == "false")
+                    {
+                        online = false;
+                    } else
+                    {
+                        parseError = std::string("ONLINE could not be converted to a bool (string is not a valid bool keyword)");
+                        return false;
+                    }
+                    online = prop.data();
+                }
+                catch (std::exception& except)
+                {
+                    parseError = std::string("ONLINE could not be converted to a bool\n\t- ") + except.what();
+                    return false;
+                }
+                parseObject.online = online;
+            }
         case PropType::DATE:
             {
                 //Try to convert to DateTime check
@@ -1023,6 +1052,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 {
                     day = std::stoi(prop.substr(8, 2));
                     month = std::stoi(prop.substr(5, 2));
+                    std::cout << "i say " <<  month << std::flush <<std::endl;
                     year = std::stoi(prop.substr(0, 4));
                 }
                 catch (std::exception& except)

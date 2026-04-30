@@ -29,6 +29,7 @@ enum class PropType
     BUILDING,
     CAPACITY,
     ROOM,
+    ONLINE,
     DATE,
     HOUR,
     EXTERNALS,
@@ -50,9 +51,10 @@ struct BuildingElement
 struct MeetingElement
 {
     std::string label, id, room_id;
+
     DateTime date_time;
-    bool externals_allowed;
-    bool catering_needed;
+    bool externals_allowed, catering_needed, online;
+
 };
 
 struct RoomElement
@@ -79,7 +81,7 @@ struct ParseObject
     std::string identifier, name, label, campus_id, building_id, room_id, user_id, meeting_id;
     int capacity;
     DateTime date_time = DateTime();
-    bool externals, external;
+    bool externals, external, online;
 };
 
 class Parser

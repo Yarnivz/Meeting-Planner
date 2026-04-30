@@ -75,11 +75,11 @@ DateTime::DateTime(int year, int month, int day, int hour)
 
     init_test_this_ptr = this;
 
-    ENSURE(getYear() == year, "DateTime creation failed. Year was not set correctly.");
-    ENSURE(getMonth() == month, "DateTime creation failed. Month was not set correctly.");
-    ENSURE(getDay() == day, "DateTime creation failed. Day was not set correctly.");
-    ENSURE(getHour() == hour, "DateTime creation failed. Hour was not set correctly.");
-    ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.");
+    ENSURE(getYear() == year, "Year must be set correctly in order to create DateTime.");
+    ENSURE(getMonth() == month, "Month must be set correctly in order to create DateTime.");
+    ENSURE(getDay() == day, "Day must be set correctly in order to create DateTime.");
+    ENSURE(getHour() == hour, "Hour must be set correctly in order to create DateTime.");
+    ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.");
 }
 
 // DateTime::DateTime(std::chrono::year_month_day year_month_day)
@@ -102,13 +102,13 @@ bool DateTime::isProperlyInitialized() const
 
 int DateTime::getYear() const
 {
-    ENSURE(isProperlyInitialized(), "Failed to get Year. DateTime must be properly initialized with the constructor!");
+    ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to get Year.");
     return year;
 }
 
 unsigned DateTime::getMonth() const
 {
-    ENSURE(isProperlyInitialized(), "Failed to get Month. DateTime must be properly initialized with the constructor!");
+    ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to get Month.");
     return month;
 }
 
@@ -120,7 +120,7 @@ unsigned DateTime::getDay() const
 
 unsigned DateTime::getHour() const
 {
-    ENSURE(isProperlyInitialized(), "Failed to get Hour. DateTime must be properly initialized with the constructor!");
+    ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to get Hour.");
     return hour;
 }
 
@@ -133,7 +133,7 @@ std::string DateTime::getWeekDay() const
 
 std::string DateTime::toString() const
 {
-    ENSURE(isProperlyInitialized(), "Failed to convert DateTime to string. DateTime must be properly initialized with the constructor!");
+    ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to convert DateTime into string.");
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
     std::stringstream ss;

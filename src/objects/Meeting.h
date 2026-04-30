@@ -32,7 +32,7 @@ public:
      * @param date_time of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(),const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
      * @return bool indicating result

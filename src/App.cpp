@@ -212,7 +212,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
 
 void App::processAllMeetings(const bool verbose)
 {
-    int processCount = 0;
+    size_t processCount = 0;
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
