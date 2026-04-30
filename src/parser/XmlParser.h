@@ -5,6 +5,8 @@
 #ifndef XMLPARSER_H
 #define XMLPARSER_H
 #include "Parser.h"
+#include "tinyxml.h"
+
 
 //TODO: add documentation
 
@@ -14,8 +16,8 @@ public:
     explicit XmlParser(std::ostream& errorStream = std::cerr);
     void parse(const std::string& filename) override;
 private:
-    void parseElement(std::string element);
-    bool parseProperty(std::string prop);
+    void parseElement(TiXmlElement* elementObject);
+    bool parseProperty(TiXmlElement* propertyObject, std::string& propError);
 };
 
 
