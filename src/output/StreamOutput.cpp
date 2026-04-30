@@ -121,7 +121,7 @@ void StreamOutput::printRoom(const Room* room)
 
 void StreamOutput::printRooms(const Rooms& rooms)
 {
-    if (!rooms.empty()) *stream << "--==## Rooms ##--==\n";
+    if (!rooms.empty()) *stream << "--==## Rooms ##==--\n";
     for (const std::pair<std::string, Room*> item : rooms)
     {
         //*stream << "\n";
