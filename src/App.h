@@ -266,7 +266,7 @@ public:
      * @param meetingId Identifier of the meeting to retrieve.
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      */
-    void processSingleMeeting(const std::string& meetingId, bool verbose = true);
+    void processSingleMeeting(const std::string& meetingId, bool verbose = true, std::ostream* catering_planning_output = nullptr);
 
     /**
      * @brief Checks all planned meeting entries for conflicting rooms/dates.

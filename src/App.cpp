@@ -156,6 +156,18 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             addUser(u);
         }
 
+        if (!u->isExternal() && p.external)
+        {
+            errStream << "User \'" << p.user << "\' was marked as external for meeting \'" << p.meeting
+            << "\' but was registered as not-external earlier" << std::endl;
+            continue;
+        } else if (u->isExternal() && !p.external)
+        {
+            errStream << "User \'" << p.user << "\' was marked as not-external for meeting \'" << p.meeting
+            << "\' but was registered as external earlier" << std::endl;
+            continue;
+        }
+
         // Add user to meeting
         m->addParticipant(u);
 
@@ -184,7 +196,7 @@ void App::writeToStream()
     output->printRooms(rooms);
 }
 
-void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
+void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)
 {
     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
     Meeting* meeting = getMeetingById(meetingId);
@@ -205,20 +217,30 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
     if (!meeting->isOnline())
     {
         meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
-        emission = meeting->getParticipantCount() * getCampus();
-    }
+        emission = static_cast<float>(meeting->getParticipantCount()) * meeting->getRoom()->getCampus()->getCaterings().front()->getEmissions();
 
+        if (meeting->cateringNeeded())
+        {
+            if (catering_planning_output)
+            {
+                *catering_planning_output << "Catering for meeting \'" << meeting->toString() << "\' at " << meeting->getDateTime() <<
+                " in " << meeting->getRoom()->getCampus()->toString() << ", " << meeting->getRoom()->getBuilding()->toString() << ", "
+                << meeting->getRoom()->toString() << "." << std::endl;
+            }
+        }
+    }
     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
 }
 
 void App::processAllMeetings(const bool verbose)
 {
-    size_t processCount = 0;
+
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
-        if (m.second->getDateTime() <= DateTime()) sortedMeetings.push_back(m.second);
+        sortedMeetings.push_back(m.second);
     }
+
     std::sort(sortedMeetings.begin(), sortedMeetings.end(),
               [](const Meeting* comparedMeeting1, const Meeting* comparedMeeting2)
               {
@@ -229,17 +251,16 @@ void App::processAllMeetings(const bool verbose)
                   return comparedMeeting1->getOrder() < comparedMeeting2->getOrder();
               });
 
+
     for (size_t i = 0; i < sortedMeetings.size(); ++i)
     {
         const Meeting* currentMeeting = sortedMeetings[i];
-        REQUIRE(currentMeeting, "Meeting can not be null.");
-        REQUIRE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
+        ENSURE(currentMeeting, "Meeting can not be null.");
+        ENSURE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
         processSingleMeeting(currentMeeting->getId(), verbose);
-        processCount++;
     }
 
-    //TODO: fix this
-    ENSURE(processCount == meetings.getRawIdMap().size(), "All meetings must be processed");
+    //TODO add ensure
 }
 
 void App::addCampus(Campus* campus)

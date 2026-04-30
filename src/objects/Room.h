@@ -51,6 +51,9 @@ public:
      */
     bool isProperlyInitialized() const;
 
+    Building* getBuilding() const;
+    Campus* getCampus() const;
+
 
     /**
      * @brief Id getter.
