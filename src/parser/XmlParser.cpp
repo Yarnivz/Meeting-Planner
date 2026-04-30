@@ -888,8 +888,9 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             errorStream << elementType << "element can't have more than one " << propType << " property." << std::endl;
             break;
         }
+
         //PARSE PROPERTY
-        if (parseProperty(propType, propError))
+        if (parseProperty(propertyObject, propError))
         {
             parseHandler();
         }
@@ -899,24 +900,41 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             errorStream << "\t" << propError << std::endl;
         }
 
+    }
 
-        //CHECK IF ANY REQUIRED PROPERTIES ARE MISSING
-        if (foundProps.size() != requiredProps.size())
+    //DEBUG:
+    std::cout << "NAME: " << parseObject.name << std::endl;
+    std::cout << "ID: " << parseObject.identifier << std::endl;
+    std::cout << "CAPACITY: " << parseObject.capacity << std::endl;
+
+    //CHECK IF ANY REQUIRED PROPERTIES ARE MISSING
+    if (foundProps.size() != requiredProps.size())
+    {
+        for (const std::string& prop : requiredProps)
         {
-            for (const std::string& prop : requiredProps)
+            if (!foundProps.contains(prop))
             {
-                if (!foundProps.contains(prop))
-                {
-                    errorStream << elementType << " must have a " << propType << " property" << std::endl;
-                }
+                errorStream << elementType << " must have a " << prop << " property" << std::endl;
             }
         }
-
     }
+
 }
 
-bool XmlParser::parseProperty(const std::string& prop, std::string& parseError)
+bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseError)
 {
+    std::string propType = propertyObject->Value();
+    std::string prop;
+    {
+        const char* c_str = propertyObject->GetText();
+        if (c_str == nullptr)
+        {
+            parseError = std::string("Property") + propType + " needs to contain text.";
+            return false;
+        }
+        prop = c_str;
+    }
+
     const std::unordered_map<std::string, PropType> propValues = {
         {"IDENTIFIER", PropType::IDENTIFIER},
         {"NAME", PropType::NAME},
@@ -933,7 +951,7 @@ bool XmlParser::parseProperty(const std::string& prop, std::string& parseError)
         {"MEETING", PropType::MEETING},
     };
 
-    switch (propValues.at(prop))
+    switch (propValues.at(propType))
     {
         case PropType::IDENTIFIER:
             {
@@ -962,16 +980,19 @@ bool XmlParser::parseProperty(const std::string& prop, std::string& parseError)
             }
         case PropType::CAPACITY:
             {
+                int capacity;
                 //Try to convert to int check
                 try
                 {
-                    parseObject.capacity = std::stoi(prop);
+                    capacity = std::stoi(prop);
                 }
                 catch (std::exception& except)
                 {
                     parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
                     return false;
                 }
+                //Check if capacity is < 0
+                parseObject.capacity = capacity;
                 break;
             }
         case PropType::ROOM:

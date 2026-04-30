@@ -34,7 +34,7 @@ enum class PropType
     EXTERNALS,
     MEETING,
     USER,
-    EXTERNAL
+    EXTERNAL,
 };
 
 struct CampusElement

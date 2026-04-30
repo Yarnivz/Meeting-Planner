@@ -17,7 +17,7 @@ public:
     void parse(const std::string& filename) override;
 private:
     void parseElement(TiXmlElement* elementObject);
-    bool parseProperty(const std::string& prop, std::string& propError);
+    bool parseProperty(TiXmlElement* propertyObject, std::string& propError);
 };
 
 
