@@ -29,8 +29,7 @@ public:
      * @param date_time of when the meeting takes/took place
      * @param order order in which the meeting is added to the system
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const bool& online = false, bool externals_allowed = false);
-
+    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(),const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
      * @return bool indicating result
@@ -57,15 +56,7 @@ public:
      */
     Room* getRoom() const;
 
-    /**
-     * @brief online bool getter.
-     *
-     *
-     * @pre Failed to get online status. Meeting has to be properly initialized with the constructor.
-     *
-     * @return online status of meeting
-     */
-     const bool& getOnline() const;
+
     /**
      * @brief Date getter.
      *
@@ -129,12 +120,27 @@ public:
     bool isCancelled() const;
 
     bool externalsAllowed() const;
+    bool cateringNeeded() const;
+
+    /**
+     * @brief online bool getter.
+     *
+     *
+     * @pre Failed to get online status. Meeting has to be properly initialized with the constructor.
+     *
+     * @return online status of meeting
+     */
+    bool isOnline() const;
+
+
 
     /**
      *
      *@post Meeting was not cancelled.
      */
     const std::string& getCancellationReason() const;
+
+    float getCateringCosts() const;
 
     /**
      * @brief writes the output of 'toString' to a stream
@@ -192,10 +198,12 @@ private:
     DateTime date_time;
     State state;
     int order;
-    bool online;
+
 
     Users participants;
     bool externals_allowed;
+    bool online;
+    bool catering_needed;
 
     std::string cancellation_reason;
 

@@ -21,6 +21,10 @@ Date::Date()
     init_test_this_ptr = this;
 
     ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.");
+    ENSURE(isProperlyInitialized(), "Date was not properly initialized.");
+    ENSURE(getDay() == day, "Day was not set.");
+    ENSURE(getMonth() == month, "Month was not set.");
+    ENSURE(getYear() == year, "Year was not set.");
 }
 
 Date::Date(const Date& d)
@@ -32,6 +36,11 @@ Date::Date(const Date& d)
     day = d.day;
 
     init_test_this_ptr = this; //Reset this pointer, do not copy it from the other date.
+
+    ENSURE(isProperlyInitialized(), "Date was not properly initialized.");
+    ENSURE(getDay() == day, "Day was not set.");
+    ENSURE(getMonth() == month, "Month was not set.");
+    ENSURE(getYear() == year, "Year was not set.");
 }
 
 
@@ -51,6 +60,10 @@ Date::Date(int year, int month, int day)
     init_test_this_ptr = this;
 
     ENSURE(date.ok(), "Date creation failed. Date validity check did not pass.");
+    ENSURE(isProperlyInitialized(), "Date was not properly initialized.");
+    ENSURE(getDay() == this->day, "Day was not set.");
+    ENSURE(getMonth() == this->month, "Month was not set.");
+    ENSURE(getYear() == this->year, "Year was not set.");
 }
 
 Date::Date(std::chrono::year_month_day year_month_day)
@@ -63,6 +76,10 @@ Date::Date(std::chrono::year_month_day year_month_day)
 
     init_test_this_ptr = this;
     ENSURE(year_month_day.ok(), "Date creation failed. Date validity check did not pass.");
+    ENSURE(isProperlyInitialized(), "Date was not properly initialized.");
+    ENSURE(getDay() == this->day, "Day was not set.");
+    ENSURE(getMonth() == this->month, "Month was not set.");
+    ENSURE(getYear() == this->year, "Year was not set.");
 }
 
 bool Date::isProperlyInitialized() const

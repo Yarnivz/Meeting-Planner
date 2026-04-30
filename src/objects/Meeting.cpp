@@ -8,8 +8,8 @@
 #include "objects/User.h"
 
 
-Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, const bool& online, bool externals_allowed)
-    : label(label), id(id), room(room), date_time(date_time), online(online), externals_allowed(externals_allowed)
+Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, const bool& online, bool externals_allowed, bool catering_needed)
+    : label(label), id(id), room(room),  date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
@@ -18,12 +18,17 @@ Meeting::Meeting(const std::string& label, const std::string& id, Room* room, co
     this->state = UNPROCESSED;
     this->order = 0;
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "Meeting creation failed. Object was not properly initialized.");
+    ENSURE(getOrder() == this->order, "Meeting creation failed. Order was not correctly set.");
+    ENSURE(isUnProcessed() && !isProcessed() && !isCancelled(), "Meeting creation failed, state was not correctly set.");
 }
 
 bool Meeting::isProperlyInitialized() const
 {
     return init_check_this_ptr == this;
 }
+
 
 const std::string& Meeting::getId() const
 {
@@ -37,7 +42,7 @@ Room* Meeting::getRoom() const
     return room;
 }
 
-const bool& Meeting::getOnline() const
+bool Meeting::isOnline() const
 {
     REQUIRE(isProperlyInitialized(), "Failed to get online status. Meeting has to be properly initialized with the constructor.");
     return online;
@@ -93,10 +98,26 @@ bool Meeting::isCancelled() const { return state == CANCELLED; }
 
 bool Meeting::externalsAllowed() const { return externals_allowed; }
 
+bool Meeting::cateringNeeded() const { return catering_needed; }
+
 const std::string& Meeting::getCancellationReason() const
 {
     ENSURE(isCancelled(), "Meeting was not cancelled.");
     return cancellation_reason;
+}
+
+float Meeting::getCateringCosts() const
+{
+    float cost = 0.0f;
+    if (!cateringNeeded()) return cost;
+
+    for (Users::const_iterator it = getParticipants().begin(); it != getParticipants().end(); ++it)
+    {
+        if (it->second->isExternal()) cost += 20.79;
+        else cost += 10.59;
+    }
+
+    return cost;
 }
 
 
@@ -114,6 +135,7 @@ Meeting::~Meeting() = default;
 void Meeting::addParticipant(User* user)
 {
     REQUIRE(user != nullptr, "User can not be null");
+
     this->_addParticipant(user);
     user->_addMeeting(this);
 }

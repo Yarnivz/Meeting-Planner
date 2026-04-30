@@ -3,6 +3,8 @@
 //
 
 #include "Campus.h"
+
+#include "Catering.h"
 #include "helper/DesignByContract.h"
 
 Campus::Campus(const std::string& name, const std::string& id) :
@@ -13,8 +15,9 @@ Campus::Campus(const std::string& name, const std::string& id) :
 
     init_check_this_ptr = this;
 
+    ENSURE(isProperlyInitialized(), "Campus was not properly initialized.");
     ENSURE(this->name == name, "Name was not added to this Campus object");
-    ENSURE(this->id == id, "Id was not added to this Campus object");
+    ENSURE(getId() == id, "Id was not added to this Campus object");
 }
 
 bool Campus::isProperlyInitialized() const
@@ -24,13 +27,13 @@ bool Campus::isProperlyInitialized() const
 
 const std::string& Campus::getId() const
 {
-    REQUIRE(!id.empty(), "Id cannot be empty");
+    //REQUIRE(!id.empty(), "Id cannot be empty");
     return id;
 }
 
 const std::string& Campus::toString() const
 {
-    REQUIRE(!id.empty(), "Name cannot be empty");
+    //REQUIRE(!id.empty(), "Name cannot be empty");
     return name;
 }
 
@@ -41,4 +44,18 @@ std::ostream& operator<<(std::ostream& os, const Campus& campus)
     return os;
 }
 
+const std::list<Catering*>& Campus::getCaterings() const
+{
+    return caterings;
+}
+
 Campus::~Campus() = default;
+
+
+void Campus::_addCatering(Catering* c)
+{
+    REQUIRE(c != nullptr, "Catering cannot be null");
+    REQUIRE(c->isProperlyInitialized(), "Catering must be properly initialized");
+    REQUIRE(c->getCampus() == this, "Caterings campus does not match this.");
+    caterings.push_back(c);
+}

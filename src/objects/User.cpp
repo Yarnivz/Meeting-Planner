@@ -10,6 +10,9 @@ User::User(const std::string& name, bool external)
     : name(name), external(external)
 {
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "User creation failed. Object was not properly initialized.");
+    ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.");
 }
 
 bool User::isProperlyInitialized() const

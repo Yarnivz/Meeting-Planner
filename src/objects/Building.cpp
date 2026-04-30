@@ -16,8 +16,9 @@ Building::Building(const std::string& name, const std::string& id, Campus* campu
     init_check_this_ptr = this;
 
     ENSURE(this->name == name, "Name was not added to this Building object");
-    ENSURE(this->id == id, "Id was not added to this Building object");
-    ENSURE(this->campus == campus, "Campus was not added to this Building object");
+    ENSURE(getId() == id, "Id was not added to this Building object");
+    ENSURE(getCampus() == campus, "Campus was not added to this Building object");
+    ENSURE(isProperlyInitialized(), "Building was not properly initialized");
 }
 
 bool Building::isProperlyInitialized() const

@@ -8,12 +8,13 @@
 #include <queue>
 #include <tinyxml.h>
 #include "helper/DesignByContract.h"
-#include "parser/Parser.h"
 
 
-App::App(Parser* parser, std::ostream* output) : parser(parser), output(output)
+App::App(Parser* parser, Output* output) : parser(parser), output(output)
 {
     init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "App creation failed. Object was not properly intialized.");
 }
 
 bool App::isProperlyInitialized() const
@@ -31,7 +32,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
     }
 
 
-    parser->parse(filename, errStream);
+    parser->parse(filename);
 
 
     //> Add all elements in the correct order
@@ -47,6 +48,19 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
         //TODO add buildings to app?
         addRoom(new Room(r.name, r.id, r.capacity));
+    }
+
+    for (const CateringElement& c : parser->parsedCaterings())
+    {
+        Campus* campus = getCampus(c.campus_id);
+        if (campus == nullptr)
+        {
+            errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
+            continue;
+        }
+
+        // This will automatically add the catering to the correct campus
+        new Catering(campus, c.co2_count);
     }
 
     for (const MeetingElement& m : parser->parsedMeetings())
@@ -65,7 +79,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
         //add temporary false status to meeting online status for now as workaround
-        addMeeting(new Meeting(m.label, m.id, mr, "false", m.date_time));
+        addMeeting(new Meeting(m.label, m.id, mr, m.date_time, false, m.externals_allowed, m.catering_needed));
     }
 
     for (const ParticipationElement& p : parser->parsedParticipations())
@@ -82,7 +96,8 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         if ( p.external && !m->externalsAllowed())
         {
             errStream << "External user \'" << p.user << "\' can't participate in meeting \'" << p.meeting <<
-                "\' which doesn't allow externals";
+                "\' which doesn't allow externals" << std::endl;
+            continue;
         }
 
         // Get user
@@ -118,55 +133,8 @@ void App::writeToStream()
 {
     REQUIRE(output, "App doesnt have an output attached.");
 
-    std::list<const Meeting*> cancelled, processed, unprocessed;
-
-    //Sort by state
-    for (const std::pair<const std::string, Meeting*>& item : meetings.getRawIdMap())
-    {
-        const Meeting* m = item.second;
-        if (m->isUnProcessed())
-        {
-            unprocessed.push_back(m);
-        }
-        else if (m->isProcessed())
-        {
-            processed.push_back(m);
-        }
-        else if (m->isCancelled())
-        {
-            cancelled.push_back(m);
-        }
-    }
-
-    //Write all past meetings
-    if (!processed.empty()) *output << std::endl << "Past meetings:" << std::endl;
-    for (const Meeting* m : processed)
-    {
-        writeMeeting(*output, m);
-    }
-
-    //Write all future meetings
-    if (!unprocessed.empty()) *output << std::endl << "Future meetings:" << std::endl;
-    for (const Meeting* m : unprocessed)
-    {
-        writeMeeting(*output, m);
-    }
-
-    //Write all conflicts
-    if (!cancelled.empty()) *output << std::endl << "Conflicts:" << std::endl;
-    for (const Meeting* m : cancelled)
-    {
-        writeMeeting(*output, m);
-        *output << "  Reason: " << m->getCancellationReason() << std::endl;
-    }
-
-    //Write all rooms
-    if (!rooms.empty()) *output << std::endl << "Rooms:" << std::endl;
-    for (const std::pair<std::string, Room*> item : rooms)
-    {
-        const Room* room = item.second;
-        writeRoom(*output, room);
-    }
+    output->printMeetings(meetings);
+    output->printRooms(rooms);
 }
 
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
@@ -187,7 +155,7 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose)
         meeting->process();
         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
     }
-    if (!meeting->getOnline())
+    if (!meeting->isOnline())
     {
         participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
     }
@@ -224,6 +192,50 @@ void App::processAllMeetings(const bool verbose)
     ENSURE(true, "Not all meetings have been processed");
 }
 
+void App::addCampus(Campus* campus)
+{
+    REQUIRE(campus, "The provided campus cannot be null.");
+    REQUIRE(campus->isProperlyInitialized(), "Campus needs to be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(campus->getId()), "Campus id has to be unique.");
+
+    campuses.insert({campus->getId(), campus});
+
+    ENSURE(getCampus(campus->getId()) == campus, "The campus was not added to the App.");
+}
+
+Campus* App::getCampus(const std::string& campusId)
+{
+    REQUIRE(!campusId.empty(), "The provided campus id cannot be empty");
+    const Campuses::iterator& it = campuses.find(campusId);
+
+    if (it == campuses.end()) return nullptr;
+
+    ENSURE(it->second->getId() == campusId, "Something went wrong. The campus which was found did not have the right id.");
+    return it->second;
+}
+
+void App::addBuilding(Building* building)
+{
+    REQUIRE(building, "The provided building cannot be null.");
+    REQUIRE(building->isProperlyInitialized(), "Building needs to be properly initialized by the constructor.");
+    REQUIRE(!rooms.contains(building->getId()), "Room id has to be unique.");
+
+    buildings.insert({building->getId(), building});
+
+    ENSURE(getBuilding(building->getId()) == building, "The building was not added to the App");
+}
+
+Building* App::getBuilding(const std::string& buildingId)
+{
+    REQUIRE(!buildingId.empty(), "The provided building id cannot be empty");
+    const Buildings::iterator& it = buildings.find(buildingId);
+
+    if (it == buildings.end()) return nullptr;
+
+    ENSURE(it->second->getId() == buildingId, "The building which was found did not have the right id.");
+    return it->second;
+}
+
 void App::addRoom(Room* room)
 {
     REQUIRE(room, "The provided room cannot be null.");
@@ -237,7 +249,7 @@ void App::addRoom(Room* room)
 
 Room* App::getRoom(const std::string& roomId)
 {
-    const Rooms::iterator it = rooms.find(roomId);
+    const Rooms::iterator& it = rooms.find(roomId);
 
     if (it == rooms.end()) return nullptr;
 
@@ -278,7 +290,7 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
         ENSURE(possible_conflict->getDateTime() == m->getDateTime(), "Something went wrong. Looking meetings up by date failed.");
         if (possible_conflict != m &&
             possible_conflict->isProcessed() &&
-            (!m->getOnline() && possible_conflict->getRoom() == m->getRoom())
+            (!m->isOnline() && possible_conflict->getRoom() == m->getRoom())
         )
             return possible_conflict;
     }
@@ -327,7 +339,7 @@ void App::addUser(User* user)
 
 User* App::getUser(const std::string& userId)
 {
-    const Users::iterator it = users.find(userId);
+    const Users::iterator& it = users.find(userId);
 
     if (it == users.end()) return nullptr;
 
@@ -382,31 +394,6 @@ App::~App()
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
     for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;
     for (const std::pair<const std::string, User*>& u : users) delete u.second;
-}
-
-
-void App::writeMeeting(std::ostream& onStream, const Meeting* meeting)
-{
-    const DateTime& date_time = meeting->getDateTime();
-
-    onStream << "- " << *(meeting->getRoom()) << ", " << date_time.getWeekDay() << " " << date_time << std::endl;
-    onStream << "  " << *meeting << std::endl;
-
-    onStream << "  ";
-    for (Users::const_iterator it = meeting->getParticipants().begin(); it != meeting->getParticipants().end(); ++it)
-    {
-        const User* participant = it->second;
-        onStream << participant->getId();
-        if (std::next(it) != meeting->getParticipants().end()) onStream << ", ";
-    }
-    onStream << std::endl;
-    onStream << "  Meeting ID: " << meeting->getId() << std::endl;
-}
-
-void App::writeRoom(std::ostream& onStream, const Room* room)
-{
-    onStream << "- " << *room << std::endl;
-    onStream << "  Capacity: " << room->getCapacity() << " people" << std::endl;
 }
 
 // Meetings* App::_getMutMeetingsByRoom(const std::string& roomId)
