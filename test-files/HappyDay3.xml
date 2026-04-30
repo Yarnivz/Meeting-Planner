@@ -71,9 +71,9 @@
         <ROOM>mg025</ROOM>
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
+        <ONLINE>false</ONLINE>
         <EXTERNALS>true</EXTERNALS>
         <CATERING>true</CATERING>
-        <ONLINE>false</ONLINE>
     </MEETING>
     <MEETING>
         <LABEL>Other meeting</LABEL>
@@ -81,9 +81,9 @@
         <ROOM>mg023</ROOM>
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
+        <ONLINE>false</ONLINE>
         <EXTERNALS>false</EXTERNALS>
         <CATERING>true</CATERING>
-        <ONLINE>false</ONLINE>
     </MEETING>
     <MEETING>
         <LABEL>Weekly meeting 2</LABEL>
@@ -91,9 +91,9 @@
         <ROOM>mg025</ROOM>
         <DATE>2026-05-23</DATE>
         <HOUR>12</HOUR>
+        <ONLINE>false</ONLINE>
         <EXTERNALS>false</EXTERNALS>
         <CATERING>false</CATERING>
-        <ONLINE>false</ONLINE>
     </MEETING>
 
     <MEETING>
@@ -102,9 +102,9 @@
         <ROOM>gt105</ROOM>
         <DATE>2027-01-01</DATE>
         <HOUR>18</HOUR>
+        <ONLINE>false</ONLINE>
         <EXTERNALS>true</EXTERNALS>
         <CATERING>true</CATERING>
-        <ONLINE>false</ONLINE>
     </MEETING>
 
 
