@@ -78,7 +78,7 @@ struct ParseObject
 {
     std::string identifier, name, label, campus_id, building_id, room_id, user_id, meeting_id;
     int capacity;
-    DateTime date_time;
+    DateTime date_time = DateTime();
     bool externals, external;
 };
 
