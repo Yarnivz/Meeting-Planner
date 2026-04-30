@@ -861,7 +861,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
         //MEETING
         case ElementType::MEETING:
-            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS", "CO2", "CATERING"};
+            requiredProps = {"LABEL", "IDENTIFIER", "ROOM", "ONLINE", "DATE", "HOUR", "EXTERNALS", "CATERING"};
             parseHandler = [&]()
             {
                 parsed_meetings.push_back((MeetingElement){
@@ -1153,7 +1153,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
                 parseObject.meeting_id = prop;
                 break;
             }
-    case PropType::CO2:
+        case PropType::CO2:
             {
                 float co2;
                 //Try to convert to int check
