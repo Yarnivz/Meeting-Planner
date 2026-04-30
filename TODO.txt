@@ -1,14 +1,10 @@
 Ishaak:
-- [wacht op bericht van Lucas dat de Parser Rework af is] online meetings implementeren + simuleren (in progress)
-- [wacht op bericht van Yarni dat de Building & Campus klassen af zijn] create tests for Campus & Building classes (2 new test files)
-- [wacht op bericht van Yarni dat de Building & Campus klassen af zijn] update test for Room (TestRoom.h) to include Campus & Building attributes
-- Tracken van CO2 (Kijk goed naar documentie opgave spec 2.0 en ook tabel onderaan doc)
+- Tracken van CO2 afwerken
+- create tests for Campus & Building classes (2 new test files)
+- update test for Room (TestRoom.h) to include Campus & Building attributes
 
 Yarni:
-- buildings (in progress)
-- renovations
-- simulate renovations
-- update Parser Test to implement new classes
+- renovations + simulate
 
 Lucas:
-- Catering planning & kosten
+- update Parser Test to implement new classes
