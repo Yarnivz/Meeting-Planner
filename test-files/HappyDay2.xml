@@ -1,18 +1,38 @@
 <SYSTEM>
+    <CAMPUS>
+        <NAME>Campus Middelheim</NAME>
+        <IDENTIFIER>M</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>Gebouw G</NAME>
+        <IDENTIFIER>M.G</IDENTIFIER>
+        <CAMPUS>M</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Gebouw A</NAME>
+        <IDENTIFIER>M.A</IDENTIFIER>
+        <CAMPUS>M</CAMPUS>
+    </BUILDING>
     <ROOM>
         <NAME>M.G.026</NAME>
         <IDENTIFIER>id_026</IDENTIFIER>
         <CAPACITY>30</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.G</BUILDING>
     </ROOM>
     <ROOM>
         <NAME>M.G.023</NAME>
         <IDENTIFIER>Room98732</IDENTIFIER>
         <CAPACITY>10</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.G</BUILDING>
     </ROOM>
     <ROOM>
         <NAME>M.A.043</NAME>
         <IDENTIFIER>Aula23</IDENTIFIER>
         <CAPACITY>46</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.A</BUILDING>
     </ROOM>
     <MEETING>
         <LABEL>Weekly Meeting</LABEL>
@@ -20,6 +40,9 @@
         <ROOM>Aula23</ROOM>
         <DATE>2026-05-22</DATE>
         <HOUR>13</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>True</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Sales Report 2025</LABEL>
@@ -27,21 +50,28 @@
         <ROOM>Room98732</ROOM>
         <DATE>2026-01-03</DATE>
         <HOUR>21</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <PARTICIPATION>
         <MEETING>Meeting_478463</MEETING>
         <USER>Peter Selie</USER>
+        <EXTERNAL>False</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>Meeting_478463</MEETING>
         <USER>John Cena</USER>
+        <EXTERNAL>True</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>Meeting_478463</MEETING>
         <USER>Arnold Schwarzenegger</USER>
+        <EXTERNAL>True</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>Meeting_465831</MEETING>
         <USER>Mick Turner</USER>
+        <EXTERNAL>False</EXTERNAL>
     </PARTICIPATION>
 </SYSTEM>
