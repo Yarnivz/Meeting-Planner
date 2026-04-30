@@ -1,21 +1,43 @@
 <SYSTEM>
+    <CAMPUS>
+        <NAME>campus</NAME>
+        <IDENTIFIER>c</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>building</NAME>
+        <IDENTIFIER>b</IDENTIFIER>
+        <CAMPUS>c</CAMPUS>
+    </BUILDING>
+
     <ROOM>
         <NAME>M.G.025</NAME>
         <IDENTIFIER>mg025</IDENTIFIER>
         <CAPACITY>25</CAPACITY>
+
+        <CAMPUS>c</CAMPUS>
+        <BUILDING>b</BUILDING>
     </ROOM>
     <ROOM>
         <NAME>G.T.123</NAME>
         <IDENTIFIER>gt123</IDENTIFIER>
         <CAPACITY>100</CAPACITY>
+
+        <CAMPUS>c</CAMPUS>
+        <BUILDING>b</BUILDING>
     </ROOM>
+
     <ROOM/>
+
     <MEETING>
         <LABEL>Movie Marathon</LABEL>
         <IDENTIFIER>m656</IDENTIFIER>
         <ROOM>mg025</ROOM>
         <DATE>2026-06-13</DATE>
         <HOUR>12</HOUR>
+
+        <ONLINE>false</ONLINE>
+        <EXTERNALS>false</EXTERNALS>
+        <CATERING>false</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Very important meeting</LABEL>
@@ -23,6 +45,10 @@
         <ROOM>gt123</ROOM>
         <DATE>2026-06-13</DATE>
         <HOUR>12</HOUR>
+
+        <ONLINE>false</ONLINE>
+        <EXTERNALS>false</EXTERNALS>
+        <CATERING>false</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Meeting that probably won't happen</LABEL>
@@ -30,6 +56,10 @@
         <ROOM>r009</ROOM>
         <DATE>2026-02-29</DATE>
         <HOUR>13</HOUR>
+
+        <ONLINE>false</ONLINE>
+        <EXTERNALS>false</EXTERNALS>
+        <CATERING>false</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Way too late</LABEL>
@@ -37,18 +67,28 @@
         <ROOM>r009</ROOM>
         <DATE>2026-02-01</DATE>
         <HOUR>39</HOUR>
+
+        <ONLINE>false</ONLINE>
+        <EXTERNALS>false</EXTERNALS>
+        <CATERING>false</CATERING>
     </MEETING>
 
     <PARTICIPATION>
         <MEETING>m656</MEETING>
         <USER>Peter Selie</USER>
+
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <USER>Freddy Gonzalez</USER>
+
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION>
         <MEETING>m720</MEETING>
         <USER></USER>
+
+        <EXTERNAL>false</EXTERNAL>
     </PARTICIPATION>
     <PARTICIPATION></PARTICIPATION>
 </SYSTEM>
