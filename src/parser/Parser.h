@@ -87,9 +87,8 @@ struct ParseObject
     int month = -1;
     int day = -1;
     int hour = -1;
-    bool externals, external, online;
-    float co2;
-    bool catering_needed;
+    float co2_count;
+    bool externals, external, online, catering_needed;
 };
 
 class Parser
