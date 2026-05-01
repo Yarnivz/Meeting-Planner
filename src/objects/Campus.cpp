@@ -15,9 +15,9 @@ Campus::Campus(const std::string& name, const std::string& id) :
 
     init_check_this_ptr = this;
 
-    ENSURE(isProperlyInitialized(), "Campus was not properly initialized.");
-    ENSURE(this->name == name, "Name was not added to this Campus object");
-    ENSURE(getId() == id, "Id was not added to this Campus object");
+    ENSURE(isProperlyInitialized(), "Campus must be properly initialized.");
+    ENSURE(this->name == name, "Name must be added to this Campus object");
+    ENSURE(getId() == id, "Id must be added to this Campus object");
 }
 
 bool Campus::isProperlyInitialized() const

@@ -11,7 +11,7 @@
 
 
 Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, const bool& online, bool externals_allowed, bool catering_needed)
-    : label(label), id(id), room(room),  date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
+    : label(label), id(id), room(room), date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
@@ -178,10 +178,33 @@ float Meeting::getEmissions() const
 {
     REQUIRE(room != nullptr, "Room cannot be null");
     REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
+    REQUIRE(catering_needed && online != true, "Catering and online cannot be true at the same time.");
     float addedEmissions = 0;
-    if (room->getCampus()->getCaterings().size() > 0)
+
+    for (const std::pair<std::string, User*> u : participants)
     {
-        addedEmissions = getParticipantCount() * room->getCampus()->getCaterings().front()->getEmissions();
+        if (online)
+        {
+            addedEmissions += 30;
+        }
+        else
+        {
+            if (u.second->isExternal())
+            {
+                addedEmissions += 1200;
+            }
+            else
+            {
+                addedEmissions += 120;
+            }
+
+            if (!room->getCampus()->getCaterings().empty() && catering_needed)
+            {
+                addedEmissions = static_cast<float>(getParticipantCount()) * room->getCampus()->getCaterings().front()->getEmissions();
+            }
+        }
     }
     return addedEmissions;
 }
+
+

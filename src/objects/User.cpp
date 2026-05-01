@@ -64,7 +64,7 @@ std::list<Meeting*>& User::getMeetingByDateTime(const DateTime& meetingDateTime)
 void User::_addMeeting(Meeting* meeting)
 {
     REQUIRE(meeting != nullptr, "Meeting can not be null");
-    REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
     REQUIRE(!this->isExternal() || meeting->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", this->getId().c_str(), meeting->getId().c_str());
 
     meetings.add(meeting);
