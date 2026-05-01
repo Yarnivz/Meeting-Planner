@@ -236,9 +236,6 @@ TEST_F(TestParseFile, InvalidDataUsers)
 
     std::ofstream errLog(actual);
 
-    const std::string user1 = "Peter Selie";
-    const std::string user2 = "Freddy Gonzalez";
-
 
     XmlParser x = XmlParser(errLog);
     App app = App(&x, nullptr);
@@ -258,6 +255,58 @@ TEST_F(TestParseFile, InvalidDataUsers)
     EXPECT_NE(nullptr, m1->getParticipant("Peter Selie"));
 
     EXPECT_EQ(nullptr, m2->getParticipant("Peter Selie"));
+
+    ASSERT_TRUE(file_exists(actual));
+    ASSERT_TRUE(file_exists(expected));
+    EXPECT_TRUE(file_compare(actual, expected));
+}
+
+TEST_F(TestParseFile, InvalidDataLayout)
+{
+    const std::string actual = "./test-files/TestParseFile.InvalidDataLayout-errors-actual.txt";
+    const std::string expected = "./test-files/TestParseFile.InvalidDataLayout-errors-expected.txt";
+
+    std::ofstream errLog(actual);
+
+    XmlParser x = XmlParser(errLog);
+    App app = App(&x, nullptr);
+    ASSERT_TRUE(app.isProperlyInitialized());
+    app.parseFile("./test-files/InvalidDataLayout.xml", errLog);
+
+    // It shouldnt have added invalid elements
+    EXPECT_EQ(nullptr, app.getCampus("invalid-campus"));
+    EXPECT_EQ(nullptr, app.getCampus("invalid-building"));
+    EXPECT_EQ(nullptr, app.getCampus("invalid-room"));
+
+    // Make sure valid elements were properly added
+    Campus* c1 = app.getCampus("campus_1");
+    Campus* c2 = app.getCampus("campus_2");
+    Building* b1 = app.getBuilding("building_1");
+    Building* b2 = app.getBuilding("building_2");
+    ASSERT_NE(nullptr, c1);
+    ASSERT_NE(nullptr, c2);
+    ASSERT_TRUE(c1->isProperlyInitialized());
+    ASSERT_TRUE(c2->isProperlyInitialized());
+    ASSERT_NE(nullptr, b1);
+    ASSERT_NE(nullptr, b2);
+    ASSERT_TRUE(b1->isProperlyInitialized());
+    ASSERT_TRUE(b2->isProperlyInitialized());
+    ASSERT_EQ(c1, b1->getCampus());
+    ASSERT_EQ(c2, b2->getCampus());
+
+    // It shouldnt have added mismatched rooms
+    EXPECT_EQ(nullptr, app.getRoom("r1"));
+    EXPECT_EQ(nullptr, app.getRoom("r2"));
+
+    // It should have added dup-room, but *only once*
+    // It is added first to building_1
+    Room* dup = app.getRoom("dup-room");
+    ASSERT_NE(nullptr, dup);
+    EXPECT_EQ(b1, dup->getBuilding());
+
+    // It shouldn't duplicate or modify building_1
+    EXPECT_EQ(b1, app.getBuilding("building_1"));
+    EXPECT_EQ(c1, b1->getCampus());
 
     ASSERT_TRUE(file_exists(actual));
     ASSERT_TRUE(file_exists(expected));
