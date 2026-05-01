@@ -156,6 +156,13 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             addUser(u);
         }
 
+        if (m->getParticipant(p.user) != nullptr)
+        {
+            errStream << "User with id \'" << p.user << "\' was added twice to the same meeting \'" << p.meeting << "\'." << std::endl;
+            continue;
+        }
+
+
         if (!u->isExternal() && p.external)
         {
             errStream << "User \'" << p.user << "\' was marked as external for meeting \'" << p.meeting
@@ -167,6 +174,8 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             << "\' but was registered as external earlier" << std::endl;
             continue;
         }
+
+
 
         // Add user to meeting
         m->addParticipant(u);
