@@ -7,6 +7,9 @@
 #include "tests/TestWriteToStream.h"
 #include "tests/TestApp.h"
 #include "tests/TestProcessMeetings.h"
+#include "tests/TestCatering.h"
+#include "tests/TestUser.h"
+#include "tests/TestMeetingRegistry.h"
 
 int main(int argc, char** argv)
 {
