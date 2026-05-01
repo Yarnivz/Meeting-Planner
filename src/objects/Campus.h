@@ -30,6 +30,8 @@ public:
      */
     Campus(const std::string& name, const std::string& id);
 
+    Campus(const Campus& c) = delete;
+
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.
      * @return bool indicating result

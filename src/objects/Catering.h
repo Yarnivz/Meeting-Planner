@@ -11,6 +11,7 @@ class Campus;
 class Catering {
 public:
     Catering(Campus* campus, float co2);
+    Catering(const Catering&) = delete;
 
     bool isProperlyInitialized() const;
 

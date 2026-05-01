@@ -32,6 +32,8 @@ public:
      */
     Building(const std::string& name, const std::string& id, Campus* campus);
 
+    Building(const Building& b) = delete;
+
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.
      *

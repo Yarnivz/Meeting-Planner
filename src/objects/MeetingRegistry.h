@@ -19,6 +19,9 @@ struct DateTimeHash
 class MeetingRegistry
 {
 public:
+    MeetingRegistry() = default;
+    MeetingRegistry(const MeetingRegistry&) = delete;
+
     void add(Meeting* meeting);
 
     Meeting* getById(const std::string& id);
