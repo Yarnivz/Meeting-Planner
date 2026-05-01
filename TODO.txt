@@ -8,9 +8,9 @@ Yarni:
 - Testen aanpassen HappyDay & ConflicMeetings scenarios
 
 Lucas:
-- update Parser Test to implement new classes
-- Testen aanpassen InvalidData & InvalidXml scenarios
-- Testen klassen (Catering, User, MeetingRegistry)
+- [DONE] update Parser Test to implement new classes
+- [DONE] Testen aanpassen InvalidData & InvalidXml scenarios
+- [DONE] Testen klassen (Catering, User, MeetingRegistry)
 
 
 Over:
