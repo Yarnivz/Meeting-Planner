@@ -1,0 +1,67 @@
+<SYSTEM>
+    <CAMPUS>
+        <NAME>campus</NAME>
+        <IDENTIFIER>c</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>building</NAME>
+        <IDENTIFIER>b</IDENTIFIER>
+        <CAMPUS>c</CAMPUS>
+    </BUILDING>
+
+    <ROOM>
+        <NAME>room</NAME>
+        <IDENTIFIER>r</IDENTIFIER>
+        <CAPACITY>1234</CAPACITY>
+
+        <CAMPUS>c</CAMPUS>
+        <BUILDING>b</BUILDING>
+    </ROOM>
+
+
+    <MEETING>
+        <LABEL>Normal meeting</LABEL>
+        <IDENTIFIER>m1</IDENTIFIER>
+        <ROOM>r</ROOM>
+        <DATE>2026-01-01</DATE>
+        <HOUR>12</HOUR>
+
+        <ONLINE>false</ONLINE>
+        <EXTERNALS>false</EXTERNALS>
+        <CATERING>false</CATERING>
+    </MEETING>
+    <MEETING>
+        <LABEL>External meeting</LABEL>
+        <IDENTIFIER>m2</IDENTIFIER>
+        <ROOM>r</ROOM>
+        <DATE>2026-01-01</DATE>
+        <HOUR>12</HOUR>
+
+        <ONLINE>false</ONLINE>
+        <EXTERNALS>true</EXTERNALS>
+        <CATERING>false</CATERING>
+    </MEETING>
+
+
+    <!-- First declare user as internal, then external -->
+    <PARTICIPATION>
+        <MEETING>m1</MEETING>
+        <USER>Peter Selie</USER>
+
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>m2</MEETING>
+        <USER>Peter Selie</USER>
+
+        <EXTERNAL>true</EXTERNAL>
+    </PARTICIPATION>
+
+    <!-- Then add same user to m1 twice -->
+    <PARTICIPATION>
+        <MEETING>m1</MEETING>
+        <USER>Peter Selie</USER>
+
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+</SYSTEM>

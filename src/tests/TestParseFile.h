@@ -163,13 +163,13 @@ TEST_F(TestParseFile, InvalidData1)
 
 TEST_F(TestParseFile, InvalidData2)
 {
-    std::string actual = "./test-files/TestParseFile.InvalidData2-errors-actual.txt";
-    std::string expected = "./test-files/TestParseFile.InvalidData2-errors-expected.txt";
+    const std::string actual = "./test-files/TestParseFile.InvalidData2-errors-actual.txt";
+    const std::string expected = "./test-files/TestParseFile.InvalidData2-errors-expected.txt";
 
     std::ofstream errLog(actual);
 
-    std::string user1 = "Peter Selie";
-    std::string user2 = "Freddy Gonzalez";
+    const std::string user1 = "Peter Selie";
+    const std::string user2 = "Freddy Gonzalez";
 
 
     XmlParser x = XmlParser(errLog);
@@ -224,6 +224,41 @@ TEST_F(TestParseFile, InvalidData2)
     EXPECT_EQ(size_t(2), app.getMeetingRegistry().getRawIdMap().size());
 
     //Test errors
+    ASSERT_TRUE(file_exists(actual));
+    ASSERT_TRUE(file_exists(expected));
+    EXPECT_TRUE(file_compare(actual, expected));
+}
+
+TEST_F(TestParseFile, InvalidDataUsers)
+{
+    const std::string actual = "./test-files/TestParseFile.InvalidDataUsers-errors-actual.txt";
+    const std::string expected = "./test-files/TestParseFile.InvalidDataUsers-errors-expected.txt";
+
+    std::ofstream errLog(actual);
+
+    const std::string user1 = "Peter Selie";
+    const std::string user2 = "Freddy Gonzalez";
+
+
+    XmlParser x = XmlParser(errLog);
+    App app = App(&x, nullptr);
+    ASSERT_TRUE(app.isProperlyInitialized());
+    app.parseFile("./test-files/InvalidDataUsers.xml", errLog);
+
+    EXPECT_NE(nullptr, app.getCampus("c"));
+    EXPECT_NE(nullptr, app.getBuilding("b"));
+    EXPECT_NE(nullptr, app.getRoom("r"));
+
+    Meeting* m1 = app.getMeetingById("m1");
+    Meeting* m2 = app.getMeetingById("m2");
+
+    ASSERT_NE(nullptr, m1);
+    ASSERT_NE(nullptr, m2);
+
+    EXPECT_NE(nullptr, m1->getParticipant("Peter Selie"));
+
+    EXPECT_EQ(nullptr, m2->getParticipant("Peter Selie"));
+
     ASSERT_TRUE(file_exists(actual));
     ASSERT_TRUE(file_exists(expected));
     EXPECT_TRUE(file_compare(actual, expected));
