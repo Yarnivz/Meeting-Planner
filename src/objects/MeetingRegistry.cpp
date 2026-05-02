@@ -11,7 +11,7 @@ void MeetingRegistry::add(Meeting* meeting)
 {
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    REQUIRE(!by_id.contains(meeting->getId()), "Meeting Id needs to be unique!");
+    REQUIRE(getById(meeting->getId()) == nullptr, "Meeting Id needs to be unique!");
 
     by_id.insert({meeting->getId(), meeting});
 
@@ -33,9 +33,9 @@ std::list<Meeting*>& MeetingRegistry::getByDateTime(const DateTime& date)
 }
 
 
-Meeting* MeetingRegistry::getById(const std::string& id)
+Meeting* MeetingRegistry::getById(const std::string& id) const
 {
-    const std::unordered_map<std::string, Meeting*>::iterator it = by_id.find(id);
+    const std::unordered_map<std::string, Meeting*>::const_iterator it = by_id.find(id);
 
     if (it == by_id.end()) return nullptr;
 

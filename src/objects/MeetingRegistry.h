@@ -24,7 +24,7 @@ public:
 
     void add(Meeting* meeting);
 
-    Meeting* getById(const std::string& id);
+    Meeting* getById(const std::string& id) const;
     std::list<Meeting*>& getByDateTime(const DateTime& date);
 
     void removeById(const std::string& id);
