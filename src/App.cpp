@@ -203,6 +203,9 @@ void App::writeToStream()
 
     output->printMeetings(meetings);
     output->printRooms(rooms);
+    output->printBuildings(buildings);
+    output->printCampuses(campuses);
+    output->printUsers(users);
 }
 
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)
@@ -275,20 +278,41 @@ void App::addCampus(Campus* campus)
     REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized by the constructor.");
     REQUIRE(!rooms.contains(campus->getId()), "Campus id must be unique.");
 
+
     campuses.insert({campus->getId(), campus});
 
     ENSURE(getCampus(campus->getId()) == campus, "The campus must be added to the App.");
 }
 
-Campus* App::getCampus(const std::string& campusId)
+Campus* App::getCampus(const std::string& campusId) const
 {
     REQUIRE(!campusId.empty(), "The provided campus id cannot be empty");
-    const Campuses::iterator& it = campuses.find(campusId);
+    const Campuses::const_iterator& it = campuses.find(campusId);
 
     if (it == campuses.end()) return nullptr;
 
     ENSURE(it->second->getId() == campusId, "Campus must have the right Id.");
     return it->second;
+}
+
+bool App::hasCampus(const Campus* campus) const
+{
+    return campus && getCampus(campus->getId()) == campus;
+}
+
+bool App::hasRoom(const Room* room) const
+{
+    return room && getRoom(room->getId()) == room;
+}
+
+bool App::hasMeeting(const Meeting* meeting) const
+{
+    return meeting && getMeetingById(meeting->getId()) == meeting;
+}
+
+bool App::hasUser(const User* user) const
+{
+    return user && getUser(user->getId()) == user;
 }
 
 void App::addBuilding(Building* building)
@@ -318,15 +342,18 @@ void App::addRoom(Room* room)
     REQUIRE(room, "The provided room cannot be null.");
     REQUIRE(room->isProperlyInitialized(), "Room must be properly initialized by the constructor.");
     REQUIRE(!rooms.contains(room->getId()), "Room id must be unique.");
+    const Building* building = room->getBuilding();
+    REQUIRE(building, "Rooms building cannot be null.");
+    REQUIRE(getBuilding(building->getId()) == building, "Rooms building '%s' must be registered first.", building->getId().c_str());
 
     rooms.insert({room->getId(), room}); // Add room
 
     ENSURE(getRoom(room->getId()) == room, "The room must be added to the App");
 }
 
-Room* App::getRoom(const std::string& roomId)
+Room* App::getRoom(const std::string& roomId) const
 {
-    const Rooms::iterator& it = rooms.find(roomId);
+    const Rooms::const_iterator& it = rooms.find(roomId);
 
     if (it == rooms.end()) return nullptr;
 
@@ -388,7 +415,7 @@ void App::addMeeting(Meeting* meeting)
 }
 
 
-Meeting* App::getMeetingById(const std::string& meetingId)
+Meeting* App::getMeetingById(const std::string& meetingId) const
 {
     return meetings.getById(meetingId);
 }
@@ -414,9 +441,9 @@ void App::addUser(User* user)
     REQUIRE(getUser(user->getId()) == user, "User must be added.");
 }
 
-User* App::getUser(const std::string& userId)
+User* App::getUser(const std::string& userId) const
 {
-    const Users::iterator& it = users.find(userId);
+    const Users::const_iterator& it = users.find(userId);
 
     if (it == users.end()) return nullptr;
 

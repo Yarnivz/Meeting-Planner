@@ -84,7 +84,8 @@ public:
      *
      * @post The found campus must have the right id.
      */
-    Campus* getCampus(const std::string& campusId);
+    Campus* getCampus(const std::string& campusId) const const;
+    bool hasCampus(const Campus* campus) const;
 
     /**
      * @brief Registers a Building to the app.
@@ -139,7 +140,8 @@ public:
      *
      * @post Something went wrong. The room which was found did not have the right id.
      */
-    Room* getRoom(const std::string& roomId);
+    Room* getRoom(const std::string& roomId) const;
+    bool hasRoom(const Room* room) const;
 
     /**
      * @brief Retrieve a map of all registered rooms
@@ -204,8 +206,9 @@ public:
      * @param meetingId of the meeting to retrieve
      * @return a pointer to the meeting; nullptr if the meeting was not found.
      */
-    Meeting* getMeetingById(const std::string& meetingId);
+    Meeting* getMeetingById(const std::string& meetingId) const;
     std::list<Meeting*>& getMeetingsByDateTime(const DateTime& meetingDateTime);
+    bool hasMeeting(const Meeting* meeting) const;
 
     const MeetingRegistry& getMeetingRegistry() const;
 
@@ -222,7 +225,8 @@ public:
      *
      *@post Something went wrong, The user which was found did not have the correct id.
      */
-    User* getUser(const std::string& userId);
+    User* getUser(const std::string& userId) const;
+    bool hasUser(const User* user) const;
     const Users& getAllUsers() const;
 
 
