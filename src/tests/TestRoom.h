@@ -15,7 +15,6 @@ protected:
 
 TEST_F(TestRoom, HappyDay)
 {
-    //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
 
@@ -25,11 +24,12 @@ TEST_F(TestRoom, HappyDay)
     EXPECT_EQ(20u, r.getCapacity());
     EXPECT_EQ("A Room", r.toString());
     EXPECT_EQ("a_room_id", r.getId());
+    EXPECT_EQ(building1, r.getBuilding());
+    EXPECT_EQ(campus1, r.getCampus());
 }
 
 TEST_F(TestRoom, ContractViolation)
 {
-    //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
 
@@ -40,11 +40,10 @@ TEST_F(TestRoom, ContractViolation)
 
 TEST_F(TestRoom, CopyConstructor)
 {
-    //possibly diversify bulding and campus later for extra tests
-    Campus* campus1 = new Campus ("Middelheim", "M");
-    Building* building1 = new Building("Bib", "G", campus1);
+    Campus* campus = new Campus ("Middelheim", "M");
+    Building* building = new Building("Bib", "G", campus);
 
-    Room r1("A Room", "room20", 13, building1);
+    Room r1("A Room", "room20", 13, building);
     Room r2 = r1;
 
     EXPECT_TRUE(r1.isProperlyInitialized());
@@ -55,6 +54,11 @@ TEST_F(TestRoom, CopyConstructor)
     EXPECT_EQ("room20", r2.getId());
     EXPECT_EQ(13u, r1.getCapacity());
     EXPECT_EQ(13u, r2.getCapacity());
+    EXPECT_EQ(building, r1.getBuilding());
+    EXPECT_EQ(building, r2.getBuilding());
+    EXPECT_EQ(campus, r1.getCampus());
+    EXPECT_EQ(campus, r2.getCampus());
+
 }
 
 #endif //MEETING_PLANNER_ROOMTEST_H
