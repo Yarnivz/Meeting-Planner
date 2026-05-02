@@ -23,6 +23,9 @@ TEST_F(TestApp, HappyDay1)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
+
     Room* room1 = new Room("Room 1", "r1", 20, building1);
     Room* room2 = new Room("Room 2", "r2", 20, building1);
     Room* room3 = new Room("Room 3", "r3", 20, building1);
@@ -97,6 +100,9 @@ TEST_F(TestApp, RetrieveInvalid)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
+
     EXPECT_TRUE(p.isProperlyInitialized());
 
     EXPECT_EQ(nullptr, p.getRoom("r1111"));

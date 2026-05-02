@@ -22,6 +22,9 @@ TEST_F(TestProcessMeetings, HappyDay)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
+
     EXPECT_TRUE(p.isProperlyInitialized());
 
     Room* mg025 = new Room("M.G.025", "MG025", 40, building1);
@@ -80,6 +83,8 @@ TEST_F(TestProcessMeetings, Conflicts)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -167,6 +172,8 @@ TEST_F(TestProcessMeetings, Order)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
 
     EXPECT_TRUE(p.isProperlyInitialized());
@@ -252,6 +259,8 @@ TEST_F(TestProcessMeetings, ContractViolation)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room* r = new Room("r", "r", 20, building1);
     p.addRoom(r);

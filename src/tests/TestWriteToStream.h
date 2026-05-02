@@ -34,6 +34,9 @@ TEST_F(TestWriteToStream, HappyDay1)
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
 
+    p.addCampus(campus1);
+    p.addBuilding(building1);
+
     Room *r1, *r2, *r3;
     p.addRoom(r1 = new Room("Room 1", "r1", 20, building1));
     p.addRoom(r2 = new Room("Room 2", "r2", 20, building1));
@@ -88,6 +91,9 @@ TEST_F(TestWriteToStream, HappyDay2)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room *r1, *r2;
     p.addRoom(r1 = new Room("M.G.025", "MG025", 20, building1));
@@ -162,6 +168,9 @@ TEST_F(TestWriteToStream, Processed)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room *r1, *r2;
     p.addRoom(r1 = new Room("M.G.025", "MG025", 20, building1));
