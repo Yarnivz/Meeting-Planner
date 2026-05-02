@@ -84,7 +84,7 @@ public:
      *
      * @post The found campus must have the right id.
      */
-    Campus* getCampus(const std::string& campusId) const const;
+    Campus* getCampus(const std::string& campusId) const;
     bool hasCampus(const Campus* campus) const;
 
     /**
