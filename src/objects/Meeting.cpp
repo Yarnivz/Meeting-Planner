@@ -178,7 +178,6 @@ float Meeting::getEmissions() const
 {
     REQUIRE(room != nullptr, "Room cannot be null");
     REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
-    std::cout << catering_needed << " " << online << std::endl;
     REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.");
     float addedEmissions = 0;
 
