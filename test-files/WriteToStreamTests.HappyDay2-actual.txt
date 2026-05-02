@@ -1,16 +1,25 @@
+--==## Future meetings ##==--
 
-Future meetings:
-- M.G.025, Thursday 01/01/2026, 21h00
-  Important Meeting 2
-  Alice, Bob, Charlie, David
-  Meeting ID: m2
-- M.G.025, Friday 12/12/2025, 20h00
-  Important Meeting 1
-  Jane Doe, John Doe, Peter Selie
-  Meeting ID: m1
+[ Important Meeting 2 (m2) ]
+  - Time: 01/01/2026, 21h00
+  - Location: M.G.025
+  - CO2 emitted: 999g
+  - Participants: 
+      * Alice
+      * Bob
+      * Charlie
+      * David
 
-Rooms:
-- G.T.103
-  Capacity: 15 people
-- M.G.025
-  Capacity: 20 people
+[ Important Meeting 1 (m1) ]
+  - Time: 12/12/2025, 20h00
+  - Location: M.G.025
+  - CO2 emitted: 999g
+  - Participants: 
+      * Jane Doe
+      * John Doe
+      * Peter Selie
+--==## Rooms ##==--
+[ G.T.103 (GT103) ]
+  - Capacity: 15 people
+[ M.G.025 (MG025) ]
+  - Capacity: 20 people

@@ -56,8 +56,8 @@ TEST_F(TestApp, HappyDay1)
     ASSERT_EQ(m3, p.getMeetingById("m3"));
     ASSERT_EQ(m4, p.getMeetingById("m4"));
 
-    User* johndoe = new User("John Doe", "m3");
-    User* davejone = new User("Dave Jones", "m2");
+    User* johndoe = new User("John Doe", false);
+    User* davejone = new User("Dave Jones", false);
 
     p.addUser(johndoe);
     p.addUser(davejone);

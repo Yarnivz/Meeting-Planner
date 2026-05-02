@@ -10,6 +10,8 @@
 #include "App.h"
 #include <fstream>
 
+#include "output/StreamOutput.h"
+
 class TestWriteToStream : public ::testing::Test
 {
 protected:
@@ -21,8 +23,9 @@ TEST_F(TestWriteToStream, HappyDay1)
     const std::string actual = "test-files/WriteToStreamTests.HappyDay1-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.HappyDay1-expected.txt";
     std::ofstream f = std::ofstream(actual);
+    StreamOutput o = StreamOutput(&f);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, &o);
     ASSERT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2026, 1, 2, 13);
@@ -74,8 +77,9 @@ TEST_F(TestWriteToStream, HappyDay2)
     const std::string actual = "test-files/WriteToStreamTests.HappyDay2-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.HappyDay2-expected.txt";
     std::ofstream f = std::ofstream(actual);
+    StreamOutput o = StreamOutput(&f);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, &o);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2025, 12, 12, 20);
@@ -131,8 +135,9 @@ TEST_F(TestWriteToStream, Empty)
 {
     const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
     std::ofstream f = std::ofstream(actual);
+    StreamOutput o = StreamOutput(&f);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, &o);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     p.writeToStream();
@@ -146,8 +151,9 @@ TEST_F(TestWriteToStream, Processed)
     const std::string actual = "test-files/WriteToStreamTests.Processed-actual.txt";
     const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";
     std::ofstream f = std::ofstream(actual);
+    StreamOutput o = StreamOutput(&f);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, &o);
     EXPECT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2025, 12, 12, 0);

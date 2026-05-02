@@ -7,14 +7,15 @@
 
 #include "gtest/gtest.h"
 #include "App.h"
+#include "parser/XmlParser.h"
 
-class ProcessMeetingsTest : public ::testing::Test
+class TestProcessMeetings : public ::testing::Test
 {
 protected:
 };
 
 
-TEST_F(ProcessMeetingsTest, HappyDay)
+TEST_F(TestProcessMeetings, HappyDay)
 {
     App p = App(nullptr, nullptr);
 
@@ -72,7 +73,7 @@ TEST_F(ProcessMeetingsTest, HappyDay)
     EXPECT_EQ("conflict with meeting M2", m4->getCancellationReason());
 }
 
-TEST_F(ProcessMeetingsTest, Conflicts)
+TEST_F(TestProcessMeetings, Conflicts)
 {
     App p = App(nullptr, nullptr);
 
@@ -160,7 +161,7 @@ TEST_F(ProcessMeetingsTest, Conflicts)
     }
 }
 
-TEST_F(ProcessMeetingsTest, Order)
+TEST_F(TestProcessMeetings, Order)
 {
     App p = App(nullptr, nullptr);
     //possibly diversify bulding and campus later for extra tests
@@ -201,7 +202,7 @@ TEST_F(ProcessMeetingsTest, Order)
     EXPECT_EQ("conflict with meeting M3", m2->getCancellationReason());
 }
 
-TEST_F(ProcessMeetingsTest, ParseOrder)
+TEST_F(TestProcessMeetings, ParseOrder)
 {
     App p = App(new XmlParser(), nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
@@ -245,7 +246,7 @@ TEST_F(ProcessMeetingsTest, ParseOrder)
     EXPECT_EQ("conflict with meeting B1", b3->getCancellationReason());
 }
 
-TEST_F(ProcessMeetingsTest, ContractViolation)
+TEST_F(TestProcessMeetings, ContractViolation)
 {
     App p = App(nullptr, nullptr);
     //possibly diversify bulding and campus later for extra tests
