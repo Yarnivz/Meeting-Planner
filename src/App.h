@@ -113,8 +113,9 @@ public:
      *
      * @post The found building must have the right id.
      */
-    Building* getBuilding(const std::string& buildingId);
+    Building* getBuilding(const std::string& buildingId) const;
 
+    bool hasBuilding(const Building* building) const;
     /**
      * @brief Register a room.
      *

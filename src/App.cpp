@@ -10,7 +10,7 @@
 #include "helper/DesignByContract.h"
 
 
-App::App(Parser* parser, Output* output) : parser(parser), output(output)
+App::App(Parser* parser, Output* output) : parser(parser), output(output), emission(0.0)
 {
     init_check_this_ptr = this;
 
@@ -276,12 +276,12 @@ void App::addCampus(Campus* campus)
 {
     REQUIRE(campus, "The provided campus cannot be null.");
     REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized by the constructor.");
-    REQUIRE(!rooms.contains(campus->getId()), "Campus id must be unique.");
+    REQUIRE(getCampus(campus->getId()) == nullptr, "Campus id must be unique.");
 
 
     campuses.insert({campus->getId(), campus});
 
-    ENSURE(getCampus(campus->getId()) == campus, "The campus must be added to the App.");
+    ENSURE(hasCampus(campus), "The campus must be added to the App.");
 }
 
 Campus* App::getCampus(const std::string& campusId) const
@@ -291,6 +291,7 @@ Campus* App::getCampus(const std::string& campusId) const
 
     if (it == campuses.end()) return nullptr;
 
+    ENSURE(it->second, "Campus must not be null.");
     ENSURE(it->second->getId() == campusId, "Campus must have the right Id.");
     return it->second;
 }
@@ -319,36 +320,48 @@ void App::addBuilding(Building* building)
 {
     REQUIRE(building, "The provided building cannot be null.");
     REQUIRE(building->isProperlyInitialized(), "Building must be properly initialized by the constructor.");
-    REQUIRE(!rooms.contains(building->getId()), "Room id must be unique.");
+    REQUIRE(getBuilding(building->getId()) == nullptr, "Building ids must be unique.");
+    const Campus* campus = building->getCampus();
+    REQUIRE(campus, "Buildings campus can't be null.");
+    REQUIRE(hasCampus(campus), "Buildings campus '%s' must be registered first.", campus->getId().c_str());
 
     buildings.insert({building->getId(), building});
 
-    ENSURE(getBuilding(building->getId()) == building, "The building must be added to the App");
+    ENSURE(hasBuilding(building), "The building must be added to the App");
 }
 
-Building* App::getBuilding(const std::string& buildingId)
+Building* App::getBuilding(const std::string& buildingId) const
 {
     REQUIRE(!buildingId.empty(), "The provided building id cannot be empty");
-    const Buildings::iterator& it = buildings.find(buildingId);
+    const Buildings::const_iterator& it = buildings.find(buildingId);
 
     if (it == buildings.end()) return nullptr;
 
-    ENSURE(it->second->getId() == buildingId, "The building must have the right id.");
+    ENSURE(it->second, "Building must not be null.");
+    ENSURE(it->second->getId() == buildingId, "Building must have the right id.");
     return it->second;
+}
+
+bool App::hasBuilding(const Building* building) const
+{
+    return building && getBuilding(building->getId()) == building;
 }
 
 void App::addRoom(Room* room)
 {
     REQUIRE(room, "The provided room cannot be null.");
     REQUIRE(room->isProperlyInitialized(), "Room must be properly initialized by the constructor.");
-    REQUIRE(!rooms.contains(room->getId()), "Room id must be unique.");
+    REQUIRE(getRoom(room->getId()) == nullptr, "Room id must be unique.");
     const Building* building = room->getBuilding();
     REQUIRE(building, "Rooms building cannot be null.");
-    REQUIRE(getBuilding(building->getId()) == building, "Rooms building '%s' must be registered first.", building->getId().c_str());
+    REQUIRE(hasBuilding(building), "Rooms building '%s' must be registered first.", building->getId().c_str());
+    const Campus* campus = room->getCampus();
+    REQUIRE(campus, "Rooms campus can't be null.");
+    REQUIRE(hasCampus(campus), "Rooms campus '%s' must be registered first.", campus->getId().c_str());
 
     rooms.insert({room->getId(), room}); // Add room
 
-    ENSURE(getRoom(room->getId()) == room, "The room must be added to the App");
+    ENSURE(hasRoom(room), "The room must be added to the App");
 }
 
 Room* App::getRoom(const std::string& roomId) const
@@ -357,6 +370,7 @@ Room* App::getRoom(const std::string& roomId) const
 
     if (it == rooms.end()) return nullptr;
 
+    ENSURE(it->second, "Room must not be null");
     ENSURE(it->second->getId() == roomId, "Room must have the right id.");
     return it->second;
 }
@@ -370,7 +384,8 @@ const Rooms& App::getAllRooms() const
 bool App::isRoomOccupied(const std::string& roomId, const DateTime& date_time)
 {
     const Room* r = getRoom(roomId);
-    REQUIRE(r, "Rhis room must exist.");
+    REQUIRE(r, "The room must be registered.");
+    REQUIRE(date_time.isProperlyInitialized(), "DateTime must be properly initialized");
 
     std::list<Meeting*>& possible_occupations = getMeetingsByDateTime(date_time);
 
@@ -405,6 +420,7 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
 
 void App::addMeeting(Meeting* meeting)
 {
+    REQUIRE(meeting, "Meeting cannot be null.");
     if (meeting->getOrder() == 0)
     {
         int order = meetings.getRawIdMap().size() + 1;
@@ -412,6 +428,7 @@ void App::addMeeting(Meeting* meeting)
         //std::cout << "Set order of meeting " << meeting->getId() << "  to " << order << std::endl;
     }
     meetings.add(meeting);
+    ENSURE(hasMeeting(meeting), "Meeting must be added to the App.");
 }
 
 
@@ -435,10 +452,11 @@ void App::addUser(User* user)
 {
     REQUIRE(user != nullptr, "User can not be null.");
     REQUIRE(user->isProperlyInitialized(), "User must be properly initialized.");
+    REQUIRE(getUser(user->getId()) == nullptr, "User ids must be unique.");
 
     users.insert({user->getId(), user});
 
-    REQUIRE(getUser(user->getId()) == user, "User must be added.");
+    REQUIRE(hasUser(user), "User must be added to the App.");
 }
 
 User* App::getUser(const std::string& userId) const
@@ -447,6 +465,7 @@ User* App::getUser(const std::string& userId) const
 
     if (it == users.end()) return nullptr;
 
+    ENSURE(it->second, "User must not be null.");
     ENSURE(it->second->getId() == userId, "User must have the correct id.");
     return it->second;
 }
@@ -473,7 +492,7 @@ void App::addUserToMeeting(const std::string& userId, const std::string& meeting
 bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
 {
     const User* u = getUser(userId);
-    REQUIRE(u, "This user does not exist.");
+    REQUIRE(u, "User must be registered.");
 
     std::list<Meeting*>& possible_occupations = getMeetingsByDateTime(date_time);
 
@@ -499,12 +518,3 @@ App::~App()
     for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;
     for (const std::pair<const std::string, User*>& u : users) delete u.second;
 }
-
-// Meetings* App::_getMutMeetingsByRoom(const std::string& roomId)
-// {
-//     const MeetingsByRoomMap::iterator it = meetings_by_room.find(roomId);
-//
-//     if (it == meetings_by_room.end()) return nullptr;
-//
-//     return &it->second;
-// }

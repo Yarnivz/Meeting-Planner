@@ -11,7 +11,7 @@ void MeetingRegistry::add(Meeting* meeting)
 {
     REQUIRE(meeting, "Meeting can not be null.");
     REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
-    REQUIRE(!by_id.contains(meeting->getId()), "Meeting Id needs to be unique!");
+    REQUIRE(getById(meeting->getId()) == nullptr, "Meeting Id needs to be unique!");
 
     by_id.insert({meeting->getId(), meeting});
 
