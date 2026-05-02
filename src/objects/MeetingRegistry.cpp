@@ -33,9 +33,9 @@ std::list<Meeting*>& MeetingRegistry::getByDateTime(const DateTime& date)
 }
 
 
-Meeting* MeetingRegistry::getById(const std::string& id)
+Meeting* MeetingRegistry::getById(const std::string& id) const
 {
-    const std::unordered_map<std::string, Meeting*>::iterator it = by_id.find(id);
+    const std::unordered_map<std::string, Meeting*>::const_iterator it = by_id.find(id);
 
     if (it == by_id.end()) return nullptr;
 
