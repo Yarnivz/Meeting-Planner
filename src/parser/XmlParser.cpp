@@ -806,7 +806,8 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
         {"ROOM", ElementType::ROOM},
         {"MEETING", ElementType::MEETING},
         {"PARTICIPATION", ElementType::PARTICIPATION},
-        {"CATERING", ElementType::CATERING}
+        {"CATERING", ElementType::CATERING},
+        {"RENOVATION", ElementType::RENOVATION},
     };
 
 
@@ -887,6 +888,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                 });
             };
             break;
+        //CATERING
         case ElementType::CATERING:
             requiredProps = {"CAMPUS", "CO2"};
             parseHandler = [&]()
@@ -897,6 +899,17 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                 });
             };
             break;
+
+        case ElementType::RENOVATION:
+            requiredProps = {"ROOM", "START", "END"};
+            parseHandler = [&]()
+            {
+                parsed_renovations.push_back((RenovationElement){
+                    .room = parseObject.room_id,
+                    .start_date = parseObject.start_date,
+                    .end_date = parseObject.end_date
+                });
+            };
 
         default:
             errorStream << "Object element exists in elementValues map but not in switch case:  " << elementType << std::endl;
@@ -980,7 +993,9 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"EXTERNAL", PropType::EXTERNAL},
         {"MEETING", PropType::MEETING},
         {"CO2", PropType::CO2},
-        {"CATERING", PropType::CATERINGNEEDED}
+        {"CATERING", PropType::CATERINGNEEDED},
+        {"START", PropType::STARTDATE},
+        {"END", PropType::ENDDATE}
     };
 
     if (!propValues.contains(propType))
