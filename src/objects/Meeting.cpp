@@ -181,7 +181,7 @@ float Meeting::getEmissions() const
     REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.");
     float addedEmissions = 0;
 
-    for (const std::pair<std::string, User*> u : participants)
+    for (const std::pair<std::string, User*> user : participants)
     {
         if (online)
         {
@@ -189,7 +189,7 @@ float Meeting::getEmissions() const
         }
         else
         {
-            if (u.second->isExternal())
+            if (user.second->isExternal())
             {
                 addedEmissions += 1200;
             }
