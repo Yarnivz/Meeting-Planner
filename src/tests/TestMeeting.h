@@ -16,6 +16,7 @@ protected:
 
 TEST_F(TestMeeting, HappyDay)
 {
+    //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
 

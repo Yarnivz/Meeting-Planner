@@ -260,12 +260,16 @@ void App::processAllMeetings(const bool verbose, std::ostream* catering_planning
                   }
                   return comparedMeeting1->getOrder() < comparedMeeting2->getOrder();
               });
-    for (const Meeting* meeting : sortedMeetings)
+
+
+    for (size_t i = 0; i < sortedMeetings.size(); ++i)
     {
-        ENSURE(meeting, "Meeting can not be null.");
-        ENSURE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
-        processSingleMeeting(meeting->getId(), verbose, catering_planning_output);
+        const Meeting* currentMeeting = sortedMeetings[i];
+        ENSURE(currentMeeting, "Meeting can not be null.");
+        ENSURE(currentMeeting->isProperlyInitialized(), "Meeting must be properly initialized.");
+        processSingleMeeting(currentMeeting->getId(), verbose, catering_planning_output);
     }
+    std::cout << "total emission is " << emission << std::endl << std::flush;
     //TODO add ensure
 }
 
