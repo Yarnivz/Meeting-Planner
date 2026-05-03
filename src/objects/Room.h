@@ -5,9 +5,10 @@
 #ifndef MEETING_PLANNER_ROOM_H
 #define MEETING_PLANNER_ROOM_H
 #include <iostream>
-#include <string>
+#include <map>
+#include "../TypeDefs.h"
 #include "Building.h"
-#include "Campus.h"
+#include "Date.h"
 
 
 class Room
@@ -109,6 +110,8 @@ public:
      */
     unsigned getCapacity() const;
 
+    void addRenovation(const Date& start, const Date& end);
+
     /**
      * @brief Standard stream operator using the toString function to append the room to the stream.
      *
@@ -134,6 +137,7 @@ private:
     unsigned occupancy;
     Campus* campus;
     Building* building;
+    Renovations renovations;
     void* init_check_this_ptr;
 };
 

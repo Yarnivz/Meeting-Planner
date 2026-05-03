@@ -26,6 +26,9 @@ TEST_F(TestRoom, HappyDay)
     EXPECT_EQ("a_room_id", r.getId());
     EXPECT_EQ(building1, r.getBuilding());
     EXPECT_EQ(campus1, r.getCampus());
+
+    delete building1;
+    delete campus1;
 }
 
 TEST_F(TestRoom, ContractViolation)
@@ -37,8 +40,8 @@ TEST_F(TestRoom, ContractViolation)
     EXPECT_DEATH(Room("Room With No Capacity", "a_id", 0, building1), "");
     EXPECT_DEATH(Room("Room With No Building", "a_id", 20, nullptr), "");
 
-    delete campus1;
     delete building1;
+    delete campus1;
 }
 
 TEST_F(TestRoom, CopyConstructor)
@@ -62,9 +65,8 @@ TEST_F(TestRoom, CopyConstructor)
     EXPECT_EQ(campus, r1.getCampus());
     EXPECT_EQ(campus, r2.getCampus());
 
-    delete campus;
     delete building;
-
+    delete campus;
 }
 
 #endif //MEETING_PLANNER_ROOMTEST_H

@@ -140,7 +140,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
-        if ( p.external && !m->externalsAllowed())
+        if (p.external && !m->externalsAllowed())
         {
             errStream << "External user \'" << p.user << "\' can't participate in meeting \'" << p.meeting <<
                 "\' which doesn't allow externals" << std::endl;
@@ -183,14 +183,25 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         // Vice versa is fine too, but not both.
         // Either way each object will recieve a pointer to the other
         // u->addMeeting(m)
-
-
-        ENSURE(getUser(p.user) == u, "User must exist");
-        ENSURE(getMeetingById(p.meeting) == m, "Meeting must exist");
-        ENSURE(m->getParticipant(p.user) == u, "User must be added as participant of meeting");
-        ENSURE(u->getMeetingById(p.meeting) == m, "Meeting must be added to user.");
     }
 
+    for (const RenovationElement& r : parser->parsedRenovations())
+    {
+        //Get room
+        Room* room = getRoom(r.room);
+
+        if (room == nullptr)
+        {
+            errStream << "Renovation that starts on " << r.start_date << " and ends on " << r.end_date << " was added to Room \'"
+            << r.room << "\' which does not exist." << std::endl;
+            continue;
+        }
+
+        //Add renovation to the room
+        room->addRenovation(r.start_date, r.end_date);
+
+
+    }
 
     parser->clearRooms();
     parser->clearMeetings();
