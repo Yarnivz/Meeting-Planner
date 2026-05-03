@@ -12,6 +12,41 @@
 #include "helper/DesignByContract.h"
 #include "objects/Room.h"
 
+
+static inline bool parse_int(const std::string& input, int& output, std::string& parseError)
+{
+    int integer;
+    //Try to convert to int
+    try
+    {
+        integer = std::stoi(input);
+    }
+    catch (std::exception& except)
+    {
+        parseError = std::string("Value '" + input + "' could not be converted to an integer: \n\t- ") + except.what();
+        return false;
+    }
+    output = integer;
+    return true;
+}
+
+static inline bool parse_float(const std::string& input, float& output, std::string& parseError)
+{
+    float floating;
+    //Try to convert to float
+    try
+    {
+        floating = std::stof(input);
+    }
+    catch (std::exception& except)
+    {
+        parseError = std::string("Value '" + input + "' could not be converted to a float\n\t- ") + except.what();
+        return false;
+    }
+    output = floating;
+    return true;
+}
+
 static inline bool parse_boolean(const std::string& input, bool& output, std::string& parseError)
 {
     std::string s = input;
@@ -29,16 +64,16 @@ static inline bool parse_boolean(const std::string& input, bool& output, std::st
         return true;
     }
 
-    parseError = "'" + input + "'" + " could not be converted to a boolean";
+    parseError = "Value '" + input + "'" + " could not be converted to a boolean: \n\t- must be either 'false' or '0' for False OR 'true' or '1' for True";
     return false;
 }
 
 static inline bool parse_date (const std::string& input, Date& output, std::string& parseError)
 {
-    //Try to convert to DateTime check
-    int day = 0;
-    int month = 0;
-    int year = 0;
+    //Try to convert to Date
+    int day;
+    int month;
+    int year;
 
     try
     {
@@ -48,10 +83,10 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     }
     catch (std::exception& except)
     {
-        parseError = std::string("Date value '" + input + "' could not be converted to a date format: \n\t- ") + except.what();
+        parseError = std::string("Value '" + input + "' could not be converted to a date format: \n\t- ") + except.what();
         return false;
     }
-    std::chrono::year_month_day chrono_date = {
+    const std::chrono::year_month_day chrono_date = {
         std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
     };
     //Check if date exists
@@ -336,20 +371,11 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::CAPACITY:
         {
             int capacity;
-            //Try to convert to int check
-            try
+            if (!parse_int(prop, capacity, parseError)) return false;
+            //Check if capacity is < 0
+            if (capacity < 0)
             {
-                capacity = std::stoi(prop);
-                //Check if capacity is < 0
-                if (capacity < 0)
-                {
-                    parseError = std::string("Capacity could not be converted to an integer (value is negative)");
-                    return false;
-                }
-            }
-            catch (std::exception& except)
-            {
-                parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
+                parseError = "Value '" + prop + "' cannot be used as " + propType + ":\n\t- cannot be negative";
                 return false;
             }
             parseObject.capacity = capacity;
@@ -427,7 +453,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {
             bool externals;
             if (!parse_boolean(prop, externals, parseError)) return false;
-            parseObject.online = externals;
+            parseObject.externals = externals;
             break;
         }
         case PropType::USER:
@@ -450,20 +476,11 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::CO2:
         {
             float co2;
-            //Try to convert to int check
-            try
+            if (!parse_float(prop, co2, parseError)) return false;
+            //Check if co2 is < 0
+            if (co2 < 0)
             {
-                co2 = std::stof(prop);
-                //Check if co2 is < 0
-                if (co2 < 0)
-                {
-                    parseError = std::string("CO2 could not be converted to a float (value is negative)");
-                    return false;
-                }
-            }
-            catch (std::exception& except)
-            {
-                parseError = std::string("CO2 could not be converted to a float\n\t- ") + except.what();
+                parseError = "Value '" + prop + "' cannot be used as " + propType + ":\n\t- cannot be negative";
                 return false;
             }
             parseObject.co2_count = co2;
