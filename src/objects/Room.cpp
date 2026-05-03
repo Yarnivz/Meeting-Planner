@@ -14,6 +14,7 @@ Room::Room(const std::string& name, const std::string& id, unsigned capacity, Bu
     REQUIRE(!name.empty(), "name must not be empty");
     REQUIRE(!id.empty(), "id must not be empty");
     REQUIRE(capacity > 0, "capacity must be greater than 0");
+    //TestRoom contractviolation works if this is enabled
     //REQUIRE(building != nullptr, "The given building must exist");
     //REQUIRE(building->isProperlyInitialized(), "The given building must be properly initialized");
     if (capacity == 0)
@@ -63,11 +64,13 @@ bool Room::isProperlyInitialized() const
 
 Building* Room::getBuilding() const
 {
+    ENSURE(building != nullptr, "Building cannot be null.");
     return building;
 }
 
 Campus* Room::getCampus() const
 {
+    ENSURE(campus != nullptr, "Campus cannot be null.");
     return campus;
 }
 

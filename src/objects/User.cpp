@@ -46,12 +46,16 @@ bool User::isExternal() const
 
 void User::addMeeting(Meeting* meeting)
 {
+    REQUIRE(meeting != nullptr, "Meeting cannot be null.");
     this->_addMeeting(meeting);
     meeting->_addParticipant(this);
+    ENSURE(meetings.getRawIdMap().contains(meeting->getId()), "Meeting  must be in MeetingRegistery");
+    ENSURE(meeting->getParticipants().contains(this->getId()), "User must be in meeting participants");
 }
 
 Meeting* User::getMeetingById(const std::string& meetingId)
 {
+    REQUIRE(!meetingId.empty(), "Meeting id cannot be empty.");
     return meetings.getById(meetingId);
 }
 
