@@ -27,8 +27,6 @@ public:
      * @pre Tried to copy a date which was not properly initialized by the constructor.
      *
      * @param d The Date to be copied.
-     *
-     * @contracts
      */
     Date(const Date& d);
 

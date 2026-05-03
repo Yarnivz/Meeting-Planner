@@ -56,11 +56,13 @@ void User::addMeeting(Meeting* meeting)
 Meeting* User::getMeetingById(const std::string& meetingId)
 {
     REQUIRE(!meetingId.empty(), "Meeting id cannot be empty.");
+    ENSURE(meetings.getRawIdMap().contains(meetingId), "MeetingId must be in MeetingRegistery");
     return meetings.getById(meetingId);
 }
 
 std::list<Meeting*>& User::getMeetingByDateTime(const DateTime& meetingDateTime)
 {
+    ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must be in MeetingRegistry");
     return meetings.getByDateTime(meetingDateTime);
 }
 
@@ -73,5 +75,5 @@ void User::_addMeeting(Meeting* meeting)
 
     meetings.add(meeting);
 
-    REQUIRE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
+    ENSURE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
 }
