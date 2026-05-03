@@ -175,7 +175,7 @@ void Meeting::_addParticipant(User* user)
     REQUIRE(user != nullptr, "User can not be null");
     REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
     REQUIRE(!hasParticipant(user), "User '%s' can't already participate in meeting", user->getId().c_str());
-    REQUIRE(getParticipant(user->getId()), "User id '%s' must be unique", user->getId().c_str());
+    REQUIRE(getParticipant(user->getId()) == nullptr, "User id '%s' must be unique", user->getId().c_str());
     REQUIRE(!user->isExternal() || this->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", user->getId().c_str(), this->getId().c_str());
 
 

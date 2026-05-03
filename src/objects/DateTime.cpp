@@ -78,8 +78,6 @@ DateTime::DateTime(int year, int month, int day, int hour)
 
     ENSURE(getYear() == year, "Year must be set correctly in order to create DateTime.");
     ENSURE(getMonth() == umonth, "Month must be set correctly in order to create DateTime.");
-    std::cout << "Day of this object: " << getDay() << std::endl;
-    std::cout << "Given day: " << uday << std::endl;
     ENSURE(getDay() == uday, "Day must be set correctly in order to create DateTime.");
     ENSURE(getHour() == uhour, "Hour must be set correctly in order to create DateTime.");
     ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.");
@@ -121,6 +119,8 @@ std::string DateTime::toString() const
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
     std::stringstream ss;
+    ss << std::format("{:%d/%m/%Y}", date);
+    ss << ", " << hour << "h00";
     return ss.str();
 }
 

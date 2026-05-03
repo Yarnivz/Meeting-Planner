@@ -51,7 +51,7 @@ TEST_F(TestMeeting, Externals)
     Building* b = new Building("building", "b", c);
     Room* r = new Room("room", "r", 100, b);
     Meeting* m_allowed = new Meeting("Externals Allowed", "allowed", r, DateTime(2026,1,2,3), false, true, false);
-    Meeting* m_notallowed = new Meeting("Externals Not Allowed", "not-allowed", r, DateTime(2026,1,2,3), false, true, false);
+    Meeting* m_notallowed = new Meeting("Externals Not Allowed", "not-allowed", r, DateTime(2026,1,2,3), false, false, false);
 
     User* external = new User("External", true);
     User* internal = new User("Internal", false);
