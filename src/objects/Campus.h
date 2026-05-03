@@ -65,6 +65,8 @@ public:
     /**
      * @brief Standard stream operator using the toString function to append the campus to the stream.
      *
+     *
+     *
      * @pre Campus must be properly initialized
      *
      * @param os stream to write on

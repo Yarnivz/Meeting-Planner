@@ -64,7 +64,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
     std::string currentFunction;
     size_t previousFunctionLine = 1;
 
-    for (const std::string& h: headerFileLines)
+    for (size_t i = 0; i < headerFileLines.size(); ++i)
     {
         if ((headerFileLines[i].find(");") != std::string::npos ||
                 headerFileLines[i].find(") const;") != std::string::npos) &&
