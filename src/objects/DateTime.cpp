@@ -121,8 +121,6 @@ std::string DateTime::toString() const
 
     std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
     std::stringstream ss;
-    ss << std::format("{:%d/%m/%Y}", date);
-    ss << ", " << hour << "h00";
     return ss.str();
 }
 
