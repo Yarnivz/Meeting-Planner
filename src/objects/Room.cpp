@@ -14,8 +14,8 @@ Room::Room(const std::string& name, const std::string& id, unsigned capacity, Bu
     REQUIRE(!name.empty(), "name must not be empty");
     REQUIRE(!id.empty(), "id must not be empty");
     REQUIRE(capacity > 0, "capacity must be greater than 0");
-    //REQUIRE(building != nullptr, "The given building must exist");
-    //REQUIRE(building->isProperlyInitialized(), "The given building must be properly initialized");
+    REQUIRE(building != nullptr, "The given building must exist");
+    REQUIRE(building->isProperlyInitialized(), "The given building must be properly initialized");
     if (capacity == 0)
     {
         throw std::invalid_argument("Capacity must be strict greater than 0");
