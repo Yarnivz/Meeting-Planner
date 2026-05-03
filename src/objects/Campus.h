@@ -30,6 +30,9 @@ public:
      */
     Campus(const std::string& name, const std::string& id);
 
+    /**
+     * @brief prevents the campus object from being copied
+     */
     Campus(const Campus& c) = delete;
 
     /**
@@ -60,8 +63,6 @@ public:
 
     /**
      * @brief Standard stream operator using the toString function to append the campus to the stream.
-     *
-     *
      *
      * @pre Campus must be properly initialized
      *

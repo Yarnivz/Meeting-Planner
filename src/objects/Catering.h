@@ -11,11 +11,27 @@ class Campus;
 class Catering {
 public:
     Catering(Campus* campus, float co2);
+
+    /**
+     * @briefprevents the Catering object from being copied
+     */
     Catering(const Catering&) = delete;
 
+    /**
+     * @brief Checks whether this Catering was properly initialized by the constructor.
+     * @return bool indicating result
+     */
     bool isProperlyInitialized() const;
 
+    /**
+     * @brief gets the caterings co2 emission amount
+     * @return the emission amount itself
+     */
     float getEmissions() const;
+    /**
+     * @brief Gets the caterings campus
+     * @return the campus itself
+     */
     Campus* getCampus() const;
 private:
     float emission;

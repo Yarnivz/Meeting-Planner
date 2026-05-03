@@ -32,6 +32,9 @@ public:
      */
     Building(const std::string& name, const std::string& id, Campus* campus);
 
+    /**
+     * @brief prevents the Building object from being copied
+     */
     Building(const Building& b) = delete;
 
     /**
