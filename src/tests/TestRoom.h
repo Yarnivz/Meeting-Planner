@@ -69,4 +69,41 @@ TEST_F(TestRoom, CopyConstructor)
     delete campus;
 }
 
+TEST_F(TestRoom, Renovations)
+{
+    Campus* campus = new Campus ("Middelheim", "M");
+    Building* building = new Building("Gebouw G", "G", campus);
+
+    Room r1("A Room", "room21", 10, building);
+    Room r2("Another Room", "room22", 15, building);
+    Room r3("Yet another Room", "room23", 20, building);
+
+    r1.addRenovation(Date(2026,05,31), Date(2026,06,06));
+    r2.addRenovation(Date(2026,04,20), Date(2026,05,01));
+    r3.addRenovation(Date(2026,06,06), Date(2026,06,26));
+
+    //Check if renovations can be found with their start date
+    EXPECT_TRUE(r1.getRenovation(Date(2026,05,31)));
+    EXPECT_TRUE(r2.getRenovation(Date(2026,04,20)));
+    EXPECT_TRUE(r3.getRenovation(Date(2026,06,06)));
+
+    //Check if renovations can be found with their end date
+    EXPECT_TRUE(r1.getRenovation(Date(2026,06,06)));
+    EXPECT_TRUE(r2.getRenovation(Date(2026,05,01)));
+    EXPECT_TRUE(r3.getRenovation(Date(2026,06,26)));
+
+    //Check if renovations can be found with a date in between
+    EXPECT_TRUE(r1.getRenovation(Date(2026,06,01)));
+    EXPECT_TRUE(r2.getRenovation(Date(2026,04,24)));
+    EXPECT_TRUE(r3.getRenovation(Date(2026,06,18)));
+
+    //Check if renovations cannot be found by giving wrong dates
+    EXPECT_FALSE(r1.getRenovation(Date(2026,07,04)));
+    EXPECT_FALSE(r2.getRenovation(Date(2026,06,20)));
+    EXPECT_FALSE(r3.getRenovation(Date(2026,05,01)));
+
+    delete building;
+    delete campus;
+}
+
 #endif //MEETING_PLANNER_ROOMTEST_H
