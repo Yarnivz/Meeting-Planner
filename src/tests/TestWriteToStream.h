@@ -64,8 +64,8 @@ TEST_F(TestWriteToStream, HappyDay1)
     ASSERT_EQ(u1, p.getUser("John Doe"));
     ASSERT_EQ(u2, p.getUser("Peter Selie"));
 
-    m3->addParticipant(u1);
-    m1->addParticipant(u2);
+    p.addUserToMeeting("John Doe", "m3");
+    p.addUserToMeeting("Peter Selie", "m1");
 
     p.writeToStream();
 
@@ -140,6 +140,7 @@ TEST_F(TestWriteToStream, HappyDay2)
 TEST_F(TestWriteToStream, Empty)
 {
     const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.Empty-expected.txt";
     std::ofstream f = std::ofstream(actual);
     StreamOutput o = StreamOutput(&f);
 
@@ -148,8 +149,9 @@ TEST_F(TestWriteToStream, Empty)
 
     p.writeToStream();
 
+    EXPECT_TRUE(file_exists(expected));
     EXPECT_TRUE(file_exists(actual));
-    EXPECT_TRUE(file_is_empty(actual));
+    EXPECT_TRUE(file_compare(actual, expected));
 }
 
 TEST_F(TestWriteToStream, Processed)
