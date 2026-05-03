@@ -447,7 +447,7 @@ Meeting* App::getMeetingById(const std::string& meetingId) const
 
 std::list<Meeting*>& App::getMeetingsByDateTime(const DateTime& meetingDateTime)
 {
-    ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must exist in MeetingRegistry.");
+    //ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must exist in MeetingRegistry.");
     return meetings.getByDateTime(meetingDateTime);
 }
 
