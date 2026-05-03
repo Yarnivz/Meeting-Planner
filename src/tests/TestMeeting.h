@@ -45,6 +45,31 @@ TEST_F(TestMeeting, HappyDay)
     delete r;
 }
 
+TEST_F(TestMeeting, Externals)
+{
+    Campus* c = new Campus("campus", "c");
+    Building* b = new Building("building", "b", c);
+    Room* r = new Room("room", "r", 100, b);
+    Meeting* m_allowed = new Meeting("Externals Allowed", "allowed", r, DateTime(2026,1,2,3), false, true, false);
+    Meeting* m_notallowed = new Meeting("Externals Not Allowed", "not-allowed", r, DateTime(2026,1,2,3), false, true, false);
+
+    User* external = new User("External", true);
+    User* internal = new User("Internal", false);
+
+    EXPECT_NO_FATAL_FAILURE(m_allowed->addParticipant(internal));
+    EXPECT_NO_FATAL_FAILURE(m_allowed->addParticipant(external));
+    EXPECT_NO_FATAL_FAILURE(m_notallowed->addParticipant(internal));
+    EXPECT_DEATH(m_notallowed->addParticipant(external), "");
+
+    delete c;
+    delete b;
+    delete r;
+    delete m_allowed;
+    delete m_notallowed;
+    delete external;
+    delete internal;
+}
+
 TEST_F(TestMeeting, Emmissions)
 {
     { // External + Internal
