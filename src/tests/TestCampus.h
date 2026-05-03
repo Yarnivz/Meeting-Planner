@@ -32,7 +32,7 @@ TEST_F(TestCampus, CopyConstructor)
 }
 TEST_F(TestCampus, ContractViolation)
 {
-    EXPECT_DEATH(Campus(nullptr, "M"), "");
-    EXPECT_DEATH(Campus("Middelheim", nullptr), "");
+    EXPECT_DEATH(Campus("", "M"), "");
+    EXPECT_DEATH(Campus("Middelheim", ""), "");
 }
 #endif //MEETING_PLANNER_TESTCAMPUS_H
