@@ -502,9 +502,9 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         }
         case PropType::ENDDATE:
         {
-            Date startDate;
-            if (!parse_date(prop, startDate, parseError)) return false;
-            parseObject.start_date = startDate;
+            Date endDate;
+            if (!parse_date(prop, endDate, parseError)) return false;
+            parseObject.end_date = endDate;
             break;
         }
         default:
