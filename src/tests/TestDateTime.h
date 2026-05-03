@@ -9,8 +9,6 @@
 
 class TestDateTime : public ::testing::Test
 {
-protected:
-    DateTime date_;
 };
 
 TEST_F(TestDateTime, HappyDay)

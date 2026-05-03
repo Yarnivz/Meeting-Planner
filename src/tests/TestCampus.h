@@ -17,6 +17,8 @@ TEST_F(TestCampus, HappyDay)
     EXPECT_TRUE(campus->isProperlyInitialized());
     EXPECT_EQ("Middelheim", campus->toString());
     EXPECT_EQ("M", campus->getId());
+
+    delete campus;
 }
 TEST_F(TestCampus, CopyConstructor)
 {
@@ -29,6 +31,8 @@ TEST_F(TestCampus, CopyConstructor)
     EXPECT_EQ("Middelheim", campus2->toString());
     EXPECT_EQ("M", campus1->getId());
     EXPECT_EQ("M", campus2->getId());
+
+    delete campus1;
 }
 TEST_F(TestCampus, ContractViolation)
 {
