@@ -92,12 +92,10 @@ struct ParseObject
 {
     std::string identifier, name, label, campus_id, building_id, room_id, user_id, meeting_id;
     int capacity;
-    int year = -1;
-    int month = -1;
-    int day = -1;
     int hour = -1;
     float co2_count;
     bool externals, external, online, catering_needed;
+    Date date = Date();
     Date start_date, end_date;
 };
 

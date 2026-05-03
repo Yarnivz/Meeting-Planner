@@ -206,7 +206,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                     .label = parseObject.label,
                     .id = parseObject.identifier,
                     .room_id = parseObject.room_id,
-                    .date_time = DateTime(parseObject.year, parseObject.month, parseObject.day, parseObject.hour),
+                    .date_time = DateTime(parseObject.date, parseObject.hour),
                     .externals_allowed = parseObject.externals,
                     .catering_needed = parseObject.catering_needed,
                     .online = parseObject.online
@@ -395,50 +395,15 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         }
         case PropType::DATE:
         {
-            //Try to convert to DateTime check
-            int day = 0;
-            int month = 0;
-            int year = 0;
-
-            try
-            {
-                day = std::stoi(prop.substr(8, 2));
-                month = std::stoi(prop.substr(5, 2));
-                year = std::stoi(prop.substr(0, 4));
-            }
-            catch (std::exception& except)
-            {
-                parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
-                return false;
-            }
-            std::chrono::year_month_day chrono_date = {
-                std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
-            };
-            //Check if date exists
-            if (!chrono_date.ok() || year <= 0)
-            {
-                parseError = "Date " + prop + " does not exist.";
-                return false;
-            }
-
-            parseObject.year = year;
-            parseObject.month = month;
-            parseObject.day = day;
+            Date date = Date();
+            if (!parse_date(prop, date, parseError)) return false;
+            parseObject.date = date;
             break;
         }
         case PropType::HOUR:
         {
             int hour;
-            //Try to convert to int
-            try
-            {
-                hour = std::stoi(prop);
-            }
-            catch (std::exception& except)
-            {
-                parseError = std::string("Hour value could not be converted to an integer: \n\t- ") + except.what();
-                return false;
-            }
+            if (!parse_int(prop, hour, parseError)) return false;
             //Check if int >= 0 and int < 24
             if (hour < 0 || hour > 23)
             {

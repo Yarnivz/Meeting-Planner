@@ -33,7 +33,8 @@ public:
     /**
      * @brief prevents the campus object from being copied
      */
-    Campus(const Campus& c) = delete;
+    Campus(const Campus&) = delete;
+    Campus& operator=(const Campus&) = delete;
 
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.

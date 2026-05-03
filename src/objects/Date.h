@@ -29,6 +29,7 @@ public:
      * @param d The Date to be copied.
      */
     Date(const Date& d);
+    Date& operator=(const Date& d);
 
     /**
      * @brief Creates the date class.
@@ -165,9 +166,9 @@ public:
     ~Date();
 
 protected:
-    int year{};
-    unsigned month{};
-    unsigned day{};
+    int year;
+    unsigned month;
+    unsigned day;
     void* init_test_this_ptr;
 };
 

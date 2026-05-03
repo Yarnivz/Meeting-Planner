@@ -26,6 +26,7 @@ public:
      */
     User(const std::string& name, bool external = false);
 
+
     /**
      * @brief Copies a User object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
@@ -33,6 +34,8 @@ public:
      * @param o The user to be copied
      */
     User(const User& o);
+    User& operator=(const User& o);
+
     ~User() = default;
 
     /**

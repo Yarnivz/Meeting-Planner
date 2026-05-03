@@ -12,10 +12,12 @@ class Catering {
 public:
     Catering(Campus* campus, float co2);
 
+
     /**
      * @briefprevents the Catering object from being copied
      */
     Catering(const Catering&) = delete;
+    Catering& operator=(const Catering&) = delete;
 
     /**
      * @brief Checks whether this Catering was properly initialized by the constructor.

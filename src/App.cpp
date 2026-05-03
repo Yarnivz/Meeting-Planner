@@ -107,7 +107,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         }
 
         // This will automatically add the catering to the correct campus
-        new Catering(campus, c.co2_count);
+        caterings.push_back(new Catering(campus, c.co2_count));
     }
 
     for (const MeetingElement& m : parser->parsedMeetings())

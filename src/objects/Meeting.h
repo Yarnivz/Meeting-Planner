@@ -40,6 +40,7 @@ public:
      * @brief prevents the Meeting object from being copied
      */
     Meeting(const Meeting&) = delete;
+    Meeting& operator=(const Meeting&) = delete;
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.

@@ -25,6 +25,7 @@ public:
      * @brief prevents the MeetingRegistry object from being copied
      */
     MeetingRegistry(const MeetingRegistry&) = delete;
+    MeetingRegistry& operator=(const MeetingRegistry&) = delete;
 
     /**
      * @brief Adds the meeting to the MeetingRegistry meeting map

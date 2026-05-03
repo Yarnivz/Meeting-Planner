@@ -108,3 +108,35 @@ TEST_F(TestDateTime, EdgeCases)
     EXPECT_EQ(8u, aug.getMonth());
     EXPECT_EQ(31u, aug.getDay());
 }
+
+TEST_F(TestDateTime, Compare)
+{
+    std::vector<DateTime> dates = {
+        DateTime(1, 1, 1, 1),
+        DateTime(2, 1, 1, 1),
+        DateTime(2, 2, 1, 1),
+        DateTime(2, 2, 2, 1),
+        DateTime(2, 2, 2, 2),
+    };
+
+    for (const DateTime& d : dates)
+    {
+        ASSERT_TRUE(d.isProperlyInitialized());
+    }
+
+    for (size_t i = 0; i < dates.size(); ++i)
+    {
+        EXPECT_EQ(dates[i], dates[i]);
+        EXPECT_LE(dates[i], dates[i]);
+        EXPECT_GE(dates[i], dates[i]);
+
+        for (size_t j = i+1; j < dates.size(); ++j)
+        {
+            EXPECT_LT(dates[i], dates[j]);
+            EXPECT_LE(dates[i], dates[j]);
+            EXPECT_GT(dates[j], dates[i]);
+            EXPECT_GE(dates[j], dates[i]);
+        }
+
+    }
+}
