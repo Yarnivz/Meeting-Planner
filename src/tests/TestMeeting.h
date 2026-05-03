@@ -16,28 +16,35 @@ protected:
 
 TEST_F(TestMeeting, HappyDay)
 {
-    Campus* campus1 = new Campus ("Middelheim", "M");
-    Building* building1 = new Building("Bib", "G", campus1);
+    Campus* c = new Campus ("Middelheim", "M");
+    ASSERT_TRUE(c->isProperlyInitialized());
+    Building* b = new Building("Bib", "G", c);
+    ASSERT_TRUE(b->isProperlyInitialized());
+    Room* r = new Room("label", "some_room", 123, b);
+    ASSERT_TRUE(r->isProperlyInitialized());
 
-    Room r = Room("label", "some_room", 123, building1);
-    Meeting meeting = Meeting("My Meeting", "meeting0", &r, DateTime(2025, 2, 2, 0));
+    DateTime dt = DateTime(2025, 2, 2, 0);
+    ASSERT_TRUE(dt.isProperlyInitialized());
 
-    EXPECT_TRUE(meeting.isProperlyInitialized());
+    Meeting meeting = Meeting("My Meeting", "meeting0", r, dt);
+
+    ASSERT_TRUE(meeting.isProperlyInitialized());
     EXPECT_EQ("My Meeting", meeting.toString());
     EXPECT_EQ("meeting0", meeting.getId());
-    EXPECT_EQ(&r, meeting.getRoom());
+    EXPECT_EQ(r, meeting.getRoom());
 
-    DateTime d = meeting.getDateTime();
 
-    EXPECT_TRUE(d.isProperlyInitialized());
+    const DateTime& fetched_dt = meeting.getDateTime();
+    EXPECT_TRUE(fetched_dt.isProperlyInitialized());
+    EXPECT_EQ(dt, fetched_dt);
 
-    EXPECT_EQ(2025, d.getYear());
-    EXPECT_EQ(2u, d.getMonth());
-    EXPECT_EQ(2u, d.getDay());
+    delete c;
+    delete b;
+    delete r;
 }
 
 TEST_F(TestMeeting, ContractViolation)
 {
-    EXPECT_DEATH(Meeting("hello", "", nullptr, DateTime()), "");
-    EXPECT_DEATH(Meeting("world", "some_id", nullptr, DateTime()), "");
+    EXPECT_DEATH(Meeting("hello", "", nullptr, DateTime(1,1,1,1)), "");
+    EXPECT_DEATH(Meeting("world", "some_id", nullptr, DateTime(1,1,1,1)), "");
 }
