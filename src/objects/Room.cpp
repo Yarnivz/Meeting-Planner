@@ -63,11 +63,13 @@ bool Room::isProperlyInitialized() const
 
 Building* Room::getBuilding() const
 {
+    ENSURE(building != nullptr, "Building cannot be null.");
     return building;
 }
 
 Campus* Room::getCampus() const
 {
+    ENSURE(campus != nullptr, "Campus cannot be null.");
     return campus;
 }
 

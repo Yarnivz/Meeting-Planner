@@ -33,6 +33,7 @@ std::list<Meeting*>& MeetingRegistry::getByDateTime(const DateTime& date)
 
 Meeting* MeetingRegistry::getById(const std::string& id) const
 {
+    REQUIRE(!id.empty(), "Meeting id cannot be empty.");
     const std::unordered_map<std::string, Meeting*>::const_iterator it = by_id.find(id);
 
     if (it == by_id.end()) return nullptr;

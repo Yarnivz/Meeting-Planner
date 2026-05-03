@@ -140,6 +140,8 @@ void Meeting::addParticipant(User* user)
 
     this->_addParticipant(user);
     user->_addMeeting(this);
+    ENSURE(participants.contains(user->getId()), "User must be added to meeting participants");
+    ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added");
 }
 
 User* Meeting::getParticipant(const std::string& userId) const
