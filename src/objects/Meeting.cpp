@@ -218,8 +218,16 @@ void Meeting::getEmissionDetails(
 
     const std::list<Catering*>& caterings = room->getCampus()->getCaterings();
 
-    num_catering_participants = (cateringNeeded() && !caterings.empty()) ? getParticipantCount() : 0;
-    catering_emissions = (float)num_catering_participants * caterings.front()->getEmissions();
+    if (cateringNeeded() && !caterings.empty())
+    {
+        num_catering_participants = getParticipantCount();
+        catering_emissions = (float)num_catering_participants * caterings.front()->getEmissions();
+    } else
+    {
+        num_catering_participants = 0;
+        catering_emissions = 0.0f;
+    }
+
 }
 
 float Meeting::getEmissions() const
