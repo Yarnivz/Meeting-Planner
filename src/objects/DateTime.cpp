@@ -14,7 +14,8 @@ DateTime::DateTime()
     const std::chrono::time_point now = std::chrono::system_clock::now();
     const std::chrono::time_point<std::chrono::system_clock, std::chrono::days> tpoint = std::chrono::floor<std::chrono::days>(now);
     const std::chrono::year_month_day ymd = tpoint;
-    const std::chrono::hh_mm_ss<std::chrono::nanoseconds> time = std::chrono::hh_mm_ss(now - tpoint);
+    const std::chrono::hh_mm_ss<std::chrono::nanoseconds> time = std::
+    chrono::hh_mm_ss(now - tpoint);
 
     year = int(ymd.year());
     month = unsigned(ymd.month());
@@ -64,9 +65,9 @@ DateTime::DateTime(int year, int month, int day, int hour)
     REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!");
 
     //Cast to unsigned
-    unsigned umonth = month;
-    unsigned uday = day;
-    unsigned uhour = hour;
+    unsigned int umonth = month;
+    unsigned int uday = day;
+    unsigned int uhour = hour;
 
     this->year = year;
     this->month = umonth;
@@ -77,45 +78,34 @@ DateTime::DateTime(int year, int month, int day, int hour)
 
     ENSURE(getYear() == year, "Year must be set correctly in order to create DateTime.");
     ENSURE(getMonth() == umonth, "Month must be set correctly in order to create DateTime.");
+    std::cout << "Day of this object: " << getDay() << std::endl;
+    std::cout << "Given day: " << uday << std::endl;
     ENSURE(getDay() == uday, "Day must be set correctly in order to create DateTime.");
     ENSURE(getHour() == uhour, "Hour must be set correctly in order to create DateTime.");
     ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.");
 }
 
-// DateTime::DateTime(std::chrono::year_month_day year_month_day)
-// {
-//     REQUIRE(year_month_day.ok(), "Invalid DateTime provided. Please check if this DateTime really exists!");
-//
-//     this->year = year_month_day.year();
-//     this->month = year_month_day.month();
-//     this->day = year_month_day.day();
-//
-//     init_test_this_ptr = this;
-//     ENSURE(year_month_day.ok(), "DateTime creation failed. DateTime validity check did not pass.");
-// }
-
-bool DateTime::isProperlyInitialized() const
+DateTime::DateTime(const Date& date, int hour)
 {
-    return init_test_this_ptr == this;
-}
+    REQUIRE(date.isProperlyInitialized(), "The given date must be properly initialized");
+    REQUIRE(hour >= 0, "Hour can't be negative! %i", hour);
+    REQUIRE(hour < 24, "Hour must be less than 24! %i", hour);
+
+    this->year = date.getYear();
+    this->month = date.getMonth();
+    this->day = date.getDay();
+
+    unsigned uhour = hour;
+    this->hour = uhour;
 
 
-int DateTime::getYear() const
-{
-    ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to get Year.");
-    return year;
-}
+    init_test_this_ptr = this;
 
-unsigned DateTime::getMonth() const
-{
-    ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to get Month.");
-    return month;
-}
-
-unsigned DateTime::getDay() const
-{
-    ENSURE(isProperlyInitialized(), "Failed to get Day. DateTime must be properly initialized with the constructor!");
-    return day;
+    ENSURE(getYear() == date.getYear(), "Year must be set correctly in order to create DateTime.");
+    ENSURE(getMonth() == date.getMonth(), "Month must be set correctly in order to create DateTime.");
+    ENSURE(getDay() == date.getDay(), "Day must be set correctly in order to create DateTime.");
+    ENSURE(getHour() == uhour, "Hour must be set correctly in order to create DateTime.");
+    ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.");
 }
 
 unsigned DateTime::getHour() const
@@ -124,12 +114,6 @@ unsigned DateTime::getHour() const
     return hour;
 }
 
-
-std::string DateTime::getWeekDay() const
-{
-    std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
-    return std::format("{:%A}", std::chrono::weekday(date));
-}
 
 std::string DateTime::toString() const
 {
