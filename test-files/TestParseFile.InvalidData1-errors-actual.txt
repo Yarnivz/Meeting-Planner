@@ -1,5 +1,6 @@
 Failed to parse ROOM element: 
-	Capacity could not be converted to an integer (value is negative)
+	Value '-1' cannot be used as CAPACITY:
+	- cannot be negative
 Failed to parse MEETING element: 
 	Property IDENTIFIER needs to contain text.
 MEETING must have a HOUR property
