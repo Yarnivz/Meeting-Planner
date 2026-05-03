@@ -18,7 +18,6 @@ public:
      * This is the place where a meeting can take place.
      * A room can only be initialized using the name, id and capacity parameters as these are required.
      *
-     *
      * @pre name must not be empty
      * @pre id must not be empty
      * @pre capacity must be greater than 0
@@ -30,7 +29,9 @@ public:
      * @param capacity the amount of people that fit in this room
      * @param building the building in which this room can be found
      *
-     * @post     // IDEE: ENSURE(isProperlyInitialized)
+     * @post Room creation failed. Object was not properly initialized.
+     * @post Room creation failed. Capacity was not set correctly.
+     * @post Room creation failed. Id was not set correctly.
      */
     Room(const std::string& name, const std::string& id, unsigned capacity, Building* building = nullptr);
 
@@ -41,8 +42,26 @@ public:
      * @pre Tried to copy a room which was not properly initialized by the constructor.
      *
      * @param r Room to be copied
+     *
+     * @post Room creation failed. Object was not properly initialized.
+     * @post Room creation failed. Capacity was not set correctly.
+     * @post Room creation failed. Id was not set correctly.
+     * @post Room creation failed. Campus was not set correctly.
+     * @post Room creation failed. Building was not set correctly.
      */
     Room(const Room& r);
+
+    /**
+     *
+     *@pre Tried to copy a room which was not properly initialized by the constructor.
+     *
+     *
+     *@post Room creation failed. Object was not properly initialized.
+     *@post Room creation failed. Capacity was not set correctly.
+     *@post Room creation failed. Id was not set correctly.
+     *@post Room creation failed. Campus was not set correctly.
+     *@post Room creation failed. Building was not set correctly.
+     */
     Room& operator=(const Room& r);
 
     /**
@@ -53,12 +72,16 @@ public:
 
     /**
     * @brief Gets the rooms building
+     *
+     * @post Building cannot be null.
     * @return the building itself
     */
     Building* getBuilding() const;
 
     /**
     * @brief Gets the rooms campus
+     *
+     * @post Campus cannot be null.
     * @return the campus itself
     */
     Campus* getCampus() const;
@@ -67,7 +90,6 @@ public:
      * @brief Id getter.
      *
      *
-     * @pre id must not be empty
      *
      * @return the identifier of the room
      */
@@ -77,7 +99,6 @@ public:
      * @brief Converts the room class to a readable string format.
      *
      *
-     * @pre name must not be empty
      *
      * @return the room in string format
      */
@@ -86,7 +107,6 @@ public:
     /**
      * @brief Capacity getter.
      *
-     * @pre Capacity must be greater than 0
      *
      * @return the maximum capacity of this room
      */

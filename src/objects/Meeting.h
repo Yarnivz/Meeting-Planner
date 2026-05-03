@@ -26,6 +26,11 @@ public:
      * @brief Creates the Meeting class.
      * The process of users gathering in a specific room for a specific purpose for a certain amount of time on a set date.
      * A meeting can only be initialized using the label, id, room id and date parameters as these are required.
+     *
+     * @pre Failed to construct meeting. 'id' can not be empty.
+     * @pre Failed to construct meeting. 'room' can not be empty.
+     * @pre Failed to construct meeting. 'date' has to be properly initialized with the constructor.
+     *
      * @param label title of the meeting
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
@@ -33,6 +38,10 @@ public:
      * @param online status of the meeting
      * @param externals_allowed status of the meeting
      * @param catering_needed status of the meeting
+     *
+     * @post Meeting creation failed. Object was not properly initialized.
+     * @post Meeting creation failed. Order was not correctly set.
+     * @post Meeting creation failed, state was not correctly set.
      */
     Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
 
@@ -86,6 +95,8 @@ public:
      *
      * @pre Failed to convert to string. Meeting has to be properly initialized with the constructor.
      *
+     *
+     * @post label cannot be empty
      * @return the meeting in string format
      */
     const std::string& toString() const;
@@ -103,27 +114,32 @@ public:
      * When processing multiple meetings, the meeting with the *lowest* order is prioritized.
      * An order of zero means you allow the App class to decide the order of this meeting when registering it.
      *
+     *
+     * @pre cannot set order to a negative value %d
+     *
      * @param orderAdded of the meeting
+     *
+     * @post OrderAdded does not match GetOrder return value
      */
     void setOrder(const int orderAdded);
 
     /**
      * @brief processes the meeting
      *
-     * @pre Something went wrong. Meeting was not processed.
+     * @pre Meeting was already processed or canceled.
      *
-     * @post Meeting was already processed or canceled.
+     * @post Meeting must be processed.
      */
     void process();
 
     /**
      * @brief cancels the meeting and updates the reason for it
      *
-     * @pre Something went wrong. Meeting was not cancelled.
+     * @pre Meeting was already processed or canceled
      *
      * @param the reason for the meetings cancellation
      *
-     * @post Meeting was already processed or canceled
+     * @post Meeting must be cancelled.
      */
     void cancel(const std::string& reason);
 
@@ -198,14 +214,20 @@ public:
      *
      * @pre User can not be null
      *
+     *
+     * @post User must be added to meeting participants
+     * @post MeetingRegistery must contain current meeting to wich the user was added
      */
     ~Meeting();
     /**
     * @brief adds the users to the meetings Meetingregistery
     *
-    * @pre User can not be null
+     * @pre User can not be null
     *
     * @param user the user to add
+     *
+     * @post User must be added to meeting participants
+     * @post MeetingRegistery must contain current meeting to wich the user was added
     */
     void addParticipant(User* user);
 
@@ -214,7 +236,6 @@ public:
      *
      * @pre UserId cannot be empty
      *
-     * @post Something went wrong, The user which was found did not have the correct id.
      *
      * @return the total co2 emission amount
      */
@@ -222,7 +243,12 @@ public:
 
     /**
      * @brief gets the user in the meeting that corresponds to the id
+     *
+     * @pre UserId cannot be empty
+     *
      * @param userId the Id of the user
+     *
+     * @post User must have a correct id.
      * @return the user itself
      */
     User* getParticipant(const std::string& userId) const;
@@ -252,7 +278,10 @@ private:
      *
      * @pre User can not be null
      * @pre User needs to be properly initialized.
-     * @pre Something went wrong. User was not added.
+     * @pre User '%s' can't already participate in meeting
+     * @pre User id '%s' must be unique
+     * @pre Can't add external user %s to meeting %s which doesn't allow external users.
+     * @pre User must be added.
      *
      */
     void _addParticipant(User* user);
