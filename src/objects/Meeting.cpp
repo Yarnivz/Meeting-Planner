@@ -60,6 +60,7 @@ const DateTime& Meeting::getDateTime() const
 const std::string& Meeting::toString() const
 {
     REQUIRE(isProperlyInitialized(), "Failed to convert to string. Meeting has to be properly initialized with the constructor.");
+    ENSURE(!label.empty(), "label cannot be empty");
     return label;
 }
 
@@ -79,17 +80,17 @@ void Meeting::setOrder(const int orderAdded)
 
 void Meeting::process()
 {
-    ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled.");
+    REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled.");
     state = PROCESSED;
-    REQUIRE(isProcessed(), "Meeting must be processed.");
+    ENSURE(isProcessed(), "Meeting must be processed.");
 }
 
 void Meeting::cancel(const std::string& reason)
 {
-    ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled");
+    REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled");
     state = CANCELLED;
     cancellation_reason = reason;
-    REQUIRE(isCancelled(), "Meeting must be cancelled.");
+    ENSURE(isCancelled(), "Meeting must be cancelled.");
 }
 
 bool Meeting::isUnProcessed() const { return state == UNPROCESSED; }
@@ -140,6 +141,8 @@ void Meeting::addParticipant(User* user)
 
     this->_addParticipant(user);
     user->_addMeeting(this);
+    ENSURE(participants.contains(user->getId()), "User must be added to meeting participants");
+    ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added");
 }
 
 User* Meeting::getParticipant(const std::string& userId) const

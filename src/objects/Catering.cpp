@@ -33,6 +33,7 @@ bool Catering::isProperlyInitialized() const
 
 float Catering::getEmissions() const
 {
+    REQUIRE(emission > 0, "emissions cant be negative");
     return emission;
 }
 

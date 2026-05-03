@@ -28,15 +28,16 @@ public:
     bool isProperlyInitialized() const;
 
     /**
+     * @brief User Id getter.
      *
-     *@pre name/Id cannot be empty
+     * @pre name/Id cannot be empty
      *
      */
     const std::string& getId() const;
     bool isExternal() const;
 
     void addMeeting(Meeting* m);
-    Meeting* getMeetingById(const std::string& meetingId);
+    Meeting* getMeetingById(const std::string& meetingId) const;
     std::list<Meeting*>& getMeetingByDateTime(const DateTime& meetingDateTime);
 
 private:

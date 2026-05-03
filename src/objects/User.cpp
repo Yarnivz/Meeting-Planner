@@ -46,17 +46,23 @@ bool User::isExternal() const
 
 void User::addMeeting(Meeting* meeting)
 {
+    REQUIRE(meeting != nullptr, "Meeting cannot be null.");
     this->_addMeeting(meeting);
     meeting->_addParticipant(this);
+    ENSURE(meetings.getRawIdMap().contains(meeting->getId()), "Meeting  must be in MeetingRegistery");
+    ENSURE(meeting->getParticipants().contains(this->getId()), "User must be in meeting participants");
 }
 
-Meeting* User::getMeetingById(const std::string& meetingId)
+Meeting* User::getMeetingById(const std::string& meetingId) const
 {
+    REQUIRE(!meetingId.empty(), "Meeting id cannot be empty.");
+    ENSURE(meetings.getRawIdMap().contains(meetingId), "MeetingId must be in MeetingRegistery");
     return meetings.getById(meetingId);
 }
 
 std::list<Meeting*>& User::getMeetingByDateTime(const DateTime& meetingDateTime)
 {
+    ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must be in MeetingRegistry");
     return meetings.getByDateTime(meetingDateTime);
 }
 
@@ -69,5 +75,5 @@ void User::_addMeeting(Meeting* meeting)
 
     meetings.add(meeting);
 
-    REQUIRE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
+    ENSURE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
 }
