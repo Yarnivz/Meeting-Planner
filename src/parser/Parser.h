@@ -130,6 +130,10 @@ public:
 
     void clearCaterings();
 
+    const std::list<RenovationElement>& parsedRenovations() const;
+
+    void clearRenovations();
+
     virtual ~Parser() = default;
 
 protected:

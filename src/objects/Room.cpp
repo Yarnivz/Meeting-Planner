@@ -5,7 +5,7 @@
 #include "./Room.h"
 
 #include <stdexcept>
-
+#include <map>
 #include "helper/DesignByContract.h"
 
 Room::Room(const std::string& name, const std::string& id, unsigned capacity, Building* building) :
@@ -90,6 +90,16 @@ unsigned Room::getCapacity() const
 {
     ENSURE(capacity > 0, "Capacity must be greater than 0");
     return capacity;
+}
+
+void Room::addRenovation(const Date& start, const Date& end)
+{
+    REQUIRE(start.isProperlyInitialized(), "Start date must be properly initialized.");
+    REQUIRE(end.isProperlyInitialized(), "End date must be properly initialized.");
+
+    renovations.insert({start, end});
+
+    ENSURE(renovations.contains(start), "Renovation must have been added to the Room.");
 }
 
 
