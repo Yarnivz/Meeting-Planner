@@ -83,15 +83,11 @@ DateTime::DateTime(int year, int month, int day, int hour)
     ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.");
 }
 
-DateTime::DateTime(const Date& date, int hour)
+DateTime::DateTime(const Date& date, int hour) : Date(date)
 {
     REQUIRE(date.isProperlyInitialized(), "The given date must be properly initialized");
     REQUIRE(hour >= 0, "Hour can't be negative! %i", hour);
     REQUIRE(hour < 24, "Hour must be less than 24! %i", hour);
-
-    this->year = date.getYear();
-    this->month = date.getMonth();
-    this->day = date.getDay();
 
     unsigned uhour = hour;
     this->hour = uhour;
