@@ -53,7 +53,7 @@ void User::addMeeting(Meeting* meeting)
     ENSURE(meeting->getParticipants().contains(this->getId()), "User must be in meeting participants");
 }
 
-Meeting* User::getMeetingById(const std::string& meetingId)
+Meeting* User::getMeetingById(const std::string& meetingId) const
 {
     REQUIRE(!meetingId.empty(), "Meeting id cannot be empty.");
     ENSURE(meetings.getRawIdMap().contains(meetingId), "MeetingId must be in MeetingRegistery");
