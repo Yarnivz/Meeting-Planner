@@ -28,8 +28,9 @@ public:
     bool isProperlyInitialized() const;
 
     /**
+     * @brief User Id getter.
      *
-     *@pre name/Id cannot be empty
+     * @pre name/Id cannot be empty
      *
      */
     const std::string& getId() const;
