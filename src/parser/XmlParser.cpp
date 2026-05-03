@@ -40,7 +40,7 @@ static inline bool parse_float(const std::string& input, float& output, std::str
     }
     catch (std::exception& except)
     {
-        parseError = std::string("CO2 could not be converted to a float\n\t- ") + except.what();
+        parseError = std::string("Value '" + input + "' could not be converted to a float\n\t- ") + except.what();
         return false;
     }
     output = floating;
