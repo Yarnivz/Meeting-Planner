@@ -28,16 +28,38 @@ public:
     bool isProperlyInitialized() const;
 
     /**
-     * @brief User Id getter.
+     * @brief Id getter.
      *
      * @pre name/Id cannot be empty
      *
+     * @return the Id of the user.
      */
     const std::string& getId() const;
+
+    /**
+     * @brief checks wether user is external
+     * @return bool indicating the result
+    */
     bool isExternal() const;
 
+    /**
+     * @brief adds the meeting to the users Meetingregistery
+     * @param m meeting to add
+     */
     void addMeeting(Meeting* m);
+
+    /**
+     * @brief Gets the meeting that corresponds to the id
+     * @param meetingId The meetings id
+     * @return the meeting itself
+     */
     Meeting* getMeetingById(const std::string& meetingId) const;
+
+    /**
+     * @brief Gets a list of meetings that correspond to the DateTime
+     * @param The meetings DateTime
+     * @return a list the meetings
+     */
     std::list<Meeting*>& getMeetingByDateTime(const DateTime& meetingDateTime);
 
 private:

@@ -44,16 +44,23 @@ public:
      */
     Room(const Room& r);
 
-
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
 
+    /**
+    * @brief Gets the rooms building
+    * @return the building itself
+    */
     Building* getBuilding() const;
-    Campus* getCampus() const;
 
+    /**
+    * @brief Gets the rooms campus
+    * @return the campus itself
+    */
+    Campus* getCampus() const;
 
     /**
      * @brief Id getter.
