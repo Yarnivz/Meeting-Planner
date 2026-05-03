@@ -145,6 +145,7 @@ TEST_F(TestWriteToStream, Empty)
     EXPECT_TRUE(p.isProperlyInitialized());
 
     p.writeToStream();
+    f.close();
 
     EXPECT_TRUE(file_exists(expected));
     EXPECT_TRUE(file_exists(actual));
