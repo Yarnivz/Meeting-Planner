@@ -53,3 +53,11 @@
 [ John Doe ]
 [ Peter Selie ]
 
+--==## CO2 Summary ##==--
+
+[ Important Meeting 2 (m2) ]
+  - Internals (4): 480g, 120g/person
+    = Total: 480g, 120g/person
+[ Important Meeting 1 (m1) ]
+  - Internals (3): 360g, 120g/person
+    = Total: 360g, 120g/person
