@@ -18,7 +18,10 @@ class User
 
 public:
     User(const std::string& name, bool external = false);
+
     User(const User& o);
+    User& operator=(const User& o);
+
     ~User() = default;
 
     /**

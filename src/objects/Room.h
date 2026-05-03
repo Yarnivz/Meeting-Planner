@@ -43,6 +43,7 @@ public:
      * @param r Room to be copied
      */
     Room(const Room& r);
+    Room& operator=(const Room& r);
 
 
     /**

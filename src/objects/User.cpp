@@ -16,16 +16,36 @@ User::User(const std::string& name, bool external)
     ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.");
 }
 
-User::User(const User& o) : name(o.name), external(o.external)
+User::User(const User& o)
 {
     REQUIRE(o.isProperlyInitialized(), "Attempted to copy a User which was not properly initialized.");
 
+    name = o.name;
+    external = o.external;
     // Copy constructor with proper init_check_this_ptr reset
     init_check_this_ptr = this;
 
     ENSURE(isProperlyInitialized(), "User copy failed. Object was not properly initialized.");
     ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.");
     ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.");
+}
+
+User& User::operator=(const User& o)
+{
+    if (this == &o) return *this;
+
+    REQUIRE(o.isProperlyInitialized(), "Attempted to copy a User which was not properly initialized.");
+
+    name = o.name;
+    external = o.external;
+    // Copy constructor with proper init_check_this_ptr reset
+    init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "User copy failed. Object was not properly initialized.");
+    ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.");
+    ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.");
+
+    return *this;
 }
 
 bool User::isProperlyInitialized() const

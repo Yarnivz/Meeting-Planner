@@ -25,6 +25,7 @@ public:
      *
      */
     DateTime(const DateTime& d);
+    DateTime& operator=(const DateTime& d);
 
     /**
      * @brief Creates the DateTime class.
@@ -118,7 +119,7 @@ public:
     ~DateTime();
 
 private:
-    unsigned hour{};
+    unsigned hour;
 };
 
 

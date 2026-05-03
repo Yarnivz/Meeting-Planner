@@ -53,7 +53,33 @@ Room::Room(const Room& r)
     ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.");
     ENSURE(getCapacity() == r.capacity, "Room creation failed. Capacity was not set correctly.");
     ENSURE(getId() == r.id, "Room creation failed. Id was not set correctly.");
+    ENSURE(getCampus() == r.campus, "Room creation failed. Campus was not set correctly.");
+    ENSURE(getBuilding() == r.building, "Room creation failed. Building was not set correctly.");
     //ENSURE(getBuilding() == building, "Room creation failed. Building was not set correctly")
+}
+
+Room& Room::operator=(const Room& r)
+{
+    if (this == &r) return *this;
+
+    REQUIRE(r.isProperlyInitialized(), "Tried to copy a room which was not properly initialized by the constructor.");
+
+    name = r.name;
+    id = r.id;
+    capacity = r.capacity;
+    occupancy = r.occupancy;
+    campus = r.campus;
+    building = r.building;
+
+    init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.");
+    ENSURE(getCapacity() == r.capacity, "Room creation failed. Capacity was not set correctly.");
+    ENSURE(getId() == r.id, "Room creation failed. Id was not set correctly.");
+    ENSURE(getCampus() == r.campus, "Room creation failed. Campus was not set correctly.");
+    ENSURE(getBuilding() == r.building, "Room creation failed. Building was not set correctly.");
+
+    return *this;
 }
 
 bool Room::isProperlyInitialized() const

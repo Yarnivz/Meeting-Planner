@@ -30,7 +30,8 @@ public:
      */
     Campus(const std::string& name, const std::string& id);
 
-    Campus(const Campus& c) = delete;
+    Campus(const Campus&) = delete;
+    Campus& operator=(const Campus&) = delete;
 
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.
