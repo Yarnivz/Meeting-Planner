@@ -98,19 +98,28 @@ public:
 
     /**
      * @brief Year getter.
+     *
      * @post Failed to get Year. Date must be properly initialized with the constructor!
+     *
+     * @return the date's year
      */
     int getYear() const;
 
     /**
      * @brief Month getter.
+     *
      * @post Failed to get Month. Date must be properly initialized with the constructor!
+     *
+     * @return the date's month
      */
     unsigned int getMonth() const;
 
     /**
      * @brief Day getter.
+     *
      * @post Failed to get Day. Date must be properly initialized with the constructor!
+     *
+     * @return the date's day
      */
     unsigned int getDay() const;
 
@@ -122,8 +131,11 @@ public:
 
     /**
      * @brief Converts the date class to a readable string format.
-     * @post Failed to convert date to string. Date must be properly initialized with the constructor!
      * The date's string format is "YYYY-MM-DD"
+     *
+     * @post Failed to convert date to string. Date must be properly initialized with the constructor!
+     *
+     * @return the date represented as a string.
      */
     std::string toString() const;
 

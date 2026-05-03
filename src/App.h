@@ -53,7 +53,6 @@ public:
      *
      * Prints all registered meetings and rooms to the app's output.
      *
-     * @pre App needs to have an output attached.
      *
      */
     void writeToStream();
@@ -64,9 +63,6 @@ public:
      * Registers a new 'Campus' object.
      * The App class expects ownership of the Campus pointer passed in
      *
-     * @pre The provided campus cannot be null.
-     * @pre Campus needs to be properly initialized by the constructor.
-     * @pre Campus id has to be unique.
      *
      * @param campus to register
      *
@@ -77,7 +73,6 @@ public:
     /**
      * @brief Retrieve a registered Campus based on its id.
      *
-     * @pre The provided campus id cannot be empty.
      *
      * @param campusId Identifier of the campus to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
@@ -85,7 +80,7 @@ public:
      * @post The found campus must have the right id.
      */
     Campus* getCampus(const std::string& campusId) const;
-    
+
     /**
      * @brief Checks whether the Apps campus map contains the corresponding campus
      * @param campus The campus to be found
@@ -99,9 +94,6 @@ public:
      * Registers a new 'Building' object.
      * The App class expects ownership of the Building pointer passed in
      *
-     * @pre The provided building cannot be null.
-     * @pre Building needs to be properly initialized by the constructor.
-     * @pre Room id has to be unique.
      *
      * @param building to register
      *
@@ -112,7 +104,6 @@ public:
     /**
      * @brief Retrieve a registered Building based on its id.
      *
-     * @pre The provided building id cannot be empty.
      *
      * @param buildingId Identifier of the building to retrieve
      * @return a pointer to the room with given id if it exists, nullptr otherwise
@@ -120,7 +111,7 @@ public:
      * @post The found building must have the right id.
      */
     Building* getBuilding(const std::string& buildingId) const;
-    
+
     /**
      * @brief Checks whether the Apps buildings map contains the corresponding building
      * @param building The building to be found
@@ -134,9 +125,6 @@ public:
      * The App class expects ownership of the Room pointer passed in.
      *
      *
-     * @pre The provided room cannot be null.
-     * @pre Room needs to be properly initialized by the constructor.
-     * @pre Room id has to be unique.
      *
      * @param room to register
      *
@@ -148,9 +136,6 @@ public:
      * @brief Retrieve a registered room based on its id.
      *
      * @param roomId Identifier of the room to retrieve
-     * @return a pointer to the room with given id if it exists, nullptr otherwise
-     *
-     * @post Something went wrong. The room which was found did not have the right id.
      */
     Room* getRoom(const std::string& roomId) const;
 
@@ -182,7 +167,6 @@ public:
      *   -The meeting was registered as 'done' by the meeting processor
      *
      *
-     * @pre This room does not exist.
      *
      * @param roomId Identifier of the room to check
      * @param date_time Date to check
@@ -198,7 +182,6 @@ public:
      *    -That meeting was registered as 'done"
      *
      *
-     * @pre This meeting doesn't exist.
      *
      * @param meetingId Identifier of the meeting to check
      * @return pointer to the conflicting meeting; nullptr if no conflict exists
@@ -238,20 +221,13 @@ public:
     /**
      * @brief add the user to the apps map of users
      *
-     * @pre User can not be null
-     * @pre User needs to be properly initialized.
-     *
-     * @param user The user to be added
-     *
-     * @pre Something went wrong. User was not added.
      *
      */
     void addUser(User* user);
     /**
      * @brief Gets the user that corresponds to the id from the Apps map
      * @param userId the users id
-     * 
-     * @post Something went wrong, The user which was found did not have the correct id.
+     *
      *
      * @return the user itself
      */
@@ -262,8 +238,6 @@ public:
 
     /**
      * @brief Adds the user that corresponds to the user id to the meeting that corresponds to the meeting id
-     * @pre This meeting doesn't exist: '%s'
-     * @pre This user doesn't exist: '%s'
      *
      * @param userId The id of the user
      * @param meetingId The id of the meeting
@@ -285,8 +259,6 @@ public:
      *
      *
      *
-     * @pre This user does not exist.
-     * @pre Something went wrong. The user which was found was not correct.
      *
      * @param userId Identifier of the user to check
      * @param date_time Date to check
