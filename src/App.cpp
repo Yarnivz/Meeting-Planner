@@ -197,15 +197,17 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
             continue;
         }
 
+        //TODO: Check if renovations are overlapping
+
         //Add renovation to the room
         room->addRenovation(r.start_date, r.end_date);
-
 
     }
 
     parser->clearRooms();
     parser->clearMeetings();
     parser->clearParticipations();
+    parser->clearRenovations();
 }
 
 void App::writeToStream()
