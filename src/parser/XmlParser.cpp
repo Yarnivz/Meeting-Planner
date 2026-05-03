@@ -12,20 +12,25 @@
 #include "helper/DesignByContract.h"
 #include "objects/Room.h"
 
-static inline bool parse_boolean(std::string s)
+static inline bool parse_boolean(const std::string& input, bool& output, std::string& parseError)
 {
+    std::string s = input;
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
     if (s == "true" || s == "1")
     {
+        output = true;
         return true;
     }
 
     if (s == "false" || s == "0")
     {
-        return false;
+        output = false;
+        return true;
     }
 
-    throw std::exception();
+    parseError = "'" + input + "'" + " could not be converted to a boolean";
+    return false;
 }
 
 static inline bool parse_date (const std::string& input, Date& output, std::string& parseError)
@@ -43,7 +48,7 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     }
     catch (std::exception& except)
     {
-        parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
+        parseError = std::string("Date value '" + input + "' could not be converted to a date format: \n\t- ") + except.what();
         return false;
     }
     std::chrono::year_month_day chrono_date = {
@@ -52,7 +57,7 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     //Check if date exists
     if (!chrono_date.ok() || year <= 0)
     {
-        parseError = "Date " + input + " does not exist.";
+        parseError = "Date: '" + input + "' does not exist.";
         return false;
     }
 
@@ -358,15 +363,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::ONLINE:
         {
             bool online;
-            try
-            {
-                online = parse_boolean(prop);
-            }
-            catch (std::exception& except)
-            {
-                parseError = std::string("ONLINE: ") + prop + std::string(" could not be converted to a bool");
-                return false;
-            }
+            if (!parse_boolean(prop, online, parseError)) return false;
             parseObject.online = online;
             break;
         }
@@ -429,16 +426,8 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::EXTERNALS:
         {
             bool externals;
-            try
-            {
-                externals = parse_boolean(prop);
-            }
-            catch (std::exception& except)
-            {
-                parseError = prop + std::string(" could not be converted to a bool");
-                return false;
-            }
-            parseObject.externals = externals;
+            if (!parse_boolean(prop, externals, parseError)) return false;
+            parseObject.online = externals;
             break;
         }
         case PropType::USER:
@@ -449,15 +438,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::EXTERNAL:
         {
             bool external;
-            try
-            {
-                external = parse_boolean(prop);
-            }
-            catch (std::exception& except)
-            {
-                parseError = prop + std::string(" could not be converted to a bool");
-                return false;
-            }
+            if (!parse_boolean(prop, external, parseError)) return false;
             parseObject.external = external;
             break;
         }
@@ -491,15 +472,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::CATERINGNEEDED:
         {
             bool catering;
-            try
-            {
-                catering = parse_boolean(prop);
-            }
-            catch (std::exception& except)
-            {
-                parseError = prop + std::string(" could not be converted to a bool");
-                return false;
-            }
+            if (!parse_boolean(prop, catering, parseError)) return false;
             parseObject.catering_needed = catering;
             break;
         }
