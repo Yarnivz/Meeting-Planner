@@ -100,6 +100,8 @@ void StreamOutput::printCampuses(const Campuses& campuses)
     *stream << std::endl;
 }
 
+
+
 void StreamOutput::printMeeting(const Meeting* meeting)
 {
     *stream
@@ -245,4 +247,64 @@ void StreamOutput::printRooms(const Rooms& rooms)
     *stream << std::endl;
 }
 
+
+void StreamOutput::printMeetingCO2(const Meeting* meeting)
+{
+    unsigned num_externals; float externals_emissions;
+    unsigned num_internals; float internals_emissions;
+    unsigned num_online; float online_emissions;
+    unsigned num_catering_participants; float catering_emission;
+    meeting->getEmissionDetails(num_externals, externals_emissions, num_internals, internals_emissions, num_online, online_emissions, num_catering_participants, catering_emission);
+
+    *stream << "[ " << meeting->toString() << " (" << meeting->getId() << ") ]\n";
+    if (num_externals > 0)
+    {
+        *stream
+        << "  - Externals (" << num_externals << "): "
+        << externals_emissions << "g, "
+        << externals_emissions/num_externals << "g/person\n";
+    }
+    if (num_internals > 0)
+    {
+        *stream
+        << "  - Internals (" << num_internals << "): "
+        << internals_emissions << "g, "
+        << internals_emissions/num_internals << "g/person\n";
+    }
+    if (num_online > 0)
+    {
+        *stream
+        << "  - Online (" << num_online << "): "
+        << online_emissions << "g, "
+        << online_emissions/num_online << "g/person\n";
+    }
+    if (num_catering_participants > 0)
+    {
+        *stream
+            << "  - Catering (" << num_catering_participants << "): "
+            << catering_emission << "g, "
+            << catering_emission/num_catering_participants << "g/person\n";
+    }
+
+    float total_emissions = externals_emissions + internals_emissions + catering_emission;
+    unsigned total_participants = num_externals + num_internals + num_catering_participants;
+    *stream << "    = Total: " << total_emissions << "g";
+    if (total_participants > 0)
+    {
+        *stream << ", " << total_emissions/total_participants << "g/person";
+    }
+    *stream << "\n";
+
+    *stream << std::flush;
+}
+
+void StreamOutput::printMeetingsCO2(const MeetingRegistry& registry)
+{
+    *stream << "--==## CO2 Summary ##==--\n\n";
+    for (const std::pair<const std::string, Meeting*>& item : registry.getRawIdMap())
+    {
+        const Meeting* m = item.second;
+        printMeetingCO2(m);
+    }
+}
 

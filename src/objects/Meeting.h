@@ -231,11 +231,15 @@ public:
     */
     void addParticipant(User* user);
 
+    void getEmissionDetails(
+        unsigned& num_externals, float& externals_emissions,
+        unsigned& num_internals, float& internals_emissions,
+        unsigned& num_online, float& online_emissions,
+        unsigned& num_catering_participants, float& catering_emissions
+        ) const;
+
     /**
      * @brief calculates the amount of co2 the meeting uses
-     *
-     * @pre UserId cannot be empty
-     *
      *
      * @return the total co2 emission amount
      */

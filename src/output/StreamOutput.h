@@ -24,6 +24,9 @@ public:
     void printCampus(const Campus* campus) override;
     void printCampuses(const Campuses& campuses) override;
 
+    void printMeetingCO2(const Meeting* meeting) override;
+    void printMeetingsCO2(const MeetingRegistry& registry) override;
+
 private:
     std::ostream* stream;
 };

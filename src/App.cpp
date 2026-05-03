@@ -217,6 +217,7 @@ void App::writeToStream()
     output->printBuildings(buildings);
     output->printCampuses(campuses);
     output->printUsers(users);
+    output->printMeetingsCO2(meetings);
 }
 
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)

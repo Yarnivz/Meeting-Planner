@@ -185,6 +185,43 @@ void Meeting::_addParticipant(User* user)
     REQUIRE(getParticipant(user->getId()) == user, "User must be added.");
 }
 
+
+void Meeting::getEmissionDetails(
+    unsigned& num_externals, float& externals_emissions,
+    unsigned& num_internals, float& internals_emissions,
+    unsigned& num_online, float& online_emissions,
+    unsigned& num_catering_participants, float& catering_emissions) const
+{
+    REQUIRE(room != nullptr, "Room cannot be null");
+    REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
+    REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.");
+
+    num_externals = num_internals = num_online = num_catering_participants = 0;
+    externals_emissions = internals_emissions = online_emissions = catering_emissions = 0.0f;
+
+
+    if (online)
+    {
+        num_online = getParticipantCount();
+        online_emissions = (float)num_online * 30.0f;
+        return;
+    }
+
+    for (const std::pair<std::string, User*> user : participants)
+    {
+        ++(user.second->isExternal() ? num_externals : num_internals);
+    }
+
+    externals_emissions = (float)num_externals * 1200.0f;
+    internals_emissions = (float)num_internals * 120.0f;
+
+
+    const std::list<Catering*>& caterings = room->getCampus()->getCaterings();
+
+    num_catering_participants = (cateringNeeded() && !caterings.empty()) ? getParticipantCount() : 0;
+    catering_emissions = (float)num_catering_participants * caterings.front()->getEmissions();
+}
+
 float Meeting::getEmissions() const
 {
     REQUIRE(room != nullptr, "Room cannot be null");
