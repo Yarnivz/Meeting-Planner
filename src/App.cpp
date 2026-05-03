@@ -14,7 +14,7 @@ App::App(Parser* parser, Output* output) : parser(parser), output(output), emiss
 {
     init_check_this_ptr = this;
 
-    ENSURE(isProperlyInitialized(), "object must be propermy initialized in order to create App.");
+    ENSURE(isProperlyInitialized(), "object must be property initialized in order to create App.");
 }
 
 bool App::isProperlyInitialized() const
