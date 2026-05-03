@@ -19,6 +19,9 @@ TEST_F(TestBuilding, HappyDay)
     EXPECT_EQ("Bib", building->toString());
     EXPECT_EQ("G", building->getId());
     EXPECT_EQ(campus, building->getCampus());
+
+    delete campus;
+    delete building;
 }
 TEST_F(TestBuilding, CopyConstructor)
 {
@@ -35,6 +38,9 @@ TEST_F(TestBuilding, CopyConstructor)
     EXPECT_EQ("G", building2->getId());
     EXPECT_EQ(campus, building1->getCampus());
     EXPECT_EQ(campus, building2->getCampus());
+
+    delete campus;
+    delete building1;
 }
 TEST_F(TestBuilding, ContractViolation)
 {
@@ -43,5 +49,7 @@ TEST_F(TestBuilding, ContractViolation)
     EXPECT_DEATH(Building("", "G", campus), "");
     EXPECT_DEATH(Building("Bib", "", campus), "");
     EXPECT_DEATH(Building("Bib", "G", nullptr), "");
+
+    delete campus;
 }
 #endif //MEETING_PLANNER_TESTBUILDING_H
