@@ -128,6 +128,18 @@ void Room::addRenovation(const Date& start, const Date& end)
     ENSURE(renovations.contains(start), "Renovation must have been added to the Room.");
 }
 
+const Renovation* Room::getRenovation(const Date& date) const
+{
+    for (const Renovation& r : renovations)
+    {
+        if (date >= r.first && date <= r.second)
+        {
+            return &r;
+        }
+    }
+    return nullptr;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const Room& room)
 {

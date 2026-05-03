@@ -95,6 +95,8 @@ public:
 
     void addRenovation(const Date& start, const Date& end);
 
+    const Renovation* getRenovation(const Date& date) const;
+
     /**
      * @brief Standard stream operator using the toString function to append the room to the stream.
      *
