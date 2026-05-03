@@ -1,26 +1,59 @@
+--==## No past meetings ##==--
 
-Future meetings:
-- Room 2, Friday 02/01/2026, 13h00
-  Meeting 4
-  
-  Meeting ID: m4
-- Room 2, Friday 02/01/2026, 13h00
-  Meeting 3
-  John Doe
-  Meeting ID: m3
-- Room 1, Wednesday 04/03/2026, 14h00
-  Meeting 2
-  
-  Meeting ID: m2
-- Room 1, Friday 02/01/2026, 13h00
-  Meeting 1
-  Peter Selie
-  Meeting ID: m1
+--==## Future meetings ##==--
 
-Rooms:
-- Empty Room
-  Capacity: 1 people
-- Room 2
-  Capacity: 20 people
-- Room 1
-  Capacity: 20 people
+[ Meeting 4 (m4) ]
+  - Time: 02/01/2026, 13h00
+  - Location: Room 2
+  - CO2 emitted: 0g
+  - No participants
+[ Meeting 3 (m3) ]
+  - Time: 02/01/2026, 13h00
+  - Location: Room 2
+  - CO2 emitted: 120g
+  - Participants: 
+      * John Doe
+[ Meeting 2 (m2) ]
+  - Time: 04/03/2026, 14h00
+  - Location: Room 1
+  - CO2 emitted: 0g
+  - No participants
+[ Meeting 1 (m1) ]
+  - Time: 02/01/2026, 13h00
+  - Location: Room 1
+  - CO2 emitted: 120g
+  - Participants: 
+      * Peter Selie
+
+--==## No cancelled meetings ##==--
+
+--==## Rooms ##==--
+
+[ Empty Room (empty) ]
+  - Capacity: 1 person
+  - Building: Bib (G)
+  - Campus: Middelheim (M)
+[ Room 2 (r2) ]
+  - Capacity: 20 people
+  - Building: Bib (G)
+  - Campus: Middelheim (M)
+[ Room 1 (r1) ]
+  - Capacity: 20 people
+  - Building: Bib (G)
+  - Campus: Middelheim (M)
+
+--==## Buildings ##==--
+
+[ Bib (G) ]
+  - Campus: Middelheim (M)
+
+--==## Campuses ##==--
+
+[ Middelheim (M) ]
+  - No catering
+
+--==## Users ##==--
+
+[ John Doe ]
+[ Peter Selie ]
+

@@ -40,8 +40,8 @@ TEST_F(TestBuilding, ContractViolation)
 {
     Campus* campus = new Campus ("Middelheim", "M");
 
-    EXPECT_DEATH(Building(nullptr, "G", campus), "");
-    EXPECT_DEATH(Building("Bib", nullptr, campus), "");
+    EXPECT_DEATH(Building("", "G", campus), "");
+    EXPECT_DEATH(Building("Bib", "", campus), "");
     EXPECT_DEATH(Building("Bib", "G", nullptr), "");
 }
 #endif //MEETING_PLANNER_TESTBUILDING_H
