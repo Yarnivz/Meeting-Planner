@@ -50,7 +50,7 @@ void User::addMeeting(Meeting* meeting)
     meeting->_addParticipant(this);
 }
 
-Meeting* User::getMeetingById(const std::string& meetingId)
+Meeting* User::getMeetingById(const std::string& meetingId) const
 {
     return meetings.getById(meetingId);
 }

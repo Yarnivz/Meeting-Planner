@@ -36,7 +36,7 @@ public:
     bool isExternal() const;
 
     void addMeeting(Meeting* m);
-    Meeting* getMeetingById(const std::string& meetingId);
+    Meeting* getMeetingById(const std::string& meetingId) const;
     std::list<Meeting*>& getMeetingByDateTime(const DateTime& meetingDateTime);
 
 private:
