@@ -16,106 +16,170 @@ class TestParseFile : public ::testing::Test
 {
 };
 
-// TEST_F(TestParseFile, HappyDay1)
-// {
-//     const std::string error = "./test-files/TestParseFile.HappyDay1-errors.txt";
-//     std::ofstream errLog(error);
-//     std::string meeting_id = "Meeting_478463";
-//
-//
-//     XmlParser* xml_parser = new XmlParser();
-//     App app = App(xml_parser, nullptr);
-//     EXPECT_TRUE(app.isProperlyInitialized());
-//
-//     app.parseFile("./test-files/HappyDay1.xml", errLog);
-//
-//     //Test room #1
-//     Room* room = app.getRoom("M.G.025");
-//     ASSERT_NE(nullptr, room);
-//     EXPECT_EQ("M.G.025", room->toString());
-//     EXPECT_EQ(55u, room->getCapacity());
-//
-//     //Test room #2
-//     room = app.getRoom("Room98732");
-//     ASSERT_NE(nullptr, room);
-//     EXPECT_EQ("M.G.023", room->toString());
-//     EXPECT_EQ(10u, room->getCapacity());
-//
-//     //Test meeting
-//     Meeting* meeting = app.getMeetingById(meeting_id);
-//     ASSERT_NE(nullptr, meeting);
-//     EXPECT_EQ("Weekly meeting", meeting->toString());
-//     EXPECT_EQ("Room98732", meeting->getRoom()->getId());
-//     EXPECT_EQ(DateTime(2026, 5, 22, 13), meeting->getDateTime());
-//
-//     //Test participation
-//     const User* peter = app.getUser("Peter Selie");
-//     ASSERT_NE(nullptr, peter);
-//     EXPECT_EQ("Peter Selie", peter->getId());
-//
-//     EXPECT_TRUE(file_is_empty(error));
-// }
-//
-//
-// TEST_F(TestParseFile, HappyDay2)
-// {
-//     const std::string errors = "./test-files/TestParseFile.HappyDay2-errors.txt";
-//     std::ofstream errLog(errors);
-//     std::string meeting1 = "Meeting_478463";
-//     std::string meeting2 = "Meeting_465831";
-//
-//
-//     App app = App(new XmlParser(), &std::cout);
-//
-//     EXPECT_TRUE(app.isProperlyInitialized());
-//     app.parseFile("./test-files/HappyDay2.xml", errLog);
-//
-//     //Test room #1
-//     Room* room = app.getRoom("id_026");
-//     ASSERT_NE(nullptr, room);
-//     EXPECT_EQ(room->toString(), "M.G.026");
-//     EXPECT_EQ(room->getCapacity(), 30u);
-//
-//     //Test room #2
-//     room = app.getRoom("Room98732");
-//     ASSERT_NE(nullptr, room);
-//     EXPECT_EQ("M.G.023", room->toString());
-//     EXPECT_EQ(10u, room->getCapacity());
-//
-//     //Test room #3
-//     room = app.getRoom("Aula23");
-//     ASSERT_NE(nullptr, room);
-//     EXPECT_EQ("M.A.043", room->toString());
-//     EXPECT_EQ(46u, room->getCapacity());
-//
-//     //Test meeting #1
-//     Meeting* meeting = app.getMeetingById(meeting1);
-//     ASSERT_NE(nullptr, meeting);
-//     EXPECT_EQ("Weekly Meeting", meeting->toString());
-//     ASSERT_NE(nullptr, meeting->getRoom());
-//     EXPECT_EQ("Aula23", meeting->getRoom()->getId());
-//     EXPECT_EQ(DateTime(2026, 5, 22, 13), meeting->getDateTime());
-//
-//     //Test meeting #2
-//     meeting = app.getMeetingById(meeting2);
-//     ASSERT_NE(nullptr, meeting);
-//     EXPECT_EQ("Sales Report 2025", meeting->toString());
-//     EXPECT_EQ("Room98732", meeting->getRoom()->getId());
-//     EXPECT_EQ(DateTime(2026, 1, 3, 21), meeting->getDateTime());
-//
-//     //Test participations meeting #1
-//     ASSERT_NE(nullptr, app.getUser("Peter Selie"));
-//     ASSERT_NE(nullptr, app.getUser("John Cena"));
-//     ASSERT_NE(nullptr, app.getUser("Arnold Schwarzenegger"));
-//     ASSERT_NE(nullptr, app.getUser("Mick Turner"));
-//
-//     EXPECT_NE(nullptr, app.getMeetingById("Meeting_478463")->getParticipant("Peter Selie"));
-//     EXPECT_NE(nullptr, app.getMeetingById("Meeting_478463")->getParticipant("John Cena"));
-//     EXPECT_NE(nullptr, app.getMeetingById("Meeting_478463")->getParticipant("Arnold Schwarzenegger"));
-//     EXPECT_NE(nullptr, app.getMeetingById("Meeting_465831")->getParticipant("Mick Turner"));
-//
-//     EXPECT_TRUE(file_is_empty(errors));
-// }
+TEST_F(TestParseFile, HappyDay1)
+{
+    const std::string error = "./test-files/TestParseFile.HappyDay1-errors.txt";
+    std::ofstream errLog(error);
+
+    App app = App(new XmlParser(), nullptr);
+    ASSERT_TRUE(app.isProperlyInitialized());
+
+    app.parseFile("./test-files/HappyDay1.xml", errLog);
+
+    Campus* c = app.getCampus("M");
+    ASSERT_NE(nullptr, c);
+    EXPECT_TRUE(c->isProperlyInitialized());
+    EXPECT_EQ("Campus Middelheim", c->toString());
+    Building* b = app.getBuilding("M.G");
+    ASSERT_NE(nullptr, b);
+    EXPECT_TRUE(b->isProperlyInitialized());
+    EXPECT_EQ("Gebouw G", b->toString());
+    EXPECT_EQ(c, b->getCampus());
+
+    //Test room #1
+    Room* room = app.getRoom("M.G.025");
+    ASSERT_NE(nullptr, room);
+    EXPECT_TRUE(room->isProperlyInitialized());
+    EXPECT_EQ("M.G.025", room->toString());
+    EXPECT_EQ(55u, room->getCapacity());
+    EXPECT_EQ(b, room->getBuilding());
+    EXPECT_EQ(c, room->getCampus());
+
+    //Test room #2
+    room = app.getRoom("Room98732");
+    ASSERT_NE(nullptr, room);
+    EXPECT_TRUE(room->isProperlyInitialized());
+    EXPECT_EQ("M.G.023", room->toString());
+    EXPECT_EQ(10u, room->getCapacity());
+    EXPECT_EQ(b, room->getBuilding());
+    EXPECT_EQ(c, room->getCampus());
+
+    //Test meeting
+    const std::string meeting_id = "Meeting_478463";
+    const Meeting* meeting = app.getMeetingById(meeting_id);
+    ASSERT_NE(nullptr, meeting);
+    EXPECT_TRUE(meeting->isProperlyInitialized());
+    EXPECT_EQ("Weekly meeting", meeting->toString());
+    EXPECT_EQ(room, meeting->getRoom());
+    EXPECT_EQ(DateTime(2026, 5, 22, 13), meeting->getDateTime());
+    EXPECT_FALSE(meeting->cateringNeeded());
+    EXPECT_FALSE(meeting->externalsAllowed());
+    EXPECT_FALSE(meeting->isOnline());
+
+    //Test participation
+    const User* peter = app.getUser("Peter Selie");
+    ASSERT_NE(nullptr, peter);
+    EXPECT_FALSE(peter->isExternal());
+    EXPECT_EQ(meeting, peter->getMeetingById(meeting_id));
+    EXPECT_EQ(peter, meeting->getParticipant("Peter Selie"));
+
+    EXPECT_TRUE(file_is_empty(error));
+}
+
+
+TEST_F(TestParseFile, HappyDay2)
+{
+    const std::string errors = "./test-files/TestParseFile.HappyDay2-errors.txt";
+    std::ofstream errLog(errors);
+
+
+    App app = App(new XmlParser(), nullptr);
+
+    ASSERT_TRUE(app.isProperlyInitialized());
+    app.parseFile("./test-files/HappyDay2.xml", errLog);
+
+    Campus* c = app.getCampus("M");
+    ASSERT_NE(nullptr, c);
+    EXPECT_TRUE(c->isProperlyInitialized());
+    EXPECT_EQ("Campus Middelheim", c->toString());
+    Building* bG = app.getBuilding("M.G");
+    ASSERT_NE(nullptr, bG);
+    EXPECT_TRUE(bG->isProperlyInitialized());
+    EXPECT_EQ("Gebouw G", bG->toString());
+    EXPECT_EQ(c, bG->getCampus());
+    Building* bA = app.getBuilding("M.A");
+    ASSERT_NE(nullptr, bA);
+    EXPECT_TRUE(bA->isProperlyInitialized());
+    EXPECT_EQ("Gebouw A", bA->toString());
+    EXPECT_EQ(c, bA->getCampus());
+
+    //Test room #1
+    Room* room = app.getRoom("id_026");
+    ASSERT_NE(nullptr, room);
+    EXPECT_EQ(room->toString(), "M.G.026");
+    EXPECT_EQ(room->getCapacity(), 30u);
+    EXPECT_EQ(bG, room->getBuilding());
+    EXPECT_EQ(c, room->getCampus());
+
+    //Test room #2
+    Room* room2 = app.getRoom("Room98732");
+    ASSERT_NE(nullptr, room2);
+    EXPECT_EQ("M.G.023", room2->toString());
+    EXPECT_EQ(10u, room2->getCapacity());
+    EXPECT_EQ(bG, room2->getBuilding());
+    EXPECT_EQ(c, room2->getCampus());
+
+    //Test room #3
+    Room* room3 = app.getRoom("Aula23");
+    ASSERT_NE(nullptr, room3);
+    EXPECT_EQ("M.A.043", room3->toString());
+    EXPECT_EQ(46u, room3->getCapacity());
+    EXPECT_EQ(bA, room3->getBuilding());
+    EXPECT_EQ(c, room3->getCampus());
+
+    //Test meeting #1
+    const std::string meeting_id = "Meeting_478463";
+    Meeting* meeting = app.getMeetingById(meeting_id);
+    ASSERT_NE(nullptr, meeting);
+    EXPECT_EQ("Weekly Meeting", meeting->toString());
+    EXPECT_EQ(room3, meeting->getRoom());
+    EXPECT_EQ(DateTime(2026, 5, 22, 13), meeting->getDateTime());
+    EXPECT_FALSE(meeting->cateringNeeded());
+    EXPECT_TRUE(meeting->externalsAllowed());
+    EXPECT_FALSE(meeting->isOnline());
+
+    //Test meeting #2
+    const std::string meeting2_id = "Meeting_465831";
+    Meeting* meeting2 = app.getMeetingById(meeting2_id);
+    ASSERT_NE(nullptr, meeting2);
+    EXPECT_EQ("Sales Report 2025", meeting2->toString());
+    EXPECT_EQ("Room98732", meeting2->getRoom()->getId());
+    EXPECT_EQ(DateTime(2026, 1, 3, 21), meeting2->getDateTime());
+    EXPECT_FALSE(meeting2->cateringNeeded());
+    EXPECT_FALSE(meeting2->externalsAllowed());
+    EXPECT_FALSE(meeting2->isOnline());
+
+    //Test participations meeting #1
+    User* peter = app.getUser("Peter Selie");
+    User* john = app.getUser("John Cena");
+    User* arnold = app.getUser("Arnold Schwarzenegger");
+    User* mick = app.getUser("Mick Turner");
+    ASSERT_NE(nullptr, peter);
+    ASSERT_NE(nullptr, john);
+    ASSERT_NE(nullptr, arnold);
+    ASSERT_NE(nullptr, mick);
+    EXPECT_TRUE(peter->isProperlyInitialized());
+    EXPECT_TRUE(john->isProperlyInitialized());
+    EXPECT_TRUE(arnold->isProperlyInitialized());
+    EXPECT_TRUE(mick->isProperlyInitialized());
+
+    EXPECT_FALSE(peter->isExternal());
+    EXPECT_TRUE(john->isExternal());
+    EXPECT_TRUE(arnold->isExternal());
+    EXPECT_FALSE(mick->isExternal());
+
+    EXPECT_EQ(peter, meeting->getParticipant("Peter Selie"));
+    EXPECT_EQ(john, meeting->getParticipant("John Cena"));
+    EXPECT_EQ(arnold, meeting->getParticipant("Arnold Schwarzenegger"));
+    EXPECT_EQ(mick, meeting2->getParticipant("Mick Turner"));
+
+    EXPECT_EQ(meeting, peter->getMeetingById(meeting_id));
+    EXPECT_EQ(meeting, john->getMeetingById(meeting_id));
+    EXPECT_EQ(meeting, arnold->getMeetingById(meeting_id));
+    EXPECT_EQ(meeting2, mick->getMeetingById(meeting2_id));
+
+    EXPECT_TRUE(file_is_empty(errors));
+}
 
 TEST_F(TestParseFile, Catering)
 {
