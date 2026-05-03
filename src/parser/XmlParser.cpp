@@ -453,7 +453,7 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {
             bool externals;
             if (!parse_boolean(prop, externals, parseError)) return false;
-            parseObject.online = externals;
+            parseObject.externals = externals;
             break;
         }
         case PropType::USER:
