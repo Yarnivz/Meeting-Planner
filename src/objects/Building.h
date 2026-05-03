@@ -26,9 +26,10 @@ public:
      * @param id the unique identifier of this building that can be used to call this object from the app.
      * @param campus the campus that houses this building
      *
-     * @post Name was not added to this Building object
-     * @post Id was not added to this Building object
-     * @post Campus was not added to this Building object
+     * @post Name must be added to this Building object
+     * @post Id must be added to this Building object
+     * @post Campus must be added to this Building object
+     * @post Building must be properly initialized
      */
     Building(const std::string& name, const std::string& id, Campus* campus);
 

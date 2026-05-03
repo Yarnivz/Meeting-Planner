@@ -1,18 +1,3 @@
 Ishaak:
-- Tracken van CO2 afwerken
-- create tests for Campus & Building classes (2 new test files)
-- update test for Room (TestRoom.h) to include Campus & Building attributes
-
 Yarni:
 - renovations + simulate + testen schrijven
-- Testen aanpassen HappyDay & ConflicMeetings scenarios
-
-Lucas:
-- [DONE] update Parser Test to implement new classes
-- [DONE] Testen aanpassen InvalidData & InvalidXml scenarios
-- [DONE] Testen klassen (Catering, User, MeetingRegistry)
-
-
-Over:
-
-Elke nieuwe feature testen in apart scenario: zie PlanTmpl20.xls naar niet groen gemarkeerde specs

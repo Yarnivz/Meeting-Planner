@@ -31,6 +31,9 @@ public:
     virtual void printBuildings( const Buildings& buildings ) = 0;
     virtual void printCampus( const Campus* campus ) = 0;
     virtual void printCampuses( const Campuses& campuses ) = 0;
+
+    virtual void printMeetingCO2( const Meeting* meeting ) = 0;
+    virtual void printMeetingsCO2( const MeetingRegistry& registry ) = 0;
 };
 
 

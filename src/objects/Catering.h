@@ -10,6 +10,18 @@ class Campus;
 
 class Catering {
 public:
+
+    /**
+     *
+     *@pre The emission level can't be negative: %f
+     *@pre Campus can't be null
+     *
+     *
+     *@post Campus must be set correctly.
+     *@post Emissions must be set correctly.
+     *@post Catering must be properly initialized.
+     *@post Catering must be added to the campus
+     */
     Catering(Campus* campus, float co2);
 
 
@@ -27,6 +39,9 @@ public:
 
     /**
      * @brief gets the caterings co2 emission amount
+     *
+     * @pre emissions cant be negative
+     *
      * @return the emission amount itself
      */
     float getEmissions() const;

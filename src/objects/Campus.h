@@ -25,8 +25,9 @@ public:
      * @param name the name of this campus
      * @param id the unique identifier of this campus that can be used to call this object from the app.
      *
-     * @post Name was not added to this Campus object
-     * @post Id was not added to this Campus object
+     * @post Campus must be properly initialized.
+     * @post Name must be added to this Campus object
+     * @post Id must be added to this Campus object
      */
     Campus(const std::string& name, const std::string& id);
 
@@ -46,7 +47,6 @@ public:
     /**
      * @brief Id getter.
      *
-     * @pre Id cannot be empty
      *
      * @return the identifier of this campus
      */
@@ -56,7 +56,6 @@ public:
      * @brief Converts this campus object into a readable string format.
      * This is represented by its name.
      *
-     * @pre Name cannot be empty
      *
      * @return the campus in string format
      */
@@ -64,6 +63,8 @@ public:
 
     /**
      * @brief Standard stream operator using the toString function to append the campus to the stream.
+     *
+     *
      *
      * @pre Campus must be properly initialized
      *
@@ -78,10 +79,23 @@ public:
 
     /**
      * @brief Default destructor.
+     *
+     * @pre Catering cannot be null
+     * @pre Catering must be properly initialized
+     * @pre Caterings campus does not match this.
+     *
      */
     ~Campus();
 
 private:
+
+    /**
+     *
+     *@pre Catering cannot be null
+     *@pre Catering must be properly initialized
+     *@pre Caterings campus does not match this.
+     *
+     */
     void _addCatering(Catering* c);
 
     std::string name;

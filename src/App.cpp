@@ -14,7 +14,7 @@ App::App(Parser* parser, Output* output) : parser(parser), output(output), emiss
 {
     init_check_this_ptr = this;
 
-    ENSURE(isProperlyInitialized(), "object must be propermy initialized in order to create App.");
+    ENSURE(isProperlyInitialized(), "object must be property initialized in order to create App.");
 }
 
 bool App::isProperlyInitialized() const
@@ -219,6 +219,7 @@ void App::writeToStream()
     output->printBuildings(buildings);
     output->printCampuses(campuses);
     output->printUsers(users);
+    output->printMeetingsCO2(meetings);
 }
 
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)

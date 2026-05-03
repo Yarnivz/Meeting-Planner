@@ -15,16 +15,44 @@ public:
      * @brief Creates the DateTime class.
      * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called without parameters, the DateTime that gets created will be the current DateTime.
+     *
+     * @post DateTime creation failed. Hour needs to be >= 0 and < 24
+     * @post DateTime creation failed. Year was not set correctly.
+     * @post DateTime creation failed. Month was not set correctly.
+     * @post DateTime creation failed. Day was not set correctly.
+     * @post DateTime creation failed. Hour was not set correctly.
+     * @post DateTime creation failed. Constructor did not properly initialize.
      */
     DateTime();
 
     /**
      * @brief Copies a DateTime object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
+     *
+     * @pre Tried to copy a DateTime which was not properly initialized by the constructor.
+     *
      * @param d The DateTime to be copied.
      *
+     *
+     * @post DateTime creation failed. Year was not set correctly.
+     * @post DateTime creation failed. Month was not set correctly.
+     * @post DateTime creation failed. Day was not set correctly.
+     * @post DateTime creation failed. Hour was not set correctly.
+     * @post DateTime creation failed. Constructor did not properly initialize.
      */
     DateTime(const DateTime& d);
+
+    /**
+     *
+     *@pre Tried to copy a DateTime which was not properly initialized by the constructor.
+     *
+     *
+     *@post DateTime creation failed. Year was not set correctly.
+     *@post DateTime creation failed. Month was not set correctly.
+     *@post DateTime creation failed. Day was not set correctly.
+     *@post DateTime creation failed. Hour was not set correctly.
+     *@post DateTime creation failed. Constructor did not properly initialize.
+     */
     DateTime& operator=(const DateTime& d);
 
     /**
@@ -49,12 +77,16 @@ public:
 
     /**
      * @brief Hour getter
+     *
+     * @post DateTime must be properly initialized with constructor in order to get Hour.
      * @return the DateTime's hour
      */
     unsigned getHour() const;
 
     /**
      * @brief Converts the DateTime class to a readable string format.
+     *
+     * @post DateTime must be properly initialized with constructor in order to convert DateTime into string.
      * @return the DateTime represented as a string.
      * The DateTime's string format is "YYYY-MM-DD, Hh00"
      */
