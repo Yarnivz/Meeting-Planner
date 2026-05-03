@@ -23,7 +23,6 @@ public:
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      * @param d The DateTime to be copied.
      *
-     * @contracts
      */
     DateTime(const DateTime& d);
 
