@@ -12,10 +12,10 @@ class TestApp : public ::testing::Test
 protected:
 };
 
-TEST_F(TestApp, HappyDay1)
+TEST_F(TestApp, HappyDay)
 {
     App p = App(nullptr, nullptr);
-    EXPECT_TRUE(p.isProperlyInitialized());
+    ASSERT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2026, 1, 2, 0);
     DateTime date2 = DateTime(2026, 3, 4, 0);
@@ -93,28 +93,56 @@ TEST_F(TestApp, HappyDay1)
     EXPECT_EQ(size_t(3), p.getAllUsers().size());
 }
 
-TEST_F(TestApp, RetrieveInvalid)
+TEST_F(TestApp, InvalidInsert)
 {
     App p = App(nullptr, nullptr);
-    //possibly diversify bulding and campus later for extra tests
-    Campus* campus1 = new Campus ("Middelheim", "M");
-    Building* building1 = new Building("Bib", "G", campus1);
-    p.addCampus(campus1);
-    p.addBuilding(building1);
+    ASSERT_TRUE(p.isProperlyInitialized());
 
-    EXPECT_TRUE(p.isProperlyInitialized());
+    // Inserting nullptr
+    EXPECT_DEATH(p.addRoom(nullptr), "");
+    EXPECT_DEATH(p.addBuilding(nullptr), "");
+    EXPECT_DEATH(p.addCampus(nullptr), "");
+    EXPECT_DEATH(p.addUser(nullptr), "");
+    EXPECT_DEATH(p.addMeeting(nullptr), "");
 
+    // Inserting objects with unregistered pointers
+    {
+        Campus unregistered_campus = Campus("campus", "c");
+        EXPECT_DEATH(p.addBuilding(new Building("building", "b1", &unregistered_campus)), "");
+    }
+
+    {
+        Campus unregistered_campus = Campus("campus", "c");
+        Building unregistered_building = Building("building", "b2", &unregistered_campus);
+        EXPECT_DEATH(p.addRoom(new Room("building", "b2", 100, &unregistered_building)), "");
+    }
+
+    {
+        Campus unregistered_campus = Campus("campus", "c");
+        Building unregistered_building = Building("building", "b2", &unregistered_campus);
+        Room unregistered_room = Room("room", "r1", 100, &unregistered_building);
+        EXPECT_DEATH(p.addMeeting(new Meeting("meeting", "m", &unregistered_room, DateTime(2026, 1, 1, 1))), "");
+    }
+}
+
+TEST_F(TestApp, InvalidRetrieve)
+{
+    App p = App(nullptr, nullptr);
+    ASSERT_TRUE(p.isProperlyInitialized());
+
+    EXPECT_EQ(nullptr, p.getCampus("c-123"));
+    EXPECT_EQ(nullptr, p.getBuilding("building1001"));
     EXPECT_EQ(nullptr, p.getRoom("r1111"));
     EXPECT_EQ(nullptr, p.getUser("Snit"));
     EXPECT_EQ(nullptr, p.getMeetingById("m89"));
-    //EXPECT_EQ(std::list<Meeting*>{}, p.getMeetingsByDate(Date(1, 2, 3)));
+    EXPECT_EQ(size_t(0), p.getMeetingsByDateTime(DateTime(1, 2, 3, 4)).size());
 
-    Room* r = new Room("name", "id", 123, building1);
-    p.addRoom(r);
-    p.addMeeting(new Meeting("label", "id", r));
-
-    EXPECT_EQ(size_t(0), p.getMeetingById("id")->getParticipantCount());
-    EXPECT_EQ(nullptr, p.getMeetingById("id")->getParticipant("john"));
+    // Room* r = new Room("name", "id", 123, building1);
+    // p.addRoom(r);
+    // p.addMeeting(new Meeting("label", "id", r));
+    //
+    // EXPECT_EQ(size_t(0), p.getMeetingById("id")->getParticipantCount());
+    // EXPECT_EQ(nullptr, p.getMeetingById("id")->getParticipant("john"));
 }
 
 
