@@ -1,0 +1,108 @@
+<SYSTEM>
+    <CAMPUS>
+        <NAME>Campus Middelheim</NAME>
+        <IDENTIFIER>M</IDENTIFIER>
+    </CAMPUS>
+    <CAMPUS>
+        <NAME>Campus Drie Eiken</NAME>
+        <IDENTIFIER>D</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>Gebouw G</NAME>
+        <IDENTIFIER>M.G</IDENTIFIER>
+        <CAMPUS>M</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Gebouw A</NAME>
+        <IDENTIFIER>M.A</IDENTIFIER>
+        <CAMPUS>M</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Gebouw M</NAME>
+        <IDENTIFIER>D.M</IDENTIFIER>
+        <CAMPUS>D</CAMPUS>
+    </BUILDING>
+    <ROOM>
+        <NAME>M.G.025</NAME>
+        <IDENTIFIER>M.G.025</IDENTIFIER>
+        <CAPACITY>25</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.G</BUILDING>
+    </ROOM>
+    <ROOM>
+        <NAME>M.G.023</NAME>
+        <IDENTIFIER>Room98732</IDENTIFIER>
+        <CAPACITY>10</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.G</BUILDING>
+    </ROOM>
+    <ROOM>
+        <NAME>M.A.043</NAME>
+        <IDENTIFIER>ma-043</IDENTIFIER>
+        <CAPACITY>40</CAPACITY>
+        <CAMPUS>M</CAMPUS>
+        <BUILDING>M.A</BUILDING>
+    </ROOM>
+    <ROOM>
+        <NAME>D.M.004</NAME>
+        <IDENTIFIER>Room45605</IDENTIFIER>
+        <CAPACITY>15</CAPACITY>
+        <CAMPUS>D</CAMPUS>
+        <BUILDING>D.M</BUILDING>
+    </ROOM>
+    <MEETING>
+        <LABEL>Press Conference</LABEL>
+        <IDENTIFIER>Meeting_263514</IDENTIFIER>
+        <ROOM>ma-043</ROOM>
+        <DATE>2026-05-04</DATE>
+        <HOUR>11</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
+    </MEETING>
+    <MEETING>
+        <LABEL>Facebook meeting</LABEL>
+        <IDENTIFIER>Meeting_478463</IDENTIFIER>
+        <ROOM>Room45605</ROOM>
+        <DATE>2026-05-31</DATE>
+        <HOUR>13</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
+    </MEETING>
+    <PARTICIPATION>
+        <MEETING>Meeting_478463</MEETING>
+        <USER>Mark Zuckerberg</USER>
+        <EXTERNAL>False</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>Meeting_263514</MEETING>
+        <USER>John Doe</USER>
+        <EXTERNAL>False</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <MEETING>Meeting_263514</MEETING>
+        <USER>Jane Doe</USER>
+        <EXTERNAL>False</EXTERNAL>
+    </PARTICIPATION>
+    <RENOVATION>
+        <ROOM>M.G.025</ROOM>
+        <START>2026-03-23</START>
+        <END>2026-04-20</END>
+    </RENOVATION>
+    <RENOVATION>
+        <ROOM>Room98732</ROOM>
+        <START>2026-05-04</START>
+        <END>2026-07-13</END>
+    </RENOVATION>
+    <RENOVATION>
+        <ROOM>ma-043</ROOM>
+        <START>2026-05-26</START>
+        <END>2026-06-30</END>
+    </RENOVATION>
+    <RENOVATION>
+        <ROOM>Room45605</ROOM>
+        <START>2026-05-23</START>
+        <END>2026-08-02</END>
+    </RENOVATION>
+</SYSTEM>
