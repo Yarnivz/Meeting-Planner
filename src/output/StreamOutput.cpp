@@ -286,8 +286,8 @@ void StreamOutput::printMeetingCO2(const Meeting* meeting)
             << catering_emission/num_catering_participants << "g/person\n";
     }
 
-    float total_emissions = externals_emissions + internals_emissions + catering_emission;
-    unsigned total_participants = num_externals + num_internals + num_catering_participants;
+    float total_emissions = externals_emissions + internals_emissions + online_emissions + catering_emission;
+    unsigned total_participants = meeting->getParticipantCount();
     *stream << "    = Total: " << total_emissions << "g";
     if (total_participants > 0)
     {
