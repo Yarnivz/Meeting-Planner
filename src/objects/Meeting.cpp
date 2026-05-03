@@ -142,15 +142,20 @@ void Meeting::addParticipant(User* user)
     user->_addMeeting(this);
 }
 
-User* Meeting::getParticipant(const std::string& userId)
+User* Meeting::getParticipant(const std::string& userId) const
 {
     REQUIRE(!userId.empty(), "UserId cannot be empty");
-    const Users::iterator it = participants.find(userId);
+    const Users::const_iterator it = participants.find(userId);
 
     if (it == participants.end()) return nullptr;
 
     ENSURE(it->second->getId() == userId, "User must have a correct id.");
     return it->second;
+}
+
+bool Meeting::hasParticipant(const User* user) const
+{
+    return user && getParticipant(user->getId()) == user;
 }
 
 size_t Meeting::getParticipantCount() const
@@ -167,7 +172,10 @@ void Meeting::_addParticipant(User* user)
 {
     REQUIRE(user != nullptr, "User can not be null");
     REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+    REQUIRE(!hasParticipant(user), "User '%s' can't already participate in meeting", user->getId().c_str());
+    REQUIRE(getParticipant(user->getId()), "User id '%s' must be unique", user->getId().c_str());
     REQUIRE(!user->isExternal() || this->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", user->getId().c_str(), this->getId().c_str());
+
 
     participants.insert({user->getId(), user});
 
