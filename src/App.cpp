@@ -421,6 +421,9 @@ Meeting* App::findConflictingMeeting(const std::string& meetingId)
 void App::addMeeting(Meeting* meeting)
 {
     REQUIRE(meeting, "Meeting cannot be null.");
+    const Room* room = meeting->getRoom();
+    REQUIRE(room, "Meetings room cannot be null.");
+    REQUIRE(hasRoom(room), "Meetings room '%s' must be registered first.", room->getId().c_str());
     if (meeting->getOrder() == 0)
     {
         int order = meetings.getRawIdMap().size() + 1;
@@ -514,7 +517,15 @@ bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
 
 App::~App()
 {
+    for (const std::pair<const std::string, Campus*>& c : campuses ) delete c.second;
+    for (const std::pair<const std::string, Building*>& b : buildings ) delete b.second;
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
+
+    for (const std::pair<const std::string, User*>& u : users ) delete u.second;
+    for (const Catering* c : caterings) delete c;
+
     for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;
-    for (const std::pair<const std::string, User*>& u : users) delete u.second;
+
+    delete parser;
+    delete output;
 }

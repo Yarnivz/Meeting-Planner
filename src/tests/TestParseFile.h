@@ -124,8 +124,7 @@ TEST_F(TestParseFile, InvalidData1)
 
     std::ofstream errLog(actual);
 
-    XmlParser x = XmlParser(errLog);
-    App app = App(&x, nullptr);
+    App app = App(new XmlParser(errLog), nullptr);
 
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parseFile("./test-files/InvalidData1.xml", errLog);
@@ -172,8 +171,7 @@ TEST_F(TestParseFile, InvalidData2)
     const std::string user2 = "Freddy Gonzalez";
 
 
-    XmlParser x = XmlParser(errLog);
-    App app = App(&x, nullptr);
+    App app = App(new XmlParser(errLog), nullptr);
     EXPECT_TRUE(app.isProperlyInitialized());
     app.parseFile("./test-files/InvalidData2.xml", errLog);
 
@@ -237,8 +235,7 @@ TEST_F(TestParseFile, InvalidDataUsers)
     std::ofstream errLog(actual);
 
 
-    XmlParser x = XmlParser(errLog);
-    App app = App(&x, nullptr);
+    App app = App(new XmlParser(errLog), nullptr);
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parseFile("./test-files/InvalidDataUsers.xml", errLog);
 
@@ -268,8 +265,7 @@ TEST_F(TestParseFile, InvalidDataLayout)
 
     std::ofstream errLog(actual);
 
-    XmlParser x = XmlParser(errLog);
-    App app = App(&x, nullptr);
+    App app = App(new XmlParser(errLog), nullptr);
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parseFile("./test-files/InvalidDataLayout.xml", errLog);
 
