@@ -18,7 +18,8 @@ enum class ElementType
     ROOM,
     MEETING,
     PARTICIPATION,
-    CATERING
+    CATERING,
+    RENOVATION
 };
 
 enum class PropType
@@ -39,6 +40,8 @@ enum class PropType
     EXTERNAL,
     CO2,
     CATERINGNEEDED,
+    STARTDATE,
+    ENDDATE,
 };
 
 struct CampusElement
@@ -79,6 +82,12 @@ struct CateringElement
     float co2_count;
 };
 
+struct RenovationElement
+{
+    std::string room;
+    Date start_date, end_date;
+};
+
 struct ParseObject
 {
     std::string identifier, name, label, campus_id, building_id, room_id, user_id, meeting_id;
@@ -89,6 +98,7 @@ struct ParseObject
     int hour = -1;
     float co2_count;
     bool externals, external, online, catering_needed;
+    Date start_date, end_date;
 };
 
 class Parser
@@ -131,6 +141,7 @@ protected:
     std::list<MeetingElement> parsed_meetings;
     std::list<ParticipationElement> parsed_participations;
     std::list<CateringElement> parsed_caterings;
+    std::list<RenovationElement> parsed_renovations;
     ParseObject parseObject;
     std::ostream& errorStream;
 };

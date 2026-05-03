@@ -10,7 +10,6 @@
 class TestDate : public ::testing::Test
 {
 protected:
-    Date date_;
 };
 
 TEST_F(TestDate, HappyDay)

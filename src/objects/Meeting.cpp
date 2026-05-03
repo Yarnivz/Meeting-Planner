@@ -144,15 +144,20 @@ void Meeting::addParticipant(User* user)
     ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added");
 }
 
-User* Meeting::getParticipant(const std::string& userId)
+User* Meeting::getParticipant(const std::string& userId) const
 {
     REQUIRE(!userId.empty(), "UserId cannot be empty");
-    const Users::iterator it = participants.find(userId);
+    const Users::const_iterator it = participants.find(userId);
 
     if (it == participants.end()) return nullptr;
 
     ENSURE(it->second->getId() == userId, "User must have a correct id.");
     return it->second;
+}
+
+bool Meeting::hasParticipant(const User* user) const
+{
+    return user && getParticipant(user->getId()) == user;
 }
 
 size_t Meeting::getParticipantCount() const
@@ -169,7 +174,10 @@ void Meeting::_addParticipant(User* user)
 {
     REQUIRE(user != nullptr, "User can not be null");
     REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+    REQUIRE(!hasParticipant(user), "User '%s' can't already participate in meeting", user->getId().c_str());
+    REQUIRE(getParticipant(user->getId()), "User id '%s' must be unique", user->getId().c_str());
     REQUIRE(!user->isExternal() || this->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", user->getId().c_str(), this->getId().c_str());
+
 
     participants.insert({user->getId(), user});
 
@@ -180,34 +188,27 @@ float Meeting::getEmissions() const
 {
     REQUIRE(room != nullptr, "Room cannot be null");
     REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
-    std::cout << catering_needed << " " << online << std::endl;
     REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.");
-    float addedEmissions = 0;
 
+
+    if (online)
+    {
+        //ENSURE(!cateringNeeded(), "Online");
+        return (float)getParticipantCount() * 30.0f;
+    }
+
+    float addedEmissions = 0;
     for (const std::pair<std::string, User*> user : participants)
     {
-        if (online)
-        {
-            addedEmissions += 30;
-        }
-        else
-        {
-            if (user.second->isExternal())
-            {
-                addedEmissions += 1200;
-            }
-            else
-            {
-                addedEmissions += 120;
-            }
-
-            if (!room->getCampus()->getCaterings().empty() && catering_needed)
-            {
-                addedEmissions = static_cast<float>(getParticipantCount()) * room->getCampus()->getCaterings().front()->getEmissions();
-            }
-        }
+        addedEmissions += user.second->isExternal() ? 1200.0f : 120.0f;
     }
-    ENSURE (addedEmissions > 0, "total additive emissions cannot be negative.");
+
+    const std::list<Catering*>& caterings = room->getCampus()->getCaterings();
+    if (!caterings.empty() && catering_needed)
+    {
+        addedEmissions += static_cast<float>(getParticipantCount()) * caterings.front()->getEmissions();
+    }
+
     return addedEmissions;
 }
 

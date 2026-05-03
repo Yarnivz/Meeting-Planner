@@ -36,6 +36,9 @@ TEST_F(TestRoom, ContractViolation)
     EXPECT_DEATH(Room("Room With Empty Id", "", 20, building1), "");
     EXPECT_DEATH(Room("Room With No Capacity", "a_id", 0, building1), "");
     EXPECT_DEATH(Room("Room With No Building", "a_id", 20, nullptr), "");
+
+    delete campus1;
+    delete building1;
 }
 
 TEST_F(TestRoom, CopyConstructor)
@@ -58,6 +61,9 @@ TEST_F(TestRoom, CopyConstructor)
     EXPECT_EQ(building, r2.getBuilding());
     EXPECT_EQ(campus, r1.getCampus());
     EXPECT_EQ(campus, r2.getCampus());
+
+    delete campus;
+    delete building;
 
 }
 

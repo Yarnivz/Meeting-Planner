@@ -12,22 +12,93 @@
 #include "helper/DesignByContract.h"
 #include "objects/Room.h"
 
-static inline bool parse_boolean(std::string s)
+
+static inline bool parse_int(const std::string& input, int& output, std::string& parseError)
 {
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-    if (s == "true")
+    int integer;
+    //Try to convert to int
+    try
     {
+        integer = std::stoi(input);
+    }
+    catch (std::exception& except)
+    {
+        parseError = std::string("Value '" + input + "' could not be converted to an integer: \n\t- ") + except.what();
+        return false;
+    }
+    output = integer;
+    return true;
+}
+
+static inline bool parse_float(const std::string& input, float& output, std::string& parseError)
+{
+    float floating;
+    //Try to convert to float
+    try
+    {
+        floating = std::stof(input);
+    }
+    catch (std::exception& except)
+    {
+        parseError = std::string("Value '" + input + "' could not be converted to a float\n\t- ") + except.what();
+        return false;
+    }
+    output = floating;
+    return true;
+}
+
+static inline bool parse_boolean(const std::string& input, bool& output, std::string& parseError)
+{
+    std::string s = input;
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+    if (s == "true" || s == "1")
+    {
+        output = true;
         return true;
     }
 
-    if (s == "false")
+    if (s == "false" || s == "0")
     {
+        output = false;
+        return true;
+    }
+
+    parseError = "Value '" + input + "'" + " could not be converted to a boolean: \n\t- must be either 'false' or '0' for False OR 'true' or '1' for True";
+    return false;
+}
+
+static inline bool parse_date (const std::string& input, Date& output, std::string& parseError)
+{
+    //Try to convert to Date
+    int day;
+    int month;
+    int year;
+
+    try
+    {
+        day = std::stoi(input.substr(8, 2));
+        month = std::stoi(input.substr(5, 2));
+        year = std::stoi(input.substr(0, 4));
+    }
+    catch (std::exception& except)
+    {
+        parseError = std::string("Value '" + input + "' could not be converted to a date format: \n\t- ") + except.what();
+        return false;
+    }
+    const std::chrono::year_month_day chrono_date = {
+        std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
+    };
+    //Check if date exists
+    if (!chrono_date.ok() || year <= 0)
+    {
+        parseError = "Date: '" + input + "' does not exist.";
         return false;
     }
 
-    throw std::exception();
+    output = Date(year, month, day);
+    return true;
 }
-
 
 XmlParser::XmlParser(std::ostream& errorStream): Parser(errorStream) {}
 
@@ -59,741 +130,7 @@ void XmlParser::parse(const std::string& filename)
     for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement =
          objectElement->NextSiblingElement())
     {
-
         parseElement(objectElement);
-    //     //== The type of the element 'ROOM'/'MEETING'/...
-    //     const std::string objectElementType = objectElement->Value();
-    //
-    //     if (objectElementType == "CAMPUS")
-    //     {
-    //         //== string properties from child XML elements
-    //         std::string name, identifier;
-    //
-    //         //== booleans indicating whether the above properties were already found
-    //         bool found_name = false;
-    //         bool found_id = false;
-    //
-    //         for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
-    //              propertyElement = propertyElement->NextSiblingElement())
-    //         {
-    //             const std::string propertyElementType = propertyElement->Value();
-    //
-    //             if (propertyElement->FirstChild() == nullptr)
-    //             {
-    //                 //TODO o.emptyElement();
-    //                 errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //
-    //             const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-    //
-    //             if (propertyElementType == "NAME")
-    //             {
-    //                 //> Check if we already encountered another <NAME> tag.
-    //                 //  Which would mean multiple <NAME> tags are present => ERROR
-    //                 if (found_name)
-    //                 {
-    //                     errorStream << "CAMPUS element " << name << " cant have more than one NAME property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_name = true;
-    //                 name = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "IDENTIFIER")
-    //             {
-    //                 //> Check if we already encountered another <IDENTIFIER> tag.
-    //                 //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
-    //                 if (found_id)
-    //                 {
-    //                     errorStream << "CAMPUS element " << identifier << " cant have more than one IDENTIFIER property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_id = true;
-    //                 identifier = tempElementChildValue;
-    //             }
-    //             else
-    //             {
-    //                 //> Filter out any other unrecognized tags
-    //                 errorStream << "Unrecognized property for CAMPUS: \"" << propertyElementType << "\"" << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //         }
-    //
-    //         //> Check if all required properties were provided
-    //         if (!found_id)
-    //         {
-    //             if (found_name) errorStream << "CAMPUS \'"<< name << "\' must have a IDENTIFIER property" << std::endl;
-    //             else errorStream << "CAMPUS must have a IDENTIFIER property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_name)
-    //         {
-    //             errorStream << "CAMPUS \'" << identifier << "\' must have a NAME property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //
-    //         //> Add campus if all the checks have passed
-    //         parsed_campuses.push_back((CampusElement){.name = name, .id = identifier});
-    //     }
-    //     else if (objectElementType == "BUILDING")
-    //     {
-    //         //== string properties from child XML elements
-    //         std::string name, identifier, campus_id;
-    //
-    //         //== booleans indicating whether the above properties were already found
-    //         bool found_name = false;
-    //         bool found_id = false;
-    //         bool found_campus = false;
-    //
-    //         for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
-    //              propertyElement = propertyElement->NextSiblingElement())
-    //         {
-    //             std::string propertyElementType = propertyElement->Value();
-    //
-    //             if (propertyElement->FirstChild() == nullptr)
-    //             {
-    //                 //TODO o.emptyElement();
-    //                 errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //
-    //             std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-    //
-    //             if (propertyElementType == "NAME")
-    //             {
-    //                 //> Check if we already encountered another <NAME> tag.
-    //                 //  Which would mean multiple <NAME> tags are present => ERROR
-    //                 if (found_name)
-    //                 {
-    //                     errorStream << "BUILDING element cant have more than one NAME property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_name = true;
-    //                 name = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "IDENTIFIER")
-    //             {
-    //                 //> Check if we already encountered another <IDENTIFIER> tag.
-    //                 //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
-    //                 if (found_id)
-    //                 {
-    //                     errorStream << "BUILDING element cant have more than one IDENTIFIER property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_id = true;
-    //                 identifier = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "CAMPUS")
-    //             {
-    //                 //> Check if we already encountered another <CAMPUS> tag.
-    //                 // Which would mean multiple <CAMPUS> tags are present => ERROR
-    //                 if (found_campus)
-    //                 {
-    //                     errorStream << "BUILDING element cant have more than one CAMPUS property" << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_campus = true;
-    //                 campus_id = tempElementChildValue;
-    //             }
-    //             else
-    //             {
-    //                 //> Filter out any other unrecognized tags
-    //                 errorStream << "Unrecognized property for BUILDING: \"" << propertyElementType << "\"" << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //         }
-    //
-    //         //> Check if all required properties were provided
-    //         if (!found_name)
-    //         {
-    //             errorStream << "BUILDING must have a NAME property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_id)
-    //         {
-    //             errorStream << "BUILDING must have a IDENTIFIER property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_campus)
-    //         {
-    //             errorStream << "BUILDING must have a CAMPUS property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //
-    //         //> Add building if all the checks have passed
-    //         parsed_buildings.push_back((BuildingElement){.name = name, .id = identifier, .campus_id = campus_id});
-    //     }
-    //
-    //     else if (objectElementType == "ROOM")
-    //     {
-    //         //== string properties from child XML elements
-    //         std::string name, identifier, capacity_str, campus_id, building_id;
-    //
-    //         //== booleans indicating whether the above properties were already found
-    //         bool found_name = false;
-    //         bool found_id = false;
-    //         bool found_capacity = false;
-    //         bool found_campus = false;
-    //         bool found_building = false;
-    //
-    //
-    //         for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
-    //              propertyElement = propertyElement->NextSiblingElement())
-    //         {
-    //             const std::string propertyElementType = propertyElement->Value();
-    //
-    //             if (propertyElement->FirstChild() == nullptr)
-    //             {
-    //                 //TODO o.emptyElement();
-    //                 errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //
-    //
-    //             const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-    //
-    //             if (propertyElementType == "NAME")
-    //             {
-    //                 //> Check if we already encountered another <NAME> tag.
-    //                 //  Which would mean multiple <NAME> tags are present => ERROR
-    //                 if (found_name)
-    //                 {
-    //                     errorStream << "ROOM element cant have more than one NAME property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_name = true;
-    //                 name = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "IDENTIFIER")
-    //             {
-    //                 //> Check if we already encountered another <IDENTIFIER> tag.
-    //                 //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
-    //                 if (found_id)
-    //                 {
-    //                     errorStream << "ROOM element cant have more than one IDENTIFIER property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_id = true;
-    //                 identifier = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "CAPACITY")
-    //             {
-    //                 //> Check if we already encountered another <CAPACITY> tag.
-    //                 //  Which would mean multiple <CAPACITY> tags are present => ERROR
-    //                 if (found_capacity)
-    //                 {
-    //                     errorStream << "ROOM element cant have more than one CAPACITY property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_capacity = true;
-    //                 capacity_str = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "CAMPUS")
-    //             {
-    //                 //> Check if we already encountered another <CAMPUS> tag.
-    //                 //  Which would mean multiple <CAMPUS> tags are present => ERROR
-    //                 if (found_campus)
-    //                 {
-    //                     errorStream << "ROOM element cant have more than one CAMPUS property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_campus = true;
-    //                 campus_id = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "BUILDING")
-    //             {
-    //                 //> Check if we already encountered another <BUILDING> tag.
-    //                 //  Which would mean multiple <BUILDING> tags are present => ERROR
-    //                 if (found_building)
-    //                 {
-    //                     errorStream << "ROOM element cant have more than one BUILDING property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_building = true;
-    //                 building_id = tempElementChildValue;
-    //             }
-    //             else
-    //             {
-    //                 //> Filter out any other unrecognized tags
-    //                 errorStream << "Unrecognized property for ROOM: \"" << propertyElementType << "\"" << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //         }
-    //
-    //
-    //         //> Check if all required properties were provided
-    //         if (!found_name)
-    //         {
-    //             errorStream << "ROOM must have a NAME property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_id)
-    //         {
-    //             errorStream << "ROOM must have a IDENTIFIER property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_capacity)
-    //         {
-    //             errorStream << "ROOM must have a CAPACITY property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         /*if (!found_campus)
-    //         {
-    //             errorStream << "ROOM must have a CAMPUS property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_building)
-    //         {
-    //             errorStream << "ROOM must have a BUILDING property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }*/
-    //
-    //         //== 'capacity' string parsed into an int
-    //         int capacity = 0;
-    //
-    //         //> Try to parse 'capacity' to int.
-    //         try
-    //         {
-    //             capacity = std::stoi(capacity_str);
-    //         }
-    //         catch (std::exception& except)
-    //         {
-    //             errorStream << "Capacity could not be converted to an integer. Room will not be added \n\t- " << except.
-    //                 what() << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         //> Check if capacity is larger than 0
-    //         if (capacity <= 0)
-    //         {
-    //             errorStream << "Room capacity needs to be larger than 0. Room will not be added." << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //
-    //         //> Add room if all the checks have passed
-    //         parsed_rooms.push_back((RoomElement)
-    //         {
-    //             .
-    //             name = std::move(name),
-    //             .
-    //             id = std::move(identifier),
-    //             .
-    //             capacity = capacity
-    //         });
-    //     }
-    //     else if (objectElementType == "MEETING")
-    //     {
-    //         //== string properties from child XML elements
-    //         std::string label, identifier, room, date_string, hour_string, externals_allowed_string, catering_string;
-    //
-    //         //== booleans indicating whether the above properties were already found
-    //         bool found_label = false;
-    //         bool found_id = false;
-    //         bool found_room = false;
-    //         bool found_datestring = false;
-    //         bool found_hourstring = false;
-    //         bool found_externals_allowed = false;
-    //         bool found_cateringstring = false;
-    //
-    //
-    //         for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
-    //              propertyElement = propertyElement->NextSiblingElement())
-    //         {
-    //             const std::string propertyElementType = propertyElement->Value();
-    //
-    //             if (propertyElement->FirstChild() == nullptr)
-    //             {
-    //                 errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-    //                 goto continue_to_next_object_element;;
-    //             }
-    //
-    //             const std::string propertyElementContents = propertyElement->FirstChild()->Value();
-    //
-    //             if (propertyElementType == "LABEL")
-    //             {
-    //                 //> Check if we already encountered another <LABEL> tag.
-    //                 //  Which would mean multiple <LABEL> tags are present => ERROR
-    //                 if (found_label)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one LABEL property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_label = true;
-    //                 label = propertyElementContents;
-    //             }
-    //             else if (propertyElementType == "IDENTIFIER")
-    //             {
-    //                 //> Check if we already encountered another <IDENTIFIER> tag.
-    //                 //  Which would mean multiple <IDENTIFIER> tags are present => ERROR
-    //                 if (found_id)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one IDENTIFIER property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_id = true;
-    //                 identifier = propertyElementContents;
-    //             }
-    //             else if (propertyElementType == "ROOM")
-    //             {
-    //                 //> Check if we already encountered another <ROOM> tag.
-    //                 //  Which would mean multiple <ROOM> tags are present => ERROR
-    //                 if (found_room)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one ROOM property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_room = true;
-    //                 room = propertyElementContents;
-    //             }
-    //             else if (propertyElementType == "DATE")
-    //             {
-    //                 //> Check if we already encountered another <DATE> tag.
-    //                 //  Which would mean multiple <DATE> tags are present => ERROR
-    //                 if (found_datestring)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one DATE property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_datestring = true;
-    //                 date_string = propertyElementContents;
-    //             }
-    //             else if (propertyElementType == "HOUR")
-    //             {
-    //                 //> Check if we already encountered another <HOUR> tag.
-    //                 //  Which would mean multiple <HOUR> tags are present => ERROR
-    //                 if (found_hourstring)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one HOUR property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_hourstring = true;
-    //                 hour_string = propertyElementContents;
-    //             }
-    //             else if (propertyElementType == "EXTERNALS")
-    //             {
-    //                 if (found_externals_allowed)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one EXTERNALS property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_externals_allowed = true;
-    //                 externals_allowed_string = propertyElementContents;
-    //             }
-    //             else if (propertyElementType == "CATERING")
-    //             {
-    //                 if (found_cateringstring)
-    //                 {
-    //                     errorStream << "MEETING element cant have more than one CATERING property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_cateringstring = true;
-    //                 catering_string = propertyElementContents;
-    //             }
-    //             else
-    //             {
-    //                 //> Filter out any other unrecognized tags
-    //                 errorStream << "Unrecognized property for MEETING: \"" << propertyElementType << "\"" << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //         }
-    //
-    //
-    //         //> Check if all required properties were provided
-    //         if (!found_id)
-    //         {
-    //             errorStream << "MEETING must have a IDENTIFIER property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_label)
-    //         {
-    //             errorStream << "MEETING must have a LABEL property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_room)
-    //         {
-    //             errorStream << "MEETING must have a ROOM property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_datestring)
-    //         {
-    //             errorStream << "MEETING must have a DATE property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_hourstring)
-    //         {
-    //             errorStream << "MEETING must have an HOUR property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         if (!found_externals_allowed)
-    //         { /* Is allowed, optional property for now */ }
-    //
-    //         if (!found_cateringstring)
-    //         { /* Is allowed, optional property for now */ }
-    //
-    //
-    //         int day, month, year, hour;
-    //
-    //         //> Try to parse date
-    //         try
-    //         {
-    //             day = std::stoi(date_string.substr(8, 2));
-    //             month = std::stoi(date_string.substr(5, 2));
-    //             year = std::stoi(date_string.substr(0, 4));
-    //         }
-    //         catch (std::exception& except)
-    //         {
-    //             errorStream << "MEETING \'" << identifier <<
-    //                 "\': Date value could not be converted to a date format: \n\t- " << except.what() << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         std::chrono::year_month_day chrono_date = {
-    //             std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
-    //         };
-    //         //> Check if date exists
-    //         if (!chrono_date.ok())
-    //         {
-    //             errorStream << "MEETING \'" << identifier << "\': Date " << date_string << " does not exist." <<
-    //                 std::endl;
-    //             goto continue_to_next_object_element;;
-    //         }
-    //
-    //         try
-    //         {
-    //             hour = std::stoi(hour_string);
-    //         }
-    //         catch (std::exception& except)
-    //         {
-    //             errorStream << "MEETING \'" << identifier << "\': "
-    //                 "Hour value could not be converted to an integer: \n\t- " << except.what() << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         if (hour < 0 || hour > 23)
-    //         {
-    //             errorStream << "MEETING \'" << identifier << "\': Hour must be non-negative and smaller than 24, not " << hour << "." << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //
-    //         // Parse boolean or give default value
-    //         bool externals_allowed = found_externals_allowed ? parse_boolean(externals_allowed_string) : false;
-    //         bool catering_needed = found_cateringstring ? parse_boolean(catering_string) : false;
-    //
-    //
-    //         //> Add meeting if all checks passed
-    //         parsed_meetings.push_back(
-    //             (MeetingElement)
-    //         {
-    //             .label = std::move(label),
-    //             .id = std::move(identifier),
-    //             .room_id = std::move(room),
-    //             .date_time = DateTime(year, month, day, hour),
-    //             .externals_allowed = externals_allowed,
-    //             .catering_needed = catering_needed
-    //         });
-    //     }
-    //     else if (objectElementType == "PARTICIPATION")
-    //     {
-    //         //== string properties from child XML elements
-    //         std::string meeting, user, external_string;
-    //
-    //         //== booleans indicating whether the above properties were already found
-    //         bool found_meeting = false;
-    //         bool found_user = false;
-    //         bool found_external_string = false;
-    //
-    //
-    //         for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
-    //              propertyElement = propertyElement->NextSiblingElement())
-    //         {
-    //             const std::string propertyElementType = propertyElement->Value();
-    //
-    //             if (propertyElement->FirstChild() == nullptr)
-    //             {
-    //                 errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-    //                 goto continue_to_next_object_element;;
-    //             }
-    //
-    //
-    //             const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-    //
-    //             if (propertyElementType == "MEETING")
-    //             {
-    //                 if (found_meeting)
-    //                 {
-    //                     errorStream << "PARTICIPATION element cant have more than one MEETING property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_meeting = true;
-    //                 meeting = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "USER")
-    //             {
-    //                 if (found_user)
-    //                 {
-    //                     errorStream << "PARTICIPATION element cant have more than one USER property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_user = true;
-    //                 user = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "EXTERNAL")
-    //             {
-    //                 if (found_external_string)
-    //                 {
-    //                     errorStream << "PARTICIPATION element cant have more than one EXTERNAL property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_external_string = true;
-    //                 external_string = tempElementChildValue;
-    //             }
-    //             else
-    //             {
-    //                 //> Filter out any other unrecognized tags
-    //                 errorStream << "Unrecognized property for PARTICIPATION: \"" << propertyElementType << "\"" << std::endl;
-    //                 goto continue_to_next_object_element;
-    //             }
-    //         }
-    //
-    //
-    //         //> Check if all required properties are present
-    //         if (!found_user)
-    //         {
-    //             errorStream << "PARTICIPATION must have a USER property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_meeting)
-    //         {
-    //             errorStream << "PARTICIPATION must have a MEETING property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         if (!found_external_string)
-    //         {
-    //             /* Is allowed, optional property */
-    //         }
-    //
-    //
-    //
-    //         bool external = found_external_string ? parse_boolean(external_string) : false;
-    //
-    //
-    //         //> Add participation if all checks passed
-    //         parsed_participations.push_back((ParticipationElement)
-    //         {
-    //             .meeting = std::move(meeting),
-    //             .user = std::move(user),
-    //             .external = external
-    //         });
-    //     } else if (objectElementType == "CATERING")
-    //     {
-    //         std::string campus_id, co2_string;
-    //         bool found_campus_id = false;
-    //         bool found_co2_string = false;
-    //
-    //         for (TiXmlElement* propertyElement = objectElement->FirstChildElement(); propertyElement != nullptr;
-    //              propertyElement = propertyElement->NextSiblingElement())
-    //         {
-    //             const std::string propertyElementType = propertyElement->Value();
-    //
-    //             if (propertyElement->FirstChild() == nullptr)
-    //             {
-    //                 errorStream << "Property " << propertyElementType << " needs to contain text." << std::endl;
-    //                 goto continue_to_next_object_element;;
-    //             }
-    //
-    //
-    //             const std::string tempElementChildValue = propertyElement->FirstChild()->Value();
-    //
-    //             if (propertyElementType == "CAMPUS")
-    //             {
-    //                 if (found_campus_id)
-    //                 {
-    //                     errorStream << "CATERING element cant have more than one CAMPUS property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_campus_id = true;
-    //                 campus_id = tempElementChildValue;
-    //             }
-    //             else if (propertyElementType == "CO2")
-    //             {
-    //                 if (found_co2_string)
-    //                 {
-    //                     errorStream << "CATERING element cant have more than one CO2 property." << std::endl;
-    //                     goto continue_to_next_object_element;
-    //                 }
-    //
-    //                 found_co2_string = true;
-    //                 co2_string = tempElementChildValue;
-    //             }
-    //         }
-    //
-    //
-    //         if (!found_campus_id)
-    //         {
-    //             errorStream << "CATERING must have a CAMPUS property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //         if (!found_co2_string)
-    //         {
-    //             errorStream << "CATERING must have a CO2 property" << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         float co2 = -1.0;
-    //         try
-    //         {
-    //             co2 = std::stof(co2_string);
-    //         } catch (std::exception& e)
-    //         {
-    //             errorStream << "Failed to parse " << co2_string << " as float: " << e.what() << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         if (co2 < 0.0)
-    //         {
-    //             errorStream << "CATERING for campus " << campus_id << " can't have negative emissions: " << co2_string << std::endl;
-    //             goto continue_to_next_object_element;
-    //         }
-    //
-    //         parsed_caterings.push_back((CateringElement){
-    //             .campus_id = campus_id,
-    //             .co2_count = co2
-    //         });
-    //     }
-    //     else
-    //     {
-    //         errorStream << "Unrecognized object element: " << objectElementType << std::endl;
-    //         goto continue_to_next_object_element;
-    //     }
-    //
-    // continue_to_next_object_element:;
     }
 }
 
@@ -806,7 +143,8 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
         {"ROOM", ElementType::ROOM},
         {"MEETING", ElementType::MEETING},
         {"PARTICIPATION", ElementType::PARTICIPATION},
-        {"CATERING", ElementType::CATERING}
+        {"CATERING", ElementType::CATERING},
+        {"RENOVATION", ElementType::RENOVATION},
     };
 
 
@@ -887,6 +225,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                 });
             };
             break;
+        //CATERING
         case ElementType::CATERING:
             requiredProps = {"CAMPUS", "CO2"};
             parseHandler = [&]()
@@ -897,6 +236,17 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                 });
             };
             break;
+
+        case ElementType::RENOVATION:
+            requiredProps = {"ROOM", "START", "END"};
+            parseHandler = [&]()
+            {
+                parsed_renovations.push_back((RenovationElement){
+                    .room = parseObject.room_id,
+                    .start_date = parseObject.start_date,
+                    .end_date = parseObject.end_date
+                });
+            };
 
         default:
             errorStream << "Object element exists in elementValues map but not in switch case:  " << elementType << std::endl;
@@ -980,7 +330,9 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"EXTERNAL", PropType::EXTERNAL},
         {"MEETING", PropType::MEETING},
         {"CO2", PropType::CO2},
-        {"CATERING", PropType::CATERINGNEEDED}
+        {"CATERING", PropType::CATERINGNEEDED},
+        {"START", PropType::STARTDATE},
+        {"END", PropType::ENDDATE}
     };
 
     if (!propValues.contains(propType))
@@ -992,210 +344,174 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
     switch (propValues.at(propType))
     {
         case PropType::IDENTIFIER:
-            {
-                parseObject.identifier = prop;
-                break;
-            }
+        {
+            parseObject.identifier = prop;
+            break;
+        }
         case PropType::NAME:
-            {
-                parseObject.name = prop;
-                break;
-            }
+        {
+            parseObject.name = prop;
+            break;
+        }
         case PropType::LABEL:
-            {
-                parseObject.label = prop;
-                break;
-            }
+        {
+            parseObject.label = prop;
+            break;
+        }
         case PropType::CAMPUS:
-            {
-                parseObject.campus_id = prop;
-                break;
-            }
+        {
+            parseObject.campus_id = prop;
+            break;
+        }
         case PropType::BUILDING:
-            {
-                parseObject.building_id = prop;
-                break;
-            }
+        {
+            parseObject.building_id = prop;
+            break;
+        }
         case PropType::CAPACITY:
+        {
+            int capacity;
+            if (!parse_int(prop, capacity, parseError)) return false;
+            //Check if capacity is < 0
+            if (capacity < 0)
             {
-                int capacity;
-                //Try to convert to int check
-                try
-                {
-                    capacity = std::stoi(prop);
-                    //Check if capacity is < 0
-                    if (capacity < 0)
-                    {
-                        parseError = std::string("Capacity could not be converted to an integer (value is negative)");
-                        return false;
-                    }
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
-                    return false;
-                }
-                parseObject.capacity = capacity;
-                break;
-            }
-        case PropType::ROOM:
-            {
-                parseObject.room_id = prop;
-                break;
-            }
-        case PropType::ONLINE:
-            {
-                bool online;
-                try
-                {
-                    online = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("ONLINE: ") + prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.online = online;
-                break;
-            }
-        case PropType::DATE:
-            {
-                //Try to convert to DateTime check
-                int day = 0;
-                int month = 0;
-                int year = 0;
-
-                try
-                {
-                    day = std::stoi(prop.substr(8, 2));
-                    month = std::stoi(prop.substr(5, 2));
-                    year = std::stoi(prop.substr(0, 4));
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
-                    return false;
-                }
-                std::chrono::year_month_day chrono_date = {
-                    std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
-                };
-                //Check if date exists
-                if (!chrono_date.ok() || year <= 0)
-                {
-                    parseError = "Date " + prop + " does not exist.";
-                    return false;
-                }
-
-                parseObject.year = year;
-                parseObject.month = month;
-                parseObject.day = day;
-                break;
-            }
-        case PropType::HOUR:
-            {
-                int hour;
-                //Try to convert to int
-                try
-                {
-                    hour = std::stoi(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("Hour value could not be converted to an integer: \n\t- ") + except.what();
-                    return false;
-                }
-                //Check if int >= 0 and int < 24
-                if (hour < 0 || hour > 23)
-                {
-                    parseError = std::string("Hour must be non-negative and smaller than 24, not ") + prop + ".";
-                    return false;
-                }
-                
-                parseObject.hour = hour;
-                break;
-            }
-        case PropType::EXTERNALS:
-            {
-                bool externals;
-                try
-                {
-                    externals = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.externals = externals;
-                break;
-            }
-        case PropType::USER:
-            {
-                parseObject.user_id = prop;
-                break;
-            }
-        case PropType::EXTERNAL:
-            {
-                bool external;
-                try
-                {
-                    external = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.external = external;
-                break;
-            }
-        case PropType::MEETING:
-            {
-                parseObject.meeting_id = prop;
-                break;
-            }
-        case PropType::CO2:
-            {
-                float co2;
-                //Try to convert to int check
-                try
-                {
-                    co2 = std::stof(prop);
-                    //Check if co2 is < 0
-                    if (co2 < 0)
-                    {
-                        parseError = std::string("CO2 could not be converted to a float (value is negative)");
-                        return false;
-                    }
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("CO2 could not be converted to a float\n\t- ") + except.what();
-                    return false;
-                }
-                parseObject.co2_count = co2;
-                break;
-            }
-    case PropType::CATERINGNEEDED:
-            {
-                bool catering;
-                try
-                {
-                    catering = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.catering_needed = catering;
-                break;
-            }
-        default:
-            {
-                parseError = std::string("Property exists in property_map but isn't defined in switch case: ") + prop;
+                parseError = "Value '" + prop + "' cannot be used as " + propType + ":\n\t- cannot be negative";
                 return false;
             }
+            parseObject.capacity = capacity;
+            break;
+        }
+        case PropType::ROOM:
+        {
+            parseObject.room_id = prop;
+            break;
+        }
+        case PropType::ONLINE:
+        {
+            bool online;
+            if (!parse_boolean(prop, online, parseError)) return false;
+            parseObject.online = online;
+            break;
+        }
+        case PropType::DATE:
+        {
+            //Try to convert to DateTime check
+            int day = 0;
+            int month = 0;
+            int year = 0;
+
+            try
+            {
+                day = std::stoi(prop.substr(8, 2));
+                month = std::stoi(prop.substr(5, 2));
+                year = std::stoi(prop.substr(0, 4));
+            }
+            catch (std::exception& except)
+            {
+                parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
+                return false;
+            }
+            std::chrono::year_month_day chrono_date = {
+                std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
+            };
+            //Check if date exists
+            if (!chrono_date.ok() || year <= 0)
+            {
+                parseError = "Date " + prop + " does not exist.";
+                return false;
+            }
+
+            parseObject.year = year;
+            parseObject.month = month;
+            parseObject.day = day;
+            break;
+        }
+        case PropType::HOUR:
+        {
+            int hour;
+            //Try to convert to int
+            try
+            {
+                hour = std::stoi(prop);
+            }
+            catch (std::exception& except)
+            {
+                parseError = std::string("Hour value could not be converted to an integer: \n\t- ") + except.what();
+                return false;
+            }
+            //Check if int >= 0 and int < 24
+            if (hour < 0 || hour > 23)
+            {
+                parseError = std::string("Hour must be non-negative and smaller than 24, not ") + prop + ".";
+                return false;
+            }
+
+            parseObject.hour = hour;
+            break;
+        }
+        case PropType::EXTERNALS:
+        {
+            bool externals;
+            if (!parse_boolean(prop, externals, parseError)) return false;
+            parseObject.externals = externals;
+            break;
+        }
+        case PropType::USER:
+        {
+            parseObject.user_id = prop;
+            break;
+        }
+        case PropType::EXTERNAL:
+        {
+            bool external;
+            if (!parse_boolean(prop, external, parseError)) return false;
+            parseObject.external = external;
+            break;
+        }
+        case PropType::MEETING:
+        {
+            parseObject.meeting_id = prop;
+            break;
+        }
+        case PropType::CO2:
+        {
+            float co2;
+            if (!parse_float(prop, co2, parseError)) return false;
+            //Check if co2 is < 0
+            if (co2 < 0)
+            {
+                parseError = "Value '" + prop + "' cannot be used as " + propType + ":\n\t- cannot be negative";
+                return false;
+            }
+            parseObject.co2_count = co2;
+            break;
+        }
+        case PropType::CATERINGNEEDED:
+        {
+            bool catering;
+            if (!parse_boolean(prop, catering, parseError)) return false;
+            parseObject.catering_needed = catering;
+            break;
+        }
+        case PropType::STARTDATE:
+        {
+            Date startDate;
+            if (!parse_date(prop, startDate, parseError)) return false;
+            parseObject.start_date = startDate;
+            break;
+        }
+        case PropType::ENDDATE:
+        {
+            Date endDate;
+            if (!parse_date(prop, endDate, parseError)) return false;
+            parseObject.end_date = endDate;
+            break;
+        }
+        default:
+        {
+            parseError = std::string("Property exists in property_map but isn't defined in switch case: ") + prop;
+            return false;
+        }
     }
     return true;
 }

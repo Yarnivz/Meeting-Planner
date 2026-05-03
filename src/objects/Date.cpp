@@ -95,14 +95,14 @@ int Date::getYear() const
     return static_cast<int>(year);
 }
 
-unsigned Date::getMonth() const
+unsigned int Date::getMonth() const
 {
     ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!");
 
     return month;
 }
 
-unsigned Date::getDay() const
+unsigned int Date::getDay() const
 {
     ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!");
     return day;

@@ -4,16 +4,16 @@
 
 #ifndef MEETING_PLANNER_DATETIME_H
 #define MEETING_PLANNER_DATETIME_H
-
+#include "Date.h"
 
 #include <chrono>
 
-class DateTime
+class DateTime : public Date
 {
 public:
     /**
      * @brief Creates the DateTime class.
-     * The DateTime class has a year, month and day attribute.
+     * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called without parameters, the DateTime that gets created will be the current DateTime.
      */
     DateTime();
@@ -29,7 +29,7 @@ public:
 
     /**
      * @brief Creates the DateTime class.
-     * The DateTime class has a year, month and day attribute.
+     * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
      * @param year
      * @param month
@@ -38,40 +38,14 @@ public:
      */
     DateTime(int year, int month, int day, int hour = 0);
 
-    // /**
-    //  * @brief Creates the DateTime class.
-    //  * The DateTime class has a year, month and day attribute.
-    //  * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
-    //  *
-    //  * @pre test
-    //  *
-    //  * @param year_month_day DateTime to initialize the DateTime class with.
-    //  */
-    // DateTime(std::chrono::year_month_day year_month_day, std::chrono::hours hour);
-
     /**
-     * @brief Checks whether this Participation was properly initialized by the constructor.
-     * @return bool indicating result
+     * @brief Creates the DateTime class.
+     * The DateTime class has a year, month, day and hour attribute.
+     * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
+     * @param date
+     * @param hour
      */
-    bool isProperlyInitialized() const;
-
-    /**
-     * @brief Year getter.
-     * @return the DateTime's year
-     */
-    int getYear() const;
-
-    /**
-     * @brief Month getter.
-     * @return the DateTime's month
-     */
-    unsigned getMonth() const;
-
-    /**
-     * @brief Day getter.
-     * @return the DateTime's day
-     */
-    unsigned getDay() const;
+    DateTime(const Date& date, int hour = 0);
 
     /**
      * @brief Hour getter
@@ -80,15 +54,9 @@ public:
     unsigned getHour() const;
 
     /**
-     * @brief Weekday getter.
-     * @return the DateTime's weekday
-     */
-    std::string getWeekDay() const;
-
-    /**
      * @brief Converts the DateTime class to a readable string format.
      * @return the DateTime represented as a string.
-     * The DateTime's string format is "YYYY-MM-DD"
+     * The DateTime's string format is "YYYY-MM-DD, Hh00"
      */
     std::string toString() const;
 
@@ -151,12 +119,7 @@ public:
     ~DateTime();
 
 private:
-    int year{};
-    unsigned month{};
-    unsigned day{};
     unsigned hour{};
-
-    void* init_test_this_ptr;
 };
 
 

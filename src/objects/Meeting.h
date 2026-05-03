@@ -184,7 +184,10 @@ public:
      * @post Something went wrong, The user which was found did not have the correct id.
      */
     float getEmissions() const;
-    User* getParticipant(const std::string& userId);
+    User* getParticipant(const std::string& userId) const;
+
+    bool hasParticipant(const User* user) const;
+
     size_t getParticipantCount() const;
     const Users& getParticipants() const;
 

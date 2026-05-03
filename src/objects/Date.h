@@ -83,7 +83,7 @@ public:
      *
      * @post Failed to get Month. Date must be properly initialized with the constructor!
      */
-    unsigned getMonth() const;
+    unsigned int getMonth() const;
 
     /**
      * @brief Day getter.
@@ -91,7 +91,7 @@ public:
      *
      * @post Failed to get Day. Date must be properly initialized with the constructor!
      */
-    unsigned getDay() const;
+    unsigned int getDay() const;
 
     /**
      * @brief Weekday getter.
@@ -166,11 +166,10 @@ public:
      */
     ~Date();
 
-private:
+protected:
     int year{};
     unsigned month{};
     unsigned day{};
-
     void* init_test_this_ptr;
 };
 

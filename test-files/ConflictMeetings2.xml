@@ -1,13 +1,37 @@
 <SYSTEM>
+    <CAMPUS>
+        <NAME>Campus Middelheim</NAME>
+        <IDENTIFIER>M</IDENTIFIER>
+    </CAMPUS>
+    <CAMPUS>
+        <NAME>Campus Groenenborger</NAME>
+        <IDENTIFIER>G</IDENTIFIER>
+    </CAMPUS>
+
+    <BUILDING>
+        <NAME>Gebouw G</NAME>
+        <IDENTIFIER>M.G</IDENTIFIER>
+        <CAMPUS>M</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Gebouw T</NAME>
+        <IDENTIFIER>G.T</IDENTIFIER>
+        <CAMPUS>G</CAMPUS>
+    </BUILDING>
+
     <ROOM>
         <NAME>M.G.025</NAME>
         <IDENTIFIER>MG025</IDENTIFIER>
         <CAPACITY>40</CAPACITY>
+        <BUILDING>M.G</BUILDING>
+        <CAMPUS>M</CAMPUS>
     </ROOM>
     <ROOM>
         <NAME>G.T.103</NAME>
         <IDENTIFIER>GT103</IDENTIFIER>
         <CAPACITY>100</CAPACITY>
+        <BUILDING>G.T</BUILDING>
+        <CAMPUS>G</CAMPUS>
     </ROOM>
 
     <MEETING>
@@ -16,6 +40,9 @@
         <ROOM>MG025</ROOM>
         <DATE>2026-03-12</DATE>
         <HOUR>0</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>CSA info session</LABEL>
@@ -23,6 +50,9 @@
         <ROOM>MG025</ROOM>
         <DATE>2026-03-12</DATE>
         <HOUR>0</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Mathematics for dummies</LABEL>
@@ -30,6 +60,9 @@
         <ROOM>MG025</ROOM>
         <DATE>2026-03-12</DATE>
         <HOUR>0</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
 
 
@@ -39,6 +72,9 @@
         <ROOM>GT103</ROOM>
         <DATE>2026-03-12</DATE>
         <HOUR>0</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Generic Meeting 2</LABEL>
@@ -46,6 +82,9 @@
         <ROOM>GT103</ROOM>
         <DATE>2026-03-12</DATE>
         <HOUR>0</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
     <MEETING>
         <LABEL>Generic Meeting 3</LABEL>
@@ -53,5 +92,8 @@
         <ROOM>GT103</ROOM>
         <DATE>2026-03-12</DATE>
         <HOUR>0</HOUR>
+        <ONLINE>False</ONLINE>
+        <EXTERNALS>False</EXTERNALS>
+        <CATERING>False</CATERING>
     </MEETING>
 </SYSTEM>

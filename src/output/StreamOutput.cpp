@@ -16,13 +16,97 @@ StreamOutput::StreamOutput(std::ostream* stream) : stream(stream)
     REQUIRE(stream, "'stream' can't be null");
 }
 
+void StreamOutput::printUser(const User* user)
+{
+    *stream << "[ " << user->getId() << " ]\n";
+    if (user->isExternal()) *stream << "  - external\n";
+    *stream << std::flush;
+}
+
+void StreamOutput::printUsers(const Users& users)
+{
+    if (users.empty())
+    {
+        *stream << "--==## No Users ##==--\n\n" << std::flush;
+        return;
+    }
+
+    *stream << "--==## Users ##==--\n\n";
+    for (const std::pair<const std::string, User*>& u : users)
+    {
+        printUser(u.second);
+        //*stream << "\n";
+    }
+    *stream << std::endl;
+}
+
+void StreamOutput::printBuilding(const Building* building)
+{
+    *stream << "[ " << building->toString() << " (" << building->getId() << ") ]\n"
+    << "  - Campus: " << building->getCampus()->toString() << " ("<< building->getCampus()->getId() <<")" << std::endl;
+}
+
+void StreamOutput::printBuildings(const Buildings& buildings)
+{
+    if (buildings.empty())
+    {
+        *stream << "--==## No Buildings ##==--\n\n" << std::flush;
+        return;
+    }
+
+    *stream << "--==## Buildings ##==--\n\n";
+    for (const std::pair<const std::string, Building*>& b : buildings)
+    {
+        printBuilding(b.second);
+        //*stream << "\n";
+    }
+    *stream << std::endl;
+}
+
+void StreamOutput::printCampus(const Campus* campus)
+{
+    *stream
+    << "[ " << campus->toString() << " (" << campus->getId() << ") ]\n";
+
+
+    if (campus->getCaterings().empty())
+        *stream << "  - No catering\n";
+    else {
+        *stream << "  - Catering:\n";
+        for (const Catering* c : campus->getCaterings())
+        {
+            *stream << "      * " << c->getEmissions() << "g\n";
+        }
+    }
+
+    *stream << std::flush;
+}
+
+void StreamOutput::printCampuses(const Campuses& campuses)
+{
+    if (campuses.empty())
+    {
+        *stream << "--==## No Campuses ##==--\n\n" << std::flush;
+        return;
+    }
+
+    *stream << "--==## Campuses ##==--\n\n";
+    for (const std::pair<const std::string, Campus*>& c : campuses)
+    {
+        printCampus(c.second);
+        //*stream << "\n";
+    }
+
+    *stream << std::endl;
+}
+
 void StreamOutput::printMeeting(const Meeting* meeting)
 {
     *stream
     << "[ " << meeting->toString() << " (" << meeting->getId() << ") ]\n"
     << "  - Time: " << meeting->getDateTime() << "\n"
     << "  - Location: " << meeting->getRoom()->toString() << "\n"
-    << "  - CO2 emitted: " << "999" << "g\n";
+    << "  - CO2 emitted: " << meeting->getEmissions() << "g\n";
 
     if (meeting->externalsAllowed())
         *stream
@@ -87,66 +171,78 @@ void StreamOutput::printMeetings(const MeetingRegistry& meetings)
     }
 
     //Write all past meetings
-    if (!processed.empty()) *stream << "--==## Past meetings ##==--\n";
-    for (const Meeting* m : processed)
+    if (processed.empty()) *stream << "--==## No past meetings ##==--\n\n";
+    else
     {
+        *stream << "--==## Past meetings ##==--\n\n";
+        for (const Meeting* m : processed)
+        {
+            printMeeting(m);
+            //*stream << "\n";
+        }
         *stream << "\n";
-        printMeeting(m);
     }
+
+
 
     //Write all future meetings
-    if (!unprocessed.empty()) *stream << "--==## Future meetings ##==--\n";
-    for (const Meeting* m : unprocessed)
+    if (unprocessed.empty()) *stream << "--==## No future meetings ##==--\n\n";
+    else
     {
+        *stream << "--==## Future meetings ##==--\n\n";
+        for (const Meeting* m : unprocessed)
+        {
+            printMeeting(m);
+            //*stream << "\n";
+        }
         *stream << "\n";
-        printMeeting(m);
     }
 
+
+
     //Write all conflicts
-    if (!cancelled.empty()) *stream << "--==## Conflicts ##==--\n";
-    for (const Meeting* m : cancelled)
+    if (cancelled.empty()) *stream << "--==## No cancelled meetings ##==--\n\n";
+    else
     {
+        *stream << "--==## Cancelled meetings ##==--\n\n";
+        for (const Meeting* m : cancelled)
+        {
+            printMeeting(m);
+            //*stream << "\n";
+        }
         *stream << "\n";
-        printMeeting(m);
     }
+
+    *stream << std::flush;
 }
 
 void StreamOutput::printRoom(const Room* room)
 {
-    *stream << "[ " << room->toString() << " (" << room->getId() << ") ]\n";
-    *stream << "  - Capacity: " << room->getCapacity() << " people\n";
+    const unsigned cap = room->getCapacity();
+    *stream << "[ " << room->toString() << " (" << room->getId() << ") ]\n"
+    << "  - Capacity: " << cap << (cap == 1 ? " person\n" : " people\n")
+    << "  - Building: " << room->getBuilding()->toString() << " (" << room->getBuilding()->getId() << ")\n"
+    << "  - Campus: " << room->getCampus()->toString() << " (" << room->getCampus()->getId() << ")\n";
 
     *stream << std::flush;
 }
 
 void StreamOutput::printRooms(const Rooms& rooms)
 {
-    if (!rooms.empty()) *stream << "--==## Rooms ##==--\n";
-    for (const std::pair<std::string, Room*> item : rooms)
+    if (rooms.empty())
     {
+        *stream << "--==## No Rooms ##==--\n\n" << std::flush;
+        return;
+    }
+
+    *stream << "--==## Rooms ##==--\n\n";
+
+    for (const std::pair<std::string, Room*> r : rooms)
+    {
+        printRoom(r.second);
         //*stream << "\n";
-        const Room* room = item.second;
-        printRoom(room);
     }
-}
-
-void StreamOutput::printCampus(const Campus* campus)
-{
-    *stream
-    << "[ " << campus->toString() << " (" << campus->getId() << ") ]\n";
-
-
-    if (campus->getCaterings().empty())
-        *stream << "  - No catering\n";
-    else {
-        *stream << "  - Catering:\n";
-        for (const Catering* c : campus->getCaterings())
-        {
-            *stream << "      * " << c->getEmissions() << "g\n";
-        }
-    }
-
-    *stream << std::flush;
+    *stream << std::endl;
 }
 
 
