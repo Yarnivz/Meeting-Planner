@@ -44,7 +44,7 @@ public:
      * @param r Room to be copied
      */
     Room(const Room& r);
-
+    Room& operator=(const Room& r);
 
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.
@@ -52,9 +52,17 @@ public:
      */
     bool isProperlyInitialized() const;
 
+    /**
+    * @brief Gets the rooms building
+    * @return the building itself
+    */
     Building* getBuilding() const;
-    Campus* getCampus() const;
 
+    /**
+    * @brief Gets the rooms campus
+    * @return the campus itself
+    */
+    Campus* getCampus() const;
 
     /**
      * @brief Id getter.

@@ -4,7 +4,7 @@ ROOM must have a CAPACITY property
 ROOM must have a IDENTIFIER property
 ROOM must have a NAME property
 Failed to parse MEETING element: 
-	Date 2026-02-29 does not exist.
+	Date: '2026-02-29' does not exist.
 Failed to parse MEETING element: 
 	Hour must be non-negative and smaller than 24, not 39.
 PARTICIPATION must have a MEETING property

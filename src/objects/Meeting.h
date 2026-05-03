@@ -30,11 +30,17 @@ public:
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
      * @param date_time of when the meeting takes/took place
-     * @param order order in which the meeting is added to the system
+     * @param online status of the meeting
+     * @param externals_allowed status of the meeting
+     * @param catering_needed status of the meeting
      */
     Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
 
+    /**
+     * @brief prevents the Meeting object from being copied
+     */
     Meeting(const Meeting&) = delete;
+    Meeting& operator=(const Meeting&) = delete;
 
     /**
      * @brief Checks whether this Participation was properly initialized by the constructor.
@@ -101,31 +107,54 @@ public:
      */
     void setOrder(const int orderAdded);
 
-
     /**
+     * @brief processes the meeting
      *
      * @pre Something went wrong. Meeting was not processed.
-     *
      *
      * @post Meeting was already processed or canceled.
      */
     void process();
+
     /**
+     * @brief cancels the meeting and updates the reason for it
      *
-     *@pre Something went wrong. Meeting was not cancelled.
+     * @pre Something went wrong. Meeting was not cancelled.
      *
+     * @param the reason for the meetings cancellation
      *
-     *@post Meeting was already processed or canceled
+     * @post Meeting was already processed or canceled
      */
     void cancel(const std::string& reason);
 
+    /**
+     * @brief Checks wether the meeting is unprocessed.
+     * @return bool indicating result
+     */
     bool isUnProcessed() const;
 
+    /**
+     * @brief Checks wether the meeting is processed.
+     * @return bool indicating result
+     */
     bool isProcessed() const;
 
+    /**
+     * @brief Checks wether the meeting is cancelled.
+     * @return bool indicating result
+     */
     bool isCancelled() const;
 
+    /**
+     * @brief Checks wether the meeting allows external users.
+     * @return bool indicating result
+     */
     bool externalsAllowed() const;
+
+    /**
+     * @brief Checks wether the meeting needs catering.
+     * @return bool indicating result
+     */
     bool cateringNeeded() const;
 
     /**
@@ -138,11 +167,12 @@ public:
      */
     bool isOnline() const;
 
-
-
     /**
+     * @brief gets the reason on why on the meeting is cancelled
      *
-     *@post Meeting was not cancelled.
+     * @post Meeting was not cancelled.
+     *
+     * @return the meetings cancellation reason as a string
      */
     const std::string& getCancellationReason() const;
 
@@ -156,6 +186,7 @@ public:
      *
      * @param os stream to write to
      * @param meeting to print out
+     *
      * @post ostream variable is not usable
      */
     friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
@@ -169,29 +200,54 @@ public:
      *
      */
     ~Meeting();
+    /**
+    * @brief adds the users to the meetings Meetingregistery
+    *
+    * @pre User can not be null
+    *
+    * @param user the user to add
+    */
+    void addParticipant(User* user);
 
     /**
-     *
-     * @pre User can not be null
-     *
-     */
-    void addParticipant(User* user);
-    /**
+     * @brief calculates the amount of co2 the meeting uses
      *
      * @pre UserId cannot be empty
      *
-     *
      * @post Something went wrong, The user which was found did not have the correct id.
+     *
+     * @return the total co2 emission amount
      */
     float getEmissions() const;
+
+    /**
+     * @brief gets the user in the meeting that corresponds to the id
+     * @param userId the Id of the user
+     * @return the user itself
+     */
     User* getParticipant(const std::string& userId) const;
 
+    /**
+     * @brief checks whether the user is in this meeting
+     * @param user the user itself
+     * @return bool indicating result
+     */
     bool hasParticipant(const User* user) const;
 
+    /**
+     * @brief gets the amount of participants in this meeting.
+     * @return the amount of participants
+     */
     size_t getParticipantCount() const;
+
+    /**
+     * @brief Gets all participants in the meeting.
+     * @return a map containing the participants
+     */
     const Users& getParticipants() const;
 
 private:
+
     /**
      *
      * @pre User can not be null

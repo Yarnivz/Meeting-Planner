@@ -107,7 +107,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         }
 
         // This will automatically add the catering to the correct campus
-        new Catering(campus, c.co2_count);
+        caterings.push_back(new Catering(campus, c.co2_count));
     }
 
     for (const MeetingElement& m : parser->parsedMeetings())
@@ -309,21 +309,25 @@ Campus* App::getCampus(const std::string& campusId) const
 
 bool App::hasCampus(const Campus* campus) const
 {
+    REQUIRE(campus, "campus cannot be null.");
     return campus && getCampus(campus->getId()) == campus;
 }
 
 bool App::hasRoom(const Room* room) const
 {
+    REQUIRE(room, "room cannot be null.");
     return room && getRoom(room->getId()) == room;
 }
 
 bool App::hasMeeting(const Meeting* meeting) const
 {
+    REQUIRE(meeting, "meeting cannot be null.");
     return meeting && getMeetingById(meeting->getId()) == meeting;
 }
 
 bool App::hasUser(const User* user) const
 {
+    REQUIRE(user, "user cannot be null.");
     return user && getUser(user->getId()) == user;
 }
 
@@ -355,6 +359,7 @@ Building* App::getBuilding(const std::string& buildingId) const
 
 bool App::hasBuilding(const Building* building) const
 {
+    REQUIRE(building, "building cannot be null.");
     return building && getBuilding(building->getId()) == building;
 }
 
@@ -453,6 +458,7 @@ Meeting* App::getMeetingById(const std::string& meetingId) const
 
 std::list<Meeting*>& App::getMeetingsByDateTime(const DateTime& meetingDateTime)
 {
+    //ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must exist in MeetingRegistry.");
     return meetings.getByDateTime(meetingDateTime);
 }
 
@@ -507,6 +513,7 @@ bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
 {
     const User* u = getUser(userId);
     REQUIRE(u, "User must be registered.");
+    REQUIRE(date_time.isProperlyInitialized(), "DateTime must be properly initialized");
 
     std::list<Meeting*>& possible_occupations = getMeetingsByDateTime(date_time);
 

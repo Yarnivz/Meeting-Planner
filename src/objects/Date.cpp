@@ -43,19 +43,43 @@ Date::Date(const Date& d)
     ENSURE(getYear() == year, "Year was not set.");
 }
 
+Date& Date::operator=(const Date& d)
+{
+    if (this == &d) return *this;
+
+    REQUIRE(d.isProperlyInitialized(), "Tried to copy a date which was not properly initialized by the constructor.");
+
+    year = d.year;
+    month = d.month;
+    day = d.day;
+
+    init_test_this_ptr = this; //Reset this pointer, do not copy it from the other date.
+
+    ENSURE(isProperlyInitialized(), "Date was not properly initialized.");
+    ENSURE(getDay() == day, "Day was not set.");
+    ENSURE(getMonth() == month, "Month was not set.");
+    ENSURE(getYear() == year, "Year was not set.");
+
+    return *this;
+}
+
 
 Date::Date(int year, int month, int day)
 {
-    //REQUIRE(year > 0, "Year can not be negative!");
-    REQUIRE(month > 0, "Month can not be negative!");
-    REQUIRE(day > 0, "Day can not be negative!");
+    REQUIRE(year > 0, "Year can not be negative! %i", year);
+    REQUIRE(month > 0, "Month can not be negative! %i", month);
+    REQUIRE(day > 0, "Day can not be negative! %i", day);
 
-    std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)};
+    //Cast to unsigned
+    unsigned int umonth = month;
+    unsigned int uday = day;
+
+    std::chrono::year_month_day date{std::chrono::year(year), std::chrono::month(umonth), std::chrono::day(uday)};
 
     REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!");
     this->year = year;
-    this->month = month;
-    this->day = day;
+    this->month = umonth;
+    this->day = uday;
 
     init_test_this_ptr = this;
 

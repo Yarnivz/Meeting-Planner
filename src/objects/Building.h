@@ -32,7 +32,11 @@ public:
      */
     Building(const std::string& name, const std::string& id, Campus* campus);
 
-    Building(const Building& b) = delete;
+    /**
+     * @brief prevents the Building object from being copied
+     */
+    Building(const Building&) = delete;
+    Building& operator=(const Building&) = delete;
 
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.

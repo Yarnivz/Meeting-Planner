@@ -85,6 +85,12 @@ public:
      * @post The found campus must have the right id.
      */
     Campus* getCampus(const std::string& campusId) const;
+    
+    /**
+     * @brief Checks whether the Apps campus map contains the corresponding campus
+     * @param campus The campus to be found
+     * @return bool indicating result
+     */
     bool hasCampus(const Campus* campus) const;
 
     /**
@@ -114,7 +120,12 @@ public:
      * @post The found building must have the right id.
      */
     Building* getBuilding(const std::string& buildingId) const;
-
+    
+    /**
+     * @brief Checks whether the Apps buildings map contains the corresponding building
+     * @param building The building to be found
+     * @return bool indicating result
+     */
     bool hasBuilding(const Building* building) const;
     /**
      * @brief Register a room.
@@ -142,6 +153,12 @@ public:
      * @post Something went wrong. The room which was found did not have the right id.
      */
     Room* getRoom(const std::string& roomId) const;
+
+    /**
+     * @brief Checks whether the Apps rooms map contains the corresponding room
+     * @param room The room to be found
+     * @return bool indicating result
+     */
     bool hasRoom(const Room* room) const;
 
     /**
@@ -211,20 +228,32 @@ public:
     std::list<Meeting*>& getMeetingsByDateTime(const DateTime& meetingDateTime);
     bool hasMeeting(const Meeting* meeting) const;
 
+    /**
+     * @brief Gets the MeetingRegistry from the App
+     * @return the MeetingRegistry itself
+     */
     const MeetingRegistry& getMeetingRegistry() const;
 
 
     /**
+     * @brief add the user to the apps map of users
      *
-     *@pre User can not be null
-     *@pre User needs to be properly initialized.
-     *@pre Something went wrong. User was not added.
+     * @pre User can not be null
+     * @pre User needs to be properly initialized.
+     *
+     * @param user The user to be added
+     *
+     * @pre Something went wrong. User was not added.
      *
      */
     void addUser(User* user);
     /**
+     * @brief Gets the user that corresponds to the id from the Apps map
+     * @param userId the users id
+     * 
+     * @post Something went wrong, The user which was found did not have the correct id.
      *
-     *@post Something went wrong, The user which was found did not have the correct id.
+     * @return the user itself
      */
     User* getUser(const std::string& userId) const;
     bool hasUser(const User* user) const;
@@ -232,13 +261,15 @@ public:
 
 
     /**
+     * @brief Adds the user that corresponds to the user id to the meeting that corresponds to the meeting id
+     * @pre This meeting doesn't exist: '%s'
+     * @pre This user doesn't exist: '%s'
      *
-     *@pre This meeting doesn't exist: '%s'
-     *@pre This user doesn't exist: '%s'
+     * @param userId The id of the user
+     * @param meetingId The id of the meeting
      *
-     *
-     *@post Something went wrong. The participant '%s' was not added to meeting '%s'.
-     *@post Something went wrong. The meeting '%s' was not added to user '%s'.
+     * @post Something went wrong. The participant '%s' was not added to meeting '%s'.
+     * @post Something went wrong. The meeting '%s' was not added to user '%s'.
      */
     void addUserToMeeting(const std::string& userId, const std::string& meetingId);
 
@@ -266,7 +297,7 @@ public:
     /**
      *@brief Check this planned meeting for conflicting rooms/dates.
      *
-     * Retrieves a meeting using its Id and uses it check wether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
+     * Retrieves a meeting using its Id and uses it check whether other planned meetings of the same room/date conflicts with this one and cancels/plans it accordingly.
      *
      * @param meetingId Identifier of the meeting to retrieve.
      * @param verbose Prints text to console when enabled. This option is enabled by default.
