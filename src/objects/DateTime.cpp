@@ -72,9 +72,6 @@ DateTime::DateTime(int year, int month, int day, int hour) : Date(year, month, d
     unsigned int uday = day;
     unsigned int uhour = hour;
 
-    this->year = year;
-    this->month = umonth;
-    this->day = uday;
     this->hour = uhour;
 
     //init_test_this_ptr = this;
@@ -132,43 +129,29 @@ std::ostream& operator<<(std::ostream& os, const DateTime& DateTime)
 
 bool DateTime::operator==(const DateTime& other) const
 {
-    return (other.day == day && other.month == month && other.year == year && other.hour == hour);
+    return (Date::operator==(other) && other.hour == hour);
 }
 
 bool DateTime::operator<(const DateTime& other) const
 {
-    if (year != other.year) return year < other.year;
-    if (month != other.month) return month < other.month;
-    if (day != other.day) return day < other.day;
-    if (hour != other.hour) return hour < other.hour;
-    return false;
+    if (Date::operator<(other)) return true;
+    return hour < other.hour;
 }
 
 bool DateTime::operator>(const DateTime& other) const
 {
-    if (year != other.year) return year > other.year;
-    if (month != other.month) return month > other.month;
-    if (day != other.day) return day > other.day;
-    if (hour != other.hour) return hour > other.hour;
-    return false;
+    if (Date::operator>(other)) return true;
+    return hour > other.hour;
 }
 
 bool DateTime::operator<=(const DateTime& other) const
 {
-    if (year != other.year) return year < other.year;
-    if (month != other.month) return month < other.month;
-    if (day != other.day) return day < other.day;
-    if (hour != other.hour) return hour < other.hour;
-    return true;
+    return operator==(other) || operator<(other);
 }
 
 bool DateTime::operator>=(const DateTime& other) const
 {
-    if (year != other.year) return year > other.year;
-    if (month != other.month) return month > other.month;
-    if (day != other.day) return day > other.day;
-    if (hour != other.hour) return hour > other.hour;
-    return true;
+    return operator==(other) || operator>(other);
 }
 
 DateTime::~DateTime() = default;
