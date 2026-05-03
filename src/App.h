@@ -173,6 +173,8 @@ public:
      *
      * @post Room must not be null
      * @post Room must have the right id.
+     *
+     * @return a pointer to the room with given id if it exists, nullptr otherwise
      */
     Room* getRoom(const std::string& roomId) const;
 
@@ -225,13 +227,13 @@ public:
      *    -Another meeting takes place on the same date, in the same room
      *    -That meeting was registered as 'done"
      *
-     *
-     *
-     *
      * @pre This meeting must exist.
      *
      * @param meetingId Identifier of the meeting to check
+     *
      * @post Meetings must properly be found by date
+     *
+     * @return pointer to the conflicting meeting; nullptr if no conflict exists
      */
     Meeting* findConflictingMeeting(const std::string& meetingId);
 
@@ -280,11 +282,12 @@ public:
      * @brief add the user to the apps map of users
      *
      *
-     *
      * @pre User can not be null.
      * @pre User must be properly initialized.
      * @pre User ids must be unique.
      * @pre User must be added to the App.
+     *
+     * @param user The user to be added
      *
      */
     void addUser(User* user);
@@ -296,6 +299,7 @@ public:
      *
      * @post User must not be null.
      * @post User must have the correct id.
+     *
      * @return the user itself
      */
     User* getUser(const std::string& userId) const;
