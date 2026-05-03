@@ -15,12 +15,12 @@
 static inline bool parse_boolean(std::string s)
 {
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-    if (s == "true")
+    if (s == "true" || s == "1")
     {
         return true;
     }
 
-    if (s == "false")
+    if (s == "false" || s == "0")
     {
         return false;
     }
@@ -28,6 +28,37 @@ static inline bool parse_boolean(std::string s)
     throw std::exception();
 }
 
+static inline bool parse_date (const std::string& input, Date& output, std::string& parseError)
+{
+    //Try to convert to DateTime check
+    int day = 0;
+    int month = 0;
+    int year = 0;
+
+    try
+    {
+        day = std::stoi(input.substr(8, 2));
+        month = std::stoi(input.substr(5, 2));
+        year = std::stoi(input.substr(0, 4));
+    }
+    catch (std::exception& except)
+    {
+        parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
+        return false;
+    }
+    std::chrono::year_month_day chrono_date = {
+        std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
+    };
+    //Check if date exists
+    if (!chrono_date.ok() || year <= 0)
+    {
+        parseError = "Date " + input + " does not exist.";
+        return false;
+    }
+
+    output = Date(year, month, day);
+    return true;
+}
 
 XmlParser::XmlParser(std::ostream& errorStream): Parser(errorStream) {}
 
@@ -1007,210 +1038,224 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
     switch (propValues.at(propType))
     {
         case PropType::IDENTIFIER:
-            {
-                parseObject.identifier = prop;
-                break;
-            }
+        {
+            parseObject.identifier = prop;
+            break;
+        }
         case PropType::NAME:
-            {
-                parseObject.name = prop;
-                break;
-            }
+        {
+            parseObject.name = prop;
+            break;
+        }
         case PropType::LABEL:
-            {
-                parseObject.label = prop;
-                break;
-            }
+        {
+            parseObject.label = prop;
+            break;
+        }
         case PropType::CAMPUS:
-            {
-                parseObject.campus_id = prop;
-                break;
-            }
+        {
+            parseObject.campus_id = prop;
+            break;
+        }
         case PropType::BUILDING:
-            {
-                parseObject.building_id = prop;
-                break;
-            }
+        {
+            parseObject.building_id = prop;
+            break;
+        }
         case PropType::CAPACITY:
+        {
+            int capacity;
+            //Try to convert to int check
+            try
             {
-                int capacity;
-                //Try to convert to int check
-                try
+                capacity = std::stoi(prop);
+                //Check if capacity is < 0
+                if (capacity < 0)
                 {
-                    capacity = std::stoi(prop);
-                    //Check if capacity is < 0
-                    if (capacity < 0)
-                    {
-                        parseError = std::string("Capacity could not be converted to an integer (value is negative)");
-                        return false;
-                    }
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
+                    parseError = std::string("Capacity could not be converted to an integer (value is negative)");
                     return false;
                 }
-                parseObject.capacity = capacity;
-                break;
             }
-        case PropType::ROOM:
+            catch (std::exception& except)
             {
-                parseObject.room_id = prop;
-                break;
-            }
-        case PropType::ONLINE:
-            {
-                bool online;
-                try
-                {
-                    online = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("ONLINE: ") + prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.online = online;
-                break;
-            }
-        case PropType::DATE:
-            {
-                //Try to convert to DateTime check
-                int day = 0;
-                int month = 0;
-                int year = 0;
-
-                try
-                {
-                    day = std::stoi(prop.substr(8, 2));
-                    month = std::stoi(prop.substr(5, 2));
-                    year = std::stoi(prop.substr(0, 4));
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
-                    return false;
-                }
-                std::chrono::year_month_day chrono_date = {
-                    std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
-                };
-                //Check if date exists
-                if (!chrono_date.ok() || year <= 0)
-                {
-                    parseError = "Date " + prop + " does not exist.";
-                    return false;
-                }
-
-                parseObject.year = year;
-                parseObject.month = month;
-                parseObject.day = day;
-                break;
-            }
-        case PropType::HOUR:
-            {
-                int hour;
-                //Try to convert to int
-                try
-                {
-                    hour = std::stoi(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("Hour value could not be converted to an integer: \n\t- ") + except.what();
-                    return false;
-                }
-                //Check if int >= 0 and int < 24
-                if (hour < 0 || hour > 23)
-                {
-                    parseError = std::string("Hour must be non-negative and smaller than 24, not ") + prop + ".";
-                    return false;
-                }
-                
-                parseObject.hour = hour;
-                break;
-            }
-        case PropType::EXTERNALS:
-            {
-                bool externals;
-                try
-                {
-                    externals = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.externals = externals;
-                break;
-            }
-        case PropType::USER:
-            {
-                parseObject.user_id = prop;
-                break;
-            }
-        case PropType::EXTERNAL:
-            {
-                bool external;
-                try
-                {
-                    external = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.external = external;
-                break;
-            }
-        case PropType::MEETING:
-            {
-                parseObject.meeting_id = prop;
-                break;
-            }
-        case PropType::CO2:
-            {
-                float co2;
-                //Try to convert to int check
-                try
-                {
-                    co2 = std::stof(prop);
-                    //Check if co2 is < 0
-                    if (co2 < 0)
-                    {
-                        parseError = std::string("CO2 could not be converted to a float (value is negative)");
-                        return false;
-                    }
-                }
-                catch (std::exception& except)
-                {
-                    parseError = std::string("CO2 could not be converted to a float\n\t- ") + except.what();
-                    return false;
-                }
-                parseObject.co2_count = co2;
-                break;
-            }
-    case PropType::CATERINGNEEDED:
-            {
-                bool catering;
-                try
-                {
-                    catering = parse_boolean(prop);
-                }
-                catch (std::exception& except)
-                {
-                    parseError = prop + std::string(" could not be converted to a bool");
-                    return false;
-                }
-                parseObject.catering_needed = catering;
-                break;
-            }
-        default:
-            {
-                parseError = std::string("Property exists in property_map but isn't defined in switch case: ") + prop;
+                parseError = std::string("Capacity could not be converted to an integer\n\t- ") + except.what();
                 return false;
             }
+            parseObject.capacity = capacity;
+            break;
+        }
+        case PropType::ROOM:
+        {
+            parseObject.room_id = prop;
+            break;
+        }
+        case PropType::ONLINE:
+        {
+            bool online;
+            try
+            {
+                online = parse_boolean(prop);
+            }
+            catch (std::exception& except)
+            {
+                parseError = std::string("ONLINE: ") + prop + std::string(" could not be converted to a bool");
+                return false;
+            }
+            parseObject.online = online;
+            break;
+        }
+        case PropType::DATE:
+        {
+            //Try to convert to DateTime check
+            int day = 0;
+            int month = 0;
+            int year = 0;
+
+            try
+            {
+                day = std::stoi(prop.substr(8, 2));
+                month = std::stoi(prop.substr(5, 2));
+                year = std::stoi(prop.substr(0, 4));
+            }
+            catch (std::exception& except)
+            {
+                parseError = std::string("Date value could not be converted to a date format: \n\t- ") + except.what();
+                return false;
+            }
+            std::chrono::year_month_day chrono_date = {
+                std::chrono::year(year), std::chrono::month(month), std::chrono::day(day)
+            };
+            //Check if date exists
+            if (!chrono_date.ok() || year <= 0)
+            {
+                parseError = "Date " + prop + " does not exist.";
+                return false;
+            }
+
+            parseObject.year = year;
+            parseObject.month = month;
+            parseObject.day = day;
+            break;
+        }
+        case PropType::HOUR:
+        {
+            int hour;
+            //Try to convert to int
+            try
+            {
+                hour = std::stoi(prop);
+            }
+            catch (std::exception& except)
+            {
+                parseError = std::string("Hour value could not be converted to an integer: \n\t- ") + except.what();
+                return false;
+            }
+            //Check if int >= 0 and int < 24
+            if (hour < 0 || hour > 23)
+            {
+                parseError = std::string("Hour must be non-negative and smaller than 24, not ") + prop + ".";
+                return false;
+            }
+
+            parseObject.hour = hour;
+            break;
+        }
+        case PropType::EXTERNALS:
+        {
+            bool externals;
+            try
+            {
+                externals = parse_boolean(prop);
+            }
+            catch (std::exception& except)
+            {
+                parseError = prop + std::string(" could not be converted to a bool");
+                return false;
+            }
+            parseObject.externals = externals;
+            break;
+        }
+        case PropType::USER:
+        {
+            parseObject.user_id = prop;
+            break;
+        }
+        case PropType::EXTERNAL:
+        {
+            bool external;
+            try
+            {
+                external = parse_boolean(prop);
+            }
+            catch (std::exception& except)
+            {
+                parseError = prop + std::string(" could not be converted to a bool");
+                return false;
+            }
+            parseObject.external = external;
+            break;
+        }
+        case PropType::MEETING:
+        {
+            parseObject.meeting_id = prop;
+            break;
+        }
+        case PropType::CO2:
+        {
+            float co2;
+            //Try to convert to int check
+            try
+            {
+                co2 = std::stof(prop);
+                //Check if co2 is < 0
+                if (co2 < 0)
+                {
+                    parseError = std::string("CO2 could not be converted to a float (value is negative)");
+                    return false;
+                }
+            }
+            catch (std::exception& except)
+            {
+                parseError = std::string("CO2 could not be converted to a float\n\t- ") + except.what();
+                return false;
+            }
+            parseObject.co2_count = co2;
+            break;
+        }
+        case PropType::CATERINGNEEDED:
+        {
+            bool catering;
+            try
+            {
+                catering = parse_boolean(prop);
+            }
+            catch (std::exception& except)
+            {
+                parseError = prop + std::string(" could not be converted to a bool");
+                return false;
+            }
+            parseObject.catering_needed = catering;
+            break;
+        }
+        case PropType::STARTDATE:
+        {
+            Date startDate;
+            if (!parse_date(prop, startDate, parseError)) return false;
+            parseObject.start_date = startDate;
+            break;
+        }
+        case PropType::ENDDATE:
+        {
+            Date startDate;
+            if (!parse_date(prop, startDate, parseError)) return false;
+            parseObject.start_date = startDate;
+            break;
+        }
+        default:
+        {
+            parseError = std::string("Property exists in property_map but isn't defined in switch case: ") + prop;
+            return false;
+        }
     }
     return true;
 }
