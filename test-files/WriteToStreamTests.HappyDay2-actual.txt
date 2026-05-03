@@ -1,25 +1,55 @@
+--==## No past meetings ##==--
+
 --==## Future meetings ##==--
 
 [ Important Meeting 2 (m2) ]
   - Time: 01/01/2026, 21h00
   - Location: M.G.025
-  - CO2 emitted: 999g
+  - CO2 emitted: 480g
   - Participants: 
       * Alice
       * Bob
       * Charlie
       * David
-
 [ Important Meeting 1 (m1) ]
   - Time: 12/12/2025, 20h00
   - Location: M.G.025
-  - CO2 emitted: 999g
+  - CO2 emitted: 360g
   - Participants: 
       * Jane Doe
       * John Doe
       * Peter Selie
+
+--==## No cancelled meetings ##==--
+
 --==## Rooms ##==--
+
 [ G.T.103 (GT103) ]
   - Capacity: 15 people
+  - Building: Bib (G)
+  - Campus: Middelheim (M)
 [ M.G.025 (MG025) ]
   - Capacity: 20 people
+  - Building: Bib (G)
+  - Campus: Middelheim (M)
+
+--==## Buildings ##==--
+
+[ Bib (G) ]
+  - Campus: Middelheim (M)
+
+--==## Campuses ##==--
+
+[ Middelheim (M) ]
+  - No catering
+
+--==## Users ##==--
+
+[ Alice ]
+[ Bob ]
+[ Charlie ]
+[ David ]
+[ Jane Doe ]
+[ John Doe ]
+[ Peter Selie ]
+
