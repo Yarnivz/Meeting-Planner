@@ -21,10 +21,10 @@ TEST_F(TestApp, HappyDay1)
     DateTime date2 = DateTime(2026, 3, 4, 0);
 
     //possibly diversify bulding and campus later for extra tests
-    Campus* campus1 = new Campus ("Middelheim", "M");
-    Building* building1 = new Building("Bib", "G", campus1);
-    p.addCampus(campus1);
-    p.addBuilding(building1);
+    Campus* campus1;
+    Building* building1;
+    p.addCampus(campus1 = new Campus ("Middelheim", "M"));
+    p.addBuilding(building1 = new Building("Bib", "G", campus1));
 
     Room* room1 = new Room("Room 1", "r1", 20, building1);
     Room* room2 = new Room("Room 2", "r2", 20, building1);
@@ -58,30 +58,29 @@ TEST_F(TestApp, HappyDay1)
     ASSERT_EQ(m2, p.getMeetingById("m2"));
     ASSERT_EQ(m3, p.getMeetingById("m3"));
     ASSERT_EQ(m4, p.getMeetingById("m4"));
+    EXPECT_EQ(size_t(4), p.getMeetingRegistry().getRawIdMap().size());
 
     User* johndoe = new User("John Doe", false);
     User* davejone = new User("Dave Jones", false);
-
     p.addUser(johndoe);
     p.addUser(davejone);
-
-    p.getMeetingById("m3")->addParticipant(johndoe);
-    p.getMeetingById("m2")->addParticipant(davejone);
-
     ASSERT_EQ(johndoe, p.getUser("John Doe"));
     ASSERT_EQ(davejone, p.getUser("Dave Jones"));
-
     EXPECT_EQ(size_t(2), p.getAllUsers().size());
+
+    p.addUserToMeeting("John Doe", "m3");
+    p.addUserToMeeting("Dave Jones", "m2");
+
 
     EXPECT_EQ(johndoe, p.getMeetingById("m3")->getParticipant("John Doe"));
     EXPECT_EQ(m3, p.getUser("John Doe")->getMeetingById("m3"));
     EXPECT_EQ(davejone, p.getMeetingById("m2")->getParticipant("Dave Jones"));
     EXPECT_EQ(m2, p.getUser("Dave Jones")->getMeetingById("m2"));
 
-    EXPECT_EQ(size_t(4), p.getMeetingRegistry().getRawIdMap().size());
 
-    p.addMeeting(new Meeting("Meeting 5", "m5", room4, date1));
-
+    Meeting* m5 = new Meeting("Meeting 5", "m5", room4, date1);
+    p.addMeeting(m5);
+    ASSERT_EQ(m5, p.getMeetingById("m5"));
     EXPECT_EQ(size_t(5), p.getMeetingRegistry().getRawIdMap().size());
 
 
@@ -89,7 +88,7 @@ TEST_F(TestApp, HappyDay1)
     p.addRoom(new Room("Room 5", "r5", 20, building1));
     EXPECT_EQ(size_t(6), p.getAllRooms().size());
 
-
+    EXPECT_EQ(size_t(2), p.getAllUsers().size());
     p.addUser(new User("Math Smith", "m2"));
     EXPECT_EQ(size_t(3), p.getAllUsers().size());
 }
@@ -110,7 +109,9 @@ TEST_F(TestApp, RetrieveInvalid)
     EXPECT_EQ(nullptr, p.getMeetingById("m89"));
     //EXPECT_EQ(std::list<Meeting*>{}, p.getMeetingsByDate(Date(1, 2, 3)));
 
-    p.addMeeting(new Meeting("label", "id", new Room("name", "id", 123, building1)));
+    Room* r = new Room("name", "id", 123, building1);
+    p.addRoom(r);
+    p.addMeeting(new Meeting("label", "id", r));
 
     EXPECT_EQ(size_t(0), p.getMeetingById("id")->getParticipantCount());
     EXPECT_EQ(nullptr, p.getMeetingById("id")->getParticipant("john"));
