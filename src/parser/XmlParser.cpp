@@ -247,6 +247,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
                     .end_date = parseObject.end_date
                 });
             };
+            break;
 
         default:
             errorStream << "Object element exists in elementValues map but not in switch case:  " << elementType << std::endl;

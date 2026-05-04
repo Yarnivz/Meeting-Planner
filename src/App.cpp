@@ -230,9 +230,15 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
     REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
 
     Meeting* conflict;
+    const Renovation* renovation;
     if ((conflict = findConflictingMeeting(meetingId)))
     {
         meeting->cancel("conflict with meeting " + conflict->getId());
+        if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
+    }
+    else if ((renovation = meeting->getRoom()->getRenovation(meeting->getDateTime())))
+    {
+        meeting->cancel("unable to book room " + meeting->getRoom()->toString() + " on " + meeting->getDateTime().toString() + " as it is being renovated from " + renovation->first.toString() + " to " + renovation->second.toString());
         if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
     }
     else
