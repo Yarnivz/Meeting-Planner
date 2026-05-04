@@ -431,11 +431,108 @@ TEST_F(TestParseFile, FileNotFound)
 
 TEST_F(TestParseFile, Renovations)
 {
-    const std::string error = "./test-files/TestParseFile.HappyDay1-errors.txt";
-
+    const std::string error = "./test-files/TestParseFile.Renovations-errors.txt";
     std::ofstream errLog(error);
 
     App app = App(new XmlParser(errLog), nullptr);
+    ASSERT_TRUE(app.isProperlyInitialized());
+
+    app.parseFile("./test-files/Renovations.xml");
+
+    // Quickly test if other iteems were read
+    EXPECT_NE(nullptr, app.getCampus("M"));
+    EXPECT_NE(nullptr, app.getCampus("D"));
+    EXPECT_NE(nullptr, app.getCampus("M"));
+
+    EXPECT_NE(nullptr, app.getBuilding("M.G"));
+    EXPECT_NE(nullptr, app.getBuilding("M.A"));
+    EXPECT_NE(nullptr, app.getBuilding("D.M"));
+
+    Room* mg025 = app.getRoom("M.G.025");
+    Room* mg023 = app.getRoom("Room98732");
+    Room* ma043 = app.getRoom("ma-043");
+    Room* dm004 = app.getRoom("Room45605");
+    ASSERT_NE(nullptr, mg025);
+    ASSERT_NE(nullptr, mg023);
+    ASSERT_NE(nullptr, ma043);
+    ASSERT_NE(nullptr, dm004);
+
+
+    { // Check renovation M.G.025
+        const Renovation* before_renov = mg025->getRenovation(Date(2026,3,22));
+        const Renovation* start_renov = mg025->getRenovation(Date(2026,3,23));
+        const Renovation* renov = mg025->getRenovation(Date(2026,4,1));
+        const Renovation* end_renov = mg025->getRenovation(Date(2026,4,20));
+        const Renovation* after_renov = mg025->getRenovation(Date(2026,4,21));
+
+        EXPECT_EQ(nullptr, before_renov);
+        EXPECT_EQ(nullptr, after_renov);
+
+        EXPECT_EQ(start_renov, renov);
+        EXPECT_EQ(end_renov, renov);
+        ASSERT_NE(nullptr, renov);
+
+        EXPECT_EQ(Date(2026,3,23), renov->first);
+        EXPECT_EQ(Date(2026,4,20), renov->second);
+    }
+
+    { // Check renovation M.G.023
+        const Renovation* before_renov = mg023->getRenovation(Date(2026,5,3));
+        const Renovation* start_renov = mg023->getRenovation(Date(2026,5,4));
+        const Renovation* renov = mg023->getRenovation(Date(2026,6,1));
+        const Renovation* end_renov = mg023->getRenovation(Date(2026,7,13));
+        const Renovation* after_renov = mg023->getRenovation(Date(2026,7,14));
+
+        EXPECT_EQ(nullptr, before_renov);
+        EXPECT_EQ(nullptr, after_renov);
+
+        EXPECT_EQ(start_renov, renov);
+        EXPECT_EQ(end_renov, renov);
+        ASSERT_NE(nullptr, renov);
+
+        EXPECT_EQ(Date(2026,5,4), renov->first);
+        EXPECT_EQ(Date(2026,7,13), renov->second);
+    }
+
+    { // Check renovation M.A.043
+        const Renovation* before_renov = ma043->getRenovation(Date(2026,5,25));
+        const Renovation* start_renov = ma043->getRenovation(Date(2026,5,26));
+        const Renovation* renov = ma043->getRenovation(Date(2026,6,1));
+        const Renovation* end_renov = ma043->getRenovation(Date(2026,6,30));
+        const Renovation* after_renov = ma043->getRenovation(Date(2026,7,1));
+
+        EXPECT_EQ(nullptr, before_renov);
+        EXPECT_EQ(nullptr, after_renov);
+
+        EXPECT_EQ(start_renov, renov);
+        EXPECT_EQ(end_renov, renov);
+        ASSERT_NE(nullptr, renov);
+
+
+        EXPECT_EQ(Date(2026,05,26), renov->first);
+        EXPECT_EQ(Date(2026,06,30), renov->second);
+    }
+
+    { // Check renovation M.A.043
+        const Renovation* before_renov = dm004->getRenovation(Date(2026,5,22));
+        const Renovation* start_renov = dm004->getRenovation(Date(2026,5,23));
+        const Renovation* renov = dm004->getRenovation(Date(2026,7,1));
+        const Renovation* end_renov = dm004->getRenovation(Date(2026,8,2));
+        const Renovation* after_renov = dm004->getRenovation(Date(2026,8,3));
+
+        EXPECT_EQ(nullptr, before_renov);
+        EXPECT_EQ(nullptr, after_renov);
+
+        EXPECT_EQ(start_renov, renov);
+        EXPECT_EQ(end_renov, renov);
+        ASSERT_NE(nullptr, renov);
+
+
+        EXPECT_EQ(Date(2026,5,23), renov->first);
+        EXPECT_EQ(Date(2026,8,2), renov->second);
+    }
+
+    EXPECT_TRUE(file_is_empty(error));
 }
 
 //TODO: Add duplicate attribute scenario

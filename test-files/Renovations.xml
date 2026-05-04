@@ -7,6 +7,7 @@
         <NAME>Campus Drie Eiken</NAME>
         <IDENTIFIER>D</IDENTIFIER>
     </CAMPUS>
+
     <BUILDING>
         <NAME>Gebouw G</NAME>
         <IDENTIFIER>M.G</IDENTIFIER>
@@ -22,6 +23,7 @@
         <IDENTIFIER>D.M</IDENTIFIER>
         <CAMPUS>D</CAMPUS>
     </BUILDING>
+
     <ROOM>
         <NAME>M.G.025</NAME>
         <IDENTIFIER>M.G.025</IDENTIFIER>
@@ -50,6 +52,7 @@
         <CAMPUS>D</CAMPUS>
         <BUILDING>D.M</BUILDING>
     </ROOM>
+
     <MEETING>
         <LABEL>Press Conference</LABEL>
         <IDENTIFIER>Meeting_263514</IDENTIFIER>
@@ -70,6 +73,7 @@
         <EXTERNALS>False</EXTERNALS>
         <CATERING>False</CATERING>
     </MEETING>
+
     <PARTICIPATION>
         <MEETING>Meeting_478463</MEETING>
         <USER>Mark Zuckerberg</USER>
@@ -85,6 +89,8 @@
         <USER>Jane Doe</USER>
         <EXTERNAL>False</EXTERNAL>
     </PARTICIPATION>
+
+
     <RENOVATION>
         <ROOM>M.G.025</ROOM>
         <START>2026-03-23</START>
