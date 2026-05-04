@@ -266,7 +266,7 @@ public:
 
     /**
      *
-     *@pre meeting cannot be null.
+     * @pre meeting cannot be null.
      *
      */
     bool hasMeeting(const Meeting* meeting) const;
@@ -306,7 +306,7 @@ public:
 
     /**
      *
-     *@pre user cannot be null.
+     * @pre user cannot be null.
      *
      */
     bool hasUser(const User* user) const;

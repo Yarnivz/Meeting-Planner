@@ -91,9 +91,9 @@ private:
 
     /**
      *
-     *@pre Catering cannot be null
-     *@pre Catering must be properly initialized
-     *@pre Caterings campus does not match this.
+     * @pre Catering cannot be null
+     * @pre Catering must be properly initialized
+     * @pre Caterings campus does not match this.
      *
      */
     void _addCatering(Catering* c);

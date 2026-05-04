@@ -96,7 +96,7 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             currentFunction.pop_back();
             std::cout << "currentfunctionbase is " << currentFunction << std::endl;
             // finds all contracts in the functions cpp file
-            getCodeContracts(baseFilename,  multicomment, currentFunction, codeFileLines, preContracts, postContracts);
+            getCodeContracts(baseFilename,  multicomment, codeFileLines,currentFunction ,preContracts, postContracts);
 
             size_t documentationFirstLine = 0;
             size_t documentationLastLine = 0;
@@ -224,11 +224,29 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
     writableHeaderFile.close();
 }
 
-void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFilename, bool& multicomment, const std::string& currentFunction, const std::vector<std::string>& codeFileLines, std::vector<std::string>& preContracts, std::vector<std::string>& postContracts)
+void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFilename, bool& multicomment, const std::vector<std::string>& codeFileLines, std::string currentFunction, std::vector<std::string>& preContracts, std::vector<std::string>& postContracts)
 {
     int layer = 0;
     bool functionFound = false;
     bool processingFunction = false;
+
+    if (currentFunction.find(baseFilename+'(') != std::string::npos)
+    {
+        for (size_t c = 0; c < size_t(std::count(currentFunction.begin(), currentFunction.end(), '=')) ; ++c)
+        {
+            size_t startCharacterIndex = currentFunction.find('=');
+            size_t endCharacterIndex = currentFunction.find_first_of(",;", startCharacterIndex);
+            if (currentFunction[endCharacterIndex] == ',')
+            {
+                currentFunction.erase(startCharacterIndex-1, endCharacterIndex);
+            } else
+            {
+                currentFunction.erase(startCharacterIndex-1, endCharacterIndex-1);
+            }
+        }
+        std::cout << "i have the " << currentFunction << std::endl;
+    }
+
     for (const std::string& codeFileLine : codeFileLines)
     {
         // multiline comment detection may be little bugged, might have to look further into it
@@ -246,18 +264,8 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
         {
             continue;
         }
+
         std::string tempFunctionLine = codeFileLine;
-        if (tempFunctionLine.find(baseFilename+'(') != std::string::npos)
-        {
-           for (size_t c = 1; c < size_t(std::count(tempFunctionLine.begin(), tempFunctionLine.end(), '=')) ; ++c)
-           {
-               size_t startCharacterIndex = tempFunctionLine.find('=');
-               size_t endCharacterIndex = tempFunctionLine.find_first_of(",;", startCharacterIndex);
-               tempFunctionLine.erase(startCharacterIndex-1, endCharacterIndex);
-           }
-        }
-
-
         std::string stringToRemove = baseFilename + "::";
         size_t removeStringIndex = tempFunctionLine.find(stringToRemove);
         if (removeStringIndex != std::string::npos)

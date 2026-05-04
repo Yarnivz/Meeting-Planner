@@ -11,6 +11,12 @@
 
 class StreamOutput : public Output {
 public:
+
+    /**
+     *
+     * @pre 'stream' can't be null
+     *
+     */
     StreamOutput(std::ostream* stream = &std::cout);
 
     void printUser(const User* user) override;

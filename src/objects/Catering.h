@@ -13,14 +13,14 @@ public:
 
     /**
      *
-     *@pre The emission level can't be negative: %f
-     *@pre Campus can't be null
+     * @pre The emission level can't be negative: %f
+     * @pre Campus can't be null
      *
      *
-     *@post Campus must be set correctly.
-     *@post Emissions must be set correctly.
-     *@post Catering must be properly initialized.
-     *@post Catering must be added to the campus
+     * @post Campus must be set correctly.
+     * @post Emissions must be set correctly.
+     * @post Catering must be properly initialized.
+     * @post Catering must be added to the campus
      */
     Catering(Campus* campus, float co2);
 

@@ -41,13 +41,13 @@ public:
 
     /**
      *
-     *@pre Tried to copy a date which was not properly initialized by the constructor.
+     * @pre Tried to copy a date which was not properly initialized by the constructor.
      *
      *
-     *@post Date was not properly initialized.
-     *@post Day was not set.
-     *@post Month was not set.
-     *@post Year was not set.
+     * @post Date was not properly initialized.
+     * @post Day was not set.
+     * @post Month was not set.
+     * @post Year was not set.
      */
     Date& operator=(const Date& d);
 

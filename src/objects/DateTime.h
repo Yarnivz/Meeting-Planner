@@ -44,14 +44,14 @@ public:
 
     /**
      *
-     *@pre Tried to copy a DateTime which was not properly initialized by the constructor.
+     * @pre Tried to copy a DateTime which was not properly initialized by the constructor.
      *
      *
-     *@post DateTime creation failed. Year was not set correctly.
-     *@post DateTime creation failed. Month was not set correctly.
-     *@post DateTime creation failed. Day was not set correctly.
-     *@post DateTime creation failed. Hour was not set correctly.
-     *@post DateTime creation failed. Constructor did not properly initialize.
+     * @post DateTime creation failed. Year was not set correctly.
+     * @post DateTime creation failed. Month was not set correctly.
+     * @post DateTime creation failed. Day was not set correctly.
+     * @post DateTime creation failed. Hour was not set correctly.
+     * @post DateTime creation failed. Constructor did not properly initialize.
      */
     DateTime& operator=(const DateTime& d);
 
@@ -59,10 +59,20 @@ public:
      * @brief Creates the DateTime class.
      * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
+     * 
+     * @pre Hour can't be negative! %i
+     * @pre Hour must be less than 24! %i
+     * 
      * @param year
      * @param month
      * @param day
      * @param hour
+     * 
+     * @post Year must be set correctly in order to create DateTime.
+     * @post Month must be set correctly in order to create DateTime.
+     * @post Day must be set correctly in order to create DateTime.
+     * @post Hour must be set correctly in order to create DateTime.
+     * @post Constructor must be properly initialized in order to create DateTime.
      */
     DateTime(int year, int month, int day, int hour = 0);
 
@@ -70,8 +80,19 @@ public:
      * @brief Creates the DateTime class.
      * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
+     * 
+     * @pre The given date must be properly initialized
+     * @pre Hour can't be negative! %i
+     * @pre Hour must be less than 24! %i
+     * 
      * @param date
      * @param hour
+     * 
+     * @post Year must be set correctly in order to create DateTime.
+     * @post Month must be set correctly in order to create DateTime.
+     * @post Day must be set correctly in order to create DateTime.
+     * @post Hour must be set correctly in order to create DateTime.
+     * @post Constructor must be properly initialized in order to create DateTime.
      */
     DateTime(const Date& date, int hour = 0);
 

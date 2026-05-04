@@ -24,6 +24,7 @@ public:
      * @param name The users name
      * @param external The external status of the user
      *
+     * 
      * @post User creation failed. Object was not properly initialized.
      * @post User creation failed. Name/Id was not correctly set.
      * @post User creation failed. External flag was not correctly set.
@@ -48,12 +49,12 @@ public:
 
     /**
      *
-     *@pre Attempted to copy a User which was not properly initialized.
+     * @pre Attempted to copy a User which was not properly initialized.
      *
      *
-     *@post User copy failed. Object was not properly initialized.
-     *@post User creation failed. Name/Id was not correctly set.
-     *@post User creation failed. External flag was not correctly set.
+     * @post User copy failed. Object was not properly initialized.
+     * @post User creation failed. Name/Id was not correctly set.
+     * @post User creation failed. External flag was not correctly set.
      */
     User& operator=(const User& o);
 
@@ -111,12 +112,12 @@ private:
 
     /**
      *
-     *@pre Meeting can not be null
-     *@pre Meeting must be properly initialized.
-     *@pre Can't add external user %s to meeting %s which doesn't allow external users.
+     * @pre Meeting can not be null
+     * @pre Meeting must be properly initialized.
+     * @pre Can't add external user %s to meeting %s which doesn't allow external users.
      *
      *
-     *@post User %s must be added to meeting %s.
+     * @post User %s must be added to meeting %s.
      */
     void _addMeeting(Meeting* meeting);
 

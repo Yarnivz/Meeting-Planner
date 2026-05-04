@@ -27,10 +27,12 @@ public:
      * The process of users gathering in a specific room for a specific purpose for a certain amount of time on a set date.
      * A meeting can only be initialized using the label, id, room id and date parameters as these are required.
      *
+     *
+     * 
      * @pre Failed to construct meeting. 'id' can not be empty.
      * @pre Failed to construct meeting. 'room' can not be empty.
      * @pre Failed to construct meeting. 'date' has to be properly initialized with the constructor.
-     *
+     * 
      * @param label title of the meeting
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
@@ -39,6 +41,7 @@ public:
      * @param externals_allowed status of the meeting
      * @param catering_needed status of the meeting
      *
+     * 
      * @post Meeting creation failed. Object was not properly initialized.
      * @post Meeting creation failed. Order was not correctly set.
      * @post Meeting creation failed, state was not correctly set.
@@ -241,6 +244,11 @@ public:
     /**
      * @brief calculates the amount of co2 the meeting uses
      *
+     * 
+     * @pre Room cannot be null
+     * @pre Campus cannot be null
+     * @pre Catering and online cannot be true at the same time.
+     * 
      * @return the total co2 emission amount
      */
     float getEmissions() const;

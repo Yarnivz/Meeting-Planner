@@ -19,17 +19,20 @@ public:
      * This is the place where a meeting can take place.
      * A room can only be initialized using the name, id and capacity parameters as these are required.
      *
+     *
+     * 
      * @pre name must not be empty
      * @pre id must not be empty
      * @pre capacity must be greater than 0
      * @pre The given building must exist
      * @pre The given building must be properly initialized
-     *
+     * 
      * @param name the name of this room
      * @param id the identifier of this room
      * @param capacity the amount of people that fit in this room
      * @param building the building in which this room can be found
      *
+     * 
      * @post Room creation failed. Object was not properly initialized.
      * @post Room creation failed. Capacity was not set correctly.
      * @post Room creation failed. Id was not set correctly.
@@ -74,7 +77,7 @@ public:
     /**
     * @brief Gets the rooms building
     *
-    * @post Building cannot be null.
+     * @post Building cannot be null.
     * @return the building itself
     */
     Building* getBuilding() const;

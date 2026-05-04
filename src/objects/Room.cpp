@@ -9,7 +9,7 @@
 #include "helper/DesignByContract.h"
 
 Room::Room(const std::string& name, const std::string& id, unsigned capacity, Building* building) :
-    name(name), id(id), capacity(capacity), building(building)
+name(name), id(id), capacity(capacity), building(building)
 {
     REQUIRE(!name.empty(), "name must not be empty");
     REQUIRE(!id.empty(), "id must not be empty");
