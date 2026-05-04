@@ -67,6 +67,7 @@ TEST_F(TestWriteToStream, HappyDay1)
     p.addUserToMeeting("Peter Selie", "m1");
 
     p.writeToStream();
+    f.close();
 
     ASSERT_TRUE(file_exists(actual));
     ASSERT_TRUE(file_exists(expected));
@@ -128,6 +129,7 @@ TEST_F(TestWriteToStream, HappyDay2)
     p.addUserToMeeting("David", "m2");
 
     p.writeToStream();
+    f.close();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));
@@ -207,6 +209,7 @@ TEST_F(TestWriteToStream, Processed)
 
 
     p.writeToStream();
+    f.close();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));

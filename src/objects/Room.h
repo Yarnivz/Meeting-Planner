@@ -25,9 +25,6 @@ public:
      * @param capacity the amount of people that fit in this room
      * @param building the building in which this room can be found
      *
-     * @post Room creation failed. Object was not properly initialized.
-     * @post Room creation failed. Capacity was not set correctly.
-     * @post Room creation failed. Id was not set correctly.
      */
     Room(const std::string& name, const std::string& id, unsigned capacity, Building* building = nullptr);
 
@@ -106,12 +103,33 @@ public:
      *
      *
      * @post Capacity must be greater than 0
+     *
      * @return the maximum capacity of this room
      */
     unsigned getCapacity() const;
 
+    /**
+     * @brief Adds a renovation object to the Room using the start and end date
+     *
+     *
+     * @pre Start date must be properly initialized.
+     * @pre End date must be properly initialized.
+     *
+     * @param start Date of the renovation
+     * @param end Date of the renovation
+     *
+     *
+     * @post Renovation must have been added to the Room.
+     */
     void addRenovation(const Date& start, const Date& end);
 
+    /**
+     * @brief Gets the renovation if the current date is between the start and end date
+     *
+     * @param date The date of the renovation
+     *
+     * @return The renovation object itself
+     */
     const Renovation* getRenovation(const Date& date) const;
 
     /**
