@@ -19,7 +19,7 @@ public:
      * This is the place where a meeting can take place.
      * A room can only be initialized using the name, id and capacity parameters as these are required.
      *
-     *     * @pre name must not be empty
+     * @pre name must not be empty
      * @pre id must not be empty
      * @pre capacity must be greater than 0
      * @pre The given building must exist

@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 int main()
 {
@@ -228,8 +229,6 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
     bool processingFunction = false;
     for (const std::string& codeFileLine : codeFileLines)
     {
-
-
         // multiline comment detection may be little bugged, might have to look further into it
         if (codeFileLine.find("/*") != std::string::npos)
         {
@@ -245,13 +244,28 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
         {
             continue;
         }
-
         std::string tempFunctionLine = codeFileLine;
+        if (tempFunctionLine.find(baseFilename+'(') != std::string::npos)
+        {
+           for (size_t c = 1; c < size_t(std::count(tempFunctionLine.begin(), tempFunctionLine.end(), '=')) ; ++c)
+           {
+               size_t startCharacterIndex = tempFunctionLine.find('=');
+               size_t endCharacterIndex = tempFunctionLine.find_first_of(",;", startCharacterIndex);
+               tempFunctionLine.erase(startCharacterIndex-1, endCharacterIndex);
+           }
+        }
+
+
         std::string stringToRemove = baseFilename + "::";
         size_t removeStringIndex = tempFunctionLine.find(stringToRemove);
         if (removeStringIndex != std::string::npos)
         {
             tempFunctionLine.erase(removeStringIndex, stringToRemove.length());
+        }
+
+        if (codeFileLine.find("//") != std::string::npos && codeFileLine.find(currentFunction) > codeFileLine.find("//"))
+        {
+            continue;
         }
         if (tempFunctionLine.find(currentFunction) != std::string::npos)
         {
