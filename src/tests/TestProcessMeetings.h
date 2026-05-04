@@ -279,4 +279,9 @@ TEST_F(TestProcessMeetings, ContractViolation)
     EXPECT_DEATH(p.processSingleMeeting("doesnt-exist", false), "");
 }
 
+TEST_F(TestProcessMeetings, Renovations)
+{
+    App p = App(nullptr, nullptr);
+}
+
 #endif //MEETING_PLANNER_PROCESSMEETINGSTESTS_H
