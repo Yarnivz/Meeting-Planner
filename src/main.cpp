@@ -15,7 +15,7 @@ int main()
     //std::ofstream* fout = new std::ofstream("output.txt");
 
     App* app = new App(parser, output);
-    app->parseFile("./test-files/HappyDay3.xml");
+    app->parseFile("./test-files/renovations.xml");
     app->processAllMeetings();
     app->writeToStream();
     delete app;
