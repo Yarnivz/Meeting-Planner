@@ -20,10 +20,15 @@ public:
      * A room can only be initialized using the name, id and capacity parameters as these are required.
      *
      *
+     *
      * @param name the name of this room
      * @param id the identifier of this room
      * @param capacity the amount of people that fit in this room
      * @param building the building in which this room can be found
+     *
+     * @post Room creation failed. Object was not properly initialized.
+     * @post Room creation failed. Capacity was not set correctly.
+     * @post Room creation failed. Id was not set correctly.
      *
      */
     Room(const std::string& name, const std::string& id, unsigned capacity, Building* building = nullptr);
