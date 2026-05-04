@@ -429,6 +429,15 @@ TEST_F(TestParseFile, FileNotFound)
     EXPECT_DEATH(app.parseFile("./test-files/FileThatDoesntExist.xml"), "");
 }
 
+TEST_F(TestParseFile, Renovations)
+{
+    const std::string error = "./test-files/TestParseFile.HappyDay1-errors.txt";
+
+    std::ofstream errLog(error);
+
+    App app = App(new XmlParser(errLog), nullptr);
+}
+
 //TODO: Add duplicate attribute scenario
 
 
