@@ -134,7 +134,7 @@ public:
     /**
      * @brief Gets the renovation if the current date is between the start and end date
      *
-     * @param date The date of the renovation
+     * @param date The date during which the renovation takes place
      *
      * @return The renovation object itself
      */
