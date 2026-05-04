@@ -19,7 +19,11 @@ public:
      * This is the place where a meeting can take place.
      * A room can only be initialized using the name, id and capacity parameters as these are required.
      *
-     *
+     *     * @pre name must not be empty
+     * @pre id must not be empty
+     * @pre capacity must be greater than 0
+     * @pre The given building must exist
+     * @pre The given building must be properly initialized
      *
      * @param name the name of this room
      * @param id the identifier of this room
@@ -29,7 +33,6 @@ public:
      * @post Room creation failed. Object was not properly initialized.
      * @post Room creation failed. Capacity was not set correctly.
      * @post Room creation failed. Id was not set correctly.
-     *
      */
     Room(const std::string& name, const std::string& id, unsigned capacity, Building* building = nullptr);
 
