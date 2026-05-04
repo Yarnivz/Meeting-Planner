@@ -73,14 +73,14 @@ public:
 
     /**
     * @brief Gets the rooms building
-     *
-     * @post Building cannot be null.
+    *
+    * @post Building cannot be null.
     * @return the building itself
     */
     Building* getBuilding() const;
 
     /**
-    * @brief Gets the rooms campus
+     * @brief Gets the rooms campus
      *
      * @post Campus cannot be null.
     * @return the campus itself

@@ -10,7 +10,9 @@
 
 int main()
 {
-    std::cout << "test" << std::endl;
+    std::cerr << "[WARNING] This tool is fairly experimental, make sure to commit your current changes before using this tool ";
+    std::cin.ignore();
+
     std::string sourceDirectory = "./src/";
     for (const std::filesystem::directory_entry& entry : std::filesystem::recursive_directory_iterator(sourceDirectory))
     {
@@ -213,13 +215,13 @@ void ContractsDocumentationGenerator::generateContractsDocumentation(const std::
             std::cout << "\n" << std::endl;
         }
     }
-    std::ofstream writableHeaderFile(fileDirectory + "Exp_" + baseFilename + ".h"); // hold off and use experimentfile until tested properly enough
+    std::ofstream writableHeaderFile(fileDirectory + baseFilename + ".h");
     for (const std::string& writeLine : headerFileLines)
     {
         //std::cout << writeLine << std::endl;
-        writableHeaderFile << writeLine << "\n"; // hold off and use experimentfile until tested properly enough
+        writableHeaderFile << writeLine << "\n";
     }
-    writableHeaderFile.close(); // hold off and use experimentfile until tested properly enough
+    writableHeaderFile.close();
 }
 
 void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFilename, bool& multicomment, const std::string& currentFunction, const std::vector<std::string>& codeFileLines, std::vector<std::string>& preContracts, std::vector<std::string>& postContracts)
