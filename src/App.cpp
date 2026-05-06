@@ -7,6 +7,8 @@
 #include <filesystem>
 #include <queue>
 #include <tinyxml.h>
+
+#include "error/Error.h"
 #include "helper/DesignByContract.h"
 
 
@@ -24,7 +26,7 @@ bool App::isProperlyInitialized() const
 }
 
 
-void App::parseFile(Parser& parser, std::ostream& errStream)
+void App::parseFile(Parser& parser, const Error& error)
 {
 
     parser.parse();
@@ -33,7 +35,8 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
     {
         if (getCampus(c.id) != nullptr)
         {
-            errStream << "Campus ids must be unique: " << c.id << std::endl;
+            error.uniqueId(c);
+            //errStream << "Campus ids must be unique: " << c.id << std::endl;
             continue;
         }
 
@@ -44,14 +47,16 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
     {
         if (getBuilding(b.id) != nullptr)
         {
-            errStream << "Building ids must be unique: " << b.id << std::endl;
+            error.uniqueId(b);
+            //errStream << "Building ids must be unique: " << b.id << std::endl;
             continue;
         }
 
         Campus* c = getCampus(b.campus_id);
         if (c == nullptr)
         {
-            errStream << "Building \'" << b.id << "\' is in a campus \'" << b.campus_id << "\', which doesn't exist." << std::endl;
+            error.nonExistentCampus(b);
+            //errStream << "Building \'" << b.id << "\' is in a campus \'" << b.campus_id << "\', which doesn't exist." << std::endl;
             continue;
         }
         addBuilding(new Building(b.name, b.id, c));
@@ -64,28 +69,32 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
     {
         if (getRoom(r.id) != nullptr)
         {
-            errStream << "Room ids must be unique: " << r.id << std::endl;
+            error.uniqueId(r);
+            //errStream << "Room ids must be unique: " << r.id << std::endl;
             continue;
         }
 
         Building* building = getBuilding(r.building_id);
         if (building == nullptr)
         {
-            errStream << "Room \'" << r.id << "\' is in a building \'" << r.building_id << "\', which doesn't exist." << std::endl;
+            error.nonExistentBuilding(r);
+            //errStream << "Room \'" << r.id << "\' is in a building \'" << r.building_id << "\', which doesn't exist." << std::endl;
             continue;
         }
 
         Campus* campus = getCampus(r.campus_id);
         if (campus == nullptr)
         {
-            errStream << "Room \'" << r.id << "\' is in a campus \'" << r.campus_id << "\', which doesn't exist." << std::endl;
+            error.nonExistentCampus(r);
+            //errStream << "Room \'" << r.id << "\' is in a campus \'" << r.campus_id << "\', which doesn't exist." << std::endl;
             continue;
         }
 
         if (campus != building->getCampus())
         {
-            errStream << "Room \'" << r.id << "\' is in a campus \'" << r.campus_id << "\', but it's building \'" << r.building_id
-            << "\' is in a different campus \'" << building->getCampus()->getId() << "\'." << std::endl;
+            error.campusBuildingMismatch(r, building->getCampus()->getId());
+            // errStream << "Room \'" << r.id << "\' is in a campus \'" << r.campus_id << "\', but it's building \'" << r.building_id
+            // << "\' is in a different campus \'" << building->getCampus()->getId() << "\'." << std::endl;
             continue;
         }
 
@@ -97,7 +106,8 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
         Campus* campus = getCampus(c.campus_id);
         if (campus == nullptr)
         {
-            errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
+            error.nonExistentCampus(c);
+            //errStream << "Catering is for a campus \'" << c.campus_id << "\', which doesn't exist" << std::endl;
             continue;
         }
 
@@ -109,15 +119,17 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
     {
         if (getMeetingById(m.id) != nullptr)
         {
-            errStream << "Meeting ids must be unique: " << m.id << std::endl;
+            error.uniqueId(m);
+            //errStream << "Meeting ids must be unique: " << m.id << std::endl;
             continue;
         }
 
         Room* mr = getRoom(m.room_id);
         if (mr == nullptr)
         {
-            errStream << "Meeting " << m.id << " takes place in a room \'" << m.room_id <<
-                "\' which doesnt exist." << std::endl;
+            error.nonExistentRoom(m);
+            // errStream << "Meeting " << m.id << " takes place in a room \'" << m.room_id <<
+            //     "\' which doesnt exist." << std::endl;
             continue;
         }
         //add temporary false status to meeting online status for now as workaround
@@ -130,15 +142,17 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
         Meeting* m = getMeetingById(p.meeting);
         if (m == nullptr)
         {
-            errStream << "User \'" << p.user << "\' participates in a meeting \'" << p.meeting <<
-                "\' which doesnt exist." << std::endl;
+            error.nonExistentMeeting(p);
+            // errStream << "User \'" << p.user << "\' participates in a meeting \'" << p.meeting <<
+            //     "\' which doesnt exist." << std::endl;
             continue;
         }
 
         if (p.external && !m->externalsAllowed())
         {
-            errStream << "External user \'" << p.user << "\' can't participate in meeting \'" << p.meeting <<
-                "\' which doesn't allow externals" << std::endl;
+            error.externalsNotAllowed(p);
+            // errStream << "External user \'" << p.user << "\' can't participate in meeting \'" << p.meeting <<
+            //     "\' which doesn't allow externals" << std::endl;
             continue;
         }
 
@@ -153,22 +167,25 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
 
         if (m->getParticipant(p.user) != nullptr)
         {
-            errStream << "User with id \'" << p.user << "\' was added twice to the same meeting \'" << p.meeting << "\'." << std::endl;
+            error.duplicateParticipation(p);
+            //errStream << "User with id \'" << p.user << "\' was added twice to the same meeting \'" << p.meeting << "\'." << std::endl;
             continue;
         }
 
 
-        if (!u->isExternal() && p.external)
+        if (u->isExternal() != p.external)
         {
-            errStream << "User \'" << p.user << "\' was marked as external for meeting \'" << p.meeting
-            << "\' but was registered as not-external earlier" << std::endl;
-            continue;
-        } else if (u->isExternal() && !p.external)
-        {
-            errStream << "User \'" << p.user << "\' was marked as not-external for meeting \'" << p.meeting
-            << "\' but was registered as external earlier" << std::endl;
+            error.externalMismatch(p);
+            // errStream << "User \'" << p.user << "\' was marked as external for meeting \'" << p.meeting
+            // << "\' but was registered as not-external earlier" << std::endl;
             continue;
         }
+        // else if (u->isExternal() && !p.external)
+        // {
+        //     errStream << "User \'" << p.user << "\' was marked as not-external for meeting \'" << p.meeting
+        //     << "\' but was registered as external earlier" << std::endl;
+        //     continue;
+        // }
 
 
 
@@ -187,8 +204,9 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
 
         if (room == nullptr)
         {
-            errStream << "Renovation that starts on " << r.start_date << " and ends on " << r.end_date << " was added to Room \'"
-            << r.room << "\' which does not exist." << std::endl;
+            error.nonExistentRoom(r);
+            // errStream << "Renovation that starts on " << r.start_date << " and ends on " << r.end_date << " was added to Room \'"
+            // << r.room << "\' which does not exist." << std::endl;
             continue;
         }
 
@@ -199,10 +217,14 @@ void App::parseFile(Parser& parser, std::ostream& errStream)
 
     }
 
+    parser.clearBuildings();
+    parser.clearCampuses();
     parser.clearRooms();
     parser.clearMeetings();
     parser.clearParticipations();
     parser.clearRenovations();
+    parser.clearCaterings();
+
 }
 
 void App::writeToStream(const Output& output) const

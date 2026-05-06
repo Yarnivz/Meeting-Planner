@@ -15,6 +15,7 @@
 #include "objects/User.h"
 #include "objects/Catering.h"
 #include "TypeDefs.h"
+#include "error/Error.h"
 
 class Catering;
 
@@ -42,11 +43,11 @@ public:
     * If an unrecoverable error occurs, the parser exits without changing anything.
     *
     * @param parser parser to use
-    * @param errStream stream to print errors to in case they appear. Defaults to the standard console error stream.
+    * @param error
     */
 
     //TODO: Delete errStream and use parser errStream
-    void parseFile(Parser& parser, std::ostream& errStream = std::cerr);
+    void parseFile(Parser& parser, const Error& error);
 
     /**
      * @brief Print all meetings and rooms to a stream.
@@ -383,7 +384,7 @@ private:
     MeetingRegistry meetings;
     Users users;
     std::list<Catering*> caterings;
-    float emission{};
+    float emission = 0.0f;
 
 
     void* init_check_this_ptr = nullptr;
