@@ -11,7 +11,7 @@
 
 
 //TODO: add errorLogger parameter
-App::App(Parser* parser, Output* output) : parser(parser), output(output)
+App::App()
 {
     init_check_this_ptr = this;
 
@@ -24,18 +24,12 @@ bool App::isProperlyInitialized() const
 }
 
 
-void App::parseFile(const std::string& filename, std::ostream& errStream)
+void App::parseFile(Parser& parser, std::ostream& errStream)
 {
-    if (!parser)
-    {
-        errStream << "This App does not have a parser!" << std::endl;
-        return;
-    }
 
+    parser.parse();
 
-    parser->parse(filename);
-
-    for (const CampusElement& c : parser->parsedCampuses())
+    for (const CampusElement& c : parser.parsedCampuses())
     {
         if (getCampus(c.id) != nullptr)
         {
@@ -46,7 +40,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addCampus(new Campus(c.name, c.id));
     }
 
-    for (const BuildingElement& b : parser->parsedBuildings())
+    for (const BuildingElement& b : parser.parsedBuildings())
     {
         if (getBuilding(b.id) != nullptr)
         {
@@ -66,7 +60,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
     //> Add all elements in the correct order
     //  Final integrity checks
 
-    for (const RoomElement& r : parser->parsedRooms())
+    for (const RoomElement& r : parser.parsedRooms())
     {
         if (getRoom(r.id) != nullptr)
         {
@@ -98,7 +92,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addRoom(new Room(r.name, r.id, r.capacity, building));
     }
 
-    for (const CateringElement& c : parser->parsedCaterings())
+    for (const CateringElement& c : parser.parsedCaterings())
     {
         Campus* campus = getCampus(c.campus_id);
         if (campus == nullptr)
@@ -111,7 +105,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         caterings.push_back(new Catering(campus, c.co2_count));
     }
 
-    for (const MeetingElement& m : parser->parsedMeetings())
+    for (const MeetingElement& m : parser.parsedMeetings())
     {
         if (getMeetingById(m.id) != nullptr)
         {
@@ -130,7 +124,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         addMeeting(new Meeting(m.label, m.id, mr, m.date_time, false, m.externals_allowed, m.catering_needed));
     }
 
-    for (const ParticipationElement& p : parser->parsedParticipations())
+    for (const ParticipationElement& p : parser.parsedParticipations())
     {
         // Get meeting
         Meeting* m = getMeetingById(p.meeting);
@@ -186,7 +180,7 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
         // u->addMeeting(m)
     }
 
-    for (const RenovationElement& r : parser->parsedRenovations())
+    for (const RenovationElement& r : parser.parsedRenovations())
     {
         //Get room
         Room* room = getRoom(r.room);
@@ -205,22 +199,21 @@ void App::parseFile(const std::string& filename, std::ostream& errStream)
 
     }
 
-    parser->clearRooms();
-    parser->clearMeetings();
-    parser->clearParticipations();
-    parser->clearRenovations();
+    parser.clearRooms();
+    parser.clearMeetings();
+    parser.clearParticipations();
+    parser.clearRenovations();
 }
 
-void App::writeToStream()
+void App::writeToStream(const Output& output) const
 {
-    REQUIRE(output, "App doesnt have an output attached.");
 
-    output->printMeetings(meetings);
-    output->printRooms(rooms);
-    output->printBuildings(buildings);
-    output->printCampuses(campuses);
-    output->printUsers(users);
-    output->printMeetingsCO2(meetings);
+    output.printMeetings(meetings);
+    output.printRooms(rooms);
+    output.printBuildings(buildings);
+    output.printCampuses(campuses);
+    output.printUsers(users);
+    output.printMeetingsCO2(meetings);
 }
 
 void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)
@@ -553,7 +546,4 @@ App::~App()
     for (const Catering* c : caterings) delete c;
 
     for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;
-
-    delete parser;
-    delete output;
 }

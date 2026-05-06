@@ -13,8 +13,8 @@
 class XmlParser : public Parser
 {
 public:
-    explicit XmlParser(std::ostream& errorStream = std::cerr);
-    void parse(const std::string& filename) override;
+    explicit XmlParser(const std::string& filepath, std::ostream& errorStream = std::cerr);
+    void parse() override;
 private:
     void parseElement(TiXmlElement* elementObject);
     bool parseProperty(TiXmlElement* propertyObject, std::string& propError);

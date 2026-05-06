@@ -102,9 +102,9 @@ struct ParseObject
 class Parser
 {
 public:
-    explicit Parser(std::ostream& errorStream = std::cerr);
+    explicit Parser(const std::string& filepath, std::ostream& errorStream = std::cerr);
 
-    virtual void parse(const std::string& filename) = 0;
+    virtual void parse() = 0;
 
     const std::list<CampusElement>& parsedCampuses() const;
 
@@ -146,5 +146,7 @@ protected:
     std::list<RenovationElement> parsed_renovations;
     ParseObject parseObject;
     std::ostream& errorStream;
+
+    std::string filepath;
 };
 #endif //PARSER_H

@@ -9,14 +9,11 @@
 int main()
 {
 
-    XmlParser* parser = new XmlParser();
-    StreamOutput* output = new StreamOutput();
+    XmlParser parser =  XmlParser("./test-files/Renovations.xml");
 
-    //std::ofstream* fout = new std::ofstream("output.txt");
-
-    App* app = new App(parser, output);
-    app->parseFile("./test-files/renovations.xml");
+    App* app = new App();
+    app->parseFile(parser);
     app->processAllMeetings();
-    app->writeToStream();
+    app->writeToStream(StreamOutput(std::cout));
     delete app;
 }

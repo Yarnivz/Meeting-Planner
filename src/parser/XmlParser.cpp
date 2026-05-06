@@ -100,18 +100,18 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     return true;
 }
 
-XmlParser::XmlParser(std::ostream& errorStream): Parser(errorStream) {}
+XmlParser::XmlParser(const std::string& filepath, std::ostream& errorStream): Parser(filepath, errorStream) {}
 
-void XmlParser::parse(const std::string& filename)
+void XmlParser::parse()
 {
     TiXmlDocument doc;
-    REQUIRE(!filename.empty(), "The file cannot be empty");
-    REQUIRE(doc.LoadFile(filename.c_str()),
+    REQUIRE(!filepath.empty(), "The file cannot be empty");
+    REQUIRE(doc.LoadFile(filepath.c_str()),
             "The provided file \'%s\' doesn't exist in your current work directory or cannot be opened.",
-            filename.c_str());
+            filepath.c_str());
 
 
-    if (!doc.LoadFile(filename.c_str()))
+    if (!doc.LoadFile(filepath.c_str()))
     {
         errorStream << doc.ErrorDesc() << std::endl;
         return;

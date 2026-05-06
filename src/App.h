@@ -24,7 +24,7 @@ public:
     /**
      * @brief Constructor of the App class.
      */
-    App(Parser* parser = nullptr, Output* output = nullptr);
+    App();
 
     /**
      * @brief Checks whether the App was properly initialized by the constructor.
@@ -41,12 +41,12 @@ public:
     * If there is an error with a single item, the parser will attempt to recover and skip over that item.
     * If an unrecoverable error occurs, the parser exits without changing anything.
     *
-    * @param filename of the .xml file to parse
+    * @param parser parser to use
     * @param errStream stream to print errors to in case they appear. Defaults to the standard console error stream.
     */
 
     //TODO: Delete errStream and use parser errStream
-    void parseFile(const std::string& filename, std::ostream& errStream = std::cerr);
+    void parseFile(Parser& parser, std::ostream& errStream = std::cerr);
 
     /**
      * @brief Print all meetings and rooms to a stream.
@@ -58,7 +58,7 @@ public:
      * @pre REQUIRE(output, "App doesnt have an output attached.")
      *
      */
-    void writeToStream();
+    void writeToStream(const Output& output) const;
 
     /**
      * @brief Registers a Campus to the app.
@@ -374,8 +374,8 @@ public:
 
 private:
 
-    Parser* parser;
-    Output* output;
+    //Parser* parser;
+    //Output* output;
 
     Campuses campuses;
     Buildings buildings;
@@ -383,7 +383,7 @@ private:
     MeetingRegistry meetings;
     Users users;
     std::list<Catering*> caterings;
-    float emission;
+    float emission{};
 
 
     void* init_check_this_ptr = nullptr;
