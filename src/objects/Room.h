@@ -21,11 +21,11 @@ public:
      *
      *
      * 
-     * @pre name must not be empty
-     * @pre id must not be empty
-     * @pre capacity must be greater than 0
-     * @pre The given building must exist
-     * @pre The given building must be properly initialized
+     * @pre REQUIRE(!name.empty(), "name must not be empty")
+     * @pre REQUIRE(!id.empty(), "id must not be empty")
+     * @pre REQUIRE(capacity > 0, "capacity must be greater than 0")
+     * @pre REQUIRE(building != nullptr, "The given building must exist")
+     * @pre REQUIRE(building->isProperlyInitialized(), "The given building must be properly initialized")
      * 
      * @param name the name of this room
      * @param id the identifier of this room
@@ -33,9 +33,9 @@ public:
      * @param building the building in which this room can be found
      *
      * 
-     * @post Room creation failed. Object was not properly initialized.
-     * @post Room creation failed. Capacity was not set correctly.
-     * @post Room creation failed. Id was not set correctly.
+     * @post ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.")
+     * @post ENSURE(getCapacity() == capacity, "Room creation failed. Capacity was not set correctly.")
+     * @post ENSURE(getId() == id, "Room creation failed. Id was not set correctly.")
      */
     Room(const std::string& name, const std::string& id, unsigned capacity, Building* building = nullptr);
 
@@ -43,28 +43,28 @@ public:
      * @brief Copies a Room object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      *
-     * @pre Tried to copy a room which was not properly initialized by the constructor.
+     * @pre REQUIRE(r.isProperlyInitialized(), "Tried to copy a room which was not properly initialized by the constructor.")
      *
      * @param r Room to be copied
      *
-     * @post Room creation failed. Object was not properly initialized.
-     * @post Room creation failed. Capacity was not set correctly.
-     * @post Room creation failed. Id was not set correctly.
-     * @post Room creation failed. Campus was not set correctly.
-     * @post Room creation failed. Building was not set correctly.
+     * @post ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.")
+     * @post ENSURE(getCapacity() == r.capacity, "Room creation failed. Capacity was not set correctly.")
+     * @post ENSURE(getId() == r.id, "Room creation failed. Id was not set correctly.")
+     * @post ENSURE(getCampus() == r.campus, "Room creation failed. Campus was not set correctly.")
+     * @post ENSURE(getBuilding() == r.building, "Room creation failed. Building was not set correctly.")
      */
     Room(const Room& r);
 
     /**
      *
-     * @pre Tried to copy a room which was not properly initialized by the constructor.
+     * @pre REQUIRE(r.isProperlyInitialized(), "Tried to copy a room which was not properly initialized by the constructor.")
      *
      *
-     * @post Room creation failed. Object was not properly initialized.
-     * @post Room creation failed. Capacity was not set correctly.
-     * @post Room creation failed. Id was not set correctly.
-     * @post Room creation failed. Campus was not set correctly.
-     * @post Room creation failed. Building was not set correctly.
+     * @post ENSURE(isProperlyInitialized(), "Room creation failed. Object was not properly initialized.")
+     * @post ENSURE(getCapacity() == r.capacity, "Room creation failed. Capacity was not set correctly.")
+     * @post ENSURE(getId() == r.id, "Room creation failed. Id was not set correctly.")
+     * @post ENSURE(getCampus() == r.campus, "Room creation failed. Campus was not set correctly.")
+     * @post ENSURE(getBuilding() == r.building, "Room creation failed. Building was not set correctly.")
      */
     Room& operator=(const Room& r);
 
@@ -77,7 +77,7 @@ public:
     /**
     * @brief Gets the rooms building
     *
-     * @post Building cannot be null.
+     * @post ENSURE(building != nullptr, "Building cannot be null.")
     * @return the building itself
     */
     Building* getBuilding() const;
@@ -85,7 +85,7 @@ public:
     /**
      * @brief Gets the rooms campus
      *
-     * @post Campus cannot be null.
+     * @post ENSURE(campus != nullptr, "Campus cannot be null.")
     * @return the campus itself
     */
     Campus* getCampus() const;
@@ -93,7 +93,7 @@ public:
     /**
      * @brief Id getter.
      *
-     * @post id must not be empty
+     * @post ENSURE(!id.empty(), "id must not be empty")
      *
      * @return the identifier of the room
      */
@@ -102,7 +102,7 @@ public:
     /**
      * @brief Converts the room class to a readable string format.
      *
-     * @post name must not be empty
+     * @post ENSURE(!name.empty(), "name must not be empty")
      *
      * @return the room in string format
      */
@@ -113,7 +113,7 @@ public:
      *
      *
      *
-     * @post Capacity must be greater than 0
+     * @post ENSURE(capacity > 0, "Capacity must be greater than 0")
      *
      * @return the maximum capacity of this room
      */
@@ -123,14 +123,14 @@ public:
      * @brief Adds a renovation object to the Room using the start and end date
      *
      *
-     * @pre Start date must be properly initialized.
-     * @pre End date must be properly initialized.
+     * @pre REQUIRE(start.isProperlyInitialized(), "Start date must be properly initialized.")
+     * @pre REQUIRE(end.isProperlyInitialized(), "End date must be properly initialized.")
      *
      * @param start Date of the renovation
      * @param end Date of the renovation
      *
      *
-     * @post Renovation must have been added to the Room.
+     * @post ENSURE(renovations.contains(start), "Renovation must have been added to the Room.")
      */
     void addRenovation(const Date& start, const Date& end);
 
@@ -146,12 +146,12 @@ public:
     /**
      * @brief Standard stream operator using the toString function to append the room to the stream.
      *
-     * @pre room must be properly initialized
+     * @pre REQUIRE(room.isProperlyInitialized(), "room must be properly initialized")
      *
      * @param os stream to write on
      * @param room to write on the stream
      *
-     * @post ostream variable is not usable
+     * @post ENSURE(os, "ostream variable is not usable")
      * @return the stream
      */
     friend std::ostream& operator<<(std::ostream& os, const Room& room);

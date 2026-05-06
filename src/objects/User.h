@@ -25,9 +25,9 @@ public:
      * @param external The external status of the user
      *
      * 
-     * @post User creation failed. Object was not properly initialized.
-     * @post User creation failed. Name/Id was not correctly set.
-     * @post User creation failed. External flag was not correctly set.
+     * @post ENSURE(isProperlyInitialized(), "User creation failed. Object was not properly initialized.")
+     * @post ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.")
+     * @post ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.")
      */
     User(const std::string& name, bool external = false);
 
@@ -37,24 +37,24 @@ public:
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      *
      *
-     * @pre Attempted to copy a User which was not properly initialized.
+     * @pre REQUIRE(o.isProperlyInitialized(), "Attempted to copy a User which was not properly initialized.")
      *
      * @param o The user to be copied
      *
-     * @post User copy failed. Object was not properly initialized.
-     * @post User creation failed. Name/Id was not correctly set.
-     * @post User creation failed. External flag was not correctly set.
+     * @post ENSURE(isProperlyInitialized(), "User copy failed. Object was not properly initialized.")
+     * @post ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.")
+     * @post ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.")
      */
     User(const User& o);
 
     /**
      *
-     * @pre Attempted to copy a User which was not properly initialized.
+     * @pre REQUIRE(o.isProperlyInitialized(), "Attempted to copy a User which was not properly initialized.")
      *
      *
-     * @post User copy failed. Object was not properly initialized.
-     * @post User creation failed. Name/Id was not correctly set.
-     * @post User creation failed. External flag was not correctly set.
+     * @post ENSURE(isProperlyInitialized(), "User copy failed. Object was not properly initialized.")
+     * @post ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.")
+     * @post ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.")
      */
     User& operator=(const User& o);
 
@@ -69,7 +69,7 @@ public:
     /**
      * @brief Id getter.
      *
-     * @pre name/Id cannot be empty
+     * @pre REQUIRE(!name.empty(), "name/Id cannot be empty")
      *
      * @return the Id of the user.
      */
@@ -90,11 +90,11 @@ public:
     /**
      * @brief Gets the meeting that corresponds to the id
      *
-     * @pre Meeting id cannot be empty.
+     * @pre REQUIRE(!meetingId.empty(), "Meeting id cannot be empty.")
      *
      * @param meetingId The meetings id
      *
-     * @post MeetingId must be in MeetingRegistery
+     * @post ENSURE(meetings.getRawIdMap().contains(meetingId), "MeetingId must be in MeetingRegistery")
      * @return the meeting itself
      */
     Meeting* getMeetingById(const std::string& meetingId) const;
@@ -103,7 +103,7 @@ public:
      * @brief Gets a list of meetings that correspond to the DateTime
      * @param The meetings DateTime
      *
-     * @post DateTime must be in MeetingRegistry
+     * @post ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must be in MeetingRegistry")
      * @return a list the meetings
      */
     std::list<Meeting*>& getMeetingByDateTime(const DateTime& meetingDateTime);
@@ -112,12 +112,12 @@ private:
 
     /**
      *
-     * @pre Meeting can not be null
-     * @pre Meeting must be properly initialized.
-     * @pre Can't add external user %s to meeting %s which doesn't allow external users.
+     * @pre REQUIRE(meeting != nullptr, "Meeting can not be null")
+     * @pre REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.")
+     * @pre REQUIRE(!this->isExternal() || meeting->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", this->getId().c_str(), meeting->getId().c_str())
      *
      *
-     * @post User %s must be added to meeting %s.
+     * @post ENSURE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str())
      */
     void _addMeeting(Meeting* meeting);
 

@@ -19,15 +19,15 @@ public:
      * This is the object that houses a bunch of different buildings that have rooms inside of them to hold meetings.
      * A campus needs to be initialized using its name and identifier.
      *
-     * @pre Name cannot be empty
-     * @pre Id cannot be empty
+     * @pre REQUIRE(!name.empty(), "Name cannot be empty")
+     * @pre REQUIRE(!id.empty(), "Id cannot be empty")
      *
      * @param name the name of this campus
      * @param id the unique identifier of this campus that can be used to call this object from the app.
      *
-     * @post Campus must be properly initialized.
-     * @post Name must be added to this Campus object
-     * @post Id must be added to this Campus object
+     * @post ENSURE(isProperlyInitialized(), "Campus must be properly initialized.")
+     * @post ENSURE(this->name == name, "Name must be added to this Campus object")
+     * @post ENSURE(getId() == id, "Id must be added to this Campus object")
      */
     Campus(const std::string& name, const std::string& id);
 
@@ -66,7 +66,7 @@ public:
      *
      *
      *
-     * @pre Campus must be properly initialized
+     * @pre REQUIRE(campus.isProperlyInitialized(), "Campus must be properly initialized")
      *
      * @param os stream to write on
      * @param campus object to write on the stream
@@ -80,9 +80,9 @@ public:
     /**
      * @brief Default destructor.
      *
-     * @pre Catering cannot be null
-     * @pre Catering must be properly initialized
-     * @pre Caterings campus does not match this.
+     * @pre REQUIRE(c != nullptr, "Catering cannot be null")
+     * @pre REQUIRE(c->isProperlyInitialized(), "Catering must be properly initialized")
+     * @pre REQUIRE(c->getCampus() == this, "Caterings campus does not match this.")
      *
      */
     ~Campus();
@@ -91,9 +91,9 @@ private:
 
     /**
      *
-     * @pre Catering cannot be null
-     * @pre Catering must be properly initialized
-     * @pre Caterings campus does not match this.
+     * @pre REQUIRE(c != nullptr, "Catering cannot be null")
+     * @pre REQUIRE(c->isProperlyInitialized(), "Catering must be properly initialized")
+     * @pre REQUIRE(c->getCampus() == this, "Caterings campus does not match this.")
      *
      */
     void _addCatering(Catering* c);

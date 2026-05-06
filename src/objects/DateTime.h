@@ -16,12 +16,12 @@ public:
      * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called without parameters, the DateTime that gets created will be the current DateTime.
      *
-     * @post DateTime creation failed. Hour needs to be >= 0 and < 24
-     * @post DateTime creation failed. Year was not set correctly.
-     * @post DateTime creation failed. Month was not set correctly.
-     * @post DateTime creation failed. Day was not set correctly.
-     * @post DateTime creation failed. Hour was not set correctly.
-     * @post DateTime creation failed. Constructor did not properly initialize.
+     * @post ENSURE(hour < 24, "DateTime creation failed. Hour needs to be >= 0 and < 24")
+     * @post ENSURE(getYear() == year, "DateTime creation failed. Year was not set correctly.")
+     * @post ENSURE(getMonth() == month, "DateTime creation failed. Month was not set correctly.")
+     * @post ENSURE(getDay() == day, "DateTime creation failed. Day was not set correctly.")
+     * @post ENSURE(getHour() == hour, "DateTime creation failed. Hour was not set correctly.")
+     * @post ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.")
      */
     DateTime();
 
@@ -29,29 +29,29 @@ public:
      * @brief Copies a DateTime object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      *
-     * @pre Tried to copy a DateTime which was not properly initialized by the constructor.
+     * @pre REQUIRE(d.isProperlyInitialized(), "Tried to copy a DateTime which was not properly initialized by the constructor.")
      *
      * @param d The DateTime to be copied.
      *
      *
-     * @post DateTime creation failed. Year was not set correctly.
-     * @post DateTime creation failed. Month was not set correctly.
-     * @post DateTime creation failed. Day was not set correctly.
-     * @post DateTime creation failed. Hour was not set correctly.
-     * @post DateTime creation failed. Constructor did not properly initialize.
+     * @post ENSURE(getYear() == d.year, "DateTime creation failed. Year was not set correctly.")
+     * @post ENSURE(getMonth() == d.month, "DateTime creation failed. Month was not set correctly.")
+     * @post ENSURE(getDay() == d.day, "DateTime creation failed. Day was not set correctly.")
+     * @post ENSURE(getHour() == d.hour, "DateTime creation failed. Hour was not set correctly.")
+     * @post ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.")
      */
     DateTime(const DateTime& d);
 
     /**
      *
-     * @pre Tried to copy a DateTime which was not properly initialized by the constructor.
+     * @pre REQUIRE(d.isProperlyInitialized(), "Tried to copy a DateTime which was not properly initialized by the constructor.")
      *
      *
-     * @post DateTime creation failed. Year was not set correctly.
-     * @post DateTime creation failed. Month was not set correctly.
-     * @post DateTime creation failed. Day was not set correctly.
-     * @post DateTime creation failed. Hour was not set correctly.
-     * @post DateTime creation failed. Constructor did not properly initialize.
+     * @post ENSURE(getYear() == d.year, "DateTime creation failed. Year was not set correctly.")
+     * @post ENSURE(getMonth() == d.month, "DateTime creation failed. Month was not set correctly.")
+     * @post ENSURE(getDay() == d.day, "DateTime creation failed. Day was not set correctly.")
+     * @post ENSURE(getHour() == d.hour, "DateTime creation failed. Hour was not set correctly.")
+     * @post ENSURE(isProperlyInitialized(), "DateTime creation failed. Constructor did not properly initialize.")
      */
     DateTime& operator=(const DateTime& d);
 
@@ -60,19 +60,19 @@ public:
      * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
      * 
-     * @pre Hour can't be negative! %i
-     * @pre Hour must be less than 24! %i
+     * @pre REQUIRE(hour >= 0, "Hour can't be negative! %i", hour)
+     * @pre REQUIRE(hour < 24, "Hour must be less than 24! %i", hour)
      * 
      * @param year
      * @param month
      * @param day
      * @param hour
      * 
-     * @post Year must be set correctly in order to create DateTime.
-     * @post Month must be set correctly in order to create DateTime.
-     * @post Day must be set correctly in order to create DateTime.
-     * @post Hour must be set correctly in order to create DateTime.
-     * @post Constructor must be properly initialized in order to create DateTime.
+     * @post ENSURE(getYear() == year, "Year must be set correctly in order to create DateTime.")
+     * @post ENSURE(getMonth() == umonth, "Month must be set correctly in order to create DateTime.")
+     * @post ENSURE(getDay() == uday, "Day must be set correctly in order to create DateTime.")
+     * @post ENSURE(getHour() == uhour, "Hour must be set correctly in order to create DateTime.")
+     * @post ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.")
      */
     DateTime(int year, int month, int day, int hour = 0);
 
@@ -81,25 +81,25 @@ public:
      * The DateTime class has a year, month, day and hour attribute.
      * When the DateTime class constructor gets called with parameters, all parameters are required and the DateTime will be initialized with the given data.
      * 
-     * @pre The given date must be properly initialized
-     * @pre Hour can't be negative! %i
-     * @pre Hour must be less than 24! %i
+     * @pre REQUIRE(date.isProperlyInitialized(), "The given date must be properly initialized")
+     * @pre REQUIRE(hour >= 0, "Hour can't be negative! %i", hour)
+     * @pre REQUIRE(hour < 24, "Hour must be less than 24! %i", hour)
      * 
      * @param date
      * @param hour
      * 
-     * @post Year must be set correctly in order to create DateTime.
-     * @post Month must be set correctly in order to create DateTime.
-     * @post Day must be set correctly in order to create DateTime.
-     * @post Hour must be set correctly in order to create DateTime.
-     * @post Constructor must be properly initialized in order to create DateTime.
+     * @post ENSURE(getYear() == date.getYear(), "Year must be set correctly in order to create DateTime.")
+     * @post ENSURE(getMonth() == date.getMonth(), "Month must be set correctly in order to create DateTime.")
+     * @post ENSURE(getDay() == date.getDay(), "Day must be set correctly in order to create DateTime.")
+     * @post ENSURE(getHour() == uhour, "Hour must be set correctly in order to create DateTime.")
+     * @post ENSURE(isProperlyInitialized(), "Constructor must be properly initialized in order to create DateTime.")
      */
     DateTime(const Date& date, int hour = 0);
 
     /**
      * @brief Hour getter
      *
-     * @post DateTime must be properly initialized with constructor in order to get Hour.
+     * @post ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to get Hour.")
      * @return the DateTime's hour
      */
     unsigned getHour() const;
@@ -107,7 +107,7 @@ public:
     /**
      * @brief Converts the DateTime class to a readable string format.
      *
-     * @post DateTime must be properly initialized with constructor in order to convert DateTime into string.
+     * @post ENSURE(isProperlyInitialized(), "DateTime must be properly initialized with constructor in order to convert DateTime into string.")
      * @return the DateTime represented as a string.
      * The DateTime's string format is "YYYY-MM-DD, Hh00"
      */

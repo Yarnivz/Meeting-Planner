@@ -29,9 +29,9 @@ public:
      *
      *
      * 
-     * @pre Failed to construct meeting. 'id' can not be empty.
-     * @pre Failed to construct meeting. 'room' can not be empty.
-     * @pre Failed to construct meeting. 'date' has to be properly initialized with the constructor.
+     * @pre REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.")
+     * @pre REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.")
+     * @pre REQUIRE(date_time.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.")
      * 
      * @param label title of the meeting
      * @param id identifier of the meeting
@@ -42,9 +42,9 @@ public:
      * @param catering_needed status of the meeting
      *
      * 
-     * @post Meeting creation failed. Object was not properly initialized.
-     * @post Meeting creation failed. Order was not correctly set.
-     * @post Meeting creation failed, state was not correctly set.
+     * @post ENSURE(isProperlyInitialized(), "Meeting creation failed. Object was not properly initialized.")
+     * @post ENSURE(getOrder() == this->order, "Meeting creation failed. Order was not correctly set.")
+     * @post ENSURE(isUnProcessed() && !isProcessed() && !isCancelled(), "Meeting creation failed, state was not correctly set.")
      */
     Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
 
@@ -64,7 +64,7 @@ public:
      * @brief Id getter.
      *
      *
-     * @pre Failed to get id. Meeting has to be properly initialized with the constructor.
+     * @pre REQUIRE(isProperlyInitialized(), "Failed to get id. Meeting has to be properly initialized with the constructor.")
      *
      * @return the identifier of this meeting
      */
@@ -74,7 +74,7 @@ public:
      * @brief Room id getter.
      *
      *
-     * @pre Failed to get room. Meeting has to be properly initialized with the constructor.
+     * @pre REQUIRE(isProperlyInitialized(), "Failed to get room. Meeting has to be properly initialized with the constructor.")
      *
      * @return the identifier of the room where this meeting takes place
      */
@@ -85,7 +85,7 @@ public:
      * @brief Date getter.
      *
      *
-     * @pre Failed to get date. Meeting has to be properly initialized with the constructor.
+     * @pre REQUIRE(isProperlyInitialized(), "Failed to get date. Meeting has to be properly initialized with the constructor.")
      *
      * @return the date of when this meeting takes place
      */
@@ -96,17 +96,17 @@ public:
      * @brief Converts the meeting class to a readable string format.
      *
      *
-     * @pre Failed to convert to string. Meeting has to be properly initialized with the constructor.
+     * @pre REQUIRE(isProperlyInitialized(), "Failed to convert to string. Meeting has to be properly initialized with the constructor.")
      *
      *
-     * @post label cannot be empty
+     * @post ENSURE(!label.empty(), "label cannot be empty")
      * @return the meeting in string format
      */
     const std::string& toString() const;
 
     /**
      * @brief The orders getter
-     * @post Order can not be negative
+     * @post ENSURE(order >= 0, "Order can not be negative")
      */
     int getOrder() const;
 
@@ -118,31 +118,31 @@ public:
      * An order of zero means you allow the App class to decide the order of this meeting when registering it.
      *
      *
-     * @pre cannot set order to a negative value %d
+     * @pre REQUIRE(orderAdded >= 0, "cannot set order to a negative value %d", orderAdded)
      *
      * @param orderAdded of the meeting
      *
-     * @post OrderAdded does not match GetOrder return value
+     * @post ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value")
      */
     void setOrder(const int orderAdded);
 
     /**
      * @brief processes the meeting
      *
-     * @pre Meeting was already processed or canceled.
+     * @pre REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled.")
      *
-     * @post Meeting must be processed.
+     * @post ENSURE(isProcessed(), "Meeting must be processed.")
      */
     void process();
 
     /**
      * @brief cancels the meeting and updates the reason for it
      *
-     * @pre Meeting was already processed or canceled
+     * @pre REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled")
      *
      * @param the reason for the meetings cancellation
      *
-     * @post Meeting must be cancelled.
+     * @post ENSURE(isCancelled(), "Meeting must be cancelled.")
      */
     void cancel(const std::string& reason);
 
@@ -180,7 +180,7 @@ public:
      * @brief online bool getter.
      *
      *
-     * @pre Failed to get online status. Meeting has to be properly initialized with the constructor.
+     * @pre REQUIRE(isProperlyInitialized(), "Failed to get online status. Meeting has to be properly initialized with the constructor.")
      *
      * @return online status of meeting
      */
@@ -189,7 +189,7 @@ public:
     /**
      * @brief gets the reason on why on the meeting is cancelled
      *
-     * @post Meeting was not cancelled.
+     * @post ENSURE(isCancelled(), "Meeting was not cancelled.")
      *
      * @return the meetings cancellation reason as a string
      */
@@ -201,12 +201,12 @@ public:
      * @brief writes the output of 'toString' to a stream
      *
      *
-     * @pre meeting must be properly initialized
+     * @pre REQUIRE(meeting.isProperlyInitialized(), "meeting must be properly initialized")
      *
      * @param os stream to write to
      * @param meeting to print out
      *
-     * @post ostream variable is not usable
+     * @post ENSURE(os, "ostream variable is not usable")
      */
     friend std::ostream& operator<<(std::ostream& os, const Meeting& meeting);
 
@@ -215,22 +215,22 @@ public:
      *
      * ((default constructor))
      *
-     * @pre User can not be null
+     * @pre REQUIRE(user != nullptr, "User can not be null")
      *
      *
-     * @post User must be added to meeting participants
-     * @post MeetingRegistery must contain current meeting to wich the user was added
+     * @post ENSURE(participants.contains(user->getId()), "User must be added to meeting participants")
+     * @post ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added")
      */
     ~Meeting();
     /**
     * @brief adds the users to the meetings Meetingregistery
     *
-     * @pre User can not be null
+     * @pre REQUIRE(user != nullptr, "User can not be null")
     *
     * @param user the user to add
      *
-     * @post User must be added to meeting participants
-     * @post MeetingRegistery must contain current meeting to wich the user was added
+     * @post ENSURE(participants.contains(user->getId()), "User must be added to meeting participants")
+     * @post ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added")
     */
     void addParticipant(User* user);
 
@@ -245,9 +245,9 @@ public:
      * @brief calculates the amount of co2 the meeting uses
      *
      * 
-     * @pre Room cannot be null
-     * @pre Campus cannot be null
-     * @pre Catering and online cannot be true at the same time.
+     * @pre REQUIRE(room != nullptr, "Room cannot be null")
+     * @pre REQUIRE(room->getCampus() != nullptr, "Campus cannot be null")
+     * @pre REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.")
      * 
      * @return the total co2 emission amount
      */
@@ -256,11 +256,11 @@ public:
     /**
      * @brief gets the user in the meeting that corresponds to the id
      *
-     * @pre UserId cannot be empty
+     * @pre REQUIRE(!userId.empty(), "UserId cannot be empty")
      *
      * @param userId the Id of the user
      *
-     * @post User must have a correct id.
+     * @post ENSURE(it->second->getId() == userId, "User must have a correct id.")
      * @return the user itself
      */
     User* getParticipant(const std::string& userId) const;
@@ -288,12 +288,12 @@ private:
 
     /**
      *
-     * @pre User can not be null
-     * @pre User needs to be properly initialized.
-     * @pre User '%s' can't already participate in meeting
-     * @pre User id '%s' must be unique
-     * @pre Can't add external user %s to meeting %s which doesn't allow external users.
-     * @pre User must be added.
+     * @pre REQUIRE(user != nullptr, "User can not be null")
+     * @pre REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.")
+     * @pre REQUIRE(!hasParticipant(user), "User '%s' can't already participate in meeting", user->getId().c_str())
+     * @pre REQUIRE(getParticipant(user->getId()) == nullptr, "User id '%s' must be unique", user->getId().c_str())
+     * @pre REQUIRE(!user->isExternal() || this->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", user->getId().c_str(), this->getId().c_str())
+     * @pre REQUIRE(getParticipant(user->getId()) == user, "User must be added.")
      *
      */
     void _addParticipant(User* user);

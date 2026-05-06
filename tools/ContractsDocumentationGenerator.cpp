@@ -292,8 +292,8 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
                 }
 
                 std::cout << "REQUIRE contract detected for " << currentFunction << std::endl;
-                size_t startIndex = codeFileLine.find('"') + 1;
-                size_t endIndex = codeFileLine.find_last_of('"');
+                size_t startIndex = codeFileLine.find("REQUIRE");
+                size_t endIndex = codeFileLine.find_last_of(';');
                 std::string contractComment = codeFileLine.substr(startIndex, endIndex - startIndex);
                 std::cout << "contractcomment is " << contractComment << std::endl;
                 preContracts.push_back(contractComment);
@@ -306,8 +306,8 @@ void ContractsDocumentationGenerator::getCodeContracts(const std::string& baseFi
                 }
 
                 std::cout << "ENSURE contract detected for " << currentFunction << std::endl;
-                size_t startIndex = codeFileLine.find('"') + 1;
-                size_t endIndex = codeFileLine.find_last_of('"');
+                size_t startIndex = codeFileLine.find("ENSURE");
+                size_t endIndex = codeFileLine.find_last_of(';');
                 std::string contractComment = codeFileLine.substr(startIndex, endIndex - startIndex);
                 postContracts.push_back(contractComment);
             }

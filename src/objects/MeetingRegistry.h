@@ -24,12 +24,12 @@ public:
     /**
      * @brief prevents the MeetingRegistry object from being copied
      *
-     * @pre Meeting can not be null.
-     * @pre Meeting needs to be properly initialized.
-     * @pre Meeting Id needs to be unique!
+     * @pre REQUIRE(meeting, "Meeting can not be null.")
+     * @pre REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.")
+     * @pre REQUIRE(getById(meeting->getId()) == nullptr, "Meeting Id needs to be unique!")
      *
      *
-     * @post Something went wrong. The meeting was not added to the Registry
+     * @post ENSURE(getById(meeting->getId()) == meeting, "Something went wrong. The meeting was not added to the Registry")
      */
     MeetingRegistry(const MeetingRegistry&) = delete;
     MeetingRegistry& operator=(const MeetingRegistry&) = delete;
@@ -45,12 +45,12 @@ public:
      * @brief gets the meeting that corresponds to the Id from the MeetinRegistry
      *
      *
-     * @pre Meeting id cannot be empty.
+     * @pre REQUIRE(!id.empty(), "Meeting id cannot be empty.")
      *
      * @param id The id of the meeting
      *
      *
-     * @post Something went wrong. The meeting which was found did not have the correct id
+     * @post ENSURE(it->second->getId() == id, "Something went wrong. The meeting which was found did not have the correct id")
      * @return the meeting itself
      */
     Meeting* getById(const std::string& id) const;
@@ -67,12 +67,12 @@ public:
      * Will only remove the DateTime if there arent multiple meetings with the same one
      *
      *
-     * @pre A meeting with that id does not exist in the registry.
+     * @pre REQUIRE(it != by_id.end(), "A meeting with that id does not exist in the registry.")
      *
      * @param id the corresponding id of the meeting
      *
-     * @post Something went wrong. The meeting which was found did not have the correct id.
-     * @post Something went wrong. The meeting was not removed from the registry.
+     * @post ENSURE(it->second->getId() == id, "Something went wrong. The meeting which was found did not have the correct id.")
+     * @post ENSURE(getById(id) == nullptr, "Something went wrong. The meeting was not removed from the registry.")
      */
     void removeById(const std::string& id);
 

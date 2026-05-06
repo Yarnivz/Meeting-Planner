@@ -13,14 +13,14 @@ public:
 
     /**
      *
-     * @pre The emission level can't be negative: %f
-     * @pre Campus can't be null
+     * @pre REQUIRE(co2 >= 0.0f, "The emission level can't be negative: %f", co2)
+     * @pre REQUIRE(campus != nullptr, "Campus can't be null")
      *
      *
-     * @post Campus must be set correctly.
-     * @post Emissions must be set correctly.
-     * @post Catering must be properly initialized.
-     * @post Catering must be added to the campus
+     * @post ENSURE(getCampus() == campus, "Campus must be set correctly.")
+     * @post ENSURE(getEmissions() == co2, "Emissions must be set correctly.")
+     * @post ENSURE(isProperlyInitialized(), "Catering must be properly initialized.")
+     * @post ENSURE(campus->getCaterings().back() == this, "Catering must be added to the campus")
      */
     Catering(Campus* campus, float co2);
 
@@ -40,7 +40,7 @@ public:
     /**
      * @brief gets the caterings co2 emission amount
      *
-     * @pre emissions cant be negative
+     * @pre REQUIRE(emission > 0, "emissions cant be negative")
      *
      * @return the emission amount itself
      */

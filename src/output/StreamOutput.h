@@ -14,7 +14,7 @@ public:
 
     /**
      *
-     * @pre 'stream' can't be null
+     * @pre REQUIRE(stream, "'stream' can't be null")
      *
      */
     StreamOutput(std::ostream* stream = &std::cout);
