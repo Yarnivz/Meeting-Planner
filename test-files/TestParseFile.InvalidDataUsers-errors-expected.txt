@@ -1,0 +1,2 @@
+User 'Peter Selie' was marked as external for meeting 'm2' but was registered as not-external earlier
+User with id 'Peter Selie' was added twice to the same meeting 'm1'.

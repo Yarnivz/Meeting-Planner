@@ -10,6 +10,8 @@
 #include "App.h"
 #include <fstream>
 
+#include "output/StreamOutput.h"
+
 class TestWriteToStream : public ::testing::Test
 {
 protected:
@@ -22,7 +24,7 @@ TEST_F(TestWriteToStream, HappyDay1)
     const std::string expected = "test-files/WriteToStreamTests.HappyDay1-expected.txt";
     std::ofstream f = std::ofstream(actual);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, new StreamOutput(&f));
     ASSERT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2026, 1, 2, 13);
@@ -30,6 +32,9 @@ TEST_F(TestWriteToStream, HappyDay1)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room *r1, *r2, *r3;
     p.addRoom(r1 = new Room("Room 1", "r1", 20, building1));
@@ -58,10 +63,11 @@ TEST_F(TestWriteToStream, HappyDay1)
     ASSERT_EQ(u1, p.getUser("John Doe"));
     ASSERT_EQ(u2, p.getUser("Peter Selie"));
 
-    m3->addParticipant(u1);
-    m1->addParticipant(u2);
+    p.addUserToMeeting("John Doe", "m3");
+    p.addUserToMeeting("Peter Selie", "m1");
 
     p.writeToStream();
+    f.close();
 
     ASSERT_TRUE(file_exists(actual));
     ASSERT_TRUE(file_exists(expected));
@@ -75,7 +81,7 @@ TEST_F(TestWriteToStream, HappyDay2)
     const std::string expected = "test-files/WriteToStreamTests.HappyDay2-expected.txt";
     std::ofstream f = std::ofstream(actual);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, new StreamOutput(&f));
     EXPECT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2025, 12, 12, 20);
@@ -84,6 +90,9 @@ TEST_F(TestWriteToStream, HappyDay2)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room *r1, *r2;
     p.addRoom(r1 = new Room("M.G.025", "MG025", 20, building1));
@@ -120,6 +129,7 @@ TEST_F(TestWriteToStream, HappyDay2)
     p.addUserToMeeting("David", "m2");
 
     p.writeToStream();
+    f.close();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));
@@ -130,15 +140,18 @@ TEST_F(TestWriteToStream, HappyDay2)
 TEST_F(TestWriteToStream, Empty)
 {
     const std::string actual = "test-files/WriteToStreamTests.Empty-actual.txt";
+    const std::string expected = "test-files/WriteToStreamTests.Empty-expected.txt";
     std::ofstream f = std::ofstream(actual);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, new StreamOutput(&f));
     EXPECT_TRUE(p.isProperlyInitialized());
 
     p.writeToStream();
+    f.close();
 
+    EXPECT_TRUE(file_exists(expected));
     EXPECT_TRUE(file_exists(actual));
-    EXPECT_TRUE(file_is_empty(actual));
+    EXPECT_TRUE(file_compare(actual, expected));
 }
 
 TEST_F(TestWriteToStream, Processed)
@@ -147,7 +160,7 @@ TEST_F(TestWriteToStream, Processed)
     const std::string expected = "test-files/WriteToStreamTests.Processed-expected.txt";
     std::ofstream f = std::ofstream(actual);
 
-    App p = App(nullptr, &f);
+    App p = App(nullptr, new StreamOutput(&f));
     EXPECT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2025, 12, 12, 0);
@@ -156,6 +169,9 @@ TEST_F(TestWriteToStream, Processed)
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room *r1, *r2;
     p.addRoom(r1 = new Room("M.G.025", "MG025", 20, building1));
@@ -193,6 +209,7 @@ TEST_F(TestWriteToStream, Processed)
 
 
     p.writeToStream();
+    f.close();
 
     EXPECT_TRUE(file_exists(actual));
     EXPECT_TRUE(file_exists(expected));

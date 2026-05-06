@@ -1,0 +1,33 @@
+<SYSTEM>
+    <CAMPUS>
+        <NAME>Campus1</NAME>
+        <IDENTIFIER>C1</IDENTIFIER>
+    </CAMPUS>
+    <CATERING>
+        <CAMPUS>C1</CAMPUS>
+        <CO2>100</CO2>
+    </CATERING>
+
+    <CAMPUS>
+        <NAME>Campus2</NAME>
+        <IDENTIFIER>C2</IDENTIFIER>
+    </CAMPUS>
+    <CATERING>
+        <CAMPUS>C2</CAMPUS>
+        <CO2>200</CO2>
+    </CATERING>
+
+    <CAMPUS>
+        <NAME>Campus3</NAME>
+        <IDENTIFIER>C3</IDENTIFIER>
+    </CAMPUS>
+    <CATERING>
+        <CAMPUS>C3</CAMPUS>
+        <CO2>300</CO2>
+    </CATERING>
+
+    <CAMPUS>
+        <NAME>Campus4</NAME>
+        <IDENTIFIER>C4</IDENTIFIER>
+    </CAMPUS>
+</SYSTEM>

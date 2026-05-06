@@ -1,0 +1,7 @@
+CAMPUS must have a NAME property
+Building 'invalid-building' is in a campus 'invalid-campus', which doesn't exist.
+Building ids must be unique: building_1
+Room 'invalid-room' is in a building 'invalid-building', which doesn't exist.
+Room 'r1' is in a campus 'campus_1', but it's building 'building_2' is in a different campus 'campus_2'.
+Room 'r2' is in a campus 'campus_2', but it's building 'building_1' is in a different campus 'campus_1'.
+Room ids must be unique: dup-room

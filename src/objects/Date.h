@@ -16,7 +16,11 @@ public:
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called without parameters, the date that gets created will be the current date.
      *
-     * @post Date creation failed. Date validity check did not pass.
+     * @post ENSURE(current_date.ok(), "Date creation failed. Date validity check did not pass.")
+     * @post ENSURE(isProperlyInitialized(), "Date was not properly initialized.")
+     * @post ENSURE(getDay() == day, "Day was not set.")
+     * @post ENSURE(getMonth() == month, "Month was not set.")
+     * @post ENSURE(getYear() == year, "Year was not set.")
      */
     Date();
 
@@ -24,29 +28,48 @@ public:
      * @brief Copies a Date object.
      * It copies all important values but makes sure the 'properlyInitialized' test still passes.
      *
-     * @pre Tried to copy a date which was not properly initialized by the constructor.
+     * @pre REQUIRE(d.isProperlyInitialized(), "Tried to copy a date which was not properly initialized by the constructor.")
      *
      * @param d The Date to be copied.
      *
-     * @contracts
+     * @post ENSURE(isProperlyInitialized(), "Date was not properly initialized.")
+     * @post ENSURE(getDay() == day, "Day was not set.")
+     * @post ENSURE(getMonth() == month, "Month was not set.")
+     * @post ENSURE(getYear() == year, "Year was not set.")
      */
     Date(const Date& d);
+
+    /**
+     *
+     * @pre REQUIRE(d.isProperlyInitialized(), "Tried to copy a date which was not properly initialized by the constructor.")
+     *
+     *
+     * @post ENSURE(isProperlyInitialized(), "Date was not properly initialized.")
+     * @post ENSURE(getDay() == day, "Day was not set.")
+     * @post ENSURE(getMonth() == month, "Month was not set.")
+     * @post ENSURE(getYear() == year, "Year was not set.")
+     */
+    Date& operator=(const Date& d);
 
     /**
      * @brief Creates the date class.
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called with parameters, all parameters are required and the date will be initialized with the given data.
      *
-     * @pre Year can not be negative!
-     * @pre Month can not be negative!
-     * @pre Day can not be negative!
-     * @pre Invalid date provided. Please check if this date really exists!
+     * @pre REQUIRE(year > 0, "Year can not be negative! %i", year)
+     * @pre REQUIRE(month > 0, "Month can not be negative! %i", month)
+     * @pre REQUIRE(day > 0, "Day can not be negative! %i", day)
+     * @pre REQUIRE(date.ok(), "Invalid date provided. Please check if this date really exists!")
      *
      * @param year
      * @param month
      * @param day
      *
-     * @post Date creation failed. Date validity check did not pass.
+     * @post ENSURE(date.ok(), "Date creation failed. Date validity check did not pass.")
+     * @post ENSURE(isProperlyInitialized(), "Date was not properly initialized.")
+     * @post ENSURE(getDay() == this->day, "Day was not set.")
+     * @post ENSURE(getMonth() == this->month, "Month was not set.")
+     * @post ENSURE(getYear() == this->year, "Year was not set.")
      */
     Date(int year, int month, int day);
 
@@ -55,11 +78,15 @@ public:
      * The date class has a year, month and day attribute.
      * When the date class constructor gets called with parameters, all parameters are required and the date will be initialized with the given data.
      *
-     * @pre Invalid date provided. Please check if this date really exists!
+     * @pre REQUIRE(year_month_day.ok(), "Invalid date provided. Please check if this date really exists!")
      *
      * @param year_month_day date to initialize the Date class with.
      *
-     * @post Date creation failed. Date validity check did not pass.
+     * @post ENSURE(year_month_day.ok(), "Date creation failed. Date validity check did not pass.")
+     * @post ENSURE(isProperlyInitialized(), "Date was not properly initialized.")
+     * @post ENSURE(getDay() == this->day, "Day was not set.")
+     * @post ENSURE(getMonth() == this->month, "Month was not set.")
+     * @post ENSURE(getYear() == this->year, "Year was not set.")
      */
     Date(std::chrono::year_month_day year_month_day);
 
@@ -71,27 +98,30 @@ public:
 
     /**
      * @brief Year getter.
-     * @return the date's year
      *
-     * @post Failed to get Year. Date must be properly initialized with the constructor!
+     * @post ENSURE(isProperlyInitialized(), "Failed to get Year. Date must be properly initialized with the constructor!")
+     *
+     * @return the date's year
      */
     int getYear() const;
 
     /**
      * @brief Month getter.
-     * @return the date's month
      *
-     * @post Failed to get Month. Date must be properly initialized with the constructor!
+     * @post ENSURE(isProperlyInitialized(), "Failed to get Month. Date must be properly initialized with the constructor!")
+     *
+     * @return the date's month
      */
-    unsigned getMonth() const;
+    unsigned int getMonth() const;
 
     /**
      * @brief Day getter.
-     * @return the date's day
      *
-     * @post Failed to get Day. Date must be properly initialized with the constructor!
+     * @post ENSURE(isProperlyInitialized(), "Failed to get Day. Date must be properly initialized with the constructor!")
+     *
+     * @return the date's day
      */
-    unsigned getDay() const;
+    unsigned int getDay() const;
 
     /**
      * @brief Weekday getter.
@@ -101,10 +131,11 @@ public:
 
     /**
      * @brief Converts the date class to a readable string format.
-     * @return the date represented as a string.
-     *
-     * @post Failed to convert date to string. Date must be properly initialized with the constructor!
      * The date's string format is "YYYY-MM-DD"
+     *
+     * @post ENSURE(isProperlyInitialized(), "Failed to convert date to string. Date must be properly initialized with the constructor!")
+     *
+     * @return the date represented as a string.
      */
     std::string toString() const;
 
@@ -166,11 +197,10 @@ public:
      */
     ~Date();
 
-private:
-    int year{};
-    unsigned month{};
-    unsigned day{};
-
+protected:
+    int year;
+    unsigned month;
+    unsigned day;
     void* init_test_this_ptr;
 };
 

@@ -17,20 +17,27 @@ public:
      * This is the object where rooms will be inside.
      * A building has to be initialized using its name, id and the campus where this building can be found.
      *
-     * @pre Name cannot be empty
-     * @pre Id cannot be empty
-     * @pre Campus cannot be a null pointer
-     * @pre Campus must be properly initialized
+     * @pre REQUIRE(!name.empty(), "Name cannot be empty")
+     * @pre REQUIRE(!id.empty(), "Id cannot be empty")
+     * @pre REQUIRE(campus != nullptr, "Campus cannot be a null pointer")
+     * @pre REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized")
      *
      * @param name the name of this building
      * @param id the unique identifier of this building that can be used to call this object from the app.
      * @param campus the campus that houses this building
      *
-     * @post Name was not added to this Building object
-     * @post Id was not added to this Building object
-     * @post Campus was not added to this Building object
+     * @post ENSURE(this->name == name, "Name must be added to this Building object")
+     * @post ENSURE(getId() == id, "Id must be added to this Building object")
+     * @post ENSURE(getCampus() == campus, "Campus must be added to this Building object")
+     * @post ENSURE(isProperlyInitialized(), "Building must be properly initialized")
      */
     Building(const std::string& name, const std::string& id, Campus* campus);
+
+    /**
+     * @brief prevents the Building object from being copied
+     */
+    Building(const Building&) = delete;
+    Building& operator=(const Building&) = delete;
 
     /**
      * @brief Checks whether this Room was properly initialized by the constructor.
@@ -42,7 +49,7 @@ public:
     /**
      * @brief Id getter.
      *
-     * @pre Id cannot be empty
+     * @pre REQUIRE(!id.empty(), "Id cannot be empty")
      *
      * @return the identifier of this building
      */
@@ -51,8 +58,8 @@ public:
     /**
      * @brief Campus id getter.
      *
-     * @pre Campus cannot be a null pointer
-     * @pre Campus must be properly initialized
+     * @pre REQUIRE(campus != nullptr, "Campus cannot be a null pointer")
+     * @pre REQUIRE(campus->isProperlyInitialized(), "Campus must be properly initialized")
      *
      * @return the identifier of the campus this building is located on
      */
@@ -62,7 +69,7 @@ public:
      * @brief Converts this building object into a readable string format.
      * This is represented by its name.
      *
-     * @pre Name cannot be empty
+     * @pre REQUIRE(!name.empty(), "Name cannot be empty")
      *
      * @return the building in string format
      */
@@ -71,7 +78,7 @@ public:
     /**
      * @brief Standard stream operator using the toString function to append the building to the stream.
      *
-     * @pre Building must be properly initialized
+     * @pre REQUIRE(building.isProperlyInitialized(), "Building must be properly initialized")
      *
      * @param os stream to write on
      * @param building object to write on the stream

@@ -11,13 +11,27 @@
 
 class StreamOutput : public Output {
 public:
+
+    /**
+     *
+     * @pre REQUIRE(stream, "'stream' can't be null")
+     *
+     */
     StreamOutput(std::ostream* stream = &std::cout);
 
+    void printUser(const User* user) override;
+    void printUsers(const Users& users) override;
     void printMeeting(const Meeting* meeting) override;
     void printMeetings(const MeetingRegistry& registry) override;
     void printRoom(const Room* room) override;
     void printRooms(const Rooms& rooms) override;
+    void printBuilding(const Building* building) override;
+    void printBuildings(const Buildings& buildings) override;
     void printCampus(const Campus* campus) override;
+    void printCampuses(const Campuses& campuses) override;
+
+    void printMeetingCO2(const Meeting* meeting) override;
+    void printMeetingsCO2(const MeetingRegistry& registry) override;
 
 private:
     std::ostream* stream;

@@ -1,0 +1,103 @@
+<SYSTEM>
+    <!--==================-->
+    <!-- INVALID ELEMENTS -->
+    <!--==================-->
+
+    <!-- Attempt to add invalid elements -->
+    <CAMPUS>
+        <IDENTIFIER>invalid-campus</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>Invalid Building</NAME>
+        <IDENTIFIER>invalid-building</IDENTIFIER>
+        <CAMPUS>invalid-campus</CAMPUS> <!-- shouldn't exist -->
+    </BUILDING>
+    <ROOM>
+        <NAME>Invalid Room</NAME>
+        <IDENTIFIER>invalid-room</IDENTIFIER>
+        <CAPACITY>99</CAPACITY>
+
+        <CAMPUS>invalid-campus</CAMPUS> <!-- shouldn't exist -->
+        <BUILDING>invalid-building</BUILDING> <!-- shouldn't exist -->
+    </ROOM>
+
+    <!--==================-->
+    <!--      SETUP       -->
+    <!--==================-->
+
+    <!-- Add correct campuses and buildings -->
+    <!-- campus_1 : building_1 -->
+    <!-- campus_2 : building_2 -->
+    <CAMPUS>
+        <NAME>First Campus</NAME>
+        <IDENTIFIER>campus_1</IDENTIFIER>
+    </CAMPUS>
+    <CAMPUS>
+        <NAME>Second Campus</NAME>
+        <IDENTIFIER>campus_2</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>First Building</NAME>
+        <IDENTIFIER>building_1</IDENTIFIER>
+        <CAMPUS>campus_1</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Second Building</NAME>
+        <IDENTIFIER>building_2</IDENTIFIER>
+        <CAMPUS>campus_2</CAMPUS>
+    </BUILDING>
+
+    <!--==================-->
+    <!--  INVALID LAYOUT  -->
+    <!--==================-->
+
+    <!-- Attempt to add room with mismatched campus and building -->
+    <ROOM>
+        <NAME>Invalid Placement 1</NAME>
+        <IDENTIFIER>r1</IDENTIFIER>
+        <CAPACITY>99</CAPACITY>
+
+        <CAMPUS>campus_1</CAMPUS>
+        <BUILDING>building_2</BUILDING> <!-- building_2 isn't in campus_1 -->
+    </ROOM>
+    <ROOM>
+        <NAME>Invalid Placement 2</NAME>
+        <IDENTIFIER>r2</IDENTIFIER>
+        <CAPACITY>99</CAPACITY>
+
+        <CAMPUS>campus_2</CAMPUS>
+        <BUILDING>building_1</BUILDING> <!-- building_1 isn't in campus_2 -->
+    </ROOM>
+
+    <!--====================-->
+    <!-- DUPLICATE ELEMENTS -->
+    <!--====================-->
+
+    <!-- Attempt to add building_1 a second time to campus_2 -->
+    <BUILDING>
+        <NAME>First Building</NAME>
+        <IDENTIFIER>building_1</IDENTIFIER>
+        <CAMPUS>campus_2</CAMPUS>
+    </BUILDING>
+
+    <!-- Attempt to add rooms with duplicate ids in different buildings -->
+    <ROOM> <!-- Once in building_1 of campus_1 -->
+        <NAME>Duplicate Room</NAME>
+        <IDENTIFIER>dup-room</IDENTIFIER>
+        <CAPACITY>99</CAPACITY>
+
+        <CAMPUS>campus_1</CAMPUS>
+        <BUILDING>building_1</BUILDING>
+    </ROOM>
+    <ROOM> <!-- Once in building_2 of campus_2 -->
+        <NAME>Duplicate Room</NAME>
+        <IDENTIFIER>dup-room</IDENTIFIER>
+        <CAPACITY>99</CAPACITY>
+
+        <CAMPUS>campus_2</CAMPUS>
+        <BUILDING>building_2</BUILDING>
+    </ROOM>
+
+
+
+</SYSTEM>

@@ -12,7 +12,7 @@ set(CMAKE_EXE_LINKER_FLAGS -pthread)
 include_directories(./gtest/include ./xml_parser/include ./file_utils ./src)
 
 # Set Library dir
-link_directories(gtest/lib)
+link_directories(./gtest/lib)
 
 # Add xml parser to the project
 set(XML_PARSER_SOURCE ./xml_parser/tinyxmlparser.cpp ./xml_parser/tinyxmlerror.cpp ./xml_parser/tinyxml.cpp ./xml_parser/tinystr.cpp)

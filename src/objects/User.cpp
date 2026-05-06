@@ -13,6 +13,39 @@ User::User(const std::string& name, bool external)
 
     ENSURE(isProperlyInitialized(), "User creation failed. Object was not properly initialized.");
     ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.");
+    ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.");
+}
+
+User::User(const User& o)
+{
+    REQUIRE(o.isProperlyInitialized(), "Attempted to copy a User which was not properly initialized.");
+
+    name = o.name;
+    external = o.external;
+    // Copy constructor with proper init_check_this_ptr reset
+    init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "User copy failed. Object was not properly initialized.");
+    ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.");
+    ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.");
+}
+
+User& User::operator=(const User& o)
+{
+    if (this == &o) return *this;
+
+    REQUIRE(o.isProperlyInitialized(), "Attempted to copy a User which was not properly initialized.");
+
+    name = o.name;
+    external = o.external;
+    // Copy constructor with proper init_check_this_ptr reset
+    init_check_this_ptr = this;
+
+    ENSURE(isProperlyInitialized(), "User copy failed. Object was not properly initialized.");
+    ENSURE(getId() == name, "User creation failed. Name/Id was not correctly set.");
+    ENSURE(isExternal() == external, "User creation failed. External flag was not correctly set.");
+
+    return *this;
 }
 
 bool User::isProperlyInitialized() const
@@ -33,17 +66,23 @@ bool User::isExternal() const
 
 void User::addMeeting(Meeting* meeting)
 {
+    REQUIRE(meeting != nullptr, "Meeting cannot be null.");
     this->_addMeeting(meeting);
     meeting->_addParticipant(this);
+    ENSURE(meetings.getRawIdMap().contains(meeting->getId()), "Meeting  must be in MeetingRegistery");
+    ENSURE(meeting->getParticipants().contains(this->getId()), "User must be in meeting participants");
 }
 
-Meeting* User::getMeetingById(const std::string& meetingId)
+Meeting* User::getMeetingById(const std::string& meetingId) const
 {
+    REQUIRE(!meetingId.empty(), "Meeting id cannot be empty.");
+    ENSURE(meetings.getRawIdMap().contains(meetingId), "MeetingId must be in MeetingRegistery");
     return meetings.getById(meetingId);
 }
 
 std::list<Meeting*>& User::getMeetingByDateTime(const DateTime& meetingDateTime)
 {
+    ENSURE(meetings.getRawDateMap().contains(meetingDateTime), "DateTime must be in MeetingRegistry");
     return meetings.getByDateTime(meetingDateTime);
 }
 
@@ -51,10 +90,10 @@ std::list<Meeting*>& User::getMeetingByDateTime(const DateTime& meetingDateTime)
 void User::_addMeeting(Meeting* meeting)
 {
     REQUIRE(meeting != nullptr, "Meeting can not be null");
-    REQUIRE(meeting->isProperlyInitialized(), "Meeting needs to be properly initialized.");
+    REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
     REQUIRE(!this->isExternal() || meeting->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", this->getId().c_str(), meeting->getId().c_str());
 
     meetings.add(meeting);
 
-    REQUIRE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
+    ENSURE(getMeetingById(meeting->getId()) == meeting, "User %s must be added to meeting %s.", this->getId().c_str(), meeting->getId().c_str());
 }

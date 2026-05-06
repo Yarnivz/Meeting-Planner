@@ -24,3 +24,6 @@ void Parser::clearParticipations() { parsed_participations = {}; }
 
 const std::list<CateringElement>& Parser::parsedCaterings() const { return parsed_caterings; }
 void Parser::clearCaterings() { parsed_caterings = {}; }
+
+const std::list<RenovationElement>& Parser::parsedRenovations() const { return parsed_renovations; }
+void Parser::clearRenovations() {  parsed_renovations = {}; }

@@ -7,20 +7,24 @@
 
 #include "gtest/gtest.h"
 #include "App.h"
+#include "parser/XmlParser.h"
 
-class ProcessMeetingsTest : public ::testing::Test
+class TestProcessMeetings : public ::testing::Test
 {
 protected:
 };
 
 
-TEST_F(ProcessMeetingsTest, HappyDay)
+TEST_F(TestProcessMeetings, HappyDay)
 {
     App p = App(nullptr, nullptr);
 
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
+
     EXPECT_TRUE(p.isProperlyInitialized());
 
     Room* mg025 = new Room("M.G.025", "MG025", 40, building1);
@@ -72,13 +76,15 @@ TEST_F(ProcessMeetingsTest, HappyDay)
     EXPECT_EQ("conflict with meeting M2", m4->getCancellationReason());
 }
 
-TEST_F(ProcessMeetingsTest, Conflicts)
+TEST_F(TestProcessMeetings, Conflicts)
 {
     App p = App(nullptr, nullptr);
 
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     EXPECT_TRUE(p.isProperlyInitialized());
 
@@ -160,12 +166,14 @@ TEST_F(ProcessMeetingsTest, Conflicts)
     }
 }
 
-TEST_F(ProcessMeetingsTest, Order)
+TEST_F(TestProcessMeetings, Order)
 {
     App p = App(nullptr, nullptr);
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
 
     EXPECT_TRUE(p.isProperlyInitialized());
@@ -201,7 +209,7 @@ TEST_F(ProcessMeetingsTest, Order)
     EXPECT_EQ("conflict with meeting M3", m2->getCancellationReason());
 }
 
-TEST_F(ProcessMeetingsTest, ParseOrder)
+TEST_F(TestProcessMeetings, ParseOrder)
 {
     App p = App(new XmlParser(), nullptr);
     EXPECT_TRUE(p.isProperlyInitialized());
@@ -245,12 +253,14 @@ TEST_F(ProcessMeetingsTest, ParseOrder)
     EXPECT_EQ("conflict with meeting B1", b3->getCancellationReason());
 }
 
-TEST_F(ProcessMeetingsTest, ContractViolation)
+TEST_F(TestProcessMeetings, ContractViolation)
 {
     App p = App(nullptr, nullptr);
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
+    p.addCampus(campus1);
+    p.addBuilding(building1);
 
     Room* r = new Room("r", "r", 20, building1);
     p.addRoom(r);
@@ -267,6 +277,63 @@ TEST_F(ProcessMeetingsTest, ContractViolation)
 
     //process fake meeting
     EXPECT_DEATH(p.processSingleMeeting("doesnt-exist", false), "");
+}
+
+TEST_F(TestProcessMeetings, Renovations)
+{
+    App p = App(nullptr, nullptr);
+    Campus* c = new Campus("Middelheim", "M");
+    Building* b = new Building("Bib", "G", c);
+    p.addCampus(c);
+    p.addBuilding(b);
+
+    Room* r1 = new Room("room1", "r1", 20, b);
+    Room* r2 = new Room("room2", "r2", 20, b);
+    p.addRoom(r1);
+    p.addRoom(r2);
+
+    r1->addRenovation(Date(2026, 3, 3), Date(2026, 6, 6));
+    r1->addRenovation(Date(2026, 8, 8), Date(2026, 12, 12));
+
+    r2->addRenovation(Date(2026, 4, 1), Date(2026, 9, 1));
+
+    Meeting* m_r1_before_renov1 = new Meeting("Meeting Before Renovation 1", "r1b1", r1, DateTime(2026, 1, 1), false, false, false);
+    Meeting* m_r1_during_renov1 = new Meeting("Meeting During Renovation 1", "r1d1", r1, DateTime(2026, 4, 4), false, false, false);
+    Meeting* m_r1_inbetween_renovs = new Meeting("Meeting In Between Renovations", "r1btwn", r1, DateTime(2026, 7, 7), false, false, false);
+    Meeting* m_r1_during_renov2 = new Meeting("Meeting During Renovation 2", "r1d2", r1, DateTime(2026, 10, 10), false, false, false);
+    Meeting* m_r1_after_renov2 = new Meeting("Meeting After Renovation 2", "r1a2", r1, DateTime(2026, 12, 29), false, false, false);
+
+    p.addMeeting(m_r1_before_renov1);
+    p.addMeeting(m_r1_during_renov1);
+    p.addMeeting(m_r1_inbetween_renovs);
+    p.addMeeting(m_r1_during_renov2);
+    p.addMeeting(m_r1_after_renov2);
+
+    Meeting* m_r2_before_renov = new Meeting("Meeting Before Renovation", "r2b", r2, DateTime(2026, 3, 1), false, false, false);
+    Meeting* m_r2_during_renov = new Meeting("Meeting During Renovation", "r2d", r2, DateTime(2026, 6, 1), false, false, false);
+    Meeting* m_r2_after_renov = new Meeting("Meeting After Renovation", "r2a", r2, DateTime(2026, 10, 1), false, false, false);
+
+    p.addMeeting(m_r2_before_renov);
+    p.addMeeting(m_r2_during_renov);
+    p.addMeeting(m_r2_after_renov);
+
+    p.processAllMeetings(false, nullptr);
+
+    // Meetings outside of renovations should be processed
+    EXPECT_TRUE(m_r1_before_renov1->isProcessed());
+    EXPECT_TRUE(m_r1_inbetween_renovs->isProcessed());
+    EXPECT_TRUE(m_r1_after_renov2->isProcessed());
+    EXPECT_TRUE(m_r2_before_renov->isProcessed());
+    EXPECT_TRUE(m_r2_after_renov->isProcessed());
+
+    // Meetings during renovations should be cancelled
+    EXPECT_TRUE(m_r1_during_renov1->isCancelled());
+    EXPECT_TRUE(m_r1_during_renov2->isCancelled());
+    EXPECT_TRUE(m_r2_during_renov->isCancelled());
+
+    EXPECT_EQ("unable to book room room1 on 04/04/2026, 0h00 as it is being renovated from 03/03/2026 to 06/06/2026", m_r1_during_renov1->getCancellationReason());
+    EXPECT_EQ("unable to book room room1 on 10/10/2026, 0h00 as it is being renovated from 08/08/2026 to 12/12/2026", m_r1_during_renov2->getCancellationReason());
+    EXPECT_EQ("unable to book room room2 on 01/06/2026, 0h00 as it is being renovated from 01/04/2026 to 01/09/2026", m_r2_during_renov->getCancellationReason());
 }
 
 #endif //MEETING_PLANNER_PROCESSMEETINGSTESTS_H

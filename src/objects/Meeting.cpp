@@ -4,12 +4,14 @@
 
 #include "Meeting.h"
 
+#include "Catering.h"
+#include "Room.h"
 #include "helper/DesignByContract.h"
 #include "objects/User.h"
 
 
 Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, const bool& online, bool externals_allowed, bool catering_needed)
-    : label(label), id(id), room(room),  date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
+    : label(label), id(id), room(room), date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
 {
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
@@ -58,6 +60,7 @@ const DateTime& Meeting::getDateTime() const
 const std::string& Meeting::toString() const
 {
     REQUIRE(isProperlyInitialized(), "Failed to convert to string. Meeting has to be properly initialized with the constructor.");
+    ENSURE(!label.empty(), "label cannot be empty");
     return label;
 }
 
@@ -77,17 +80,17 @@ void Meeting::setOrder(const int orderAdded)
 
 void Meeting::process()
 {
-    ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled.");
+    REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled.");
     state = PROCESSED;
-    REQUIRE(isProcessed(), "Meeting must be processed.");
+    ENSURE(isProcessed(), "Meeting must be processed.");
 }
 
 void Meeting::cancel(const std::string& reason)
 {
-    ENSURE(state == UNPROCESSED, "Meeting was already processed or canceled");
+    REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled");
     state = CANCELLED;
     cancellation_reason = reason;
-    REQUIRE(isCancelled(), "Meeting must be cancelled.");
+    ENSURE(isCancelled(), "Meeting must be cancelled.");
 }
 
 bool Meeting::isUnProcessed() const { return state == UNPROCESSED; }
@@ -138,17 +141,24 @@ void Meeting::addParticipant(User* user)
 
     this->_addParticipant(user);
     user->_addMeeting(this);
+    ENSURE(participants.contains(user->getId()), "User must be added to meeting participants");
+    ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added");
 }
 
-User* Meeting::getParticipant(const std::string& userId)
+User* Meeting::getParticipant(const std::string& userId) const
 {
     REQUIRE(!userId.empty(), "UserId cannot be empty");
-    const Users::iterator it = participants.find(userId);
+    const Users::const_iterator it = participants.find(userId);
 
     if (it == participants.end()) return nullptr;
 
     ENSURE(it->second->getId() == userId, "User must have a correct id.");
     return it->second;
+}
+
+bool Meeting::hasParticipant(const User* user) const
+{
+    return user && getParticipant(user->getId()) == user;
 }
 
 size_t Meeting::getParticipantCount() const
@@ -165,9 +175,87 @@ void Meeting::_addParticipant(User* user)
 {
     REQUIRE(user != nullptr, "User can not be null");
     REQUIRE(user->isProperlyInitialized(), "User needs to be properly initialized.");
+    REQUIRE(!hasParticipant(user), "User '%s' can't already participate in meeting", user->getId().c_str());
+    REQUIRE(getParticipant(user->getId()) == nullptr, "User id '%s' must be unique", user->getId().c_str());
     REQUIRE(!user->isExternal() || this->externalsAllowed(), "Can't add external user %s to meeting %s which doesn't allow external users.", user->getId().c_str(), this->getId().c_str());
+
 
     participants.insert({user->getId(), user});
 
     REQUIRE(getParticipant(user->getId()) == user, "User must be added.");
 }
+
+
+void Meeting::getEmissionDetails(
+    unsigned& num_externals, float& externals_emissions,
+    unsigned& num_internals, float& internals_emissions,
+    unsigned& num_online, float& online_emissions,
+    unsigned& num_catering_participants, float& catering_emissions) const
+{
+    REQUIRE(room != nullptr, "Room cannot be null");
+    REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
+    REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.");
+
+    num_externals = num_internals = num_online = num_catering_participants = 0;
+    externals_emissions = internals_emissions = online_emissions = catering_emissions = 0.0f;
+
+
+    if (online)
+    {
+        num_online = getParticipantCount();
+        online_emissions = (float)num_online * 30.0f;
+        return;
+    }
+
+    for (const std::pair<std::string, User*> user : participants)
+    {
+        ++(user.second->isExternal() ? num_externals : num_internals);
+    }
+
+    externals_emissions = (float)num_externals * 1200.0f;
+    internals_emissions = (float)num_internals * 120.0f;
+
+
+    const std::list<Catering*>& caterings = room->getCampus()->getCaterings();
+
+    if (cateringNeeded() && !caterings.empty())
+    {
+        num_catering_participants = getParticipantCount();
+        catering_emissions = (float)num_catering_participants * caterings.front()->getEmissions();
+    } else
+    {
+        num_catering_participants = 0;
+        catering_emissions = 0.0f;
+    }
+
+}
+
+float Meeting::getEmissions() const
+{
+    REQUIRE(room != nullptr, "Room cannot be null");
+    REQUIRE(room->getCampus() != nullptr, "Campus cannot be null");
+    REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.");
+
+
+    if (online)
+    {
+        //ENSURE(!cateringNeeded(), "Online");
+        return (float)getParticipantCount() * 30.0f;
+    }
+
+    float addedEmissions = 0;
+    for (const std::pair<std::string, User*> user : participants)
+    {
+        addedEmissions += user.second->isExternal() ? 1200.0f : 120.0f;
+    }
+
+    const std::list<Catering*>& caterings = room->getCampus()->getCaterings();
+    if (!caterings.empty() && catering_needed)
+    {
+        addedEmissions += static_cast<float>(getParticipantCount()) * caterings.front()->getEmissions();
+    }
+
+    return addedEmissions;
+}
+
+
