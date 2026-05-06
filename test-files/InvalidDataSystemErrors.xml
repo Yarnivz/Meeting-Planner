@@ -1,0 +1,183 @@
+<SYSTEM>
+    <CAMPUS>
+        <NAME>Campus Name</NAME>
+        <IDENTIFIER>campus_id</IDENTIFIER>
+    </CAMPUS>
+    <CAMPUS>
+        <NAME>Campus 2 Name</NAME>
+        <IDENTIFIER>campus2_id</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>Building Name</NAME>
+        <IDENTIFIER>building_id</IDENTIFIER>
+        <CAMPUS>campus_id</CAMPUS>
+    </BUILDING>
+    <BUILDING>
+        <NAME>Building 2 Name</NAME>
+        <IDENTIFIER>building2_id</IDENTIFIER>
+        <CAMPUS>campus2_id</CAMPUS>
+    </BUILDING>
+    <ROOM>
+        <NAME>Room Name</NAME>
+        <IDENTIFIER>room_id</IDENTIFIER>
+        <BUILDING>building_id</BUILDING>
+        <CAMPUS>campus_id</CAMPUS>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+    <MEETING>
+        <LABEL>Meeting Name</LABEL>
+        <IDENTIFIER>meeting_id</IDENTIFIER>
+        <ROOM>room_id</ROOM>
+        <EXTERNALS>true</EXTERNALS>
+        <ONLINE>false</ONLINE>
+        <CATERING>false</CATERING>
+        <HOUR>12</HOUR>
+        <DATE>2026-01-01</DATE>
+    </MEETING>
+    <MEETING>
+        <LABEL>Meeting 2 Name</LABEL>
+        <IDENTIFIER>meeting2_id</IDENTIFIER>
+        <ROOM>room_id</ROOM>
+        <EXTERNALS>true</EXTERNALS>
+        <ONLINE>false</ONLINE>
+        <CATERING>false</CATERING>
+        <HOUR>12</HOUR>
+        <DATE>2026-01-01</DATE>
+    </MEETING>
+
+    <!-- Duplicate Ids -->
+    <CAMPUS>
+        <NAME>Duplicate Campus</NAME>
+        <IDENTIFIER>campus_id</IDENTIFIER>
+    </CAMPUS>
+    <BUILDING>
+        <NAME>Duplicate Building</NAME>
+        <IDENTIFIER>building_id</IDENTIFIER>
+        <CAMPUS>campus_id</CAMPUS>
+    </BUILDING>
+    <ROOM>
+        <NAME>Duplicate Room</NAME>
+        <IDENTIFIER>room_id</IDENTIFIER>
+        <BUILDING>building_id</BUILDING>
+        <CAMPUS>campus_id</CAMPUS>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+    <MEETING>
+        <LABEL>Duplicate Meeting</LABEL>
+        <IDENTIFIER>meeting_id</IDENTIFIER>
+        <ROOM>room_id</ROOM>
+        <EXTERNALS>true</EXTERNALS>
+        <ONLINE>false</ONLINE>
+        <CATERING>false</CATERING>
+        <HOUR>12</HOUR>
+        <DATE>2026-01-01</DATE>
+    </MEETING>
+
+    <!-- Duplicate Participation -->
+    <PARTICIPATION>
+        <USER>Duplicate Participation User</USER>
+        <MEETING>meeting_id</MEETING>
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <USER>Duplicate Participation User</USER>
+        <MEETING>meeting_id</MEETING>
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+
+    <!-- Nonexistent Ids -->
+    <BUILDING>
+        <NAME>Building</NAME>
+        <IDENTIFIER>building_with_wrong_campus</IDENTIFIER>
+        <CAMPUS>wrong_campus</CAMPUS>
+    </BUILDING>
+    <ROOM>
+        <NAME>Room</NAME>
+        <IDENTIFIER>room_with_wrong_campus</IDENTIFIER>
+        <BUILDING>building_id</BUILDING>
+        <CAMPUS>wrong_campus</CAMPUS>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>Room</NAME>
+        <IDENTIFIER>room_with_wrong_building</IDENTIFIER>
+        <BUILDING>wrong_building</BUILDING>
+        <CAMPUS>campus_id</CAMPUS>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+    <MEETING>
+        <LABEL>Meeting</LABEL>
+        <IDENTIFIER>meeting_with_wrong_room</IDENTIFIER>
+        <ROOM>wrong_room</ROOM>
+        <EXTERNALS>true</EXTERNALS>
+        <ONLINE>false</ONLINE>
+        <CATERING>false</CATERING>
+        <HOUR>12</HOUR>
+        <DATE>2026-01-01</DATE>
+    </MEETING>
+    <CATERING>
+        <CAMPUS>wrong_campus</CAMPUS>
+        <CO2>10</CO2>
+    </CATERING>
+    <PARTICIPATION>
+        <USER>user_in_wrong_meeting</USER>
+        <MEETING>wrong_meeting</MEETING>
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+
+    <!-- Mismatched Layout -->
+    <ROOM>
+        <NAME>Room</NAME>
+        <IDENTIFIER>room_mismatch_c2_b1</IDENTIFIER>
+        <BUILDING>building_id</BUILDING>
+        <CAMPUS>campus2_id</CAMPUS>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+    <ROOM>
+        <NAME>Room</NAME>
+        <IDENTIFIER>room_mismatch_c1_b2</IDENTIFIER>
+        <BUILDING>building2_id</BUILDING>
+        <CAMPUS>campus_id</CAMPUS>
+        <CAPACITY>10</CAPACITY>
+    </ROOM>
+
+    <!-- Mismatched External -->
+    <PARTICIPATION>
+        <USER>user_internal_then_external</USER>
+        <MEETING>meeting_id</MEETING>
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <USER>user_internal_then_external</USER>
+        <MEETING>meeting2_id</MEETING>
+        <EXTERNAL>true</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <USER>user_external_then_internal</USER>
+        <MEETING>meeting_id</MEETING>
+        <EXTERNAL>true</EXTERNAL>
+    </PARTICIPATION>
+    <PARTICIPATION>
+        <USER>user_external_then_internal</USER>
+        <MEETING>meeting2_id</MEETING>
+        <EXTERNAL>false</EXTERNAL>
+    </PARTICIPATION>
+
+    <!-- Externals Not Allowed -->
+    <MEETING>
+        <LABEL>Meeting No Externals</LABEL>
+        <IDENTIFIER>internal_meeting</IDENTIFIER>
+        <ROOM>room_id</ROOM>
+        <EXTERNALS>false</EXTERNALS>
+        <ONLINE>false</ONLINE>
+        <CATERING>false</CATERING>
+        <HOUR>12</HOUR>
+        <DATE>2026-01-01</DATE>
+    </MEETING>
+    <PARTICIPATION>
+        <USER>external_user</USER>
+        <MEETING>internal_meeting</MEETING>
+        <EXTERNAL>true</EXTERNAL>
+    </PARTICIPATION>
+
+</SYSTEM>
