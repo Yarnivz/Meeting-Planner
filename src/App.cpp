@@ -10,6 +10,7 @@
 #include "helper/DesignByContract.h"
 
 
+//TODO: add errorLogger parameter
 App::App(Parser* parser, Output* output) : parser(parser), output(output)
 {
     init_check_this_ptr = this;
