@@ -55,6 +55,9 @@ set(COMMON_SOURCE_FILES
         src/parser/XmlParser.cpp
         src/output/Output.cpp
         src/output/StreamOutput.cpp
+        src/error/Error.cpp
+        src/error/DetailedError.cpp
+        src/error/ConsiseError.cpp
         src/App.cpp)
 
 # Set source files for RELEASE target
