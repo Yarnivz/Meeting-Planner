@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include "error/DetailedError.h"
-#include "error/ConsiseError.h"
+#include "error/ConciseError.h"
 #include "output/StreamOutput.h"
 #include "parser/XmlParser.h"
 
@@ -13,7 +13,7 @@ int main()
 
     std::ofstream null_stream;
     App* app = new App();
-    app->parse(XmlParser("./test-files/InvalidDataSystemErrors.xml"), ConsiseError(std::cerr));
+    app->parse(XmlParser("./test-files/InvalidDataSystemErrors.xml"), ConciseError(std::cerr));
     app->write(StreamOutput(std::cout));
     delete app;
 }

@@ -10,7 +10,7 @@
 
 #include "FileUtils.h"
 #include "App.h"
-#include "error/ConsiseError.h"
+#include "error/ConciseError.h"
 #include "error/MuteError.h"
 #include "parser/XmlParser.h"
 
@@ -27,7 +27,7 @@ TEST_F(TestParseFile, HappyDay1)
     ASSERT_TRUE(app.isProperlyInitialized());
 
     XmlParser par = XmlParser("./test-files/HappyDay1.xml");
-    app.parse(par, ConsiseError(errLog));
+    app.parse(par, ConciseError(errLog));
 
     Campus* c = app.getCampus("M");
     ASSERT_NE(nullptr, c);
@@ -91,7 +91,7 @@ TEST_F(TestParseFile, HappyDay2)
 
     app.parse(
         XmlParser("./test-files/HappyDay2.xml"),
-        ConsiseError(errLog)
+        ConciseError(errLog)
         );
 
     Campus* c = app.getCampus("M");
@@ -197,7 +197,7 @@ TEST_F(TestParseFile, Catering)
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parse(
         XmlParser("./test-files/Catering.xml"),
-        ConsiseError(errLog)
+        ConciseError(errLog)
         );
 
     Campus* c1 = app.getCampus("C1");
@@ -244,7 +244,7 @@ TEST_F(TestParseFile, InvalidData1)
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parse(
         XmlParser("./test-files/InvalidData1.xml"),
-        ConsiseError(errLog)
+        ConciseError(errLog)
         );
 
     // Correctly parsed
@@ -293,7 +293,7 @@ TEST_F(TestParseFile, InvalidData2)
     EXPECT_TRUE(app.isProperlyInitialized());
     app.parse(
         XmlParser("./test-files/InvalidData2.xml"),
-        ConsiseError(errLog)
+        ConciseError(errLog)
         );
 
     // Campus
@@ -360,7 +360,7 @@ TEST_F(TestParseFile, InvalidDataUsers)
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parse(
         XmlParser("./test-files/InvalidDataUsers.xml"),
-        ConsiseError(errLog)
+        ConciseError(errLog)
         );
 
     EXPECT_NE(nullptr, app.getCampus("c"));
@@ -393,7 +393,7 @@ TEST_F(TestParseFile, InvalidDataLayout)
     ASSERT_TRUE(app.isProperlyInitialized());
     app.parse(
         XmlParser("./test-files/InvalidDataLayout.xml"),
-        ConsiseError(errLog)
+        ConciseError(errLog)
         );
 
     // It shouldnt have added invalid elements
@@ -458,7 +458,7 @@ TEST_F(TestParseFile, Renovations)
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
 
-    app.parse(XmlParser("./test-files/Renovations.xml"), ConsiseError(errLog));
+    app.parse(XmlParser("./test-files/Renovations.xml"), ConciseError(errLog));
 
     // Quickly test if other iteems were read
     EXPECT_NE(nullptr, app.getCampus("M"));

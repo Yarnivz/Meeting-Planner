@@ -9,10 +9,10 @@
 #include "Error.h"
 
 
-class ConsiseError : public Error
+class ConciseError : public Error
 {
 public:
-    ConsiseError(std::ostream& os);
+    ConciseError(std::ostream& os);
 
     void uniqueId(const CampusElement& campus) const override;
     void uniqueId(const BuildingElement& building) const override;
