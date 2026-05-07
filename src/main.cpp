@@ -13,7 +13,10 @@ int main()
 
     std::ofstream null_stream;
     App* app = new App();
-    app->parse(XmlParser("./test-files/InvalidDataSystemErrors.xml"), ConciseError(std::cerr));
+    app->parse(
+        XmlParser("./test-files/InvalidData2.xml"),
+        DetailedError(std::cerr)
+        );
     app->write(StreamOutput(std::cout));
     delete app;
 }
