@@ -12,10 +12,8 @@ int main()
 {
 
     std::ofstream null_stream;
-    XmlParser parser =  XmlParser("./test-files/InvalidDataSystemErrors.xml");
-
     App* app = new App();
-    app->parse(parser, ConsiseError(std::cerr));
-    //app->writeToStream(StreamOutput(std::cout));
+    app->parse(XmlParser("./test-files/InvalidDataSystemErrors.xml"), ConsiseError(std::cerr));
+    app->write(StreamOutput(std::cout));
     delete app;
 }
