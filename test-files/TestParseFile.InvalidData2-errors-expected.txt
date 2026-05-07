@@ -1,15 +1,12 @@
-ROOM must have a BUILDING property
-ROOM must have a CAMPUS property
-ROOM must have a CAPACITY property
-ROOM must have a IDENTIFIER property
-ROOM must have a NAME property
-Failed to parse MEETING element: 
-	Date: '2026-02-29' does not exist.
-Failed to parse MEETING element: 
-	Hour must be non-negative and smaller than 24, not 39.
-PARTICIPATION must have a MEETING property
-Failed to parse PARTICIPATION element: 
-	Property USER needs to contain text.
-PARTICIPATION must have a MEETING property
-PARTICIPATION must have a EXTERNAL property
-PARTICIPATION must have a USER property
+ROOM is missing a required property BUILDING
+ROOM is missing a required property CAMPUS
+ROOM is missing a required property CAPACITY
+ROOM is missing a required property IDENTIFIER
+ROOM is missing a required property NAME
+DATE: failed to parse 2026-02-29' as date! This date does not exist.
+HOUR must contain a value between 0 and 23, not 39!
+PARTICIPATION is missing a required property MEETING
+USER property must contain text.
+PARTICIPATION is missing a required property MEETING
+PARTICIPATION is missing a required property EXTERNAL
+PARTICIPATION is missing a required property USER

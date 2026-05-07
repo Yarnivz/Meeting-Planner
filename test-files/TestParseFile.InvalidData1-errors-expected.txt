@@ -1,8 +1,5 @@
-Failed to parse ROOM element: 
-	Value '-1' cannot be used as CAPACITY:
-	- cannot be negative
-Failed to parse MEETING element: 
-	Property IDENTIFIER needs to contain text.
-MEETING must have a HOUR property
-MEETING must have a DATE property
-User 'Peter Selie' participates in a meeting 'Meeting_478463' which doesnt exist.
+CAPACITY must be non-negative, not -1
+IDENTIFIER property must contain text.
+MEETING is missing a required property HOUR
+MEETING is missing a required property DATE
+User 'Peter Selie' participates in a Meeting 'Meeting_478463' which doesn't exist!

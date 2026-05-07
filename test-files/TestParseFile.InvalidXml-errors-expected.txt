@@ -1,0 +1,1 @@
+Could not parse XML file './test-files/InvalidXml.xml', check the syntax!
