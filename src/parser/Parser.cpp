@@ -5,7 +5,7 @@
 #include "Parser.h"
 
 //TODO: Change errorStream to ErrorLogger class
-Parser::Parser(const std::string& filepath, std::ostream& errorStream) : parseObject(), errorStream(errorStream), filepath(filepath) {}
+Parser::Parser(std::ostream& errorStream) : parseObject(), errorStream(errorStream) {}
 
 const std::list<CampusElement>& Parser::parsedCampuses() const { return parsed_campuses; }
 void Parser::clearCampuses() { parsed_campuses = {}; }

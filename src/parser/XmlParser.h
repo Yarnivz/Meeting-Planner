@@ -7,6 +7,8 @@
 #include "Parser.h"
 #include "tinyxml.h"
 
+#include <fstream>
+
 
 //TODO: add documentation
 
@@ -18,6 +20,7 @@ public:
 private:
     void parseElement(TiXmlElement* elementObject);
     bool parseProperty(TiXmlElement* propertyObject, std::string& propError);
+    std::string filepath;
 };
 
 
