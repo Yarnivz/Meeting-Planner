@@ -145,7 +145,7 @@ void DetailedError::objectDuplicateProperty(const std::string& propertyKind, con
 
 void DetailedError::objectMissingProperty(const std::string& propertyKind, const std::string& objectKind) const
 {
-    stream << objectKind << " is missing required property " << propertyKind << std::endl;
+    stream << objectKind << " is missing a required property " << propertyKind << std::endl;
 }
 
 void DetailedError::propertyEmpty(const std::string& propertyKind) const

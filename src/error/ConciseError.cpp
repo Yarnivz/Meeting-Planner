@@ -95,3 +95,75 @@ void ConciseError::externalMismatch(const ParticipationElement& participation) c
 
     stream << "\'" << participation.user << "\': registered as " << isnt << ", but now marked as " << is << "!" << std::endl;
 }
+
+void ConciseError::fileNotFound(const std::string& filepath) const
+{
+    stream << "File '" << filepath << "' not found." << std::endl;
+}
+
+void ConciseError::fileInvalidXml(const std::string& filepath) const
+{
+    stream << "Invalid XML in '" << filepath << "'." << std::endl;
+}
+
+void ConciseError::syntaxNoRootElement() const
+{
+    stream << "No root XML element." << std::endl;
+}
+
+void ConciseError::objectUnrecognizedKind(const std::string& objectKind) const
+{
+    stream << objectKind << ": Unrecognized element." << std::endl;
+}
+
+void ConciseError::objectUnrecognizedProperty(const std::string& propertyKind, const std::string& objectKind) const
+{
+    stream << objectKind << ": Unrecognized property '" << propertyKind << "'." << std::endl;
+}
+
+void ConciseError::objectDuplicateProperty(const std::string& propertyKind, const std::string& objectKind) const
+{
+    stream << objectKind << ": Duplicate property " << propertyKind << "." << std::endl;
+}
+
+void ConciseError::objectMissingProperty(const std::string& propertyKind, const std::string& objectKind) const
+{
+    stream << objectKind << ": Missing property " << propertyKind << "." << std::endl;
+}
+
+void ConciseError::propertyEmpty(const std::string& propertyKind) const
+{
+    stream << propertyKind << ": Empty property." << std::endl;
+}
+
+void ConciseError::propertyUnrecognizedKind(const std::string& propertyKind) const
+{
+    stream << propertyKind << ": Unrecognized property." << std::endl;
+}
+
+void ConciseError::propertyFailedToParse(const std::string& propertyKind, const std::string& contents, const std::string& expected_type, const std::string& why) const
+{
+    stream << propertyKind << " (" << contents << "): Failed to parse as " << expected_type << ".";
+    if (!why.empty()) stream << " (" << why << ")";
+    stream << std::endl;
+}
+
+void ConciseError::propertyOutOfRange(const std::string& propertyKind, const std::string& contents, int lower, int upper) const
+{
+    stream << propertyKind << " (" << contents << "): Value must be between " << lower << " and " << upper << "." << std::endl;
+}
+
+void ConciseError::propertyNegative(const std::string& propertyKind, const std::string& contents) const
+{
+    stream << propertyKind << " (" << contents << "): Value cant be negative." << std::endl;
+}
+
+void ConciseError::INTERNAL_objectSwitchCaseMissing(const std::string& objectKind) const
+{
+    stream << "[INTERNAL] Element type " << objectKind << " recognized by elementValue map, but not handled in switch statement!" << std::endl;
+}
+
+void ConciseError::INTERNAL_propertySwitchCaseMissing(const std::string& propertyKind) const
+{
+    stream << "[INTERNAL] Property type " << propertyKind << " recognized by elementValue map, but not handled in switch statement!" << std::endl;
+}

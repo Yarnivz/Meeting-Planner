@@ -39,5 +39,33 @@ public:
     void duplicateParticipation(const ParticipationElement& participation) const override{}
 
     void externalMismatch(const ParticipationElement& participation) const override{}
+
+    void fileNotFound(const std::string& filepath) const override{}
+
+    void fileInvalidXml(const std::string& filepath) const override{}
+
+    void syntaxNoRootElement() const override{}
+
+    void objectUnrecognizedKind(const std::string& objectKind) const override{}
+
+    void objectUnrecognizedProperty(const std::string& propertyKind, const std::string& objectKind) const override{}
+
+    void objectDuplicateProperty(const std::string& propertyKind, const std::string& objectKind) const override{}
+
+    void objectMissingProperty(const std::string& propertyKind, const std::string& objectKind) const override{}
+
+    void propertyEmpty(const std::string& propertyKind) const override{}
+
+    void propertyUnrecognizedKind(const std::string& propertyKind) const override{}
+
+    void propertyFailedToParse(const std::string& propertyKind, const std::string& contents, const std::string& expected_type, const std::string& why) const override{}
+
+    void propertyOutOfRange(const std::string& propertyKind, const std::string& contents, int lower, int upper) const override{}
+
+    void propertyNegative(const std::string& propertyKind, const std::string& contents) const override{}
+
+    void INTERNAL_objectSwitchCaseMissing(const std::string& objectKind) const override{}
+
+    void INTERNAL_propertySwitchCaseMissing(const std::string& propertyKind) const override{}
 };
 #endif //MEETING_PLANNER_MUTEERROR_H
