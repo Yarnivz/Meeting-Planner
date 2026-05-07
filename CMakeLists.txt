@@ -57,7 +57,7 @@ set(COMMON_SOURCE_FILES
         src/output/StreamOutput.cpp
         src/error/Error.cpp
         src/error/DetailedError.cpp
-        src/error/ConsiseError.cpp
+        src/error/ConciseError.cpp
         src/App.cpp)
 
 # Set source files for RELEASE target
