@@ -8,12 +8,10 @@ Yarni:
 - Split online and offline meetings in seperate Classes using Meeting inheritance
 
 Lucas:
-tijd om later in timesheet te zetten: 16:30 - 21:00
-
-- Create Error class:
-    - Make seperate functions for brief and detailed error descriptions
-    - Give parameter that needs this class in App & Parser: See TODOs in cpp files
-- XML files need to be given as parameter in Parser contructor
+tijd om later in timesheet te zetten:
+  16:30 - 21:00 05/06
+  11:30 - 12:30 05/07
+  18:15 - 20:30 05/07
 
 ALGEMEEN:
 - Dot output
