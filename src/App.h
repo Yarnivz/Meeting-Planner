@@ -32,7 +32,9 @@ public:
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
-    void parseFile(Parser&& parser, const Error& error);
+
+
+    void parse(Parser&& parser, const Error& error);
 
     /**
     * @brief Parse an xml file, and registers all items specified in that file.
@@ -46,9 +48,7 @@ public:
     * @param parser parser to use
     * @param error
     */
-
-    //TODO: Delete errStream and use parser errStream
-    void parseFile(Parser& parser, const Error& error);
+    void parse(Parser& parser, const Error& error);
 
     /**
      * @brief Print all meetings and rooms to a stream.
@@ -60,7 +60,7 @@ public:
      * @pre REQUIRE(output, "App doesnt have an output attached.")
      *
      */
-    void writeToStream(const Output& output) const;
+    void write(const Output& output) const;
 
     /**
      * @brief Registers a Campus to the app.

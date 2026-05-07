@@ -27,7 +27,7 @@ TEST_F(TestParseFile, HappyDay1)
     ASSERT_TRUE(app.isProperlyInitialized());
 
     XmlParser par = XmlParser("./test-files/HappyDay1.xml");
-    app.parseFile(par, ConsiseError(errLog));
+    app.parse(par, ConsiseError(errLog));
 
     Campus* c = app.getCampus("M");
     ASSERT_NE(nullptr, c);
@@ -89,7 +89,7 @@ TEST_F(TestParseFile, HappyDay2)
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
 
-    app.parseFile(
+    app.parse(
         XmlParser("./test-files/HappyDay2.xml"),
         ConsiseError(errLog)
         );
@@ -195,7 +195,7 @@ TEST_F(TestParseFile, Catering)
 
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile(
+    app.parse(
         XmlParser("./test-files/Catering.xml"),
         ConsiseError(errLog)
         );
@@ -242,7 +242,7 @@ TEST_F(TestParseFile, InvalidData1)
     App app = App();
 
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile(
+    app.parse(
         XmlParser("./test-files/InvalidData1.xml"),
         ConsiseError(errLog)
         );
@@ -291,7 +291,7 @@ TEST_F(TestParseFile, InvalidData2)
 
     App app = App();
     EXPECT_TRUE(app.isProperlyInitialized());
-    app.parseFile(
+    app.parse(
         XmlParser("./test-files/InvalidData2.xml"),
         ConsiseError(errLog)
         );
@@ -358,7 +358,7 @@ TEST_F(TestParseFile, InvalidDataUsers)
 
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile(
+    app.parse(
         XmlParser("./test-files/InvalidDataUsers.xml"),
         ConsiseError(errLog)
         );
@@ -391,7 +391,7 @@ TEST_F(TestParseFile, InvalidDataLayout)
 
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile(
+    app.parse(
         XmlParser("./test-files/InvalidDataLayout.xml"),
         ConsiseError(errLog)
         );
@@ -440,14 +440,14 @@ TEST_F(TestParseFile, InvalidXml)
 {
     App app = App();
     EXPECT_TRUE(app.isProperlyInitialized());
-    EXPECT_DEATH(app.parseFile(XmlParser("./test-files/InvalidXml.xml"), MuteError()), "");
+    EXPECT_DEATH(app.parse(XmlParser("./test-files/InvalidXml.xml"), MuteError()), "");
 }
 
 TEST_F(TestParseFile, FileNotFound)
 {
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    EXPECT_DEATH(app.parseFile(XmlParser("./test-files/InvalidXml.xml"), MuteError()), "");
+    EXPECT_DEATH(app.parse(XmlParser("./test-files/InvalidXml.xml"), MuteError()), "");
 }
 
 TEST_F(TestParseFile, Renovations)
@@ -458,7 +458,7 @@ TEST_F(TestParseFile, Renovations)
     App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
 
-    app.parseFile(XmlParser("./test-files/Renovations.xml"), ConsiseError(errLog));
+    app.parse(XmlParser("./test-files/Renovations.xml"), ConsiseError(errLog));
 
     // Quickly test if other iteems were read
     EXPECT_NE(nullptr, app.getCampus("M"));

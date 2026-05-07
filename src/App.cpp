@@ -26,12 +26,12 @@ bool App::isProperlyInitialized() const
 }
 
 //Overload for constructing a Parser object inline
-void App::parseFile(Parser&& parser, const Error& error)
+void App::parse(Parser&& parser, const Error& error)
 {
-    parseFile(parser, error);
+    parse(parser, error);
 }
 
-void App::parseFile(Parser& parser, const Error& error)
+void App::parse(Parser& parser, const Error& error)
 {
 
     parser.parse();
@@ -232,7 +232,7 @@ void App::parseFile(Parser& parser, const Error& error)
 
 }
 
-void App::writeToStream(const Output& output) const
+void App::write(const Output& output) const
 {
 
     output.printMeetings(meetings);

@@ -66,7 +66,7 @@ TEST_F(TestWriteToStream, HappyDay1)
     p.addUserToMeeting("John Doe", "m3");
     p.addUserToMeeting("Peter Selie", "m1");
 
-    p.writeToStream(StreamOutput(f));
+    p.write(StreamOutput(f));
     f.close();
 
     ASSERT_TRUE(file_exists(actual));
@@ -128,7 +128,7 @@ TEST_F(TestWriteToStream, HappyDay2)
     p.addUserToMeeting("Charlie", "m2");
     p.addUserToMeeting("David", "m2");
 
-    p.writeToStream(StreamOutput(f));
+    p.write(StreamOutput(f));
     f.close();
 
     EXPECT_TRUE(file_exists(actual));
@@ -146,7 +146,7 @@ TEST_F(TestWriteToStream, Empty)
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    p.writeToStream(StreamOutput(f));
+    p.write(StreamOutput(f));
     f.close();
 
     EXPECT_TRUE(file_exists(expected));
@@ -208,7 +208,7 @@ TEST_F(TestWriteToStream, Processed)
     p.processAllMeetings(false);
 
 
-    p.writeToStream(StreamOutput(f));
+    p.write(StreamOutput(f));
     f.close();
 
     EXPECT_TRUE(file_exists(actual));

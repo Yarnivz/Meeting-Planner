@@ -214,7 +214,7 @@ TEST_F(TestProcessMeetings, ParseOrder)
     App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    p.parseFile(XmlParser("./test-files/ConflictMeetings2.xml"), MuteError());
+    p.parse(XmlParser("./test-files/ConflictMeetings2.xml"), MuteError());
 
     Meeting* a1 = p.getMeetingById("A1");
     Meeting* a2 = p.getMeetingById("A2");

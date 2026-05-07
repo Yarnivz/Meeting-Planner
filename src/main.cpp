@@ -15,7 +15,7 @@ int main()
     XmlParser parser =  XmlParser("./test-files/InvalidDataSystemErrors.xml");
 
     App* app = new App();
-    app->parseFile(parser, ConsiseError(std::cerr));
+    app->parse(parser, ConsiseError(std::cerr));
     //app->writeToStream(StreamOutput(std::cout));
     delete app;
 }
