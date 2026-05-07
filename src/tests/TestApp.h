@@ -14,7 +14,7 @@ protected:
 
 TEST_F(TestApp, HappyDay)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
     ASSERT_TRUE(p.isProperlyInitialized());
 
     DateTime date1 = DateTime(2026, 1, 2, 0);
@@ -95,7 +95,7 @@ TEST_F(TestApp, HappyDay)
 
 TEST_F(TestApp, InvalidInsert)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
     ASSERT_TRUE(p.isProperlyInitialized());
 
     // Inserting nullptr
@@ -127,7 +127,7 @@ TEST_F(TestApp, InvalidInsert)
 
 TEST_F(TestApp, InvalidRetrieve)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
     ASSERT_TRUE(p.isProperlyInitialized());
 
     EXPECT_EQ(nullptr, p.getCampus("c-123"));

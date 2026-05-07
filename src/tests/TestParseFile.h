@@ -10,6 +10,8 @@
 
 #include "FileUtils.h"
 #include "App.h"
+#include "error/ConsiseError.h"
+#include "error/MuteError.h"
 #include "parser/XmlParser.h"
 
 class TestParseFile : public ::testing::Test
@@ -21,10 +23,11 @@ TEST_F(TestParseFile, HappyDay1)
     const std::string error = "./test-files/TestParseFile.HappyDay1-errors.txt";
     std::ofstream errLog(error);
 
-    App app = App(new XmlParser(), nullptr);
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
 
-    app.parseFile("./test-files/HappyDay1.xml", errLog);
+    XmlParser par = XmlParser("./test-files/HappyDay1.xml");
+    app.parseFile(par, ConsiseError(errLog));
 
     Campus* c = app.getCampus("M");
     ASSERT_NE(nullptr, c);
@@ -83,10 +86,13 @@ TEST_F(TestParseFile, HappyDay2)
     std::ofstream errLog(errors);
 
 
-    App app = App(new XmlParser(), nullptr);
-
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile("./test-files/HappyDay2.xml", errLog);
+
+    app.parseFile(
+        XmlParser("./test-files/HappyDay2.xml"),
+        ConsiseError(errLog)
+        );
 
     Campus* c = app.getCampus("M");
     ASSERT_NE(nullptr, c);
@@ -187,9 +193,12 @@ TEST_F(TestParseFile, Catering)
     std::ofstream errLog(errors);
 
 
-    App app = App(new XmlParser(), nullptr);
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile("./test-files/Catering.xml", errLog);
+    app.parseFile(
+        XmlParser("./test-files/Catering.xml"),
+        ConsiseError(errLog)
+        );
 
     Campus* c1 = app.getCampus("C1");
     Campus* c2 = app.getCampus("C2");
@@ -230,10 +239,13 @@ TEST_F(TestParseFile, InvalidData1)
 
     std::ofstream errLog(actual);
 
-    App app = App(new XmlParser(errLog), nullptr);
+    App app = App();
 
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile("./test-files/InvalidData1.xml", errLog);
+    app.parseFile(
+        XmlParser("./test-files/InvalidData1.xml"),
+        ConsiseError(errLog)
+        );
 
     // Correctly parsed
     Campus* c = app.getCampus("c");
@@ -277,9 +289,12 @@ TEST_F(TestParseFile, InvalidData2)
     const std::string user2 = "Freddy Gonzalez";
 
 
-    App app = App(new XmlParser(errLog), nullptr);
+    App app = App();
     EXPECT_TRUE(app.isProperlyInitialized());
-    app.parseFile("./test-files/InvalidData2.xml", errLog);
+    app.parseFile(
+        XmlParser("./test-files/InvalidData2.xml"),
+        ConsiseError(errLog)
+        );
 
     // Campus
     Campus* c = app.getCampus("c");
@@ -341,9 +356,12 @@ TEST_F(TestParseFile, InvalidDataUsers)
     std::ofstream errLog(actual);
 
 
-    App app = App(new XmlParser(errLog), nullptr);
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile("./test-files/InvalidDataUsers.xml", errLog);
+    app.parseFile(
+        XmlParser("./test-files/InvalidDataUsers.xml"),
+        ConsiseError(errLog)
+        );
 
     EXPECT_NE(nullptr, app.getCampus("c"));
     EXPECT_NE(nullptr, app.getBuilding("b"));
@@ -371,9 +389,12 @@ TEST_F(TestParseFile, InvalidDataLayout)
 
     std::ofstream errLog(actual);
 
-    App app = App(new XmlParser(errLog), nullptr);
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    app.parseFile("./test-files/InvalidDataLayout.xml", errLog);
+    app.parseFile(
+        XmlParser("./test-files/InvalidDataLayout.xml"),
+        ConsiseError(errLog)
+        );
 
     // It shouldnt have added invalid elements
     EXPECT_EQ(nullptr, app.getCampus("invalid-campus"));
@@ -417,16 +438,16 @@ TEST_F(TestParseFile, InvalidDataLayout)
 
 TEST_F(TestParseFile, InvalidXml)
 {
-    App app = App(new XmlParser(), nullptr);
+    App app = App();
     EXPECT_TRUE(app.isProperlyInitialized());
-    EXPECT_DEATH(app.parseFile("./test-files/InvalidXml.xml"), "");
+    EXPECT_DEATH(app.parseFile(XmlParser("./test-files/InvalidXml.xml"), MuteError()), "");
 }
 
 TEST_F(TestParseFile, FileNotFound)
 {
-    App app = App(new XmlParser(), nullptr);
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
-    EXPECT_DEATH(app.parseFile("./test-files/FileThatDoesntExist.xml"), "");
+    EXPECT_DEATH(app.parseFile(XmlParser("./test-files/InvalidXml.xml"), MuteError()), "");
 }
 
 TEST_F(TestParseFile, Renovations)
@@ -434,10 +455,10 @@ TEST_F(TestParseFile, Renovations)
     const std::string error = "./test-files/TestParseFile.Renovations-errors.txt";
     std::ofstream errLog(error);
 
-    App app = App(new XmlParser(errLog), nullptr);
+    App app = App();
     ASSERT_TRUE(app.isProperlyInitialized());
 
-    app.parseFile("./test-files/Renovations.xml");
+    app.parseFile(XmlParser("./test-files/Renovations.xml"), ConsiseError(errLog));
 
     // Quickly test if other iteems were read
     EXPECT_NE(nullptr, app.getCampus("M"));

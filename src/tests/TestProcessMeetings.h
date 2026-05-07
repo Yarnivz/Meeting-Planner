@@ -17,7 +17,7 @@ protected:
 
 TEST_F(TestProcessMeetings, HappyDay)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
 
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
@@ -78,7 +78,7 @@ TEST_F(TestProcessMeetings, HappyDay)
 
 TEST_F(TestProcessMeetings, Conflicts)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
 
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
@@ -168,7 +168,7 @@ TEST_F(TestProcessMeetings, Conflicts)
 
 TEST_F(TestProcessMeetings, Order)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
@@ -211,10 +211,10 @@ TEST_F(TestProcessMeetings, Order)
 
 TEST_F(TestProcessMeetings, ParseOrder)
 {
-    App p = App(new XmlParser(), nullptr);
+    App p = App();
     EXPECT_TRUE(p.isProperlyInitialized());
 
-    p.parseFile("./test-files/ConflictMeetings2.xml");
+    p.parseFile(XmlParser("./test-files/ConflictMeetings2.xml"), MuteError());
 
     Meeting* a1 = p.getMeetingById("A1");
     Meeting* a2 = p.getMeetingById("A2");
@@ -255,7 +255,7 @@ TEST_F(TestProcessMeetings, ParseOrder)
 
 TEST_F(TestProcessMeetings, ContractViolation)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
     //possibly diversify bulding and campus later for extra tests
     Campus* campus1 = new Campus ("Middelheim", "M");
     Building* building1 = new Building("Bib", "G", campus1);
@@ -281,7 +281,7 @@ TEST_F(TestProcessMeetings, ContractViolation)
 
 TEST_F(TestProcessMeetings, Renovations)
 {
-    App p = App(nullptr, nullptr);
+    App p = App();
     Campus* c = new Campus("Middelheim", "M");
     Building* b = new Building("Bib", "G", c);
     p.addCampus(c);
