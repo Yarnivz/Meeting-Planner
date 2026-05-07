@@ -25,6 +25,11 @@ bool App::isProperlyInitialized() const
     return init_check_this_ptr == this;
 }
 
+//Overload for constructing a Parser object inline
+void App::parseFile(Parser&& parser, const Error& error)
+{
+    parseFile(parser, error);
+}
 
 void App::parseFile(Parser& parser, const Error& error)
 {

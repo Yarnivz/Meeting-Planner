@@ -32,6 +32,7 @@ public:
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
+    void parseFile(Parser&& parser, const Error& error);
 
     /**
     * @brief Parse an xml file, and registers all items specified in that file.
