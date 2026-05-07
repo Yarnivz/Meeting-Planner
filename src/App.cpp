@@ -34,7 +34,7 @@ void App::parse(Parser&& parser, const Error& error)
 void App::parse(Parser& parser, const Error& error)
 {
 
-    parser.parse();
+    parser.parse(error);
 
     for (const CampusElement& c : parser.parsedCampuses())
     {

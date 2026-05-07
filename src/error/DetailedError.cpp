@@ -99,3 +99,88 @@ void DetailedError::externalMismatch(const ParticipationElement& participation) 
     stream << "User \'" << participation.user << "\' was marked as " << is << " for Meeting \'" << participation.meeting << "\' "
     "but was registered as " << isnt << " earlier!" << std::endl;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void DetailedError::fileNotFound(const std::string& filepath) const
+{
+    stream << "Could not find file '" << filepath << "', does it exist?" << std::endl;
+}
+
+void DetailedError::fileInvalidXml(const std::string& filepath) const
+{
+    stream << "Could not parse XML file '" << filepath << "', check the syntax!" << std::endl;
+}
+
+void DetailedError::syntaxNoRootElement() const
+{
+    stream << "Could not parse XML, no root element exists!" << std::endl;
+}
+
+void DetailedError::objectUnrecognizedKind(const std::string& objectKind) const
+{
+    stream << "'" << objectKind << "' is not a recognized element type." << std::endl;
+}
+
+void DetailedError::objectUnrecognizedProperty(const std::string& propertyKind, const std::string& objectKind) const
+{
+    stream << objectKind << " can not have property '" << propertyKind << "'!"<< std::endl;
+}
+
+void DetailedError::objectDuplicateProperty(const std::string& propertyKind, const std::string& objectKind) const
+{
+    stream << objectKind << " has duplicate property " << propertyKind << "!" << std::endl;
+}
+
+void DetailedError::objectMissingProperty(const std::string& propertyKind, const std::string& objectKind) const
+{
+    stream << objectKind << " is missing required property " << propertyKind << std::endl;
+}
+
+void DetailedError::propertyEmpty(const std::string& propertyKind) const
+{
+    stream << propertyKind << " property must contain text." << std::endl;
+}
+
+void DetailedError::propertyUnrecognizedKind(const std::string& propertyKind) const
+{
+    stream << "'" << propertyKind << "' is not a recognized property!" << std::endl;
+}
+
+void DetailedError::propertyFailedToParse(const std::string& propertyKind, const std::string& contents, const std::string& expected_type, const std::string& why) const
+{
+    stream << propertyKind << ": failed to parse " << contents << "' as " << expected_type << "!";
+    if (!why.empty()) stream << " " << why;
+    stream << std::endl;
+}
+
+void DetailedError::propertyOutOfRange(const std::string& propertyKind, const std::string& contents, int lower, int upper) const
+{
+    stream << propertyKind << " must contain a value between " << lower << " and " << upper << ", not " << contents << "!" << std::endl;
+}
+
+void DetailedError::propertyNegative(const std::string& propertyKind, const std::string& contents) const
+{
+    stream << propertyKind << " must be non-negative, not " << contents << std::endl;
+}
+
+void DetailedError::INTERNAL_objectSwitchCaseMissing(const std::string& objectKind) const
+{
+    stream << "[INTERNAL] Element type " << objectKind << " recognized by elementValue map, but not handled in switch statement!" << std::endl;
+}
+
+void DetailedError::INTERNAL_propertySwitchCaseMissing(const std::string& propertyKind) const
+{
+    stream << "[INTERNAL] Property type " << propertyKind << " recognized by elementValue map, but not handled in switch statement!" << std::endl;
+}

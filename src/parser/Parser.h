@@ -9,6 +9,7 @@
 #include <string>
 
 #include "Elements.h"
+#include "error/Error.h"
 
 //TODO: add documentation
 
@@ -17,9 +18,9 @@
 class Parser
 {
 public:
-    explicit Parser(std::ostream& errorStream = std::cerr);
+    explicit Parser();
 
-    virtual void parse() = 0;
+    virtual void parse(const Error& error) = 0;
 
     const std::list<CampusElement>& parsedCampuses() const;
 
@@ -60,6 +61,5 @@ protected:
     std::list<CateringElement> parsed_caterings;
     std::list<RenovationElement> parsed_renovations;
     ParseObject parseObject;
-    std::ostream& errorStream;
 };
 #endif //PARSER_H

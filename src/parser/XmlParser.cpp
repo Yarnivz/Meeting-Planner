@@ -4,16 +4,16 @@
 
 #include "XmlParser.h"
 
+#include <filesystem>
 #include <unordered_set>
 #include <unordered_map>
 #include <functional>
 #include <objects/Date.h>
 
 #include "helper/DesignByContract.h"
-#include "objects/Room.h"
 
 
-static inline bool parse_int(const std::string& input, int& output, std::string& parseError)
+static inline bool parse_int(const std::string& input, int& output, const Error& error, const std::string& propertyKind_for_error)
 {
     int integer;
     //Try to convert to int
@@ -23,14 +23,14 @@ static inline bool parse_int(const std::string& input, int& output, std::string&
     }
     catch (std::exception& except)
     {
-        parseError = std::string("Value '" + input + "' could not be converted to an integer: \n\t- ") + except.what();
+        error.propertyFailedToParse(propertyKind_for_error, input, "int", "");
         return false;
     }
     output = integer;
     return true;
 }
 
-static inline bool parse_float(const std::string& input, float& output, std::string& parseError)
+static inline bool parse_float(const std::string& input, float& output, const Error& error, const std::string& propertyKind_for_error)
 {
     float floating;
     //Try to convert to float
@@ -40,14 +40,14 @@ static inline bool parse_float(const std::string& input, float& output, std::str
     }
     catch (std::exception& except)
     {
-        parseError = std::string("Value '" + input + "' could not be converted to a float\n\t- ") + except.what();
+        error.propertyFailedToParse(propertyKind_for_error, input, "float", "");
         return false;
     }
     output = floating;
     return true;
 }
 
-static inline bool parse_boolean(const std::string& input, bool& output, std::string& parseError)
+static inline bool parse_boolean(const std::string& input, bool& output, const Error& error, const std::string& propertyKind_for_error)
 {
     std::string s = input;
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
@@ -64,11 +64,11 @@ static inline bool parse_boolean(const std::string& input, bool& output, std::st
         return true;
     }
 
-    parseError = "Value '" + input + "'" + " could not be converted to a boolean: \n\t- must be either 'false' or '0' for False OR 'true' or '1' for True";
+    error.propertyFailedToParse(propertyKind_for_error, input, "boolean", "Value must be one of '0'/'1'/'false'/'true'!");
     return false;
 }
 
-static inline bool parse_date (const std::string& input, Date& output, std::string& parseError)
+static inline bool parse_date (const std::string& input, Date& output, const Error& error, const std::string& propertyKind_for_error)
 {
     //Try to convert to Date
     int day;
@@ -83,7 +83,7 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     }
     catch (std::exception& except)
     {
-        parseError = std::string("Value '" + input + "' could not be converted to a date format: \n\t- ") + except.what();
+        error.propertyFailedToParse(propertyKind_for_error, input, "date", "Value must be in the format: YYYY-MM-DD.");
         return false;
     }
     const std::chrono::year_month_day chrono_date = {
@@ -92,7 +92,7 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     //Check if date exists
     if (!chrono_date.ok() || year <= 0)
     {
-        parseError = "Date: '" + input + "' does not exist.";
+        error.propertyFailedToParse(propertyKind_for_error, input, "date", "This date does not exist.");
         return false;
     }
 
@@ -100,21 +100,22 @@ static inline bool parse_date (const std::string& input, Date& output, std::stri
     return true;
 }
 
-XmlParser::XmlParser(const std::string& filepath, std::ostream& errorStream): Parser(errorStream), filepath(filepath) {}
+XmlParser::XmlParser(const std::string& filepath) : filepath(filepath) {}
 
-void XmlParser::parse()
+void XmlParser::parse(const Error& error)
 {
     REQUIRE(!filepath.empty(), "The file cannot be empty");
     TiXmlDocument doc;
-    REQUIRE(doc.LoadFile(filepath.c_str()),
-            "The provided file \'%s\' doesn't exist in your current work directory or cannot be opened.",
-            filepath.c_str());
 
-
+    if (!std::filesystem::exists(filepath))
+    {
+        error.fileNotFound(filepath);
+        return;
+    }
 
     if (!doc.LoadFile(filepath.c_str()))
     {
-        errorStream << doc.ErrorDesc() << std::endl;
+        error.fileInvalidXml(filepath);
         return;
     }
 
@@ -122,7 +123,7 @@ void XmlParser::parse()
     TiXmlElement* root = doc.FirstChildElement();
     if (root == nullptr)
     {
-        errorStream << "Failed to load file: No root element." << std::endl;
+        error.syntaxNoRootElement();
         doc.Clear();
         return;
     }
@@ -131,11 +132,11 @@ void XmlParser::parse()
     for (TiXmlElement* objectElement = root->FirstChildElement(); objectElement != nullptr; objectElement =
          objectElement->NextSiblingElement())
     {
-        parseElement(objectElement);
+        parseElement(objectElement, error);
     }
 }
 
-void XmlParser::parseElement(TiXmlElement* elementObject)
+void XmlParser::parseElement(TiXmlElement* elementObject, const Error& error)
 {
     parseObject = ParseObject();
     const static std::unordered_map<std::string, ElementType> elementValues = {
@@ -150,11 +151,11 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
 
 
 
-    const std::string elementType = elementObject->Value();
+    const std::string objectKind = elementObject->Value();
 
-    if (!elementValues.contains(elementType))
+    if (!elementValues.contains(objectKind))
     {
-        errorStream << "Unrecognized object element:  " << elementType << std::endl;
+        error.objectUnrecognizedKind(objectKind);
         return;
     }
 
@@ -162,7 +163,7 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
     std::unordered_set<std::string> foundProps;
     std::function<void()> parseHandler;
 
-    switch (elementValues.at(elementType))
+    switch (elementValues.at(objectKind))
     {
         //CAMPUS
         case ElementType::CAMPUS:
@@ -251,48 +252,41 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
             break;
 
         default:
-            errorStream << "Object element exists in elementValues map but not in switch case:  " << elementType << std::endl;
+            error.INTERNAL_objectSwitchCaseMissing(objectKind);
             break;
     }
 
     for (TiXmlElement* propertyObject = elementObject->FirstChildElement(); propertyObject != nullptr;
     propertyObject = propertyObject->NextSiblingElement())
     {
-        std::string propType = propertyObject->Value();
-        std::string propError;
+        std::string propertyKind = propertyObject->Value();
 
         //UNKNOWN PROPERTY FOUND
-        if (!requiredProps.contains(propType))
+        if (!requiredProps.contains(propertyKind))
         {
-            errorStream << "Unrecognized property for " << elementType << ": \"" << propType << "\"" << std::endl;
+            error.objectUnrecognizedProperty(propertyKind, objectKind);
             return;
         }
         //DUPLICATE PROPERTY FOUND
-        if (!foundProps.insert(propType).second)
+        if (!foundProps.insert(propertyKind).second)
         {
-            errorStream << elementType << "element can't have more than one " << propType << " property." << std::endl;
+            error.objectDuplicateProperty(propertyKind, objectKind);
             return;
         }
 
 
-        if (!parseProperty(propertyObject, propError))
-        {
-            errorStream << "Failed to parse " << elementType << " element: " << std::endl;
-            errorStream << "\t" << propError << std::endl;
-            return;
-        }
-
+        if (!parseProperty(propertyObject, error)) return;
     }
 
 
     //CHECK IF ANY REQUIRED PROPERTIES ARE MISSING
 
     bool missing_props = false;
-    for (const std::string& prop : requiredProps)
+    for (const std::string& requiredPropertyKind : requiredProps)
     {
-        if (!foundProps.contains(prop))
+        if (!foundProps.contains(requiredPropertyKind))
         {
-            errorStream << elementType << " must have a " << prop << " property" << std::endl;
+            error.objectMissingProperty(requiredPropertyKind, objectKind);
             missing_props = true;
         }
     }
@@ -302,18 +296,18 @@ void XmlParser::parseElement(TiXmlElement* elementObject)
 
 }
 
-bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseError)
+bool XmlParser::parseProperty(TiXmlElement* propertyObject, const Error& error)
 {
-    std::string propType = propertyObject->Value();
-    std::string prop;
+    std::string propertyKind = propertyObject->Value();
+    std::string propertyContents;
     {
         const char* c_str = propertyObject->GetText();
         if (c_str == nullptr)
         {
-            parseError = std::string("Property ") + propType + " needs to contain text.";
+            error.propertyEmpty(propertyKind);
             return false;
         }
-        prop = c_str;
+        propertyContents = c_str;
     }
 
     const static std::unordered_map<std::string, PropType> propValues = {
@@ -337,47 +331,46 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         {"END", PropType::ENDDATE}
     };
 
-    if (!propValues.contains(propType))
+    if (!propValues.contains(propertyKind))
     {
-        parseError = "Unrecognized property: " + prop;
+        error.propertyUnrecognizedKind(propertyKind);
         return false;
     }
 
-    switch (propValues.at(propType))
+    switch (propValues.at(propertyKind))
     {
         case PropType::IDENTIFIER:
         {
-            parseObject.identifier = prop;
+            parseObject.identifier = propertyContents;
             break;
         }
         case PropType::NAME:
         {
-            parseObject.name = prop;
+            parseObject.name = propertyContents;
             break;
         }
         case PropType::LABEL:
         {
-            parseObject.label = prop;
+            parseObject.label = propertyContents;
             break;
         }
         case PropType::CAMPUS:
         {
-            parseObject.campus_id = prop;
+            parseObject.campus_id = propertyContents;
             break;
         }
         case PropType::BUILDING:
         {
-            parseObject.building_id = prop;
+            parseObject.building_id = propertyContents;
             break;
         }
         case PropType::CAPACITY:
         {
             int capacity;
-            if (!parse_int(prop, capacity, parseError)) return false;
-            //Check if capacity is < 0
+            if (!parse_int(propertyContents, capacity, error, propertyKind)) return false;
             if (capacity < 0)
             {
-                parseError = "Value '" + prop + "' cannot be used as " + propType + ":\n\t- cannot be negative";
+                error.propertyNegative(propertyKind, propertyContents);
                 return false;
             }
             parseObject.capacity = capacity;
@@ -385,31 +378,31 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         }
         case PropType::ROOM:
         {
-            parseObject.room_id = prop;
+            parseObject.room_id = propertyContents;
             break;
         }
         case PropType::ONLINE:
         {
             bool online;
-            if (!parse_boolean(prop, online, parseError)) return false;
+            if (!parse_boolean(propertyContents, online, error, propertyKind)) return false;
             parseObject.online = online;
             break;
         }
         case PropType::DATE:
         {
             Date date = Date();
-            if (!parse_date(prop, date, parseError)) return false;
+            if (!parse_date(propertyContents, date, error, propertyKind)) return false;
             parseObject.date = date;
             break;
         }
         case PropType::HOUR:
         {
             int hour;
-            if (!parse_int(prop, hour, parseError)) return false;
+            if (!parse_int(propertyContents, hour, error, propertyKind)) return false;
             //Check if int >= 0 and int < 24
             if (hour < 0 || hour > 23)
             {
-                parseError = std::string("Hour must be non-negative and smaller than 24, not ") + prop + ".";
+                error.propertyOutOfRange(propertyKind, propertyContents, 0, 23);
                 return false;
             }
 
@@ -419,35 +412,39 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::EXTERNALS:
         {
             bool externals;
-            if (!parse_boolean(prop, externals, parseError)) return false;
+            if (!parse_boolean(propertyContents, externals, error, propertyKind))
+            {
+                error.propertyFailedToParse(propertyKind, propertyContents, "boolean", "0/1 or false/true");
+                return false;
+            }
             parseObject.externals = externals;
             break;
         }
         case PropType::USER:
         {
-            parseObject.user_id = prop;
+            parseObject.user_id = propertyContents;
             break;
         }
         case PropType::EXTERNAL:
         {
             bool external;
-            if (!parse_boolean(prop, external, parseError)) return false;
+            if (!parse_boolean(propertyContents, external, error, propertyKind)) return false;
             parseObject.external = external;
             break;
         }
         case PropType::MEETING:
         {
-            parseObject.meeting_id = prop;
+            parseObject.meeting_id = propertyContents;
             break;
         }
         case PropType::CO2:
         {
             float co2;
-            if (!parse_float(prop, co2, parseError)) return false;
+            if (!parse_float(propertyContents, co2, error, propertyKind)) return false;
             //Check if co2 is < 0
             if (co2 < 0)
             {
-                parseError = "Value '" + prop + "' cannot be used as " + propType + ":\n\t- cannot be negative";
+                error.propertyNegative(propertyKind, propertyContents);
                 return false;
             }
             parseObject.co2_count = co2;
@@ -456,27 +453,27 @@ bool XmlParser::parseProperty(TiXmlElement* propertyObject, std::string& parseEr
         case PropType::CATERINGNEEDED:
         {
             bool catering;
-            if (!parse_boolean(prop, catering, parseError)) return false;
+            if (!parse_boolean(propertyContents, catering, error, propertyKind)) return false;
             parseObject.catering_needed = catering;
             break;
         }
         case PropType::STARTDATE:
         {
             Date startDate;
-            if (!parse_date(prop, startDate, parseError)) return false;
+            if (!parse_date(propertyContents, startDate, error, propertyKind)) return false;
             parseObject.start_date = startDate;
             break;
         }
         case PropType::ENDDATE:
         {
             Date endDate;
-            if (!parse_date(prop, endDate, parseError)) return false;
+            if (!parse_date(propertyContents, endDate, error, propertyKind)) return false;
             parseObject.end_date = endDate;
             break;
         }
         default:
         {
-            parseError = std::string("Property exists in property_map but isn't defined in switch case: ") + prop;
+            error.INTERNAL_propertySwitchCaseMissing(propertyKind);
             return false;
         }
     }
