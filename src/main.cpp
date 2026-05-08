@@ -5,7 +5,7 @@
 
 #include "error/DetailedError.h"
 #include "error/ConciseError.h"
-#include "output/StreamOutput.h"
+#include "output/TextOutput.h"
 #include "parser/XmlParser.h"
 
 int main()
@@ -17,6 +17,6 @@ int main()
         XmlParser("./test-files/InvalidData2.xml"),
         DetailedError(std::cerr)
         );
-    app->write(StreamOutput(std::cout));
+    app->write(TextOutput(std::cout));
     delete app;
 }

@@ -9,7 +9,7 @@
 
 #include "Output.h"
 
-class StreamOutput : public Output {
+class TextOutput : public Output {
 public:
 
     /**
@@ -17,7 +17,7 @@ public:
      * @pre REQUIRE(stream, "'stream' can't be null")
      *
      */
-    StreamOutput(std::ostream& stream = std::cout);
+    TextOutput(std::ostream& stream = std::cout);
 
     void printUser(const User* user) const override;
     void printUsers(const Users& users) const override;

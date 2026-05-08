@@ -2,7 +2,7 @@
 // Created by lucas on 4/23/26.
 //
 
-#include "StreamOutput.h"
+#include "TextOutput.h"
 
 #include "helper/DesignByContract.h"
 #include "objects/Catering.h"
@@ -11,19 +11,19 @@
 #include "objects/Room.h"
 #include "objects/User.h"
 
-StreamOutput::StreamOutput(std::ostream& stream) : stream(stream)
+TextOutput::TextOutput(std::ostream& stream) : stream(stream)
 {
     //REQUIRE(stream, "'stream' can't be null");
 }
 
-void StreamOutput::printUser(const User* user) const
+void TextOutput::printUser(const User* user) const
 {
     stream << "[ " << user->getId() << " ]\n";
     if (user->isExternal()) stream << "  - external\n";
     stream << std::flush;
 }
 
-void StreamOutput::printUsers(const Users& users) const
+void TextOutput::printUsers(const Users& users) const
 {
     if (users.empty())
     {
@@ -40,13 +40,13 @@ void StreamOutput::printUsers(const Users& users) const
     stream << std::endl;
 }
 
-void StreamOutput::printBuilding(const Building* building) const
+void TextOutput::printBuilding(const Building* building) const
 {
     stream << "[ " << building->toString() << " (" << building->getId() << ") ]\n"
     << "  - Campus: " << building->getCampus()->toString() << " ("<< building->getCampus()->getId() <<")" << std::endl;
 }
 
-void StreamOutput::printBuildings(const Buildings& buildings) const
+void TextOutput::printBuildings(const Buildings& buildings) const
 {
     if (buildings.empty())
     {
@@ -63,7 +63,7 @@ void StreamOutput::printBuildings(const Buildings& buildings) const
     stream << std::endl;
 }
 
-void StreamOutput::printCampus(const Campus* campus) const
+void TextOutput::printCampus(const Campus* campus) const
 {
     stream
     << "[ " << campus->toString() << " (" << campus->getId() << ") ]\n";
@@ -82,7 +82,7 @@ void StreamOutput::printCampus(const Campus* campus) const
     stream << std::flush;
 }
 
-void StreamOutput::printCampuses(const Campuses& campuses) const
+void TextOutput::printCampuses(const Campuses& campuses) const
 {
     if (campuses.empty())
     {
@@ -102,7 +102,7 @@ void StreamOutput::printCampuses(const Campuses& campuses) const
 
 
 
-void StreamOutput::printMeeting(const Meeting* meeting) const
+void TextOutput::printMeeting(const Meeting* meeting) const
 {
     stream
     << "[ " << meeting->toString() << " (" << meeting->getId() << ") ]\n"
@@ -150,7 +150,7 @@ void StreamOutput::printMeeting(const Meeting* meeting) const
     stream << std::flush;
 }
 
-void StreamOutput::printMeetings(const MeetingRegistry& meetings) const
+void TextOutput::printMeetings(const MeetingRegistry& meetings) const
 {
     std::list<const Meeting*> cancelled, processed, unprocessed;
 
@@ -218,7 +218,7 @@ void StreamOutput::printMeetings(const MeetingRegistry& meetings) const
     stream << std::flush;
 }
 
-void StreamOutput::printRoom(const Room* room) const
+void TextOutput::printRoom(const Room* room) const
 {
     const unsigned cap = room->getCapacity();
     stream << "[ " << room->toString() << " (" << room->getId() << ") ]\n"
@@ -229,7 +229,7 @@ void StreamOutput::printRoom(const Room* room) const
     stream << std::flush;
 }
 
-void StreamOutput::printRooms(const Rooms& rooms) const
+void TextOutput::printRooms(const Rooms& rooms) const
 {
     if (rooms.empty())
     {
@@ -248,7 +248,7 @@ void StreamOutput::printRooms(const Rooms& rooms) const
 }
 
 
-void StreamOutput::printMeetingCO2(const Meeting* meeting) const
+void TextOutput::printMeetingCO2(const Meeting* meeting) const
 {
     unsigned num_externals; float externals_emissions;
     unsigned num_internals; float internals_emissions;
@@ -298,7 +298,7 @@ void StreamOutput::printMeetingCO2(const Meeting* meeting) const
     stream << std::flush;
 }
 
-void StreamOutput::printMeetingsCO2(const MeetingRegistry& registry) const
+void TextOutput::printMeetingsCO2(const MeetingRegistry& registry) const
 {
     stream << "--==## CO2 Summary ##==--\n\n";
     for (const std::pair<const std::string, Meeting*>& item : registry.getRawIdMap())

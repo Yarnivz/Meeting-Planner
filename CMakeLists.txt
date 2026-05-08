@@ -54,7 +54,7 @@ set(COMMON_SOURCE_FILES
         src/parser/Parser.cpp
         src/parser/XmlParser.cpp
         src/output/Output.cpp
-        src/output/StreamOutput.cpp
+        src/output/TextOutput.cpp
         src/error/Error.cpp
         src/error/DetailedError.cpp
         src/error/ConciseError.cpp
