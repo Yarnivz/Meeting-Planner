@@ -33,7 +33,6 @@ void App::parse(Parser&& parser, const Error& error)
 
 void App::parse(Parser& parser, const Error& error)
 {
-
     parser.parse(error);
 
     for (const CampusElement& c : parser.parsedCampuses())
@@ -193,7 +192,6 @@ void App::parse(Parser& parser, const Error& error)
         // }
 
 
-
         // Add user to meeting
         m->addParticipant(u);
 
@@ -219,7 +217,6 @@ void App::parse(Parser& parser, const Error& error)
 
         //Add renovation to the room
         room->addRenovation(r.start_date, r.end_date);
-
     }
 
     parser.clearBuildings();
@@ -229,12 +226,10 @@ void App::parse(Parser& parser, const Error& error)
     parser.clearParticipations();
     parser.clearRenovations();
     parser.clearCaterings();
-
 }
 
 void App::write(const Output& output) const
 {
-
     output.printMeetings(meetings);
     output.printRooms(rooms);
     output.printBuildings(buildings);
@@ -277,8 +272,8 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
             if (catering_planning_output)
             {
                 *catering_planning_output << "Catering for meeting \'" << meeting->toString() << "\' at " << meeting->getDateTime() <<
-                " in " << meeting->getRoom()->getCampus()->toString() << ", " << meeting->getRoom()->getBuilding()->toString() << ", "
-                << meeting->getRoom()->toString() << "." << std::endl;
+                    " in " << meeting->getRoom()->getCampus()->toString() << ", " << meeting->getRoom()->getBuilding()->toString() << ", "
+                    << meeting->getRoom()->toString() << "." << std::endl;
             }
         }
     }
@@ -288,7 +283,6 @@ void App::processSingleMeeting(const std::string& meetingId, const bool verbose,
 
 void App::processAllMeetings(const bool verbose, std::ostream* catering_planning_output)
 {
-
     std::vector<Meeting*> sortedMeetings;
     for (std::pair<std::string, Meeting*> m : meetings.getRawIdMap())
     {
@@ -562,49 +556,57 @@ bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
     return false;
 }
 
-void App::dotOutput()
+void App::dotOutput() const
 {
     std::ofstream dotFile("./output.dot");
 
-    dotFile << "graph graphname" << '\n' << "{" << '\n';
+    if (!dotFile.is_open())
+    {
+        std::cerr << "couldnt open/create output.dot";
+        return;
+    }
+    dotFile << "graph Meeting" << '\n' << "{" << '\n';
 
     for (std::pair<const std::string, Campus*> campus : campuses)
     {
-        dotFile << "Uantwerpen -- " << "\"" + campus.first + "\"" << '\n';
+        dotFile << "Uantwerpen -- " << "\"" << campus.first << "\"" << '\n';
     }
 
-    for (std::pair<const std::string, Building*> building: buildings)
+    for (std::pair<const std::string, Building*> building : buildings)
     {
-        dotFile << "\"" + building.second->getCampus()->getId() + "\"" << " -- " << "\"" + building.first + "\"" << '\n';
+        dotFile << "\"" << building.second->getCampus()->getId() << "\"" << " -- " << "\"" << building.first << "\"" << '\n';
     }
 
-    for (std::pair<const std::string, Room*> room: rooms)
+    for (std::pair<const std::string, Room*> room : rooms)
     {
-        dotFile << "\"" + room.second->getBuilding()->getId() + "\"" << " -- " << "\"" + room.first + "\"" << '\n';
+        dotFile << "\"" << room.second->getBuilding()->getId() << "\"" << " -- " << "\"" << room.first << "\"" << '\n';
     }
 
-    for (std::pair<const std::string, Meeting*> meeting: meetings.getRawIdMap())
+    for (std::pair<const std::string, Meeting*> meeting : meetings.getRawIdMap())
     {
-        dotFile << "\"" + meeting.second->getRoom()->getId() + "\"" << " -- " << "\"" + meeting.first + "\"" << '\n';
+        dotFile << "\"" << meeting.second->getRoom()->getId() << "\"" << " -- " << "\"" << meeting.first << "\"" << '\n';
 
-        for (std::pair<const std::string, User*> user: meeting.second->getParticipants())
+        for (std::pair<const std::string, User*> user : meeting.second->getParticipants())
         {
-            dotFile << "\"" + meeting.second->getId() + "\"" << " -- " << "\"" + user.first + "\"" << '\n';
+            dotFile << "\"" << meeting.second->getId() << "\"" << " -- " << "\"" << user.first << "\"" << '\n';
         }
     }
 
     dotFile << "}" << '\n';
     dotFile.close();
+
+    int code = system("dot -Tpng output.dot -o dotOutput.png");
+    std::cout << "dot png conversion command exited with code: " << code << '\n';
 }
 
 
 App::~App()
 {
-    for (const std::pair<const std::string, Campus*>& c : campuses ) delete c.second;
-    for (const std::pair<const std::string, Building*>& b : buildings ) delete b.second;
+    for (const std::pair<const std::string, Campus*>& c : campuses) delete c.second;
+    for (const std::pair<const std::string, Building*>& b : buildings) delete b.second;
     for (const std::pair<const std::string, Room*>& r : rooms) delete r.second;
 
-    for (const std::pair<const std::string, User*>& u : users ) delete u.second;
+    for (const std::pair<const std::string, User*>& u : users) delete u.second;
     for (const Catering* c : caterings) delete c;
 
     for (const std::pair<const std::string, Meeting*>& m : meetings.getRawIdMap()) delete m.second;

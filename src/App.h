@@ -373,7 +373,7 @@ public:
      */
     void processAllMeetings(bool verbose = true, std::ostream* catering_planning_output = nullptr);
 
-    void dotOutput();
+    void dotOutput() const;
     ~App();
 
 private:
