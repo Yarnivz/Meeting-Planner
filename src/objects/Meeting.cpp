@@ -254,7 +254,7 @@ float Meeting::getEmissions() const
     {
         addedEmissions += static_cast<float>(getParticipantCount()) * caterings.front()->getEmissions();
     }
-
+    ENSURE(addedEmissions >= 0, "Emissions additive cannot be negative.");
     return addedEmissions;
 }
 

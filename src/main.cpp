@@ -14,9 +14,10 @@ int main()
     std::ofstream null_stream;
     App* app = new App();
     app->parse(
-        XmlParser("./test-files/InvalidData2.xml"),
+        XmlParser("./test-files/HappyDay3.xml"),
         DetailedError(std::cerr)
         );
     app->write(TextOutput(std::cout));
+    app->dotOutput();
     delete app;
 }

@@ -38,7 +38,7 @@ public:
     Campus& operator=(const Campus&) = delete;
 
     /**
-     * @brief Checks whether this Room was properly initialized by the constructor.
+     * @brief Checks whether this Campus was properly initialized by the constructor.
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;

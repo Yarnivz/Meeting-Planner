@@ -55,7 +55,7 @@ public:
     Meeting& operator=(const Meeting&) = delete;
 
     /**
-     * @brief Checks whether this Participation was properly initialized by the constructor.
+     * @brief Checks whether this Meeting was properly initialized by the constructor.
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;

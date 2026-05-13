@@ -40,7 +40,7 @@ public:
     Building& operator=(const Building&) = delete;
 
     /**
-     * @brief Checks whether this Room was properly initialized by the constructor.
+     * @brief Checks whether this Building was properly initialized by the constructor.
      *
      * @return bool indicating result
      */

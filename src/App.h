@@ -6,6 +6,7 @@
 #define MEETING_PLANNER_APP_H
 
 #include <string>
+#include <fstream>
 
 #include "objects/MeetingRegistry.h"
 #include "objects/Room.h"
@@ -32,7 +33,6 @@ public:
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
-
 
     void parse(Parser&& parser, const Error& error);
 
@@ -372,6 +372,8 @@ public:
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      */
     void processAllMeetings(bool verbose = true, std::ostream* catering_planning_output = nullptr);
+
+    void dotOutput();
     ~App();
 
 private:

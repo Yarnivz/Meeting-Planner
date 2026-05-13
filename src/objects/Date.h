@@ -91,7 +91,7 @@ public:
     Date(std::chrono::year_month_day year_month_day);
 
     /**
-     * @brief Checks whether this Participation was properly initialized by the constructor.
+     * @brief Checks whether this Date was properly initialized by the constructor.
      * @return bool indicating result
      */
     bool isProperlyInitialized() const;
