@@ -556,49 +556,6 @@ bool App::isUserOccupied(const std::string& userId, const DateTime& date_time)
     return false;
 }
 
-void App::dotOutput() const
-{
-    std::ofstream dotFile("./output.dot");
-
-    if (!dotFile.is_open())
-    {
-        std::cerr << "couldnt open/create output.dot";
-        return;
-    }
-    dotFile << "graph Meeting" << '\n' << "{" << '\n';
-
-    for (std::pair<const std::string, Campus*> campus : campuses)
-    {
-        dotFile << "Uantwerpen -- " << "\"" << campus.first << "\"" << '\n';
-    }
-
-    for (std::pair<const std::string, Building*> building : buildings)
-    {
-        dotFile << "\"" << building.second->getCampus()->getId() << "\"" << " -- " << "\"" << building.first << "\"" << '\n';
-    }
-
-    for (std::pair<const std::string, Room*> room : rooms)
-    {
-        dotFile << "\"" << room.second->getBuilding()->getId() << "\"" << " -- " << "\"" << room.first << "\"" << '\n';
-    }
-
-    for (std::pair<const std::string, Meeting*> meeting : meetings.getRawIdMap())
-    {
-        dotFile << "\"" << meeting.second->getRoom()->getId() << "\"" << " -- " << "\"" << meeting.first << "\"" << '\n';
-
-        for (std::pair<const std::string, User*> user : meeting.second->getParticipants())
-        {
-            dotFile << "\"" << meeting.second->getId() << "\"" << " -- " << "\"" << user.first << "\"" << '\n';
-        }
-    }
-
-    dotFile << "}" << '\n';
-    dotFile.close();
-
-    int code = system("dot -Tpng output.dot -o dotOutput.png");
-    std::cout << "dot png conversion command exited with code: " << code << '\n';
-}
-
 
 App::~App()
 {

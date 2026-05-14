@@ -372,8 +372,6 @@ public:
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      */
     void processAllMeetings(bool verbose = true, std::ostream* catering_planning_output = nullptr);
-
-    void dotOutput() const;
     ~App();
 
 private:

@@ -5,19 +5,19 @@
 
 #include "error/DetailedError.h"
 #include "error/ConciseError.h"
+#include "output/DotOutput.h"
 #include "output/TextOutput.h"
 #include "parser/XmlParser.h"
 
 int main()
 {
-
     std::ofstream null_stream;
     App* app = new App();
     app->parse(
-        XmlParser("./test-files/HappyDay3.xml"),
+        XmlParser("./test-files/HappyDay1.xml"),
         DetailedError(std::cerr)
-        );
+    );
     app->write(TextOutput(std::cout));
-    app->dotOutput();
+    app->write(DotOutput("./output.dot"));
     delete app;
 }
