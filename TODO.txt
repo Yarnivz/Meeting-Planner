@@ -7,14 +7,5 @@ Yarni:
 - Move over ProcessSingleMeeting to Meeting class
 - Split online and offline meetings in seperate Classes using Meeting inheritance
 
-Lucas:
-tijd om later in timesheet te zetten:
-  16:30 - 21:00 05/06
-  11:30 - 12:30 05/07
-  18:15 - 20:30 05/07
-
 ALGEMEEN:
 - Dot output
-
-Enkel indien er tijd over is:
-- Graphical output
