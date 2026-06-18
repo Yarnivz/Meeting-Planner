@@ -1,11 +1,7 @@
 Ishaak:
 - Check whether everything has ENSURES and REQUIRES
 - Check whether everything has docs
-- Start with dot output
 
 Yarni:
-- Move over ProcessSingleMeeting to Meeting class
+- Move over ProcessSingleMeeting to Meeting class (gedeeltelijk af)
 - Split online and offline meetings in seperate Classes using Meeting inheritance
-
-ALGEMEEN:
-- Dot output
