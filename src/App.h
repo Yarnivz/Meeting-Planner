@@ -25,6 +25,8 @@ class App
 public:
     /**
      * @brief Constructor of the App class.
+     * 
+     * @post ENSURE(isProperlyInitialized(), "object must be properly initialized in order to create App.")
      */
     App();
 
@@ -57,7 +59,6 @@ public:
      *
      *
      *
-     * @pre REQUIRE(output, "App doesnt have an output attached.")
      *
      */
     void write(const Output& output) const;
