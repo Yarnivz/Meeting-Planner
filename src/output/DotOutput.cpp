@@ -26,12 +26,13 @@ DotOutput::~DotOutput()
     stream << "}" << '\n';
     stream.close();
 
-    int code = system("dot -Tpng output.dot -o dotOutput.png");
-    std::cout << "dot png conversion command exited with code: " << code << '\n';
+    //int code = system("dot -Tpng output.dot -o dotOutput.png");
+    //std::cout << "dot png conversion command exited with code: " << code << '\n';
 }
 
 void DotOutput::printUser(const User* user) const
 {
+
     for (const std::pair<const std::string, Meeting*>& meeting : meetingsMap)
     {
         if (meeting.second->getParticipants().contains(user->getId()))
@@ -51,6 +52,7 @@ void DotOutput::printUsers(const Users& users) const
 
 void DotOutput::printBuilding(const Building* building) const
 {
+    stream << "\"" << building->getId() << "\" [label=\"" << building->toString() << " (" << building->getId() << ")\"]\n";
     stream << "\"" << building->getCampus()->getId() << "\"" << " -- " << "\"" << building->getId() << "\"" << '\n';
 }
 
@@ -64,6 +66,7 @@ void DotOutput::printBuildings(const Buildings& buildings) const
 
 void DotOutput::printCampus(const Campus* campus) const
 {
+    stream << "\"" << campus->getId() << "\" [label=\"" << campus->toString() << " (" << campus->getId() << ")\"]\n";
     stream << "Uantwerpen -- " << "\"" << campus->getId() << "\"" << '\n';
 }
 
@@ -79,6 +82,7 @@ void DotOutput::printCampuses(const Campuses& campuses) const
 
 void DotOutput::printMeeting(const Meeting* meeting) const
 {
+    stream << "\"" << meeting->getId() << "\" [label=\"" << meeting->toString() << " (" << meeting->getId() << ")\"]\n";
     stream << "\"" << meeting->getRoom()->getId() << "\"" << " -- " << "\"" << meeting->getId() << "\"" << '\n';
 }
 
@@ -93,6 +97,7 @@ void DotOutput::printMeetings(const MeetingRegistry& meetings) const
 
 void DotOutput::printRoom(const Room* room) const
 {
+    stream << "\"" << room->getId() << "\" [label=\"" << room->toString() << " (" << room->getId() << ")\"]\n";
     stream << "\"" << room->getBuilding()->getId() << "\"" << " -- " << "\"" << room->getId() << "\"" << '\n';
 }
 

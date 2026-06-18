@@ -1,0 +1,59 @@
+graph Meeting
+{
+"m8" [label="Meeting 8 (m8)"]
+"r6" -- "m8"
+"m7" [label="Meeting 7 (m7)"]
+"r5" -- "m7"
+"m6" [label="Meeting 6 (m6)"]
+"r4" -- "m6"
+"m4" [label="Meeting 4 (m4)"]
+"r2" -- "m4"
+"m3" [label="Meeting 3 (m3)"]
+"r2" -- "m3"
+"m2" [label="Meeting 2 (m2)"]
+"r1" -- "m2"
+"m5" [label="Meeting 5 (m5)"]
+"r4" -- "m5"
+"m1" [label="Meeting 1 (m1)"]
+"r1" -- "m1"
+"r6" [label="Room 6 (r6)"]
+"DA" -- "r6"
+"r5" [label="Room 5 (r5)"]
+"MA" -- "r5"
+"r4" [label="Room 4 (r4)"]
+"GZ" -- "r4"
+"empty" [label="Empty Room 3 (empty)"]
+"MG" -- "empty"
+"r2" [label="Room 2 (r2)"]
+"MG" -- "r2"
+"r1" [label="Room 1 (r1)"]
+"MG" -- "r1"
+"DA" [label="Blok A (DA)"]
+"D" -- "DA"
+"MA" [label="Blok A (MA)"]
+"M" -- "MA"
+"GZ" [label="Blok Z (GZ)"]
+"G" -- "GZ"
+"MG" [label="Bib (MG)"]
+"M" -- "MG"
+"Bz" [label="Baz (Bz)"]
+Uantwerpen -- "Bz"
+"B" [label="Bar (B)"]
+Uantwerpen -- "B"
+"F" [label="Foo (F)"]
+Uantwerpen -- "F"
+"D" [label="Drie Eiken (D)"]
+Uantwerpen -- "D"
+"G" [label="Groenenborger (G)"]
+Uantwerpen -- "G"
+"M" [label="Middelheim (M)"]
+Uantwerpen -- "M"
+"m5" -- "Jane Doe"
+"m1" -- "Jane Doe"
+"m6" -- "John Doe"
+"m4" -- "John Doe"
+"m3" -- "John Doe"
+"m8" -- "Peter Selie"
+"m7" -- "Peter Selie"
+"m2" -- "Peter Selie"
+}

@@ -12,6 +12,7 @@
 #include "tests/TestMeetingRegistry.h"
 #include "tests/TestCampus.h"
 #include "tests/TestBuilding.h"
+#include "tests/TestWriteToStreamDot.h"
 
 int main(int argc, char** argv)
 {
