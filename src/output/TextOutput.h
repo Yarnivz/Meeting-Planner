@@ -14,7 +14,6 @@ public:
 
     /**
      *
-     * @pre REQUIRE(stream, "'stream' can't be null")
      *
      */
     TextOutput(std::ostream& stream = std::cout);

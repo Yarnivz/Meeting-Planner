@@ -249,6 +249,8 @@ public:
      * @pre REQUIRE(room->getCampus() != nullptr, "Campus cannot be null")
      * @pre REQUIRE(!(catering_needed && online), "Catering and online cannot be true at the same time.")
      * 
+     * 
+     * @post ENSURE(addedEmissions >= 0, "Emissions additive cannot be negative.")
      * @return the total co2 emission amount
      */
     float getEmissions() const;
