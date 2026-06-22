@@ -1,0 +1,14 @@
+graph Meeting
+{
+"Meeting_478463" [label="Weekly meeting (Meeting_478463)"]
+"Room98732" -- "Meeting_478463"
+"Room98732" [label="M.G.023 (Room98732)"]
+"M.G" -- "Room98732"
+"M.G.025" [label="M.G.025 (M.G.025)"]
+"M.G" -- "M.G.025"
+"M.G" [label="Gebouw G (M.G)"]
+"M" -- "M.G"
+"M" [label="Campus Middelheim (M)"]
+Uantwerpen -- "M"
+"Meeting_478463" -- "Peter Selie"
+}

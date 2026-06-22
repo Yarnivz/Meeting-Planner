@@ -137,7 +137,7 @@ void App::parse(Parser& parser, const Error& error)
             continue;
         }
         //add temporary false status to meeting online status for now as workaround
-        addMeeting(new Meeting(m.label, m.id, mr, m.date_time, false, m.externals_allowed, m.catering_needed));
+        addMeeting(new Meeting(this, m.label, m.id, mr, m.date_time, false, m.externals_allowed, m.catering_needed));
     }
 
     for (const ParticipationElement& p : parser.parsedParticipations())
@@ -238,48 +238,48 @@ void App::write(const Output& output) const
     output.printMeetingsCO2(meetings);
 }
 
-void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)
-{
-    //REQUIRE(!meetingId.empty(), "Meeting id is empty");
-    Meeting* meeting = getMeetingById(meetingId);
-    REQUIRE(meeting, "Meeting must exist.");
-    REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
-
-    Meeting* conflict;
-    const Renovation* renovation;
-    if ((conflict = findConflictingMeeting(meetingId)))
-    {
-        meeting->cancel("conflict with meeting " + conflict->getId());
-        if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
-    }
-    else if ((renovation = meeting->getRoom()->getRenovation(meeting->getDateTime())))
-    {
-        meeting->cancel("unable to book room " + meeting->getRoom()->toString() + " on " + meeting->getDateTime().toString() + " as it is being renovated from " + renovation->first.toString() + " to " + renovation->second.toString());
-        if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
-    }
-    else
-    {
-        meeting->process();
-        if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
-    }
-    if (!meeting->isOnline())
-    {
-        meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
-
-
-        if (meeting->cateringNeeded())
-        {
-            if (catering_planning_output)
-            {
-                *catering_planning_output << "Catering for meeting \'" << meeting->toString() << "\' at " << meeting->getDateTime() <<
-                    " in " << meeting->getRoom()->getCampus()->toString() << ", " << meeting->getRoom()->getBuilding()->toString() << ", "
-                    << meeting->getRoom()->toString() << "." << std::endl;
-            }
-        }
-    }
-    emission += meeting->getEmissions();
-    ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
-}
+// void App::processSingleMeeting(const std::string& meetingId, const bool verbose, std::ostream* catering_planning_output)
+// {
+//     //REQUIRE(!meetingId.empty(), "Meeting id is empty");
+//     Meeting* meeting = getMeetingById(meetingId);
+//     REQUIRE(meeting, "Meeting must exist.");
+//     REQUIRE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
+//
+//     Meeting* conflict;
+//     const Renovation* renovation;
+//     if ((conflict = findConflictingMeeting(meetingId)))
+//     {
+//         meeting->cancel("conflict with meeting " + conflict->getId());
+//         if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
+//     }
+//     else if ((renovation = meeting->getRoom()->getRenovation(meeting->getDateTime())))
+//     {
+//         meeting->cancel("unable to book room " + meeting->getRoom()->toString() + " on " + meeting->getDateTime().toString() + " as it is being renovated from " + renovation->first.toString() + " to " + renovation->second.toString());
+//         if (verbose) std::cout << meeting->getId() << " has been cancelled due to '" + meeting->getCancellationReason() << "'" << std::endl;
+//     }
+//     else
+//     {
+//         meeting->process();
+//         if (verbose) std::cout << meeting->getId() << " has taken place" << std::endl;
+//     }
+//     if (!meeting->isOnline())
+//     {
+//         meeting->participantsToRoomsSize.push_back({meeting->getParticipantCount(), meeting->getRoom()->getCapacity()});
+//
+//
+//         if (meeting->cateringNeeded())
+//         {
+//             if (catering_planning_output)
+//             {
+//                 *catering_planning_output << "Catering for meeting \'" << meeting->toString() << "\' at " << meeting->getDateTime() <<
+//                     " in " << meeting->getRoom()->getCampus()->toString() << ", " << meeting->getRoom()->getBuilding()->toString() << ", "
+//                     << meeting->getRoom()->toString() << "." << std::endl;
+//             }
+//         }
+//     }
+//     emission += meeting->getEmissions();
+//     ENSURE(meeting->isCancelled() || meeting->isProcessed(), "Meeting must be processed");
+// }
 
 void App::processAllMeetings(const bool verbose, std::ostream* catering_planning_output)
 {
@@ -298,13 +298,18 @@ void App::processAllMeetings(const bool verbose, std::ostream* catering_planning
                   }
                   return comparedMeeting1->getOrder() < comparedMeeting2->getOrder();
               });
-    for (const Meeting* meeting : sortedMeetings)
+    for (Meeting* meeting : sortedMeetings)
     {
         ENSURE(meeting, "Meeting can not be null.");
         ENSURE(meeting->isProperlyInitialized(), "Meeting must be properly initialized.");
-        processSingleMeeting(meeting->getId(), verbose, catering_planning_output);
+        meeting->process(catering_planning_output);
     }
     //TODO add ensure
+}
+
+void App::addEmission(float amount)
+{
+    emission += amount;
 }
 
 void App::addCampus(Campus* campus)

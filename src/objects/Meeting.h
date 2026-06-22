@@ -7,11 +7,13 @@
 
 #include <string>
 
+#include "App.h"
 #include "DateTime.h"
 #include "../TypeDefs.h"
 
 class User;
 class Room;
+class App;
 
 
 class Meeting
@@ -33,6 +35,7 @@ public:
      * @pre REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.")
      * @pre REQUIRE(date_time.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.")
      * 
+     * @param app the app instance this meeting is a part of
      * @param label title of the meeting
      * @param id identifier of the meeting
      * @param room identifier of the room where the meeting takes place
@@ -46,7 +49,7 @@ public:
      * @post ENSURE(getOrder() == this->order, "Meeting creation failed. Order was not correctly set.")
      * @post ENSURE(isUnProcessed() && !isProcessed() && !isCancelled(), "Meeting creation failed, state was not correctly set.")
      */
-    Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
+    Meeting(App* app, const std::string& label, const std::string& id, Room* room, const DateTime& date_time = DateTime(), const  bool& online = false, bool externals_allowed = false, bool catering_needed = false);
 
     /**
      * @brief prevents the Meeting object from being copied
@@ -131,9 +134,11 @@ public:
      *
      * @pre REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled.")
      *
+     * @param catering_planning_output
+     *
      * @post ENSURE(isProcessed(), "Meeting must be processed.")
      */
-    void process();
+    void process(std::ostream* catering_planning_output = nullptr);
 
     /**
      * @brief cancels the meeting and updates the reason for it
@@ -299,6 +304,8 @@ private:
      *
      */
     void _addParticipant(User* user);
+
+    App* app;
 
     using State = enum { UNPROCESSED, PROCESSED, CANCELLED };
     std::string label;

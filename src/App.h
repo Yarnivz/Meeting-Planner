@@ -363,7 +363,7 @@ public:
      * @param meetingId Identifier of the meeting to retrieve.
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      */
-    void processSingleMeeting(const std::string& meetingId, bool verbose = true, std::ostream* catering_planning_output = nullptr);
+    //void processSingleMeeting(const std::string& meetingId, bool verbose = true, std::ostream* catering_planning_output = nullptr);
 
     /**
      * @brief Checks all planned meeting entries for conflicting rooms/dates.
@@ -373,6 +373,14 @@ public:
      * @param verbose Prints text to console when enabled. This option is enabled by default.
      */
     void processAllMeetings(bool verbose = true, std::ostream* catering_planning_output = nullptr);
+
+    /**
+     * @brief Adds emission to the total amount of emission produced by all the processed meetings
+     *
+     * @param amount The amount of emission to be added
+     */
+    void addEmission(float amount);
+
     ~App();
 
 private:

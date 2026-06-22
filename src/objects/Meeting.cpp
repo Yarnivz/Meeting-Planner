@@ -10,9 +10,10 @@
 #include "objects/User.h"
 
 
-Meeting::Meeting(const std::string& label, const std::string& id, Room* room, const DateTime& date_time, const bool& online, bool externals_allowed, bool catering_needed)
-    : label(label), id(id), room(room), date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
+Meeting::Meeting(App* app, const std::string& label, const std::string& id, Room* room, const DateTime& date_time, const bool& online, bool externals_allowed, bool catering_needed)
+    : app(app), label(label), id(id), room(room), date_time(date_time), externals_allowed(externals_allowed), online(online), catering_needed(catering_needed)
 {
+    REQUIRE(app->isProperlyInitialized(), "Failed to construct meeting. The assigned 'app' has to be properly initialized with the constructor");
     REQUIRE(!id.empty(), "Failed to construct meeting. 'id' can not be empty.");
     REQUIRE(room != nullptr, "Failed to construct meeting. 'room' can not be empty.");
     REQUIRE(date_time.isProperlyInitialized(), "Failed to construct meeting. 'date' has to be properly initialized with the constructor.");
@@ -78,11 +79,44 @@ void Meeting::setOrder(const int orderAdded)
     ENSURE(orderAdded == getOrder(), "OrderAdded does not match GetOrder return value");
 }
 
-void Meeting::process()
+void Meeting::process(std::ostream* catering_planning_output)
 {
     REQUIRE(state == UNPROCESSED, "Meeting was already processed or canceled.");
-    state = PROCESSED;
-    ENSURE(isProcessed(), "Meeting must be processed.");
+    REQUIRE(!id.empty(), "Meeting id is empty");
+    REQUIRE(isProperlyInitialized(), "Meeting must be properly initialized.");
+
+    Meeting* conflict;
+    const Renovation* renovation;
+    if ((conflict = app->findConflictingMeeting(id)))
+    {
+        cancel("conflict with meeting " + conflict->getId());
+    }
+    else if ((renovation = getRoom()->getRenovation(getDateTime())))
+    {
+        cancel("unable to book room " + getRoom()->toString() + " on " + getDateTime().toString() + " as it is being renovated from " + renovation->first.toString() + " to " + renovation->second.toString());
+    }
+    else
+    {
+        state = PROCESSED;
+        std::cout << getId() << " has taken place" << std::endl;
+    }
+    if (!isOnline())
+    {
+        participantsToRoomsSize.push_back({getParticipantCount(), getRoom()->getCapacity()});
+
+
+        if (cateringNeeded())
+        {
+            if (catering_planning_output)
+            {
+                *catering_planning_output << "Catering for meeting \'" << toString() << "\' at " << getDateTime() <<
+                    " in " << getRoom()->getCampus()->toString() << ", " << getRoom()->getBuilding()->toString() << ", "
+                    << getRoom()->toString() << "." << std::endl;
+            }
+        }
+    }
+    app->addEmission(getEmissions());
+    ENSURE(isCancelled() || isProcessed(), "Meeting must be processed");
 }
 
 void Meeting::cancel(const std::string& reason)
@@ -91,6 +125,7 @@ void Meeting::cancel(const std::string& reason)
     state = CANCELLED;
     cancellation_reason = reason;
     ENSURE(isCancelled(), "Meeting must be cancelled.");
+    std::cout << id << " has been cancelled due to '" + cancellation_reason << "'" << std::endl;
 }
 
 bool Meeting::isUnProcessed() const { return state == UNPROCESSED; }
@@ -142,7 +177,7 @@ void Meeting::addParticipant(User* user)
     this->_addParticipant(user);
     user->_addMeeting(this);
     ENSURE(participants.contains(user->getId()), "User must be added to meeting participants");
-    ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to wich the user was added");
+    ENSURE(user->meetings.getById(id) == this, "MeetingRegistery must contain current meeting to which the user was added");
 }
 
 User* Meeting::getParticipant(const std::string& userId) const
